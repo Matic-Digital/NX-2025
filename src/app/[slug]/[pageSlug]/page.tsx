@@ -41,6 +41,10 @@ export async function generateStaticParams() {
   return [];
 }
 
+// Define appropriate caching behavior for nested dynamic routes
+export const dynamic = 'force-static'; // Prefer static rendering where possible
+export const revalidate = 3600; // Revalidate every hour
+
 // The nested page component
 export default async function NestedPage({ params, searchParams }: NestedPageProps) {
   // Await the params Promise (required in Next.js)
