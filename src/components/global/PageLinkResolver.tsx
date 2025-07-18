@@ -22,12 +22,16 @@ export function PageLinkResolver({
   isNavigationLink = false
 }: PageLinkResolverProps) {
   const pathname = usePathname();
-  const resolvedUrl = `/${slug ?? ''}`;
+
+  // Safely handle slug - explicitly check for undefined or empty string
+  // Empty string for homepage, otherwise use the slug value
+  const resolvedUrl = !slug ? '/' : `/${slug}`;
 
   // Determine if this link is active based on the current pathname
   const pathSegments = pathname.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1];
-  const isLinkActive = lastSegment === slug || pathname === `/${slug}`;
+  // Account for homepage and other cases
+  const isLinkActive = slug ? lastSegment === slug || pathname === `/${slug}` : pathname === '/';
 
   if (isNavigationLink) {
     return (

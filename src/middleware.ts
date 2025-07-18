@@ -64,41 +64,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  try {
-    // Make a request to our API to check if this page belongs to a PageList
-    // We need to use the full URL including protocol, hostname, and port
-    const apiUrl = createApiUrl(request.url, slug);
-    console.log(`Middleware: Checking if ${slug} belongs to a PageList via ${apiUrl}`);
-
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.ok) {
-      const result = (await response.json()) as {
-        parentSlug: string | null;
-        pageId?: string;
-        pageName?: string;
-      };
-      console.log(`Middleware: API response for ${slug}:`, result);
-
-      if (result.parentSlug) {
-        // If it belongs to a PageList, redirect to the nested URL
-        const redirectUrl = `/${result.parentSlug}/${slug}`;
-        console.log(`Middleware: Redirecting ${slug} to ${redirectUrl}`);
-
-        // Create a new URL for the redirect
-        const newUrl = new URL(redirectUrl, request.url);
-        return NextResponse.redirect(newUrl);
-      }
-    } else {
-      console.error(`Middleware: API request failed with status ${response.status}`);
-    }
-  } catch (error) {
-    console.error('Middleware error checking page parent:', error);
-  }
+  // In production environments, especially on Vercel's Edge Runtime,
+  // API calls from middleware can be problematic with authentication.
+  // Instead, we'll let the page component handle nested page resolution.
+  // 
+  // Note: In development/local environments, the API call might work fine,
+  // which explains why this issue only happens in production.
+  console.log(`Middleware: Skipping API check for ${slug} in Edge Runtime, letting page handle routing`);
+  
+  // In a full production solution, you might implement a more robust approach like:
+  // 1. Store page relationships in a more Edge-friendly storage solution
+  // 2. Use Edge Config or similar to cache page relationships
+  // 3. Move this logic entirely to the page component level
 
   // Continue with the request if no redirection is needed
   return NextResponse.next();

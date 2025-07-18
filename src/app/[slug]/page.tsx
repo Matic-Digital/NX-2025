@@ -46,6 +46,10 @@ export async function generateStaticParams() {
 }
 
 // The dynamic content component that handles both Page and PageList
+// Define appropriate caching behavior for dynamic routes
+export const dynamic = 'force-static'; // Prefer static rendering where possible
+export const revalidate = 3600; // Revalidate every hour
+
 export default async function ContentPage({ params, searchParams }: ContentPageProps) {
   // Await the params Promise (required in Next.js)
   const resolvedParams = await params;
@@ -58,29 +62,46 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
   try {
     // Try to fetch the content as a Page first
     console.log(`Attempting to fetch page with slug: ${slug}`);
-    const page = await getPageBySlug(slug, preview);
+    let page;
+    try {
+      page = await getPageBySlug(slug, preview);
+      console.log(`Page query result:`, page ? 'Found page' : 'No page found');
+    } catch (pageError) {
+      console.error(`Error fetching page with slug ${slug}:`, pageError);
+      throw new Error(`Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`);
+    }
 
-    // If it's a Page, check if it belongs to a PageList
+    // If it's a Page, render it as a standalone page
     if (page) {
-      console.log(`Found page with slug: ${slug}, checking if it belongs to a PageList`);
-
-      // Note: We no longer need to check if this page belongs to a PageList here
-      // The middleware will handle redirections before this page component is rendered
-      // This ensures we only render pages at their canonical URLs
-
-      // If it doesn't belong to a PageList, render it as a standalone page
-      console.log(`Rendering standalone page with slug: ${slug}`);
-      return renderPage(page);
+      console.log(`Found page with slug: ${slug}, rendering standalone page`);
+      try {
+        return renderPage(page);
+      } catch (renderError) {
+        console.error(`Error rendering page with slug ${slug}:`, renderError);
+        throw new Error(`Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`);
+      }
     }
 
     // If it's not a Page, try to fetch it as a PageList
     console.log(`No page found with slug: ${slug}, trying PageList`);
-    const pageList = await getPageListBySlug(slug, preview);
+    let pageList;
+    try {
+      pageList = await getPageListBySlug(slug, preview);
+      console.log(`PageList query result:`, pageList ? 'Found pageList' : 'No pageList found');
+    } catch (pageListError) {
+      console.error(`Error fetching pageList with slug ${slug}:`, pageListError);
+      throw new Error(`Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`);
+    }
 
     // If it's a PageList, render it
     if (pageList) {
-      console.log(`Found PageList with slug: ${slug}`);
-      return renderPageList(pageList);
+      console.log(`Found PageList with slug: ${slug}, rendering PageList`);
+      try {
+        return renderPageList(pageList);
+      } catch (renderError) {
+        console.error(`Error rendering pageList with slug ${slug}:`, renderError);
+        throw new Error(`Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`);
+      }
     }
 
     console.log(`No Page or PageList found with slug: ${slug}`);
@@ -89,10 +110,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
   } catch (error) {
     console.error(`Error handling slug: ${slug}`, error);
 
-    // For now, show a 404 page on any error
-    // In a production app, you might want to show a specific error page
-    // depending on the type of error
-    notFound();
+    // Instead of converting all errors to 404s, let's throw the actual error
+    // to help with debugging the 500 error in production
+    throw error;
   }
 }
 
