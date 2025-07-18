@@ -70,10 +70,21 @@ export async function middleware(request: NextRequest) {
     const apiUrl = createApiUrl(request.url, slug);
     console.log(`Middleware: Checking if ${slug} belongs to a PageList via ${apiUrl}`);
 
+    // Forward authorization headers and cookies from the original request
+    const headers = new Headers({
+      'Content-Type': 'application/json'
+    });
+    
+    // Forward authorization headers if present
+    const authHeader = request.headers.get('authorization');
+    if (authHeader) {
+      headers.set('authorization', authHeader);
+    }
+    
     const response = await fetch(apiUrl, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers,
+      // Include credentials to send cookies
+      credentials: 'include'
     });
 
     if (response.ok) {
