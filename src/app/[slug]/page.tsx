@@ -46,6 +46,10 @@ export async function generateStaticParams() {
 }
 
 // The dynamic content component that handles both Page and PageList
+// Define appropriate caching behavior for dynamic routes
+export const dynamic = 'force-static'; // Prefer static rendering where possible
+export const revalidate = 3600; // Revalidate every hour
+
 export default async function ContentPage({ params, searchParams }: ContentPageProps) {
   // Await the params Promise (required in Next.js)
   const resolvedParams = await params;

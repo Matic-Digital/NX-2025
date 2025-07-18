@@ -188,6 +188,15 @@ export async function fetchGraphQL<T>(
   cacheConfig?: { next: { revalidate: number } }
 ): Promise<GraphQLResponse<T>> {
   try {
+    // Use explicit cache settings based on preview mode
+    // For preview content, use no-store to ensure fresh content
+    // For production content, use force-cache when not explicitly configured
+    const cacheSettings = preview 
+      ? { cache: 'no-store' as const } 
+      : cacheConfig?.next 
+        ? { next: cacheConfig.next } 
+        : { cache: 'force-cache' as const };
+        
     const response = await fetch(
       `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}`,
       {
@@ -201,7 +210,7 @@ export async function fetchGraphQL<T>(
           }`
         },
         body: JSON.stringify({ query, variables }),
-        next: cacheConfig?.next
+        ...cacheSettings
       }
     );
 
