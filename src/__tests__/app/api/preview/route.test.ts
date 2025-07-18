@@ -119,16 +119,16 @@ describe('Preview API Route', () => {
     );
   });
 
-  it('redirects to navbar preview with valid navBarName', async () => {
+  it('redirects to header preview with valid headerName', async () => {
     const request = createMockRequest({
       secret: 'test-preview-secret',
-      navBarName: 'test-navbar'
+      headerName: 'test-header'
     });
 
     const response = await GET(request);
 
     expect(response.status).toBe(307);
-    expect(response.headers.get('Location')).toContain('/navbar-preview?navBarName=test-navbar');
+    expect(response.headers.get('Location')).toContain('/header-preview?headerName=test-header');
   });
 
   it('redirects to hero preview with valid heroId', async () => {
