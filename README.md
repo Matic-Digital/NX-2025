@@ -13,7 +13,7 @@ No other local dependencies are required! Everything runs inside Docker containe
 
 ### Initial Setup
 
-1. Clone the repository:
+1. Clone the repository
 
    ```bash
    git clone <repository-url>
