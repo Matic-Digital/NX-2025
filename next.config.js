@@ -17,6 +17,34 @@ const nextConfig = {
   // Required for UI css to be transpiled correctly 👇
   transpilePackages: ['jotai-devtools'],
 
+  // Add Content-Security-Policy headers for Contentful live preview
+  // Only in preview environments (like staging branches on Vercel)
+  async headers() {
+    // Check if we're in a preview environment on Vercel
+    // VERCEL_ENV will be 'production', 'preview', or 'development'
+    const isPreviewEnv = process.env.VERCEL_ENV === 'prod-preview';
+    
+    // Only add CSP headers for preview environments
+    if (isPreviewEnv) {
+      return [
+        {
+          // Apply to all routes
+          source: '/(.*)',
+          headers: [
+            {
+              key: 'Content-Security-Policy',
+              // Allow embedding from Contentful domains
+              value: "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com;"
+            }
+          ]
+        }
+      ];
+    }
+    
+    // Return empty array for non-preview environments
+    return [];
+  },
+
   // Configure image domains for Next.js Image component
   images: {
     remotePatterns: [
