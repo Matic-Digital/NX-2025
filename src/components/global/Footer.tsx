@@ -12,7 +12,7 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box, Container } from '@/components/global/matic-ds';
 import { useThemeSync } from '@/hooks/useThemeSync';
 import { Logo } from '@/components/global/Logo';
-import type { Footer as FooterType } from '@/types/contentful';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 /**
  * Footer component

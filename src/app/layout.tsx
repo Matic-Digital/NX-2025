@@ -28,7 +28,7 @@ const inter = Inter({
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
  */
 export const metadata: Metadata = {
-  title: 'Matic - Contentful Next.js Starter',
+  title: 'Nextracker',
   description: 'Modern content management and digital experiences',
   icons: [{ rel: 'icon', url: '/favicon.ico' }]
 };

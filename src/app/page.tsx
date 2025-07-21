@@ -3,24 +3,30 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/api';
-import type { PageResponse, PageListResponse, Page } from '@/types/contentful';
+
 import { getAllFooters } from '@/lib/api';
-import type { FooterResponse } from '@/types/contentful';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Hero } from '@/components/global/Hero';
+import { CtaBanner } from '@/components/CtaBanner';
+
+import type { FooterResponse } from '@/types/contentful/Footer';
+import type { PageResponse } from '@/types/contentful/Page';
+import type { PageListResponse } from '@/types/contentful/PageList';
+import type { Page } from '@/types/contentful/Page';
 
 /**
  * Metadata configuration for SEO
  */
 export const metadata: Metadata = {
-  title: 'Contentful Next.js Starter',
-  description: 'Contentful Next.js Starter'
+  title: 'Nextracker',
+  description: 'Nextracker Website 2025'
 };
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  Hero: Hero
+  Hero: Hero,
+  CtaBanner: CtaBanner
   // Add other component types here as they are created
 };
 
@@ -72,7 +78,9 @@ async function renderContentfulHomePage(page: Page) {
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            return <ComponentType key={component.sys.id} {...component} />;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
           // Log a warning if we don't have a component for this type
@@ -119,7 +127,7 @@ async function renderDefaultHomePage() {
 
   return (
     <Container className="py-8">
-      <h1 className="mb-8 text-3xl font-bold">Contentful Next.js Starter</h1>
+      <h1 className="mb-8 text-3xl font-bold">Nextracker Website 2025</h1>
 
       {pages.items.length > 0 && (
         <div className="mb-8">

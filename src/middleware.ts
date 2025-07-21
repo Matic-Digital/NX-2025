@@ -6,11 +6,11 @@ import { NextResponse } from 'next/server';
 // Instead, we'll need to make a fetch request to our own API
 
 // Helper function to create a URL for the API request
-function createApiUrl(baseUrl: string, path: string): string {
-  const url = new URL(baseUrl);
-  // Ensure we're using the same protocol, hostname, and port
-  return `${url.protocol}//${url.host}/api/check-page-parent?slug=${encodeURIComponent(path)}`;
-}
+// function createApiUrl(baseUrl: string, path: string): string {
+//   const url = new URL(baseUrl);
+//   // Ensure we're using the same protocol, hostname, and port
+//   return `${url.protocol}//${url.host}/api/check-page-parent?slug=${encodeURIComponent(path)}`;
+// }
 
 /**
  * Middleware for handling page redirections
@@ -67,11 +67,13 @@ export async function middleware(request: NextRequest) {
   // In production environments, especially on Vercel's Edge Runtime,
   // API calls from middleware can be problematic with authentication.
   // Instead, we'll let the page component handle nested page resolution.
-  // 
+  //
   // Note: In development/local environments, the API call might work fine,
   // which explains why this issue only happens in production.
-  console.log(`Middleware: Skipping API check for ${slug} in Edge Runtime, letting page handle routing`);
-  
+  console.log(
+    `Middleware: Skipping API check for ${slug} in Edge Runtime, letting page handle routing`
+  );
+
   // In a full production solution, you might implement a more robust approach like:
   // 1. Store page relationships in a more Edge-friendly storage solution
   // 2. Use Edge Config or similar to cache page relationships

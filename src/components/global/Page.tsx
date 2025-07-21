@@ -28,7 +28,8 @@ import { Container, Box } from '@/components/global/matic-ds';
 import { Hero } from './Hero';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import type { Header as HeaderType, Footer as FooterType } from '@/types/contentful';
+import type { Header as HeaderType } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 interface PageProps {
   sys: {
