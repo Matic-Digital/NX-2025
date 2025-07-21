@@ -49,10 +49,10 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <div data-testid={`${field.name}-field-info`}>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em className="text-sm text-destructive">{field.state.meta.errors.join(',')}</em>
+        <em className="text-destructive text-sm">{field.state.meta.errors.join(',')}</em>
       ) : null}
       {field.state.meta.isValidating ? (
-        <em className="text-sm text-primary">Validating...</em>
+        <em className="text-primary text-sm">Validating...</em>
       ) : null}
     </div>
   );

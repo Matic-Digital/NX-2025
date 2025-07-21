@@ -40,7 +40,7 @@ export function Hero(props: HeroProps) {
   console.log('Live updated hero:', hero);
 
   return (
-    <Container className="py-16 md:py-24">
+    <Container className="bg-background py-16 md:py-24">
       <Box className="flex-col items-center text-center">
         {hero.name && (
           <h1
@@ -53,7 +53,7 @@ export function Hero(props: HeroProps) {
 
         {hero.description && (
           <p
-            className="mb-8 max-w-2xl text-lg text-muted-foreground md:text-xl"
+            className="text-muted-foreground mb-8 max-w-2xl text-lg md:text-xl"
             {...inspectorProps({ fieldId: 'description' })}
           >
             {hero.description}

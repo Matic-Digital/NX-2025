@@ -25,7 +25,7 @@ export function PagePreviewContent({
   return (
     <Box direction="col" gap={8} className="min-h-screen">
       {/* Small indicator that this is a preview - positioned to not interfere with the page content */}
-      <div className="fixed bottom-4 right-4 z-50 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
+      <div className="fixed right-4 bottom-4 z-50 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
         <p>Page Preview: {pageSlug}</p>
         <p>{isDraftMode ? 'Draft mode enabled' : 'Draft mode disabled'}</p>
       </div>
@@ -35,7 +35,7 @@ export function PagePreviewContent({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-red-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-red-400"
                   viewBox="0 0 20 20"
@@ -65,7 +65,7 @@ export function PagePreviewContent({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-yellow-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-yellow-400"
                   viewBox="0 0 20 20"
@@ -137,7 +137,7 @@ export function PagePreviewContent({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-yellow-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-yellow-400"
                   viewBox="0 0 20 20"

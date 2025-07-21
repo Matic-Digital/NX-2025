@@ -83,7 +83,7 @@ export function PageList(props: PageListProps) {
           )}
 
           {pageList.slug && (
-            <div className="mb-8 text-sm text-muted-foreground">
+            <div className="text-muted-foreground mb-8 text-sm">
               <span className="font-medium">Slug: </span>
               <span {...inspectorProps({ fieldId: 'slug' })}>{pageList.slug}</span>
             </div>

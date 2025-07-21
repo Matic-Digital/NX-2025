@@ -1,7 +1,8 @@
 /* Tailwind CSS base styles */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 /* Use globals.css for:
  * Base element styles
@@ -15,65 +16,689 @@
  * Theme extensions
  * Reusable utility patterns */
 
-/* CSS Variables for theme customization */
+:root {
+  --black: #171717;
+  --white: #ffffff;
+
+  /* Background colors */
+  --page: #ffffff;
+  --body: #ffffff;
+  --container: #a3a3a3;
+  --container-border: #a3a3a3;
+  --surface: #f5f5f5;
+  --surface-invert: #171717;
+  --surface-raised: #171717;
+
+  --strong: #171717;
+  --strong-border: #171717;
+  --subtle: #f5f5f5;
+  --subtle-border: #f5f5f5;
+  --inactive: #d4d4d4;
+  --inactive-border: #d4d4d4;
+  --muted: #e5e5e5;
+
+  --input: #ffffff;
+  --input-border: #d4d4d4;
+  --input-hover: #f5f5f5;
+  --input-hover-border: #a3a3a3;
+  --input-focus: #ffffff;
+  --input-focus-border: #bfdbfe;
+  --input-disabled: #f5f5f5;
+  --input-disabled-border: #d4d4d4;
+
+  /* Primary */
+  --primary: #8b5cf6;
+  --primary-hover: #6d28d9;
+  --primary-border: #8b5cf6;
+  --primary-border-hover: #6d28d9;
+
+  --primary-subtle: #a78bfa;
+  --primary-subtle-hover: #7c3aed;
+  --primary-subtle-border: #a78bfa;
+  --primary-subtle-border-hover: #7c3aed;
+
+  --primary-active: #7c3aed;
+  --primary-active-border: #6d28d9;
+
+  --primary-disabled: #ede9fe;
+  --primary-disabled-border: #ede9fe;
+
+  --primary-muted: #f5f3ff;
+  --primary-muted-border: #c4b5fd;
+
+  --primary-border-focus: #c4b5fd;
+
+  --secondary: #6366f1;
+  --tertiary: #3b82f6;
+
+  /* Success */
+  --success: #22c55e;
+  --success-hover: #16a34a;
+  --success-muted: #bbf7d0;
+  --success-border: #4ade80;
+
+  /* Warning */
+  --warning: #eab308;
+  --warning-hover: #ca8a04;
+  --warning-muted: #fef08a;
+  --warning-border: #facc15;
+
+  /* Error */
+  --error: #ef4444;
+  --error-hover: #dc2626;
+  --error-muted: #fecaca;
+  --error-border: #f87171;
+
+  /* Info */
+  --info: #3b82f6;
+  --info-hover: #2563eb;
+  --info-muted: #bfdbfe;
+  --info-border: #60a5fa;
+
+  /* Icon Colors */
+  --icon-default: var(--black);
+  --icon-muted: #737373;
+  --icon-inactive: var(--inactive);
+  --icon-neutral: var(--white);
+  --icon-on-subtle: #404040;
+  --icon-on-invert: var(--muted);
+  --icon-on-image: var(--white);
+  --icon-on-input: var(--black);
+  --icon-primary: var(--primary);
+  --icon-primary-hover: var(--primary-hover);
+  --icon-primary-disabled: var(--primary-disabled);
+  --icon-primary-active: var(--primary-active);
+  --icon-on-primary: var(--white);
+  --icon-secondary: var(--secondary);
+  --icon-tertiary: var(--tertiary);
+  --icon-success: var(--success);
+  --icon-warning: var(--warning);
+  --icon-error: var(--error);
+  --icon-info: var(--info);
+
+  /* Text colors */
+  --text-body: var(--black);
+  --text-secondary: #262626;
+  --text-subtle: #525252;
+  --text-on-subtle: var(--black);
+  --text-on-image: var(--white);
+  --text-on-invert: var(--white);
+  --text-muted: #a3a3a3;
+  --text-inactive: #d4d4d4;
+  --text-input: #737373;
+  --text-input-hover: #525252;
+  --text-input-focus: var(--black);
+  --text-primary: #8b5cf6;
+  --text-primary-hover: #6d28d9;
+  --text-primary-link: #8b5cf6;
+  --text-primary-link-hover: #7c3aed;
+  --text-primary-active: #6d28d9;
+  --text-primary-disabled: #ddd6fe;
+  --text-on-primary: var(--white);
+  --text-success: var(--success);
+  --text-warning: var(--warning);
+  --text-error: var(--error);
+  --text-info: var(--info);
+
+  /* shadcn variables */
+  --background: var(--body);
+  --foreground: var(--text-body);
+  --card: var(--body);
+  --card-foreground: var(--text-body);
+  --popover: var(--body);
+  --popover-foreground: var(--text-body);
+  --primary: var(--primary);
+  --primary-foreground: var(--text-on-primary);
+  --secondary: var(--secondary);
+  --secondary-foreground: var(--white);
+  --muted: var(--muted);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--primary-subtle);
+  --accent-foreground: var(--primary);
+  --destructive: var(--error);
+  --border: var(--input-border);
+  --input: var(--input);
+  --ring: var(--primary-border-focus);
+  --chart-1: var(--primary);
+  --chart-2: var(--secondary);
+  --chart-3: var(--tertiary);
+  --chart-4: var(--success);
+  --chart-5: var(--warning);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text-body);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--text-on-primary);
+  --sidebar-accent: var(--primary-subtle);
+  --sidebar-accent-foreground: var(--primary);
+  --sidebar-border: var(--input-border);
+  --sidebar-ring: var(--primary-border-focus);
+}
+
+.dark {
+  /* Dark mode overrides */
+  --black: #171717;
+  --white: #ffffff;
+
+  /* Background colors */
+  --page: #262626;
+  --body: #131313;
+  --container: #737373;
+  --container-border: #737373;
+  --surface: #171717;
+  --surface-invert: #f5f5f5;
+  --surface-raised: #262626;
+  
+  /* shadcn variables for dark mode - in RGB format */
+  --background: 19, 19, 19; /* Dark mode background */
+  --foreground: 255, 255, 255; /* Dark mode text */
+  --card: 19, 19, 19;
+  --card-foreground: 255, 255, 255;
+  --popover: 19, 19, 19;
+  --popover-foreground: 255, 255, 255;
+
+  --strong: #737373;
+  --strong-border: #737373;
+  --subtle: #d4d4d4;
+  --subtle-border: #262626;
+  --inactive: #d4d4d4;
+  --inactive-border: #404040;
+  --muted: #a3a3a3;
+
+  --input: #ffffff;
+  --input-border: #e5e5e5;
+  --input-hover: #e5e5e5;
+  --input-hover-border: #d4d4d4;
+  --input-focus: #ffffff;
+  --input-focus-border: #3b82f6;
+  --input-disabled: #e5e5e5;
+  --input-disabled-border: #a3a3a3;
+
+  /* Primary */
+  --primary: #6d28d9;
+  --primary-hover: #7c3aed;
+  --primary-border: #ddd6fe;
+  --primary-border-hover: #c4b5fd;
+
+  --primary-subtle: #a78bfa;
+  --primary-subtle-hover: #8b5cf6;
+  --primary-subtle-border: #a78bfa;
+  --primary-subtle-border-hover: #7c3aed;
+
+  --primary-active: #7c3aed;
+  --primary-active-border: #6d28d9;
+
+  --primary-disabled: #ede9fe;
+  --primary-disabled-border: #ede9fe;
+
+  --primary-muted: #a78bfa;
+  --primary-muted-border: #c4b5fd;
+
+  --primary-focus-border: #a78bfa;
+
+  --secondary: #a5b4fc;
+  --tertiary: #93c5fd;
+
+  /* Success */
+  --success: #4ade80;
+  --success-hover: #86efac;
+  --success-muted: #4ade80;
+  --success-border: #4ade80;
+
+  /* Warning */
+  --warning: #facc15;
+  --warning-hover: #fde047;
+  --warning-muted: #facc15;
+  --warning-border: #facc15;
+
+  /* Error */
+  --error: #f87171;
+  --error-hover: #fca5a5;
+  --error-muted: #f87171;
+  --error-border: #f87171;
+
+  /* Info */
+  --info: #bfdbfe;
+  --info-hover: #93c5fd;
+  --info-muted: #60a5fa;
+  --info-border: #60a5fa;
+
+  /* Icon Colors */
+  --icon-default: var(--white);
+  --icon-muted: #737373;
+  --icon-inactive: #a3a3a3;
+  --icon-neutral: var(--white);
+  --icon-on-subtle: var(--black);
+  --icon-on-invert: var(--black);
+  --icon-on-image: var(--white);
+  --icon-on-input: var(--black);
+  --icon-primary: #c4b5fd;
+  --icon-primary-hover: #c4b5fd;
+  --icon-primary-disabled: #ddd6fe;
+  --icon-primary-active: #8b5cf6;
+  --icon-on-primary: var(--white);
+  --icon-secondary: var(--secondary);
+  --icon-tertiary: var(--tertiary);
+  --icon-success: var(--success);
+  --icon-warning: var(--warning);
+  --icon-error: var(--error);
+  --icon-info: var(--info);
+
+  /* Text colors */
+  --text-body: #fafafa;
+  --text-secondary: #e5e5e5;
+  --text-subtle: #d4d4d4;
+  --text-on-subtle: var(--black);
+  --text-on-image: var(--white);
+  --text-on-invert: var(--black);
+  --text-muted: #a3a3a3;
+  --text-inactive: #a3a3a3;
+  --text-input: #737373;
+  --text-input-hover: #525252;
+  --text-input-focus: var(--black);
+  --text-primary: #ddd6fe;
+  --text-primary-hover: #7c3aed;
+  --text-primary-link: #ddd6fe;
+  --text-primary-link-hover: #7c3aed;
+  --text-primary-active: #8b5cf6;
+  --text-primary-disabled: #ddd6fe;
+  --text-on-primary: var(--white);
+  --text-success: #16a34a;
+  --text-warning: #ca8a04;
+  --text-error: #dc2626;
+  --text-info: #bfdbfe;
+
+  /* shadcn variables */
+  --background: var(--body);
+  --foreground: var(--text-body);
+  --card: var(--body);
+  --card-foreground: var(--text-body);
+  --popover: var(--body);
+  --popover-foreground: var(--text-body);
+  --primary: var(--primary);
+  --primary-foreground: var(--text-on-primary);
+  --secondary: var(--secondary);
+  --secondary-foreground: var(--white);
+  --muted: var(--muted);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--primary-subtle);
+  --accent-foreground: var(--primary);
+  --destructive: var(--error);
+  --border: var(--input-border);
+  --input: var(--input);
+  --ring: var(--primary-border-focus);
+  --chart-1: var(--primary);
+  --chart-2: var(--secondary);
+  --chart-3: var(--tertiary);
+  --chart-4: var(--success);
+  --chart-5: var(--warning);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--text-body);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--text-on-primary);
+  --sidebar-accent: var(--primary-subtle);
+  --sidebar-accent-foreground: var(--primary);
+  --sidebar-border: var(--input-border);
+  --sidebar-ring: var(--primary-border-focus);
+}
+
 @layer base {
   :root {
-    /* Light theme colors */
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 222.2 84% 4.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 210 40% 96.1%;
-    --input: 210 40% 96.1%;
-    --ring: 222.2 84% 4.9%;
-    /* Chart color palette */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    /* Border radius */
+    --background: 255, 255, 255;
+    --foreground: 10, 10, 10;
+    --card: 255, 255, 255;
+    --card-foreground: 10, 10, 10;
+    --popover: 255, 255, 255;
+    --popover-foreground: 10, 10, 10;
+    --primary: 10, 10, 10;
+    --primary-foreground: 250, 250, 250;
+    --secondary: 244, 244, 245;
+    --secondary-foreground: 10, 10, 10;
+    --muted: 244, 244, 245;
+    --muted-foreground: 117, 117, 117;
+    --accent: 244, 244, 245;
+    --accent-foreground: 10, 10, 10;
+    --destructive: 239, 68, 68;
+    --destructive-foreground: 250, 250, 250;
+    --border: 229, 229, 229;
+    --input: 229, 229, 229;
+    --ring: 10, 10, 10;
     --radius: 0.5rem;
   }
 
-  /* Dark theme color overrides */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 219.1 10.6% 64.9%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 218.1 12.2% 83.9%;
-    /* Dark theme chart colors */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --background: 19, 19, 19;
+    --foreground: 250, 250, 250;
+    --card: 19, 19, 19;
+    --card-foreground: 250, 250, 250;
+    --popover: 19, 19, 19;
+    --popover-foreground: 250, 250, 250;
+    --primary: 250, 250, 250;
+    --primary-foreground: 10, 10, 10;
+    --secondary: 40, 40, 40;
+    --secondary-foreground: 250, 250, 250;
+    --muted: 40, 40, 40;
+    --muted-foreground: 165, 165, 165;
+    --accent: 40, 40, 40;
+    --accent-foreground: 250, 250, 250;
+    --destructive: 157, 29, 29;
+    --destructive-foreground: 250, 250, 250;
+    --border: 40, 40, 40;
+    --input: 40, 40, 40;
+    --ring: 214, 214, 214;
+  }
+}
+
+@theme inline {
+  --color-black: var(--black);
+  --color-white: var(--white);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Background colors */
+  --color-page: var(--page);
+  --color-body: var(--body);
+  --color-container: var(--container);
+  --color-container-border: var(--container-border);
+  --color-surface: var(--surface);
+  --color-surface-invert: var(--surface-invert);
+  --color-surface-raised: var(--surface-raised);
+
+  --color-strong: var(--strong);
+  --color-strong-border: var(--strong-border);
+  --color-subtle: var(--subtle);
+  --color-subtle-border: var(--subtle-border);
+  --color-inactive: var(--inactive);
+  --color-inactive-border: var(--inactive-border);
+  --color-muted: var(--muted);
+
+  --color-input: var(--input);
+  --color-input-border: var(--input-border);
+  --color-input-hover: var(--input-hover);
+  --color-input-hover-border: var(--input-hover-border);
+  --color-input-focus: var(--input-focus);
+  --color-input-focus-border: var(--input-focus-border);
+  --color-input-disabled: var(--input-disabled);
+  --color-input-disabled-border: var(--input-disabled-border);
+
+  /* Primary */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-border: var(--primary-border);
+  --color-primary-hover-border: var(--primary-hover-border);
+
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-hover: var(--primary-subtle-hover);
+  --color-primary-subtle-border: var(--primary-subtle-border);
+  --color-primary-subtle-hover-border: var(--primary-subtle-hover-border);
+
+  --color-primary-active: var(--primary-active);
+  --color-primary-active-border: var(--primary-active-border);
+
+  --color-primary-disabled: var(--primary-disabled);
+  --color-primary-disabled-border: var(--primary-disabled-border);
+
+  --color-primary-muted: var(--primary-muted);
+  --color-primary-muted-border: var(--primary-muted-border);
+
+  --color-primary-focus-border: var(--primary-focus-border);
+
+  /* Success */
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-muted: var(--success-muted);
+
+  /* Warning */
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-muted: var(--warning-muted);
+
+  /* Error */
+  --color-error: var(--error);
+  --color-error-hover: var(--error-hover);
+  --color-error-muted: var(--error-muted);
+
+  /* Info */
+  --color-info: var(--info);
+  --color-info-hover: var(--info-hover);
+  --color-info-muted: var(--info-muted);
+
+  /* Icon Colors */
+  --color-icon-default: var(--icon-default);
+  --color-icon-muted: var(--icon-muted);
+  --color-icon-inactive: var(--icon-inactive);
+  --color-icon-neutral: var(--icon-neutral);
+  --color-icon-on-subtle: var(--icon-on-subtle);
+  --color-icon-on-invert: var(--icon-on-invert);
+  --color-icon-on-image: var(--icon-on-image);
+  --color-icon-on-input: var(--icon-on-input);
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-primary-hover: var(--icon-primary-hover);
+  --color-icon-primary-disabled: var(--icon-primary-disabled);
+  --color-icon-primary-active: var(--icon-primary-active);
+  --color-icon-on-primary: var(--icon-on-primary);
+  --color-icon-secondary: var(--icon-secondary);
+  --color-icon-tertiary: var(--icon-tertiary);
+  --color-icon-success: var(--icon-success);
+  --color-icon-warning: var(--icon-warning);
+  --color-icon-error: var(--icon-error);
+  --color-icon-info: var(--icon-info);
+
+  /* Text Colors */
+  --color-text-body: var(--text-body);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-subtle: var(--text-subtle);
+  --color-text-on-subtle: var(--text-on-subtle);
+  --color-text-on-image: var(--text-on-image);
+  --color-text-on-invert: var(--text-on-invert);
+  --color-text-muted: var(--text-muted);
+  --color-text-inactive: var(--text-inactive);
+  --color-text-input: var(--text-input);
+  --color-text-input-hover: var(--text-input-hover);
+  --color-text-input-focus: var(--text-input-focus);
+  --color-text-primary: var(--text-primary);
+  --color-text-primary-hover: var(--text-primary-hover);
+  --color-text-primary-link: var(--text-primary-link);
+  --color-text-primary-link-hover: var(--text-primary-link-hover);
+  --color-text-primary-active: var(--text-primary-active);
+  --color-text-primary-disabled: var(--text-primary-disabled);
+  --color-text-on-primary: var(--text-on-primary);
+  --color-text-success: var(--text-success);
+  --color-text-warning: var(--text-warning);
+  --color-text-error: var(--text-error);
+  --color-text-info: var(--text-info);
+
+  /* h1 */
+  --text-display-lg: 7rem;
+  --text-display-md: 5rem;
+  --text-display-sm: 3.75rem;
+
+  /* h2 */
+  --text-headline-lg: 3rem;
+  --text-headline-md: 2.25rem;
+  --text-headline-sm: 1.75rem;
+  --text-headline-xs: 1.5rem;
+
+  /* h3 */
+  --text-title-lg: 1.375rem;
+  --text-title-md: 1rem;
+  --text-title-sm: 0.75rem;
+
+  /* h4 */
+  --text-body-lg: 1.25rem;
+  --text-body-md: 1.125rem;
+  --text-body-sm: 1rem;
+  --text-body-xs: 0.875rem;
+  --text-body-xxs: 0.75rem;
+
+  /* h5 */
+  --text-label-lg: 1.125rem;
+  --text-label-md: 1rem;
+  --text-label-sm: 0.875rem;
+
+  /* border-radius */
+  --radius-none: 0px;
+  --radius-xxs: 2px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 9999px;
+
+  /* space */
+  --space-none: 0px;
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+
+  /* Keyframes from tailwind.config.ts */
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-right {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(10px);
+    }
+  }
+
+  @keyframes scale-up {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes scale-down {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.95);
+    }
+  }
+
+  @keyframes subtle-scale {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.02);
+    }
+  }
+}
+
+@layer base {
+  /*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@layer utilities {
+  /* Animation classes */
+  .animate-fade-up {
+    animation: fade-up 0.5s ease-out forwards;
+  }
+
+  .animate-slide-right {
+    animation: slide-right 0.2s ease-out forwards;
+  }
+
+  .animate-scale-up {
+    animation: scale-up 0.2s ease-out forwards;
+  }
+
+  .animate-scale-down {
+    animation: scale-down 0.2s ease-out forwards;
+  }
+
+  .animate-subtle-scale {
+    animation: subtle-scale 0.2s ease-out forwards;
+  }
+
+  /* Text gradient utilities */
+  .text-gradient-pink {
+    @apply bg-linear-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-cyan {
+    @apply bg-linear-to-r from-teal-400 via-cyan-400 to-sky-400 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-emerald {
+    @apply bg-linear-to-r from-emerald-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent;
+  }
+
+  .text-gradient-orange {
+    @apply bg-linear-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent;
+  }
+
+
+}
+
+@layer utilities {
+  .container {
+    margin-inline: auto;
+    padding-inline: 1rem;
+    width: 100%;
+  }
+  
+  @media (min-width: 640px) {
+    .container {
+      padding-inline: 2rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      padding-inline: 3rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container {
+      padding-inline: 4rem;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .container {
+      padding-inline: 5rem;
+    }
+  }
+  
+  @media (min-width: 1536px) {
+    .container {
+      padding-inline: 6rem;
+    }
   }
 }

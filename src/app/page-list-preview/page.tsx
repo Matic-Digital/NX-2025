@@ -83,7 +83,7 @@ export default async function PageListPreviewPage({
       <Box className="mx-auto max-w-7xl px-4">
         <div className="mb-8 rounded-md bg-blue-50 p-4">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg
                 className="h-5 w-5 text-blue-400"
                 viewBox="0 0 20 20"
@@ -116,7 +116,7 @@ export default async function PageListPreviewPage({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-red-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-red-400"
                   viewBox="0 0 20 20"
@@ -146,7 +146,7 @@ export default async function PageListPreviewPage({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-yellow-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-yellow-400"
                   viewBox="0 0 20 20"
@@ -206,7 +206,7 @@ export default async function PageListPreviewPage({
         <Box className="mx-auto max-w-7xl px-4">
           <div className="rounded-md bg-yellow-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-5 w-5 text-yellow-400"
                   viewBox="0 0 20 20"

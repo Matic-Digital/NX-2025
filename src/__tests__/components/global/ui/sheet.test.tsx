@@ -173,7 +173,7 @@ describe('Sheet components', () => {
 
     const description = screen.getByTestId('custom-description');
     expect(description).toBeInTheDocument();
-    expect(description.className).toContain('text-sm text-muted-foreground');
+    expect(description.className).toContain('text-muted-foreground text-sm');
     expect(description.textContent).toBe('Custom Description');
   });
 

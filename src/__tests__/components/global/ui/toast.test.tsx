@@ -129,7 +129,7 @@ describe('Toast components', () => {
 
     expect(viewport).toBeDefined();
     expect(viewport.className).toContain('fixed');
-    expect(viewport.className).toContain('z-[100]');
+    expect(viewport.className).toContain('z-100');
   });
 
   it('renders a complete toast with all components', () => {

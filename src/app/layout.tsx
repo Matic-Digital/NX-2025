@@ -59,6 +59,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en" suppressHydrationWarning className={`${layoutClasses} ${inter.variable}`}>
+      <head>{/* This script prevents flash of wrong theme */}</head>
       <body className="flex min-h-screen flex-col">
         <Providers>
           {/* 

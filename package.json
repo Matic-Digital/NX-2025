@@ -9,11 +9,9 @@
     "dev:fresh": "npm run docker:clean && npm run docker:start",
     "start": "next start",
     "preview": "next build && next start",
-
     "\u001b[33mBuild\u001b[0m": "\u001b[33m---------------------------------------------\u001b[0m",
     "build": "next build",
     "build:docker": "node ./scripts/docker-build.js",
-
     "\u001b[36mCode Quality\u001b[0m": "\u001b[36m---------------------------------------------\u001b[0m",
     "check": "npm run lint && npm run typecheck",
     "lint": "next lint",
@@ -21,14 +19,12 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-
     "\u001b[35mTesting\u001b[0m": "\u001b[35m---------------------------------------------\u001b[0m",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:formatted": "vitest run --coverage | node scripts/test-formatter.js",
     "test:ui": "vitest --ui",
-
     "\u001b[34mDocker\u001b[0m": "\u001b[34m---------------------------------------------\u001b[0m",
     "docker:start": "./scripts/dev start",
     "docker:build": "./scripts/dev build",
@@ -36,7 +32,6 @@
     "docker:clean": "./scripts/dev clean",
     "docker:purge": "./scripts/dev purge",
     "docker:check": "./scripts/dev check",
-
     "\u001b[31mCI/CD\u001b[0m": "\u001b[31m---------------------------------------------\u001b[0m",
     "docker:ci": "./scripts/docker-ci all",
     "docker:ci:lint": "./scripts/docker-ci lint",
@@ -46,7 +41,6 @@
     "ci:format": "./scripts/run-act.sh format",
     "ci:test": "./scripts/run-act.sh test",
     "ci:build": "./scripts/run-act.sh build",
-
     "\u001b[90mUtilities\u001b[0m": "\u001b[90m---------------------------------------------\u001b[0m",
     "prepare": "husky",
     "clean": "rm -rf .next",
@@ -84,7 +78,7 @@
     "react-intersection-observer": "^9.13.1",
     "react-wrap-balancer": "^1.1.1",
     "tailwind-merge": "^2.5.5",
-    "tailwindcss-animate": "^1.0.7",
+    "tw-animate-css": "^1.2.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -92,7 +86,8 @@
     "@eslint-react/eslint-plugin": "^1.17.3",
     "@eslint/config-array": "^0.20.0",
     "@eslint/object-schema": "^2.1.6",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/postcss": "^4.1.6",
+    "@tailwindcss/typography": "^0.5.16",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -111,9 +106,9 @@
     "jsdom": "^26.0.0",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
-    "prettier-plugin-tailwindcss": "^0.6.5",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "rimraf": "^6.0.1",
-    "tailwindcss": "^3.4.3",
+    "tailwindcss": "^4.1.6",
     "tsx": "^4.19.3",
     "typescript": "^5.5.3",
     "vitest": "^3.0.9"

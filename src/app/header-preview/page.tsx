@@ -111,7 +111,7 @@ function HeaderPreviewContent() {
       <Header {...header} />
 
       {/* Small indicator that this is a preview - positioned to not interfere with the header */}
-      <div className="fixed bottom-4 right-4 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
+      <div className="fixed right-4 bottom-4 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
         <p>Header Preview: {header.name}</p>
       </div>
     </>
