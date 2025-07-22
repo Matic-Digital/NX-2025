@@ -1,13 +1,14 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
-import { Box, Container } from '@/components/global/matic-ds';
+import { Box, Container, Section } from '@/components/global/matic-ds';
 import type { CtaBanner } from '@/types/contentful/CtaBanner';
 import Image from 'next/image';
 
@@ -18,66 +19,65 @@ export function CtaBanner(props: CtaBanner) {
 
   return (
     <ErrorBoundary>
-      <section className="relative w-full overflow-hidden">
-        {/* Background gradient overlay */}
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            background:
-              'linear-gradient(to right, rgba(244, 117, 79, 0.9), rgba(124, 58, 150, 0.9))'
-          }}
+      <Section className="relative w-full overflow-hidden">
+        {/* Background gradient image */}
+        <Image
+          src="https://air-prod.imgix.net/d9e20c21-d890-4888-97ae-03880f98fba6.jpg?w=1440&h=335&fm=webp&fit=crop&auto=auto"
+          alt="Background Gradient Image"
+          fill
+          className="object-cover"
+          priority
         />
 
-        {/* Background image */}
-        <div className="absolute inset-0 z-[-1]">
+        {/* Background image with fade effect */}
+        <div className="absolute inset-0 z-10 [mask-image:linear-gradient(to_right,black_20%,transparent_70%)] [-webkit-mask-image:linear-gradient(to_right,black_20%,transparent_70%)]">
           <Image
-            src="https://air-prod.imgix.net/795b150a-5d81-43d9-8323-d7ee31860e09.jpg?w=1126&h=335&fm=webp&fit=crop&auto=auto"
-            alt="Background texture"
+            src={ctaBanner.backgroundImage.url}
+            alt={ctaBanner.backgroundImage.description}
             fill
-            style={{ objectFit: 'cover' }}
+            className="object-cover"
             priority
           />
         </div>
 
-        <Container className="relative z-10">
-          <Box cols={{ base: 1, lg: 2 }} className="items-center py-16">
-            <div className="hidden lg:block">{/* Left side space for desktop layout */}</div>
+        <Container className="relative z-20 h-[335px]">
+          <Box cols={{ base: 1, lg: 5 }} className="h-[335px] items-center">
             <Box
               direction="col"
               gap={6}
-              className="text-white"
+              className="text-white lg:col-span-2 lg:col-start-4"
               {...inspectorProps({ fieldId: 'title' })}
             >
-              <h1>{ctaBanner.title || 'Contact Us'}</h1>
-              <p className="text-lg opacity-90">
-                {ctaBanner.description ||
-                  'Duis rhoncus, urna elit amet tincidunt commodo, turpis justo ultricies per nisi, nec dapibus augue nibh sed enim. Nam ultricies.'}
-              </p>
+              <Box direction="col" gap={2}>
+                <h2>{ctaBanner.title}</h2>
+                <p className="text-body-xs w-md">{ctaBanner.description}</p>
+              </Box>
 
-              <Box wrap={true} gap={4} className="mt-4">
+              <Box wrap={true} gap={3}>
                 {ctaBanner.primaryCta && (
-                  <Button
-                    variant="outline"
-                    className="border-white text-white transition-colors hover:bg-white hover:text-gray-800"
-                    {...inspectorProps({ fieldId: 'primaryCta' })}
-                  >
-                    {ctaBanner.primaryCta.text || 'Contact Us'}
-                  </Button>
+                  <Link href={ctaBanner.primaryCta.internalLink?.slug ?? ''}>
+                    <Button
+                      variant="outline"
+                      className="transition-colors hover:bg-white hover:text-gray-800"
+                      {...inspectorProps({ fieldId: 'primaryCta' })}
+                    >
+                      {ctaBanner.primaryCta.text}
+                    </Button>
+                  </Link>
                 )}
                 {ctaBanner.secondaryCta && (
                   <Button
-                    variant="default"
                     className="bg-gray-900 text-white hover:bg-gray-800"
                     {...inspectorProps({ fieldId: 'secondaryCta' })}
                   >
-                    {ctaBanner.secondaryCta.text || 'Request a Quote'}
+                    {ctaBanner.secondaryCta.text}
                   </Button>
                 )}
               </Box>
             </Box>
           </Box>
         </Container>
-      </section>
+      </Section>
     </ErrorBoundary>
   );
 }

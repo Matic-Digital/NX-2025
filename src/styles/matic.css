@@ -1,51 +1,3 @@
-/* matic.css - Comprehensive typography styling with shadcn colors */
-
-
-body {
-  @apply bg-background text-foreground font-sans antialiased;
-}
-
-/* Utilities */
-.section {
-  @apply py-8 md:py-12;
-}
-
-.stack {
-  @apply flex flex-col gap-2;
-}
-
-/* Headings */
-
-h1,
-.h1 {
-  @apply text-5xl tracking-tight;
-}
-
-h2,
-.h2 {
-  @apply text-3xl tracking-tight;
-}
-
-h3,
-.h3 {
-  @apply text-2xl font-semibold tracking-tight;
-}
-
-h4,
-.h4 {
-  @apply text-xl font-semibold tracking-tight;
-}
-
-h5,
-.h5 {
-  @apply text-lg font-semibold tracking-tight;
-}
-
-h6,
-.h6 {
-  @apply text-base font-semibold tracking-tight;
-}
-
 /* Paragraph */
 
 p,
@@ -424,25 +376,6 @@ select {
     li {
       @apply my-2;
     }
-  }
-
-  /* Headings */
-  h1 {
-    @apply mt-6 mb-8;
-  }
-
-  h2 {
-    @apply mt-12 mb-6;
-  }
-
-  h3 {
-    @apply mt-8 mb-4;
-  }
-
-  h4,
-  h5,
-  h6 {
-    @apply mt-6 mb-4;
   }
 
   /* Footnotes */

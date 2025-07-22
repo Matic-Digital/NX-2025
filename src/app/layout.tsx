@@ -1,7 +1,5 @@
 // Global styles
 import '@/styles/globals.css';
-import '@/styles/matic.css';
-import '@/styles/layout.css';
 
 // Dependencies
 import { Inter } from 'next/font/google';

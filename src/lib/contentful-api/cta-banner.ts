@@ -11,11 +11,25 @@ const SYS_FIELDS = `
   __typename
 `;
 
+const ASSET_FIELDS = `
+  sys {
+    id
+  }
+  title
+  description
+  url
+  width
+  height
+`;
+
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   description
+  backgroundImage {
+    ${ASSET_FIELDS}
+  }
   primaryCta {
     ${SYS_FIELDS}
     text

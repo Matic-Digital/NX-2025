@@ -60,7 +60,20 @@ export const Box = ({
     6: 'gap-6',
     8: 'gap-8',
     10: 'gap-10',
-    12: 'gap-12'
+    12: 'gap-12',
+    16: 'gap-16',
+    20: 'gap-20',
+    24: 'gap-24',
+    28: 'gap-28',
+    32: 'gap-32',
+    36: 'gap-36',
+    40: 'gap-40',
+    44: 'gap-44',
+    48: 'gap-48',
+    52: 'gap-52',
+    56: 'gap-56',
+    60: 'gap-60',
+    64: 'gap-64'
   };
 
   const colsClasses = {

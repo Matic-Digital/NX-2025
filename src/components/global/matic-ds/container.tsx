@@ -25,7 +25,21 @@ import type { ContainerProps } from './types';
  */
 export const Container = ({ children, className, id, width }: ContainerProps) => {
   return (
-    <div className={cn('container', { 'max-w-full': width === 'full' }, className)} id={id}>
+    <div
+      className={cn(
+        'container mx-auto px-4',
+        {
+          'max-w-full': width === 'full',
+          'sm:px-6': width !== 'full',
+          'md:px-8': width !== 'full',
+          'lg:px-10': width !== 'full',
+          'xl:px-12': width !== 'full',
+          '2xl:px-16': width !== 'full'
+        },
+        className
+      )}
+      id={id}
+    >
       {children}
     </div>
   );
