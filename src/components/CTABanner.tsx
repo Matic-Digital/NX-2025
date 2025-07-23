@@ -11,11 +11,21 @@ import { Button } from '@/components/ui/button';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import type { CtaBanner } from '@/types/contentful/CtaBanner';
 import Image from 'next/image';
+import { useState } from 'react';
+import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
 
 export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
-  // Add inspector mode for Contentful editing
   const inspectorProps = useContentfulInspectorMode({ entryId: ctaBanner?.sys?.id });
+
+  console.log('ctaBanner', ctaBanner);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalTrigger = () => {
+    console.log('handleModalTrigger called');
+    console.log(isModalOpen);
+    setIsModalOpen(true);
+  };
 
   return (
     <ErrorBoundary>
@@ -41,19 +51,21 @@ export function CtaBanner(props: CtaBanner) {
         </div>
 
         <Container className="relative z-20 h-[335px]">
-          <Box cols={{ base: 1, lg: 5 }} className="h-[335px] items-center">
+          <Box cols={{ base: 1, md: 4, lg: 5 }} className="h-[335px] items-center">
             <Box
               direction="col"
               gap={6}
-              className="text-white lg:col-span-2 lg:col-start-4"
+              className="text-white max-md:items-center md:col-span-2 md:col-start-3 lg:col-span-2 lg:col-start-4"
               {...inspectorProps({ fieldId: 'title' })}
             >
-              <Box direction="col" gap={2}>
+              <Box direction="col" gap={2} className="max-md:items-center">
                 <h2>{ctaBanner.title}</h2>
-                <p className="text-body-xs w-md">{ctaBanner.description}</p>
+                <p className="text-body-xs max-w-xs max-md:text-center lg:max-w-sm">
+                  {ctaBanner.description}
+                </p>
               </Box>
 
-              <Box wrap={true} gap={3}>
+              <Box wrap={true} gap={3} className="max-md:items-center">
                 {ctaBanner.primaryCta && (
                   <Link href={ctaBanner.primaryCta.internalLink?.slug ?? ''}>
                     <Button
@@ -69,6 +81,7 @@ export function CtaBanner(props: CtaBanner) {
                   <Button
                     className="bg-gray-900 text-white hover:bg-gray-800"
                     {...inspectorProps({ fieldId: 'secondaryCta' })}
+                    onClick={ctaBanner.secondaryCta.modal && handleModalTrigger}
                   >
                     {ctaBanner.secondaryCta.text}
                   </Button>
@@ -78,6 +91,19 @@ export function CtaBanner(props: CtaBanner) {
           </Box>
         </Container>
       </Section>
+
+      {ctaBanner.secondaryCta && (
+        <RequestAQuoteModal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          title={ctaBanner.secondaryCta.modal?.title ?? 'Request a Quote'}
+          description={
+            ctaBanner.secondaryCta.modal?.description ??
+            'Please fill out the form below to request a quote.'
+          }
+          sys={ctaBanner.secondaryCta.modal?.sys ?? { id: 'default-modal' }}
+        />
+      )}
     </ErrorBoundary>
   );
 }

@@ -49,6 +49,11 @@ export const CTABANNER_GRAPHQL_FIELDS = `
       slug
     }
     externalLink
+    modal {
+      ${SYS_FIELDS}
+      title
+      description
+    }
   }
 `;
 
