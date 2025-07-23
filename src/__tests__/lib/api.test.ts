@@ -83,7 +83,7 @@ describe('API Module', () => {
             Authorization: 'Bearer mock-access-token'
           },
           body: JSON.stringify({ query, variables }),
-          next: undefined
+          cache: 'force-cache'
         }
       );
     });

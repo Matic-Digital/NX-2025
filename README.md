@@ -1,4 +1,4 @@
-# Contentful Mux Next.js Starter
+# Nextracker Website 2025
 
 This is a starter template for building a blog with Next.js, Contentful, and Mux. It includes a Docker-based development workflow for a consistent development experience across teams.
 
@@ -17,7 +17,7 @@ No other local dependencies are required! Everything runs inside Docker containe
 
    ```bash
    git clone <repository-url>
-   cd contentful-mux-nextjs-starter
+   cd NX-2025
    ```
 
 2. Copy the environment file:
@@ -68,10 +68,10 @@ npm run docker:purge
 #### Development Features
 
 - **Hot Reloading**: Changes to your code will automatically trigger rebuilds
-- **Container Management**: 
+- **Container Management**:
   - The container is named `Matic-Docker-App` for easy identification
   - Volumes are prefixed with `matic-docker-` for organization
-- **Automatic Cleanup**: 
+- **Automatic Cleanup**:
   - Pressing Ctrl+C during development automatically cleans up resources
   - `docker:check` automatically manages container lifecycle
 - **Development Tools**:
@@ -82,11 +82,13 @@ npm run docker:purge
 #### Best Practices
 
 1. **Development Workflow**
+
    - Use `npm run docker:start` for daily development
    - Run `npm run docker:check` before committing changes
    - Keep the logs visible for debugging
 
 2. **Resource Management**
+
    - Use `npm run docker:clean` to clean up after development
    - Use `npm run docker:purge` when switching branches or for deep cleaning
 
@@ -98,10 +100,12 @@ npm run docker:purge
 ### Non-Docker Development
 
 If you prefer to develop without Docker, you'll need:
+
 - Node.js (version specified in package.json)
 - npm (version specified in package.json)
 
 Then you can use these commands:
+
 ```bash
 # Install dependencies
 npm install
@@ -123,10 +127,13 @@ Our feature development workflow is designed to maintain high code quality and c
 ### 1. Branch Management
 
   <!-- <type>/<ticket-number>-<brief-description> -->
-- **Branch Naming Convention**: 
+
+- **Branch Naming Convention**:
+
   ```
   <type>/<ticket-number>-<brief-description>
   ```
+
   - Types: `feature`, `bugfix`, `hotfix`, `refactor`, `docs`
   - Example: `feature/MATIC-123-add-video-player`
 
@@ -139,18 +146,20 @@ Our feature development workflow is designed to maintain high code quality and c
 ### 2. Development Process
 
 1. **Planning**:
+
    - Review ticket requirements
    - Break down into tasks
    - Identify affected components
    - Plan test coverage
 
 2. **Local Development**:
+
    ```bash
    # Start fresh with a new branch
    git checkout main
    git pull
    git checkout -b feature/MATIC-XXX-description
-   
+
    # Start development environment
    npm run docker:start
    ```
@@ -167,16 +176,19 @@ Our feature development workflow is designed to maintain high code quality and c
 ### 3. Code Quality Standards
 
 - **Commit Messages**:
+
   ```
   <type>: <description>
-  
+
   [optional body]
   [optional ticket reference]
   ```
+
   - Types: `feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`
   - Example: `feat: add video player component`
 
 - **Pre-commit Checks**:
+
   - Linting (ESLint)
   - Type checking (TypeScript)
   - Code formatting (Prettier)
@@ -192,16 +204,17 @@ Our feature development workflow is designed to maintain high code quality and c
 ### 4. Pull Request Process
 
 1. **Preparation**:
+
    ```bash
    # Ensure all changes are committed
    git status
-   
+
    # Rebase with main
    git checkout main
    git pull
    git checkout your-branch
    git rebase main
-   
+
    # Verify everything works
    npm run docker:purge  # Clean slate
    npm run docker:start  # Verify app works
@@ -209,12 +222,14 @@ Our feature development workflow is designed to maintain high code quality and c
    ```
 
 2. **PR Creation**:
+
    - Use PR template
    - Link related tickets
    - Add screenshots/videos if UI changes
    - Tag relevant reviewers
 
 3. **PR Description**:
+
    - Summarize changes
    - List testing steps
    - Note any breaking changes
@@ -247,6 +262,7 @@ Our feature development workflow is designed to maintain high code quality and c
 ### 7. Deployment
 
 1. **Staging**:
+
    - Automatic deployment on PR
    - Verify features in staging
    - Run smoke tests
@@ -262,6 +278,7 @@ Our feature development workflow is designed to maintain high code quality and c
 If you encounter issues:
 
 1. **Docker Issues**:
+
    ```bash
    # Clean slate approach
    npm run docker:purge
@@ -270,6 +287,7 @@ If you encounter issues:
    ```
 
 2. **Development Issues**:
+
    - Check container logs: `./scripts/dev logs`
    - Verify environment variables
    - Clear node_modules: `npm run docker:clean`
@@ -342,7 +360,7 @@ Describe any deployment steps, configuration changes, or other considerations.
 ## Project Structure
 
 ```
-contentful-mux-nextjs-starter/
+NX-2025/
 ├── docker/                    # Docker-related files
 │   ├── Dockerfile           # Development Dockerfile
 │   └── docker-compose.yml   # Development compose configuration
@@ -429,21 +447,25 @@ https://github.com/alan2207/bulletproof-react/blob/master/docs/error-handling.md
 When implementing animations in your components, ask these questions to determine the best approach:
 
 1. **Is it a simple state transition?**
+
    - If yes → Use Tailwind animations
    - Examples: hover states, fade-ins, simple transitions
 
 2. **Does it need user interaction?**
+
    - Basic interaction → Use Tailwind animations
    - Complex interaction (gestures, drag) → Use Framer Motion
-   - Examples: 
+   - Examples:
      - Tailwind: hover effects, click feedback
      - Framer: drag and drop, pinch to zoom
 
 3. **Does it need to respond to gestures?**
+
    - If yes → Use Framer Motion
    - Examples: swipe actions, pull to refresh
 
 4. **Is it purely decorative?**
+
    - If yes → Use Tailwind animations
    - Examples: loading states, entrance animations
 
