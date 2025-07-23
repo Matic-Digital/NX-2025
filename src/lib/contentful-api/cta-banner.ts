@@ -58,14 +58,14 @@ export const CTABANNER_GRAPHQL_FIELDS = `
 `;
 
 /**
- * Fetches all CTABanners from Contentful
+ * Fetches all CtaBanners from Contentful
  * @param preview - Whether to fetch draft content
- * @returns Promise resolving to CTABanners response with pagination info
+ * @returns Promise resolving to CtaBanners response with pagination info
  */
-export async function getAllCTABanners(preview = false): Promise<CtaBannerResponse> {
+export async function getAllCtaBanners(preview = false): Promise<CtaBannerResponse> {
   try {
     const response = await fetchGraphQL<CtaBanner>(
-      `query GetAllCTABanners($preview: Boolean!) {
+      `query GetAllCtaBanners($preview: Boolean!) {
         ctaBannerCollection(preview: $preview) {
           items {
             ${CTABANNER_GRAPHQL_FIELDS}
@@ -86,7 +86,7 @@ export async function getAllCTABanners(preview = false): Promise<CtaBannerRespon
 
     // Validate the data structure
     if (!data.ctaBannerCollection?.items?.length) {
-      throw new ContentfulError('Failed to fetch CTABanners from Contentful');
+      throw new ContentfulError('Failed to fetch CtaBanners from Contentful');
     }
 
     return {
@@ -97,8 +97,8 @@ export async function getAllCTABanners(preview = false): Promise<CtaBannerRespon
       throw error;
     }
     if (error instanceof Error) {
-      throw new NetworkError(`Error fetching CTABanners: ${error.message}`);
+      throw new NetworkError(`Error fetching CtaBanners: ${error.message}`);
     }
-    throw new Error('Unknown error fetching CTABanners');
+    throw new Error('Unknown error fetching CtaBanners');
   }
 }
