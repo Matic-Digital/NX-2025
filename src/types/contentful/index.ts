@@ -3,6 +3,7 @@ export * from './CtaBanner';
 export * from './Footer';
 export * from './Header';
 export * from './Hero';
+export * from './Image';
 export * from './Page';
 export * from './PageList';
 export * from './Asset';
