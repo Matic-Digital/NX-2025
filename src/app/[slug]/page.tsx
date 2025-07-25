@@ -22,6 +22,8 @@ import { notFound } from 'next/navigation';
 import { getPageBySlug, getPageListBySlug } from '@/lib/api';
 import { Hero } from '@/components/global/Hero';
 import { CtaBanner } from '@/components/CtaBanner';
+import { FeaturesGrid } from '@/components/FeaturesGrid';
+import { SectionHeading } from '@/components/SectionHeading';
 import { Footer } from '@/components/global/Footer';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -32,7 +34,9 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 // Define the component mapping for pageContent items
 const componentMap = {
   Hero: Hero,
-  CtaBanner: CtaBanner
+  CtaBanner: CtaBanner,
+  FeaturesGrid: FeaturesGrid,
+  SectionHeading: SectionHeading
   // Add other component types here as they are created
 };
 
