@@ -30,6 +30,7 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import type { Hero as _HeroType } from '@/types/contentful/Hero';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
+import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -186,11 +187,17 @@ function renderPageList(pageList: PageListType) {
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <main className="min-h-screen py-12">
-        {/* Render any Hero components from pageContentCollection */}
+        {/* Render components from pageContentCollection */}
         {pageContentItems.map((item, index) => {
           if (item.__typename === 'Hero') {
             const HeroComponent = componentMap.Hero;
             return <HeroComponent key={item.sys.id || `hero-${index}`} {...item} />;
+          } else if (item.__typename === 'CtaBanner') {
+            const CtaBannerComponent = componentMap.CtaBanner;
+            // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
+            return (
+              <CtaBannerComponent key={item.sys.id || `cta-banner-${index}`} {...(item as CtaBannerType)} />
+            );
           }
           return null;
         })}

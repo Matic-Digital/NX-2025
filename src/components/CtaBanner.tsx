@@ -13,6 +13,7 @@ import type { CtaBanner } from '@/types/contentful/CtaBanner';
 import Image from 'next/image';
 import { useState } from 'react';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
+import { AirImage } from '@/components/global/AirImage';
 
 export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
@@ -31,11 +32,10 @@ export function CtaBanner(props: CtaBanner) {
     <ErrorBoundary>
       <Section className="relative w-full overflow-hidden">
         {/* Background gradient image */}
-        <Image
-          src="https://air-prod.imgix.net/d9e20c21-d890-4888-97ae-03880f98fba6.jpg?w=1440&h=335&fm=webp&fit=crop&auto=auto"
-          alt="Background Gradient Image"
-          fill
-          className="object-cover"
+        <AirImage
+          link={ctaBanner.backgroundMedia.link}
+          altText={ctaBanner.backgroundMedia.altText}
+          className="absolute inset-0 h-full w-full object-cover"
           priority
         />
 
