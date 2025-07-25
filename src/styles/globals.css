@@ -47,9 +47,9 @@
   --input-disabled-border: #d4d4d4;
 
   /* Primary */
-  --primary: #8b5cf6;
+  --primary: #fe5000;
   --primary-hover: #6d28d9;
-  --primary-border: #8b5cf6;
+  --primary-border: #fe5000;
   --primary-border-hover: #6d28d9;
 
   --primary-subtle: #a78bfa;
@@ -147,8 +147,8 @@
   --card-foreground: var(--text-body);
   --popover: var(--body);
   --popover-foreground: var(--text-body);
-  --primary: var(--primary);
-  --primary-foreground: var(--text-on-primary);
+  --primary: #fe5000;
+  --primary-foreground: #ffffff;
   --secondary: var(--secondary);
   --secondary-foreground: var(--white);
   --muted: var(--muted);
@@ -214,7 +214,7 @@
   --input-disabled-border: #a3a3a3;
 
   /* Primary */
-  --primary: #6d28d9;
+  --primary: #fe5000;
   --primary-hover: #7c3aed;
   --primary-border: #ddd6fe;
   --primary-border-hover: #c4b5fd;
@@ -349,7 +349,7 @@
     --card-foreground: 10, 10, 10;
     --popover: 255, 255, 255;
     --popover-foreground: 10, 10, 10;
-    --primary: 10, 10, 10;
+    --primary: #fe5000;
     --primary-foreground: 250, 250, 250;
     --secondary: 244, 244, 245;
     --secondary-foreground: 10, 10, 10;
@@ -372,7 +372,7 @@
     --card-foreground: 250, 250, 250;
     --popover: 19, 19, 19;
     --popover-foreground: 250, 250, 250;
-    --primary: 250, 250, 250;
+    --primary: #fe5000;
     --primary-foreground: 10, 10, 10;
     --secondary: 40, 40, 40;
     --secondary-foreground: 250, 250, 250;
@@ -663,7 +663,6 @@
 
   h2,
   .h2 {
-    color: var(--color-text-on-invert);
     font-size: var(--text-headline-lg);
     @apply leading-14;
   }
@@ -686,6 +685,11 @@
   h6,
   .h6 {
     @apply text-base font-semibold tracking-tight;
+  }
+
+  p {
+    @apply text-body-sm;
+    color: var(--color-text-subtle);
   }
 }
 
