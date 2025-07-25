@@ -6,6 +6,10 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}'
   ],
   safelist: [
+    // Container
+    'max-w-full',
+    'container',
+
     // Base layout classes
     'grid',
     'flex',
@@ -103,11 +107,7 @@ module.exports = {
     '2xl:grid-cols-9',
     '2xl:grid-cols-10',
     '2xl:grid-cols-11',
-    '2xl:grid-cols-12',
-
-    // Container
-    'max-w-full',
-    'container'
+    '2xl:grid-cols-12'
   ],
   theme: {
     extend: {},

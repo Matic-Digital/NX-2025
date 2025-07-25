@@ -1,8 +1,10 @@
-import type { Page } from './Page';
-import type { Header } from './Header';
-import type { Footer } from './Footer';
-import type { Hero } from './Hero';
 import type { CtaBanner } from './CtaBanner';
+import type { FeaturesGrid } from './FeaturesGrid';
+import type { Footer } from './Footer';
+import type { Header } from './Header';
+import type { Hero } from './Hero';
+import type { Page } from './Page';
+import type { SectionHeading } from './SectionHeading';
 
 export interface PageList {
   sys: {
@@ -15,7 +17,7 @@ export interface PageList {
   };
   header?: Header;
   pageContentCollection?: {
-    items: (Hero | CtaBanner)[];
+    items: (CtaBanner | FeaturesGrid | Hero | SectionHeading)[];
   };
   footer?: Footer;
   __typename?: string;

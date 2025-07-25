@@ -60,7 +60,7 @@ export function CtaBanner(props: CtaBanner) {
             >
               <Box direction="col" gap={2} className="max-md:items-center">
                 <h2>{ctaBanner.title}</h2>
-                <p className="text-body-xs max-w-xs max-md:text-center lg:max-w-sm">
+                <p className="text-text-on-invert max-w-xs max-md:text-center lg:max-w-sm">
                   {ctaBanner.description}
                 </p>
               </Box>
