@@ -21,7 +21,13 @@ const ASSET_FIELDS = `
   width
   height
 `;
-
+// Image fields
+const IMAGE_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  internalName
+  link
+  altText
+`;
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -29,6 +35,9 @@ export const CTABANNER_GRAPHQL_FIELDS = `
   description
   backgroundImage {
     ${ASSET_FIELDS}
+  }
+  backgroundMedia {
+    ${IMAGE_GRAPHQL_FIELDS}
   }
   primaryCta {
     ${SYS_FIELDS}
