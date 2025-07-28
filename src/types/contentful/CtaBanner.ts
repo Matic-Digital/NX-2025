@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
 import { ButtonSchema } from './Button';
+import { ImageSchema } from './Image';
 
 export const CtaBannerSchema = z.object({
   sys: z.object({
@@ -9,6 +10,7 @@ export const CtaBannerSchema = z.object({
   title: z.string(),
   description: z.string(),
   backgroundImage: AssetSchema,
+  backgroundMedia: ImageSchema,
   primaryCta: ButtonSchema,
   secondaryCta: ButtonSchema,
   __typename: z.string().optional()
