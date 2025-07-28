@@ -1,22 +1,35 @@
 import { z } from 'zod';
+import { AssetSchema } from './Asset';
 import { SectionHeadingSchema } from './SectionHeading';
+
+// Define the FeaturesGridItem schema
+export const FeaturesGridItemSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  icon: AssetSchema,
+  title: z.string(),
+  link: z.object({
+    sys: z.object({
+      id: z.string()
+    }),
+    slug: z.string()
+  }),
+  description: z.string(),
+  __typename: z.string().optional()
+});
+
+export type FeaturesGridItem = z.infer<typeof FeaturesGridItemSchema>;
 
 export const FeaturesGridSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
+  title: z.string(),
   heading: SectionHeadingSchema,
-  //   featuresCollection: z.array(
-  //     z.object({
-  //       sys: z.object({
-  //         id: z.string()
-  //       }),
-  //       title: z.string(),
-  //       description: z.string(),
-  //       icon: z.optional(z.string()),
-  //       __typename: z.string().optional()
-  //     })
-  //   ),
+  itemsCollection: z.object({
+    items: z.array(FeaturesGridItemSchema)
+  }),
   __typename: z.string().optional()
 });
 

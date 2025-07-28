@@ -21,6 +21,7 @@ const ASSET_FIELDS = `
   width
   height
 `;
+
 // Image fields
 const IMAGE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -28,6 +29,7 @@ const IMAGE_GRAPHQL_FIELDS = `
   link
   altText
 `;
+
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}

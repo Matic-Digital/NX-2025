@@ -13,11 +13,43 @@ const SYS_FIELDS = `
   __typename
 `;
 
+const ASSET_FIELDS = `
+  sys {
+    id
+  }
+  title
+  description
+  url
+  width
+  height
+`;
+
+// FeaturesGridItems fields
+export const FEATURESGRIDITEMS_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  link {
+    sys {
+      id
+    }
+    slug
+  }
+  description
+  icon {
+    ${ASSET_FIELDS}
+  }
+`;
+
 // FeaturesGrid fields
 export const FEATURESGRID_GRAPHQL_FIELDS = `
   ${SYS_FIELDS} 
   heading {
     ${SECTIONHEADING_GRAPHQL_FIELDS}
+  }
+  itemsCollection(limit: 6) {
+    items {
+      ${FEATURESGRIDITEMS_GRAPHQL_FIELDS}
+    }
   }
 `;
 
