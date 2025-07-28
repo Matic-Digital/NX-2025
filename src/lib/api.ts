@@ -173,7 +173,7 @@ const PAGE_GRAPHQL_FIELDS = `
   footer {
     ${FOOTER_GRAPHQL_FIELDS}
   }
-  pageContentCollection {
+  pageContentCollection(limit: 10) {
     items {
       ... on FeaturesGrid {
         ${FEATURESGRID_GRAPHQL_FIELDS}

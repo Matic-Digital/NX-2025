@@ -9,6 +9,7 @@ import {
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Box, Container, Section } from '@/components/global/matic-ds';
+import { FeaturesGridItem } from './FeaturesGridItem';
 import type { FeaturesGrid } from '@/types/contentful/FeaturesGrid';
 
 export function FeaturesGrid(props: FeaturesGrid) {
@@ -19,7 +20,8 @@ export function FeaturesGrid(props: FeaturesGrid) {
     <ErrorBoundary>
       <Section>
         <Container>
-          <Box direction="col" gap={2}>
+          <Box direction="col" gap={12}>
+            {/* section heading */}
             <Box cols={{ base: 1, lg: 2 }} gap={12} {...inspectorProps({ fieldId: 'heading' })}>
               {/* overline and title */}
               <Box direction="col" gap={2}>
@@ -66,7 +68,12 @@ export function FeaturesGrid(props: FeaturesGrid) {
               </Box>
             </Box>
 
-            {/* Feature grid items would go here */}
+            {/* items */}
+            <Box cols={{ base: 1, lg: 3 }} gap={12}>
+              {featuresGrid.itemsCollection?.items?.map((item, index) => (
+                <FeaturesGridItem key={item.sys?.id || index} {...item} />
+              ))}
+            </Box>
           </Box>
         </Container>
       </Section>
