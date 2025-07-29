@@ -64,7 +64,7 @@ async function renderContentfulHomePage(page: Page) {
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <main>
-        <h1 className="text-display-lg sr-only">{page.name}</h1>
+        <h1 className="sr-only">{page.name}</h1>
 
         {/* Render the page content components */}
         {page.pageContentCollection?.items.map((component) => {
