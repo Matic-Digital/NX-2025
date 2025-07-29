@@ -85,7 +85,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
             {liveFooterData.pageListsCollection?.items.map((pageList) => (
               <div key={pageList.sys.id}>
                 <h3
-                  className="text-sm font-medium"
+                  className="text-body-xs font-medium"
                   {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'name' })}
                 >
                   <Link href={`/${pageList.slug}`} className="hover:text-primary">

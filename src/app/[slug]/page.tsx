@@ -22,7 +22,7 @@ import { notFound } from 'next/navigation';
 import { getPageBySlug, getPageListBySlug } from '@/lib/api';
 import { Hero } from '@/components/global/Hero';
 import { CtaBanner } from '@/components/CtaBanner';
-import { FeaturesGrid } from '@/components/FeaturesGrid';
+import { ContentGrid } from '@/components/ContentGrid';
 import { SectionHeading } from '@/components/SectionHeading';
 import { Footer } from '@/components/global/Footer';
 import { PageList } from '@/components/global/PageList';
@@ -36,7 +36,7 @@ import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 const componentMap = {
   Hero: Hero,
   CtaBanner: CtaBanner,
-  FeaturesGrid: FeaturesGrid,
+  ContentGrid: ContentGrid,
   SectionHeading: SectionHeading
   // Add other component types here as they are created
 };
@@ -196,7 +196,10 @@ function renderPageList(pageList: PageListType) {
             const CtaBannerComponent = componentMap.CtaBanner;
             // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
             return (
-              <CtaBannerComponent key={item.sys.id || `cta-banner-${index}`} {...(item as CtaBannerType)} />
+              <CtaBannerComponent
+                key={item.sys.id || `cta-banner-${index}`}
+                {...(item as CtaBannerType)}
+              />
             );
           }
           return null;

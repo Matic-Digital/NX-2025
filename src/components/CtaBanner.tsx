@@ -59,7 +59,7 @@ export function CtaBanner(props: CtaBanner) {
               {...inspectorProps({ fieldId: 'title' })}
             >
               <Box direction="col" gap={2} className="max-md:items-center">
-                <h2>{ctaBanner.title}</h2>
+                <h2 className="text-headline-lg">{ctaBanner.title}</h2>
                 <p className="text-text-on-invert max-w-xs max-md:text-center lg:max-w-sm">
                   {ctaBanner.description}
                 </p>

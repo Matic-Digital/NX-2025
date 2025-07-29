@@ -89,7 +89,7 @@ function HeaderPreviewContent() {
     return (
       <Container>
         <Box className="py-12">
-          <h1 className="text-2xl font-bold text-red-600">Error</h1>
+          <h1 className="text-headline-xs font-bold text-red-600">Error</h1>
           <p>Error fetching Header: {error.message}</p>
         </Box>
       </Container>
@@ -98,7 +98,7 @@ function HeaderPreviewContent() {
     return (
       <Container>
         <Box className="py-12">
-          <h1 className="text-2xl font-bold">Header Not Found</h1>
+          <h1 className="text-headline-xs font-bold">Header Not Found</h1>
           <p>No Header found with name: {headerName}</p>
         </Box>
       </Container>

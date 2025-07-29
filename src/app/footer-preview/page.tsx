@@ -89,7 +89,7 @@ function FooterPreviewContent() {
     return (
       <Container>
         <Box className="py-12">
-          <h1 className="text-2xl font-bold text-red-600">Error</h1>
+          <h1 className="text-headline-xs font-bold text-red-600">Error</h1>
           <p>Error fetching Footer: {error.message}</p>
           {!footerId && (
             <div className="mt-4 rounded border border-yellow-400 bg-yellow-50 p-4">
@@ -106,7 +106,7 @@ function FooterPreviewContent() {
     return (
       <Container>
         <Box className="py-12">
-          <h1 className="text-2xl font-bold">Footer Not Found</h1>
+          <h1 className="text-headline-xs font-bold">Footer Not Found</h1>
           <p>No Footer found with ID: {footerId}</p>
         </Box>
       </Container>
@@ -120,7 +120,7 @@ function FooterPreviewContent() {
 
       <Container className="mt-24">
         <Box className="py-12">
-          <h1 className="mb-4 text-2xl font-bold">Footer Preview</h1>
+          <h1 className="text-headline-xs mb-4 font-bold">Footer Preview</h1>
           <p className="mb-2">
             <strong>ID:</strong> {footer.sys.id}
           </p>

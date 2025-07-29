@@ -75,7 +75,7 @@ export function PageList(props: PageListProps) {
         <Box className="flex-col items-start">
           {pageList.name && (
             <h1
-              className="mb-6 max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl"
+              className="text-headline-md sm:text-headline-lg mb-6 max-w-4xl font-bold tracking-tight"
               {...inspectorProps({ fieldId: 'name' })}
             >
               {pageList.name}

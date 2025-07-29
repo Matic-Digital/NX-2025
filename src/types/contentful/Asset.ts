@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// an image from Contentful Media
 export const AssetSchema = z.object({
   sys: z.object({
     id: z.string()

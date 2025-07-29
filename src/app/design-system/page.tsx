@@ -11,7 +11,7 @@ const Section = ({
   className?: string;
 }) => (
   <section className={cn('mb-12', className)}>
-    <h2 className="mb-4 border-b pb-2 text-2xl font-bold">{title}</h2>
+    <h2 className="text-headline-xs mb-4 border-b pb-2 font-bold">{title}</h2>
     <div className="space-y-6">{children}</div>
   </section>
 );
@@ -31,7 +31,7 @@ export default function DesignSystemPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-12">
-        <h1 className="mb-2 text-4xl font-bold">Matic Design System</h1>
+        <h1 className="text-headline-md mb-2 font-bold">Matic Design System</h1>
         <p className="text-muted-foreground text-lg">
           A collection of reusable components for building UIs
         </p>
@@ -40,7 +40,7 @@ export default function DesignSystemPage() {
       {/* Text Component */}
       <Section title="Text Component">
         <Card>
-          <h3 className="mb-4 text-lg font-semibold">Variants</h3>
+          <h3 className="text-body-md mb-4 font-semibold">Variants</h3>
           <div className="space-y-4">
             {textVariants.map((variant) => (
               <div key={variant} className="border-b pb-4 last:border-b-0 last:pb-0">
@@ -50,7 +50,7 @@ export default function DesignSystemPage() {
             ))}
           </div>
 
-          <h3 className="mt-8 mb-4 text-lg font-semibold">Sizes</h3>
+          <h3 className="text-body-md mt-8 mb-4 font-semibold">Sizes</h3>
           <div className="space-y-4">
             {sizes.map((size) => (
               <div key={size} className="border-b pb-4 last:border-b-0 last:pb-0">
@@ -60,7 +60,7 @@ export default function DesignSystemPage() {
             ))}
           </div>
 
-          <h3 className="mt-8 mb-4 text-lg font-semibold">Line Heights</h3>
+          <h3 className="text-body-md mt-8 mb-4 font-semibold">Line Heights</h3>
           <div className="space-y-4">
             {lineHeights.map((lineHeight) => (
               <div key={lineHeight} className="border-b pb-4 last:border-b-0 last:pb-0">
@@ -74,7 +74,7 @@ export default function DesignSystemPage() {
             ))}
           </div>
 
-          <h3 className="mt-8 mb-4 text-lg font-semibold">Letter Spacing</h3>
+          <h3 className="text-body-md mt-8 mb-4 font-semibold">Letter Spacing</h3>
           <div className="space-y-4">
             {letterSpacings.map((letterSpacing) => (
               <div key={letterSpacing} className="border-b pb-4 last:border-b-0 last:pb-0">
@@ -93,7 +93,7 @@ export default function DesignSystemPage() {
       {/* Layout Components */}
       <Section title="Layout Components">
         <Card>
-          <h3 className="mb-4 text-lg font-semibold">Container</h3>
+          <h3 className="text-body-md mb-4 font-semibold">Container</h3>
           <div className="bg-background rounded p-4">
             <div className="border-2 border-dashed border-gray-400 p-4">
               <p className="text-muted-foreground mb-2 text-sm">Default Container</p>
@@ -103,7 +103,7 @@ export default function DesignSystemPage() {
             </div>
           </div>
 
-          <h3 className="mt-8 mb-4 text-lg font-semibold">Section</h3>
+          <h3 className="text-body-md mt-8 mb-4 font-semibold">Section</h3>
           <div className="overflow-hidden rounded-lg border">
             <div className="bg-background border-b p-4">
               <p className="text-muted-foreground text-sm">Section Component</p>
@@ -113,7 +113,7 @@ export default function DesignSystemPage() {
             </div>
           </div>
 
-          <h3 className="mt-8 mb-4 text-lg font-semibold">Box</h3>
+          <h3 className="text-body-md mt-8 mb-4 font-semibold">Box</h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-lg border p-4">
               <p className="text-muted-foreground mb-2 text-sm">Box with padding</p>
