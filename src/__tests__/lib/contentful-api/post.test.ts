@@ -214,9 +214,7 @@ describe('Post API Module', () => {
       });
 
       await expect(postAPI.getAllPosts()).rejects.toThrow(ContentfulError);
-      await expect(postAPI.getAllPosts()).rejects.toThrow(
-        'Failed to fetch Posts from Contentful'
-      );
+      await expect(postAPI.getAllPosts()).rejects.toThrow('Failed to fetch Posts from Contentful');
     });
 
     it('passes through ContentfulError when thrown by fetchGraphQL', async () => {
@@ -234,9 +232,7 @@ describe('Post API Module', () => {
       (fetchGraphQL as any).mockRejectedValue(error);
 
       await expect(postAPI.getAllPosts()).rejects.toThrow(NetworkError);
-      await expect(postAPI.getAllPosts()).rejects.toThrow(
-        'Error fetching Posts: Network failure'
-      );
+      await expect(postAPI.getAllPosts()).rejects.toThrow('Error fetching Posts: Network failure');
     });
 
     it('handles unknown errors', async () => {
@@ -463,7 +459,9 @@ describe('Post API Module', () => {
       (fetchGraphQL as any).mockRejectedValue(error);
 
       await expect(postAPI.getPostBySlug('test-slug')).rejects.toThrow(ContentfulError);
-      await expect(postAPI.getPostBySlug('test-slug')).rejects.toThrow('Test error from fetchGraphQL');
+      await expect(postAPI.getPostBySlug('test-slug')).rejects.toThrow(
+        'Test error from fetchGraphQL'
+      );
     });
 
     it('wraps Error in NetworkError when thrown by fetchGraphQL', async () => {
@@ -481,7 +479,9 @@ describe('Post API Module', () => {
       // Mock unknown error
       (fetchGraphQL as any).mockRejectedValue('Unknown error');
 
-      await expect(postAPI.getPostBySlug('test-slug')).rejects.toThrow('Unknown error fetching Post by slug');
+      await expect(postAPI.getPostBySlug('test-slug')).rejects.toThrow(
+        'Unknown error fetching Post by slug'
+      );
     });
   });
 
@@ -587,7 +587,9 @@ describe('Post API Module', () => {
       (fetchGraphQL as any).mockRejectedValue(error);
 
       await expect(postAPI.getPostsByCategory('Blog')).rejects.toThrow(ContentfulError);
-      await expect(postAPI.getPostsByCategory('Blog')).rejects.toThrow('Test error from fetchGraphQL');
+      await expect(postAPI.getPostsByCategory('Blog')).rejects.toThrow(
+        'Test error from fetchGraphQL'
+      );
     });
 
     it('wraps Error in NetworkError when thrown by fetchGraphQL', async () => {
@@ -605,7 +607,9 @@ describe('Post API Module', () => {
       // Mock unknown error
       (fetchGraphQL as any).mockRejectedValue('Unknown error');
 
-      await expect(postAPI.getPostsByCategory('Blog')).rejects.toThrow('Unknown error fetching Posts by category');
+      await expect(postAPI.getPostsByCategory('Blog')).rejects.toThrow(
+        'Unknown error fetching Posts by category'
+      );
     });
   });
 });

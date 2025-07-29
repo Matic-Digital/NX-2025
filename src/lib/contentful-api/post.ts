@@ -18,6 +18,26 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   slug
   excerpt
   datePublished
+  mainImage {
+    sys {
+      id
+    }
+    internalName
+    link
+    altText
+  }
+  content {
+    json
+  }
+  authorsCollection(limit: 2) {
+    items {
+      sys {
+        id
+      }
+      name
+      jobTitle
+    }
+  }
   categories
 `;
 

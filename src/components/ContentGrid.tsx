@@ -10,6 +10,7 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
+import { PostCard } from '@/components/global/PostCard';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
 
 export function ContentGrid(props: ContentGrid) {
@@ -17,8 +18,11 @@ export function ContentGrid(props: ContentGrid) {
   const inspectorProps = useContentfulInspectorMode({ entryId: contentGrid?.sys?.id });
 
   console.log('content grid props', props);
+  console.log('content grid items:', contentGrid.itemsCollection?.items);
 
-  const isFullWidthGrid = contentGrid.itemsCollection?.items?.some((item) => item.image);
+  const isFullWidthGrid = contentGrid.itemsCollection?.items?.some(
+    (item) => 'image' in item && item.image
+  );
   return (
     <ErrorBoundary>
       <Section>
@@ -75,22 +79,58 @@ export function ContentGrid(props: ContentGrid) {
             </Box>
 
             {/* items */}
-            <Box cols={{ base: 1, lg: isFullWidthGrid ? 1 : 3 }} gap={12}>
-              {contentGrid.itemsCollection?.items?.map((item, index) => {
-                // Skip empty/incomplete items
-                if (!item || (!item.title && !item.__typename)) {
-                  return null;
-                }
-                
-                // Handle Post items - render empty div for now
-                if (item.__typename === 'Post') {
-                  return <div key={item.sys?.id || index}>Post placeholder</div>;
-                }
-                
-                // Only render ContentGridItem for actual ContentGridItem types
-                return <ContentGridItem key={item.sys?.id || index} {...item} />;
-              })}
-            </Box>
+            {(() => {
+              // Filter out empty/incomplete items
+              const validItems =
+                contentGrid.itemsCollection?.items?.filter(
+                  (item) => item && (item.title || item.__typename)
+                ) || [];
+
+              // Check if all valid items are Posts
+              const allItemsArePosts =
+                validItems.length > 0 && validItems.every((item) => item.__typename === 'Post');
+
+              return (
+                <Box
+                  cols={{ base: 1, md: 2, lg: allItemsArePosts ? 4 : isFullWidthGrid ? 1 : 3 }}
+                  gap={allItemsArePosts ? 5 : 12}
+                  wrap={true}
+                >
+                  {validItems.map((item, index) => {
+                    // Debug: Log each item's structure and typename
+                    console.log(`ContentGrid item ${index}:`, {
+                      typename: item.__typename,
+                      hasSlug: 'slug' in item,
+                      hasContent: 'content' in item,
+                      hasLink: 'link' in item,
+                      hasDescription: 'description' in item,
+                      item: item
+                    });
+
+                    // Type guard: Check if item is a Post with essential Post structure
+                    // Note: PostCard doesn't require author information, so we only check for core fields
+                    const isPost =
+                      item.__typename === 'Post' && 'slug' in item && 'content' in item;
+
+                    if (isPost) {
+                      // Type assertion since we've verified it's a proper Post
+                      return <PostCard key={item.sys?.id || index} {...item} />;
+                    }
+
+                    // Type guard: Check if item is a ContentGridItem with proper ContentGridItem structure
+                    const isContentGridItem = 'link' in item && 'description' in item;
+
+                    if (isContentGridItem) {
+                      // Type assertion since we've verified it's a proper ContentGridItem
+                      return <ContentGridItem key={item.sys?.id || index} {...item} />;
+                    }
+
+                    // Fallback: skip unrecognized items
+                    return null;
+                  })}
+                </Box>
+              );
+            })()}
           </Box>
         </Container>
       </Section>
