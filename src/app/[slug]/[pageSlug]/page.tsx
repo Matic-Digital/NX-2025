@@ -157,7 +157,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
           </nav>
         </div>
 
-        <h1 className="sr-only">{page.name}</h1>
+        <h1 className="sr-only ">{page.name}</h1>
 
         {/* Render the page content components */}
         {page.pageContentCollection?.items.map((component) => {

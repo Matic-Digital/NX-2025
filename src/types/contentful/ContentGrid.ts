@@ -1,40 +1,42 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
 import { SectionHeadingSchema } from './SectionHeading';
+import { ImageSchema } from './Image';
 
-// Define the FeaturesGridItem schema
-export const FeaturesGridItemSchema = z.object({
+// Define the ContentGridItem schema
+export const ContentGridItemSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  icon: AssetSchema,
   title: z.string(),
+  description: z.string(),
   link: z.object({
     sys: z.object({
       id: z.string()
     }),
     slug: z.string()
   }),
-  description: z.string(),
+  icon: AssetSchema.optional(),
+  image: ImageSchema.optional(),
   __typename: z.string().optional()
 });
 
-export type FeaturesGridItem = z.infer<typeof FeaturesGridItemSchema>;
+export type ContentGridItem = z.infer<typeof ContentGridItemSchema>;
 
-export const FeaturesGridSchema = z.object({
+export const ContentGridSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
   title: z.string(),
   heading: SectionHeadingSchema,
   itemsCollection: z.object({
-    items: z.array(FeaturesGridItemSchema)
+    items: z.array(ContentGridItemSchema)
   }),
   __typename: z.string().optional()
 });
 
-export type FeaturesGrid = z.infer<typeof FeaturesGridSchema>;
+export type ContentGrid = z.infer<typeof ContentGridSchema>;
 
-export interface FeaturesGridResponse {
-  items: FeaturesGrid[];
+export interface ContentGridResponse {
+  items: ContentGrid[];
 }

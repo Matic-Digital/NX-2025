@@ -20,7 +20,7 @@ import type {
 
 import {
   CTABANNER_GRAPHQL_FIELDS,
-  FEATURESGRID_GRAPHQL_FIELDS,
+  CONTENTGRID_GRAPHQL_FIELDS,
   HERO_GRAPHQL_FIELDS,
   SECTIONHEADING_GRAPHQL_FIELDS
 } from '@/lib/contentful-api';
@@ -136,8 +136,8 @@ const PAGELIST_GRAPHQL_FIELDS = `
   }
   pageContentCollection {
     items {
-      ... on FeaturesGrid {
-        ${FEATURESGRID_GRAPHQL_FIELDS}
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
       }
       ... on Hero {
         ${HERO_GRAPHQL_FIELDS}
@@ -175,8 +175,8 @@ const PAGE_GRAPHQL_FIELDS = `
   }
   pageContentCollection(limit: 10) {
     items {
-      ... on FeaturesGrid {
-        ${FEATURESGRID_GRAPHQL_FIELDS}
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
       }
       ... on Hero {
         ${HERO_GRAPHQL_FIELDS}

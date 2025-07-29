@@ -1,5 +1,5 @@
 import type { CtaBanner } from './CtaBanner';
-import type { FeaturesGrid } from './FeaturesGrid';
+import type { ContentGrid } from './ContentGrid';
 import type { Footer } from './Footer';
 import type { Header } from './Header';
 import type { Hero } from './Hero';
@@ -15,7 +15,7 @@ export interface Page {
   header?: Header;
   footer?: Footer;
   pageContentCollection?: {
-    items: (CtaBanner | FeaturesGrid | Hero | SectionHeading)[];
+    items: (CtaBanner | ContentGrid | Hero | SectionHeading)[];
   };
   __typename?: string;
 }

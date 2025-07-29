@@ -97,8 +97,8 @@ export default async function HeroPreviewPage({ params, searchParams }: HeroPrev
               </svg>
             </div>
             <div className="ml-3 flex-1">
-              <h3 className="text-sm font-medium text-blue-800">Hero Preview Mode</h3>
-              <div className="mt-2 text-sm text-blue-700">
+              <h3 className="text-body-xs font-medium text-blue-800">Hero Preview Mode</h3>
+              <div className="text-body-xs mt-2 text-blue-700">
                 <p>
                   You are viewing the Hero component in preview mode.{' '}
                   {isDraftMode ? 'Draft mode is enabled.' : 'Draft mode is disabled.'}
@@ -130,8 +130,8 @@ export default async function HeroPreviewPage({ params, searchParams }: HeroPrev
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error Loading Hero</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="text-body-xs font-medium text-red-800">Error Loading Hero</h3>
+                <div className="text-body-xs mt-2 text-red-700">
                   <p>{error}</p>
                 </div>
               </div>
@@ -160,8 +160,8 @@ export default async function HeroPreviewPage({ params, searchParams }: HeroPrev
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">No Hero ID Provided</h3>
-                <div className="mt-2 text-sm text-yellow-700">
+                <h3 className="text-body-xs font-medium text-yellow-800">No Hero ID Provided</h3>
+                <div className="text-body-xs mt-2 text-yellow-700">
                   <p>
                     Please provide a hero ID in the URL query parameters (e.g., ?id=your-hero-id).
                   </p>
@@ -203,8 +203,8 @@ export default async function HeroPreviewPage({ params, searchParams }: HeroPrev
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">No Hero Data Found</h3>
-                <div className="mt-2 text-sm text-yellow-700">
+                <h3 className="text-body-xs font-medium text-yellow-800">No Hero Data Found</h3>
+                <div className="text-body-xs mt-2 text-yellow-700">
                   <p>
                     No hero data was found for ID: {heroId}. Make sure the ID exists in Contentful.
                   </p>

@@ -50,8 +50,8 @@ export function PagePreviewContent({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error Loading Page</h3>
-                <div className="mt-2 text-sm text-red-700">
+                <h3 className="text-body-xs font-medium text-red-800">Error Loading Page</h3>
+                <div className="text-body-xs mt-2 text-red-700">
                   <p>{error}</p>
                 </div>
               </div>
@@ -80,8 +80,8 @@ export function PagePreviewContent({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">No Page Slug Provided</h3>
-                <div className="mt-2 text-sm text-yellow-700">
+                <h3 className="text-body-xs font-medium text-yellow-800">No Page Slug Provided</h3>
+                <div className="text-body-xs mt-2 text-yellow-700">
                   <p>
                     Please provide a page slug in the URL query parameters (e.g.,
                     ?slug=your-page-slug).
@@ -152,8 +152,8 @@ export function PagePreviewContent({
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-yellow-800">No Page Data Found</h3>
-                <div className="mt-2 text-sm text-yellow-700">
+                <h3 className="text-body-xs font-medium text-yellow-800">No Page Data Found</h3>
+                <div className="text-body-xs mt-2 text-yellow-700">
                   <p>
                     No page data was found for slug: {pageSlug}. Make sure the slug exists in
                     Contentful.

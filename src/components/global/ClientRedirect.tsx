@@ -24,7 +24,7 @@ export function ClientRedirect({ href }: ClientRedirectProps) {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h2 className="mb-2 text-2xl font-semibold">Redirecting...</h2>
+        <h2 className="text-headline-xs mb-2 font-semibold">Redirecting...</h2>
         <p className="text-muted-foreground">
           If you are not redirected automatically, please{' '}
           <a href={href} className="text-blue-600 hover:underline">

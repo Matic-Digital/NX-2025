@@ -7,7 +7,7 @@ export function Logo() {
     <Link href="/" className="mr-6">
       <Box gap={2} className="items-center">
         <span className="text-gradient-pink text-lg font-extrabold">|||</span>
-        <h1 className="text-2xl">Matic</h1>
+        <h1 className="text-headline-xs">Matic</h1>
       </Box>
     </Link>
   );
