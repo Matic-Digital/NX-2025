@@ -76,9 +76,20 @@ export function ContentGrid(props: ContentGrid) {
 
             {/* items */}
             <Box cols={{ base: 1, lg: isFullWidthGrid ? 1 : 3 }} gap={12}>
-              {contentGrid.itemsCollection?.items?.map((item, index) => (
-                <ContentGridItem key={item.sys?.id || index} {...item} />
-              ))}
+              {contentGrid.itemsCollection?.items?.map((item, index) => {
+                // Skip empty/incomplete items
+                if (!item || (!item.title && !item.__typename)) {
+                  return null;
+                }
+                
+                // Handle Post items - render empty div for now
+                if (item.__typename === 'Post') {
+                  return <div key={item.sys?.id || index}>Post placeholder</div>;
+                }
+                
+                // Only render ContentGridItem for actual ContentGridItem types
+                return <ContentGridItem key={item.sys?.id || index} {...item} />;
+              })}
             </Box>
           </Box>
         </Container>
