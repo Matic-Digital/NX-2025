@@ -17,17 +17,14 @@ const nextConfig = {
   // Required for UI css to be transpiled correctly 👇
   transpilePackages: ['jotai-devtools'],
 
-  // Add Content-Security-Policy headers for Contentful live preview
+  // Add security headers for Contentful live preview
   async headers() {
-    // We want CSP headers in development and any preview environments
+    // Check if we're in a preview environment on Vercel
     // VERCEL_ENV will be 'production', 'preview', or 'development'
-    const isPreviewOrDev = 
-      process.env.NODE_ENV === 'development' || 
-      process.env.VERCEL_ENV === 'preview' || 
-      process.env.VERCEL_ENV === 'prod-preview';
+    const isPreviewEnv = process.env.VERCEL_ENV === 'prod-preview' || process.env.VERCEL_ENV === 'preview';
     
-    // Add CSP headers for development and preview environments
-    if (isPreviewOrDev) {
+    // Only add special headers for preview environments
+    if (isPreviewEnv) {
       return [
         {
           // Apply to all routes
@@ -37,6 +34,12 @@ const nextConfig = {
               key: 'Content-Security-Policy',
               // Allow embedding from Contentful domains
               value: "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com;"
+            },
+            {
+              // This removes or overrides any X-Frame-Options header
+              // that might be automatically added by Vercel or other middleware
+              key: 'X-Frame-Options',
+              value: 'ALLOW-FROM https://app.contentful.com'
             }
           ]
         }
