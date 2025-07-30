@@ -21,6 +21,31 @@ const formatDate = (dateString?: string): string => {
   });
 };
 
+const categoryColorMap = (category: string) => {
+  switch (category) {
+    case 'Press Release':
+      return 'text-[#6236FF]';
+    case 'Blog':
+      return 'text-[#BBDEFB]';
+    case 'Case Study':
+      return 'text-[#C8E6C9]';
+    case 'Data Sheet':
+      return 'text-[#D1C4E9]';
+    case 'Featured':
+      return 'text-[#FFF9C4]';
+    case 'In The News':
+      return 'text-[#1975FF]';
+    case 'Resources':
+      return 'text-[#FFE0B2]';
+    case 'Shug Speaks':
+      return 'text-[#F8BBD0]';
+    case 'Video':
+      return 'text-[#D7CCC8]';
+    default:
+      return 'text-gray-400';
+  }
+};
+
 export function PostCard(props: Post) {
   const post = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
@@ -38,8 +63,12 @@ export function PostCard(props: Post) {
         <Box direction="col" gap={0} className="h-full justify-between bg-[#f6f6f6]">
           <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem]">
             <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
-              {' '}
-              {post.categories}
+              {post.categories.map((category, index) => (
+                <span key={index}>
+                  <span className={categoryColorMap(category)}>{category}</span>
+                  {index < post.categories.length - 1 ? ', ' : ''}
+                </span>
+              ))}
             </p>
             <h2
               className="text-headline-xs leading-[120%]"
