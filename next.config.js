@@ -36,10 +36,10 @@ const nextConfig = {
               value: "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com;"
             },
             {
-              // This removes or overrides any X-Frame-Options header
-              // that might be automatically added by Vercel or other middleware
+              // Remove X-Frame-Options header entirely and rely on CSP instead
+              // This is more widely supported across browsers
               key: 'X-Frame-Options',
-              value: 'ALLOW-FROM https://app.contentful.com'
+              value: 'SAMEORIGIN'
             }
           ]
         }
