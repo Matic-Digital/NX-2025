@@ -27,7 +27,8 @@ const TeamMemberSchema = z.object({
 
 // Rich text content schema (simplified for the content field)
 const RichTextSchema = z.object({
-  nodeType: z.string(),
+  json: z.any(), // The actual rich text content returned by Contentful
+  nodeType: z.string().optional(),
   data: z.record(z.any()).optional(),
   content: z.array(z.any()).optional()
 });

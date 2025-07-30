@@ -58,6 +58,32 @@ export const POST_GRAPHQL_FIELDS = `
   }
   content {
     json
+    links {
+      entries {
+        inline {
+          sys {
+            id
+          }
+          __typename
+          ... on Image {
+            internalName
+            link
+            altText
+          }
+        }
+        block {
+          sys {
+            id
+          }
+          __typename
+          ... on Image {
+            internalName
+            link
+            altText
+          }
+        }
+      }
+    }
   }
   authorsCollection(limit: 5) {
     items {

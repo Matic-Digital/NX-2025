@@ -53,7 +53,11 @@ export function PostCard(props: Post) {
   console.log('post props', props);
 
   return (
-    <Link href={`/`} {...inspectorProps({ fieldId: 'slug' })} className="flex h-full">
+    <Link
+      href={`/resources/${post.slug}`}
+      {...inspectorProps({ fieldId: 'slug' })}
+      className="flex h-full"
+    >
       <Box direction="col" gap={0} className="">
         <AirImage
           link={post.mainImage?.link}
