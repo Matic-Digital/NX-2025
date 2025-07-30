@@ -6,8 +6,8 @@ export function Logo() {
   return (
     <Link href="/" className="mr-6">
       <Box gap={2} className="items-center">
-        <span className="text-lg font-extrabold text-gradient-pink">|||</span>
-        <h1 className="text-2xl">Matic</h1>
+        <span className="text-gradient-pink text-lg font-extrabold">|||</span>
+        <h1 className="text-headline-xs">Matic</h1>
       </Box>
     </Link>
   );

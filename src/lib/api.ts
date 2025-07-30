@@ -16,7 +16,14 @@ import type {
   Header,
   HeaderResponse,
   GraphQLResponse
-} from '@/types';
+} from '@/types/contentful';
+
+import {
+  CTABANNER_GRAPHQL_FIELDS,
+  CONTENTGRID_GRAPHQL_FIELDS,
+  HERO_GRAPHQL_FIELDS,
+  SECTIONHEADING_GRAPHQL_FIELDS
+} from '@/lib/contentful-api';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
 
@@ -38,13 +45,6 @@ const ASSET_FIELDS = `
   url
   width
   height
-`;
-
-// Hero fields
-const HERO_GRAPHQL_FIELDS = `
-  ${SYS_FIELDS}
-  name
-  description
 `;
 
 // Page fields (without circular references)
@@ -136,8 +136,17 @@ const PAGELIST_GRAPHQL_FIELDS = `
   }
   pageContentCollection {
     items {
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
+      }
       ... on Hero {
         ${HERO_GRAPHQL_FIELDS}
+      }
+      ... on CtaBanner {
+        ${CTABANNER_GRAPHQL_FIELDS}
+      }
+      ... on SectionHeading {
+        ${SECTIONHEADING_GRAPHQL_FIELDS}
       }
     }
   }
@@ -164,10 +173,19 @@ const PAGE_GRAPHQL_FIELDS = `
   footer {
     ${FOOTER_GRAPHQL_FIELDS}
   }
-  pageContentCollection {
+  pageContentCollection(limit: 10) {
     items {
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
+      }
       ... on Hero {
         ${HERO_GRAPHQL_FIELDS}
+      }
+      ... on CtaBanner {
+        ${CTABANNER_GRAPHQL_FIELDS}
+      }
+      ... on SectionHeading {
+        ${SECTIONHEADING_GRAPHQL_FIELDS}
       }
     }
   }
@@ -191,12 +209,12 @@ export async function fetchGraphQL<T>(
     // Use explicit cache settings based on preview mode
     // For preview content, use no-store to ensure fresh content
     // For production content, use force-cache when not explicitly configured
-    const cacheSettings = preview 
-      ? { cache: 'no-store' as const } 
-      : cacheConfig?.next 
-        ? { next: cacheConfig.next } 
+    const cacheSettings = preview
+      ? { cache: 'no-store' as const }
+      : cacheConfig?.next
+        ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
-        
+
     const response = await fetch(
       `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}`,
       {

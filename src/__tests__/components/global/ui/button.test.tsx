@@ -86,11 +86,11 @@ describe('Button component', () => {
     const xlButton = getByText('Extra Large').closest('button');
     const iconButton = getByText('Icon').closest('button');
 
-    expect(defaultButton?.className).toContain('h-9');
-    expect(smButton?.className).toContain('h-8');
-    expect(lgButton?.className).toContain('h-10');
-    expect(xlButton?.className).toContain('h-12');
-    expect(iconButton?.className).toContain('h-9 w-9');
+    expect(defaultButton?.className).toContain('px-7 py-3');
+    expect(smButton?.className).toContain('px-3 py-3 text-xs');
+    expect(lgButton?.className).toContain('px-8 py-3');
+    expect(xlButton?.className).toContain('px-8 py-3');
+    expect(iconButton?.className).toContain('size-9');
   });
 
   it('renders as a child component when asChild is true', () => {

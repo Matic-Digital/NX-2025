@@ -1,59 +1,8 @@
-/* matic.css - Comprehensive typography styling with shadcn colors */
-
-* {
-  @apply border-border;
-}
-
-body {
-  @apply bg-background font-sans text-foreground antialiased;
-}
-
-/* Utilities */
-.section {
-  @apply py-8 md:py-12;
-}
-
-.stack {
-  @apply flex flex-col gap-2;
-}
-
-/* Headings */
-
-h1,
-.h1 {
-  @apply text-4xl font-semibold tracking-tight;
-}
-
-h2,
-.h2 {
-  @apply text-3xl font-semibold tracking-tight;
-}
-
-h3,
-.h3 {
-  @apply text-2xl font-semibold tracking-tight;
-}
-
-h4,
-.h4 {
-  @apply text-xl font-semibold tracking-tight;
-}
-
-h5,
-.h5 {
-  @apply text-lg font-semibold tracking-tight;
-}
-
-h6,
-.h6 {
-  @apply text-base font-semibold tracking-tight;
-}
-
 /* Paragraph */
 
 p,
 .p {
-  @apply text-base leading-7 text-foreground;
+  @apply text-foreground text-base leading-7;
 }
 
 /* Blockquotes */
@@ -97,7 +46,7 @@ hr {
 /* Links */
 
 a {
-  @apply underline-offset-2 transition-all hover:text-muted-foreground;
+  @apply hover:text-muted-foreground underline-offset-2 transition-all;
 }
 
 /* Strong */
@@ -109,11 +58,11 @@ strong {
 /* Code */
 
 code {
-  @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+  @apply bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
 }
 
 pre {
-  @apply overflow-x-auto rounded-lg border bg-muted p-4;
+  @apply bg-muted overflow-x-auto rounded-lg border p-4;
 
   code {
     @apply relative rounded bg-transparent p-0;
@@ -147,7 +96,7 @@ table {
     }
 
     td {
-      @apply border px-4 py-2 text-left text-muted-foreground [&[align=center]]:text-center [&[align=right]]:text-right;
+      @apply text-muted-foreground border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
     }
   }
 }
@@ -156,7 +105,7 @@ table {
 
 figure {
   figcaption {
-    @apply mt-2 text-xs text-muted-foreground;
+    @apply text-muted-foreground mt-2 text-xs;
   }
 }
 
@@ -175,7 +124,7 @@ video {
 /* Small */
 
 small {
-  @apply text-sm font-medium leading-none;
+  @apply text-sm leading-none font-medium;
 }
 
 /* Subscript and Superscript */
@@ -204,7 +153,7 @@ details {
 /* Keyboard */
 
 kbd {
-  @apply rounded-md border bg-muted px-1.5 py-0.5 font-mono text-sm;
+  @apply bg-muted rounded-md border px-1.5 py-0.5 font-mono text-sm;
 }
 
 /* Mark */
@@ -222,7 +171,7 @@ mark {
 /* Lead Paragraph */
 
 .lead {
-  @apply text-xl text-muted-foreground;
+  @apply text-muted-foreground text-xl;
 }
 
 /* Large Text */
@@ -234,13 +183,13 @@ mark {
 /* Small Text */
 
 .small {
-  @apply text-sm font-medium leading-none;
+  @apply text-sm leading-none font-medium;
 }
 
 /* Muted Text */
 
 .muted {
-  @apply text-sm text-muted-foreground;
+  @apply text-muted-foreground text-sm;
 }
 
 /* Lists within Lists */
@@ -268,19 +217,19 @@ dt {
 }
 
 dd {
-  @apply ml-4 text-muted-foreground;
+  @apply text-muted-foreground ml-4;
 }
 
 /* Blockquote Citations */
 
 blockquote cite {
-  @apply block text-sm text-muted-foreground;
+  @apply text-muted-foreground block text-sm;
 }
 
 /* Code Block Filename */
 
 pre[data-filename]::before {
-  @apply block text-sm font-medium text-muted-foreground;
+  @apply text-muted-foreground block text-sm font-medium;
   content: attr(data-filename);
 }
 
@@ -301,7 +250,7 @@ pre[data-filename]::before {
 /* Footnotes */
 
 .footnotes {
-  @apply border-t pt-6 text-sm text-muted-foreground;
+  @apply text-muted-foreground border-t pt-6 text-sm;
 }
 
 /* Task Lists */
@@ -328,7 +277,7 @@ button {
   }
 
   &:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2;
+    @apply ring-primary ring-2 ring-offset-2 outline-none;
   }
 
   &:active {
@@ -348,7 +297,7 @@ select {
   }
 
   &:focus {
-    @apply border-primary outline-none ring-2 ring-primary ring-offset-2;
+    @apply border-primary ring-primary ring-2 ring-offset-2 outline-none;
   }
 }
 
@@ -427,25 +376,6 @@ select {
     li {
       @apply my-2;
     }
-  }
-
-  /* Headings */
-  h1 {
-    @apply mb-8 mt-6;
-  }
-
-  h2 {
-    @apply mb-6 mt-12;
-  }
-
-  h3 {
-    @apply mb-4 mt-8;
-  }
-
-  h4,
-  h5,
-  h6 {
-    @apply mb-4 mt-6;
   }
 
   /* Footnotes */

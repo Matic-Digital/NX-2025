@@ -3,24 +3,33 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/api';
-import type { PageResponse, PageListResponse, Page } from '@/types/contentful';
+
 import { getAllFooters } from '@/lib/api';
-import type { FooterResponse } from '@/types/contentful';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Hero } from '@/components/global/Hero';
+import { CtaBanner } from '@/components/CtaBanner';
+import { ContentGrid } from '@/components/ContentGrid';
+import { SectionHeading } from '@/components/SectionHeading';
+import type { FooterResponse } from '@/types/contentful/Footer';
+import type { PageResponse } from '@/types/contentful/Page';
+import type { PageListResponse } from '@/types/contentful/PageList';
+import type { Page } from '@/types/contentful/Page';
 
 /**
  * Metadata configuration for SEO
  */
 export const metadata: Metadata = {
-  title: 'Contentful Next.js Starter',
-  description: 'Contentful Next.js Starter'
+  title: 'Nextracker',
+  description: 'Nextracker Website 2025'
 };
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  Hero: Hero
+  CtaBanner: CtaBanner,
+  ContentGrid: ContentGrid,
+  Hero: Hero,
+  SectionHeading: SectionHeading
   // Add other component types here as they are created
 };
 
@@ -72,7 +81,9 @@ async function renderContentfulHomePage(page: Page) {
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            return <ComponentType key={component.sys.id} {...component} />;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
           // Log a warning if we don't have a component for this type
@@ -119,15 +130,15 @@ async function renderDefaultHomePage() {
 
   return (
     <Container className="py-8">
-      <h1 className="mb-8 text-3xl font-bold">Contentful Next.js Starter</h1>
+      <h1 className="text-headline-sm mb-8 font-bold">Nextracker Website 2025</h1>
 
       {pages.items.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-2xl font-semibold">Pages</h2>
+          <h2 className="text-headline-xs mb-4 font-semibold">Pages</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {pages.items.map((page) => (
-              <div key={page.sys.id} className="rounded-lg border p-4 shadow-sm">
-                <h3 className="mb-2 text-xl font-medium">{page.name}</h3>
+              <div key={page.sys.id} className="rounded-lg border p-4 shadow-xs">
+                <h3 className="text-body-lg mb-2 font-medium">{page.name}</h3>
                 {page.description && <p className="text-gray-600">{page.description}</p>}
               </div>
             ))}
@@ -137,12 +148,12 @@ async function renderDefaultHomePage() {
 
       {pageLists.items.length > 0 && (
         <div>
-          <h2 className="mb-4 text-2xl font-semibold">Page Lists</h2>
+          <h2 className="text-headline-xs mb-4 font-semibold">Page Lists</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {pageLists.items.map((pageList) => (
-              <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-sm">
-                <h3 className="mb-2 text-xl font-medium">{pageList.name}</h3>
-                <p className="text-sm text-gray-500">Slug: {pageList.slug}</p>
+              <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
+                <h3 className="text-body-lg mb-2 font-medium">{pageList.name}</h3>
+                <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
               </div>
             ))}
           </div>
@@ -151,19 +162,19 @@ async function renderDefaultHomePage() {
 
       {pages.items.length === 0 && pageLists.items.length === 0 && (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
-          <h2 className="mb-2 text-lg font-medium">No content found</h2>
+          <h2 className="text-body-md mb-2 font-medium">No content found</h2>
           <p>No pages or page lists were found in your Contentful space.</p>
         </div>
       )}
 
       {footers.items.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-2xl font-semibold">Footers</h2>
+          <h2 className="text-headline-xs mb-4 font-semibold">Footers</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {footers.items.map((footer) => (
-              <div key={footer.sys.id} className="rounded-lg border p-4 shadow-sm">
-                <h3 className="mb-2 text-xl font-medium">{footer.name}</h3>
-                {footer.description && <p className="text-gray-600">{footer.description}</p>}
+              <div key={footer.sys.id} className="rounded-lg border p-4 shadow-xs">
+                <h3 className="text-body-lg mb-2 font-medium">{footer.name}</h3>
+                {footer.description && <p className="text-body-xs">{footer.description}</p>}
               </div>
             ))}
           </div>

@@ -20,7 +20,9 @@ import { getPageBySlugInPageList } from '@/lib/api';
 import { Hero } from '@/components/global/Hero';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
-import type { Hero as _HeroType, Page, PageList } from '@/types/contentful';
+import type { Hero as _HeroType } from '@/types/contentful/Hero';
+import type { Page } from '@/types/contentful/Page';
+import type { PageList } from '@/types/contentful/PageList';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -155,7 +157,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
           </nav>
         </div>
 
-        <h1 className="sr-only">{page.name}</h1>
+        <h1 className="sr-only ">{page.name}</h1>
 
         {/* Render the page content components */}
         {page.pageContentCollection?.items.map((component) => {

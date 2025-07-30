@@ -33,7 +33,13 @@ export const Providers = ({ children }: { children: ReactNode }) => {
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
         <DevTools theme="dark" />
-        <ThemeProvider attribute="class">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          enableColorScheme
+          storageKey="matic-ui-theme"
+        >
           <ContentfulLivePreviewProvider
             locale="en-US"
             enableInspectorMode={true}

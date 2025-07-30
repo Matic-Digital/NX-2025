@@ -1,7 +1,5 @@
 // Global styles
 import '@/styles/globals.css';
-import '@/styles/matic.css';
-import '@/styles/layout.css';
 
 // Dependencies
 import { Inter } from 'next/font/google';
@@ -28,7 +26,7 @@ const inter = Inter({
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
  */
 export const metadata: Metadata = {
-  title: 'Matic - Contentful Next.js Starter',
+  title: 'Nextracker',
   description: 'Modern content management and digital experiences',
   icons: [{ rel: 'icon', url: '/favicon.ico' }]
 };
@@ -59,6 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en" suppressHydrationWarning className={`${layoutClasses} ${inter.variable}`}>
+      <head>{/* This script prevents flash of wrong theme */}</head>
       <body className="flex min-h-screen flex-col">
         <Providers>
           {/* 

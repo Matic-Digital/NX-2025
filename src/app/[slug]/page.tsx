@@ -21,14 +21,23 @@
 import { notFound } from 'next/navigation';
 import { getPageBySlug, getPageListBySlug } from '@/lib/api';
 import { Hero } from '@/components/global/Hero';
+import { CtaBanner } from '@/components/CtaBanner';
+import { ContentGrid } from '@/components/ContentGrid';
+import { SectionHeading } from '@/components/SectionHeading';
 import { Footer } from '@/components/global/Footer';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
-import type { Hero as _HeroType, Page, PageList as PageListType } from '@/types/contentful';
+import type { Hero as _HeroType } from '@/types/contentful/Hero';
+import type { Page } from '@/types/contentful/Page';
+import type { PageList as PageListType } from '@/types/contentful/PageList';
+import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  Hero: Hero
+  Hero: Hero,
+  CtaBanner: CtaBanner,
+  ContentGrid: ContentGrid,
+  SectionHeading: SectionHeading
   // Add other component types here as they are created
 };
 
@@ -68,7 +77,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
       console.log(`Page query result:`, page ? 'Found page' : 'No page found');
     } catch (pageError) {
       console.error(`Error fetching page with slug ${slug}:`, pageError);
-      throw new Error(`Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`);
+      throw new Error(
+        `Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`
+      );
     }
 
     // If it's a Page, render it as a standalone page
@@ -78,7 +89,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
         return renderPage(page);
       } catch (renderError) {
         console.error(`Error rendering page with slug ${slug}:`, renderError);
-        throw new Error(`Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`);
+        throw new Error(
+          `Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`
+        );
       }
     }
 
@@ -90,7 +103,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
       console.log(`PageList query result:`, pageList ? 'Found pageList' : 'No pageList found');
     } catch (pageListError) {
       console.error(`Error fetching pageList with slug ${slug}:`, pageListError);
-      throw new Error(`Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`);
+      throw new Error(
+        `Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`
+      );
     }
 
     // If it's a PageList, render it
@@ -100,7 +115,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
         return renderPageList(pageList);
       } catch (renderError) {
         console.error(`Error rendering pageList with slug ${slug}:`, renderError);
-        throw new Error(`Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`);
+        throw new Error(
+          `Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`
+        );
       }
     }
 
@@ -142,7 +159,8 @@ function renderPage(page: Page) {
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            return <ComponentType key={component.sys.id} {...component} />;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
           // Log a warning if we don't have a component for this type
@@ -169,11 +187,20 @@ function renderPageList(pageList: PageListType) {
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <main className="min-h-screen py-12">
-        {/* Render any Hero components from pageContentCollection */}
+        {/* Render components from pageContentCollection */}
         {pageContentItems.map((item, index) => {
           if (item.__typename === 'Hero') {
             const HeroComponent = componentMap.Hero;
             return <HeroComponent key={item.sys.id || `hero-${index}`} {...item} />;
+          } else if (item.__typename === 'CtaBanner') {
+            const CtaBannerComponent = componentMap.CtaBanner;
+            // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
+            return (
+              <CtaBannerComponent
+                key={item.sys.id || `cta-banner-${index}`}
+                {...(item as CtaBannerType)}
+              />
+            );
           }
           return null;
         })}

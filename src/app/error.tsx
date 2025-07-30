@@ -35,8 +35,8 @@ export default function Error({
         >
           <AlertCircle className="h-8 w-8" />
           <div className="space-y-2 text-center">
-            <h1>Something went wrong!</h1>
-            <p className="text-sm text-red-800">
+            <h1 className="text-display-lg">Something went wrong!</h1>
+            <p className="text-body-xs text-red-800">
               {error.message || 'An unexpected error occurred'}
             </p>
             {error.digest && <p className="text-xs text-red-700">Error ID: {error.digest}</p>}

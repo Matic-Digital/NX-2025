@@ -62,7 +62,7 @@ describe('ThemeToggle component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders null when not mounted', () => {
+  it('renders a placeholder div when not mounted', () => {
     // Test that the component handles the unmounted state correctly
     // by mocking React's useState to return false for mounted
     const originalUseState = React.useState;
@@ -72,8 +72,8 @@ describe('ThemeToggle component', () => {
 
     const { container } = render(<ThemeToggle />);
 
-    // When not mounted, the component should render null (empty container)
-    expect(container.innerHTML).toBe('');
+    // When not mounted, the component should render a placeholder div to prevent layout shift
+    expect(container.innerHTML).toBe('<div class="h-10 w-10"></div>');
 
     // Restore the original useState
     vi.mocked(React.useState).mockImplementation(originalUseState);
