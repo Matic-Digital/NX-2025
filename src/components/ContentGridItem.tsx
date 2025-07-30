@@ -31,7 +31,7 @@ export function ContentGridItem(props: ContentGridItemType) {
 
   const LinkItem = () => {
     return (
-      <Link href={`/${link.slug}`} className="block">
+      <Link href={link?.slug ? `/${link.slug}` : '#'} className="block">
         <Box direction="col" className="hover:bg-muted/50 group h-full p-4 transition-all">
           {renderIcon()}
 
@@ -90,11 +90,17 @@ export function ContentGridItem(props: ContentGridItemType) {
               </Box>
             </Box>
 
-            <Link href={`/${link.slug}`}>
+            {link?.slug ? (
+              <Link href={`/${link.slug}`}>
+                <button className="rounded border border-white px-6 py-2 text-white transition hover:bg-white hover:text-black">
+                  Learn More
+                </button>
+              </Link>
+            ) : (
               <button className="rounded border border-white px-6 py-2 text-white transition hover:bg-white hover:text-black">
                 Learn More
               </button>
-            </Link>
+            )}
           </Box>
         </div>
       </div>

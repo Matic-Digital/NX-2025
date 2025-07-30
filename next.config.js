@@ -18,14 +18,16 @@ const nextConfig = {
   transpilePackages: ['jotai-devtools'],
 
   // Add Content-Security-Policy headers for Contentful live preview
-  // Only in preview environments (like staging branches on Vercel)
   async headers() {
-    // Check if we're in a preview environment on Vercel
+    // We want CSP headers in development and any preview environments
     // VERCEL_ENV will be 'production', 'preview', or 'development'
-    const isPreviewEnv = process.env.VERCEL_ENV === 'prod-preview';
+    const isPreviewOrDev = 
+      process.env.NODE_ENV === 'development' || 
+      process.env.VERCEL_ENV === 'preview' || 
+      process.env.VERCEL_ENV === 'prod-preview';
     
-    // Only add CSP headers for preview environments
-    if (isPreviewEnv) {
+    // Add CSP headers for development and preview environments
+    if (isPreviewOrDev) {
       return [
         {
           // Apply to all routes
