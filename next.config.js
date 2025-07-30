@@ -32,8 +32,16 @@ const nextConfig = {
           headers: [
             {
               key: 'Content-Security-Policy',
-              // Allow embedding from Contentful domains
-              value: "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com;"
+              // Comprehensive CSP with Contentful embedding support
+              value: [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline' https://preview.contentful.com https://app.contentful.com",
+                "connect-src 'self' https://preview.contentful.com https://app.contentful.com https://cdn.contentful.com https://api.contentful.com",
+                "img-src 'self' data: https://images.ctfassets.net https://downloads.ctfassets.net https://image.mux.com https://placehold.co https://air-prod.imgix.net",
+                "frame-src 'self' https://preview.contentful.com https://app.contentful.com",
+                "style-src 'self' 'unsafe-inline'",
+                "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com"
+              ].join('; ')
             },
             {
               // Remove X-Frame-Options header entirely and rely on CSP instead
