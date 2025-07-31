@@ -23,7 +23,6 @@ import { getPageBySlug, getPageListBySlug } from '@/lib/api';
 import { Hero } from '@/components/global/Hero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
-import { SectionHeading } from '@/components/SectionHeading';
 import { Footer } from '@/components/global/Footer';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -36,8 +35,7 @@ import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 const componentMap = {
   Hero: Hero,
   CtaBanner: CtaBanner,
-  ContentGrid: ContentGrid,
-  SectionHeading: SectionHeading
+  ContentGrid: ContentGrid
   // Add other component types here as they are created
 };
 
