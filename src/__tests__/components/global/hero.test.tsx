@@ -120,8 +120,8 @@ describe('Hero Component', () => {
 
     // Check title classes
     const titleElement = screen.getByText('Test Hero Title');
-    expect(titleElement).toHaveClass('text-4xl');
-    expect(titleElement).toHaveClass('sm:text-5xl');
+    expect(titleElement).toHaveClass('text-headline-md');
+    expect(titleElement).toHaveClass('sm:text-headline-lg');
 
     // Check description classes
     const descriptionElement = screen.getByText('Test hero description text');
