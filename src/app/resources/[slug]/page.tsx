@@ -3,7 +3,7 @@ import { ContentfulRichText } from '@/components/global/ContentfulRichText';
 import { getPostBySlug } from '@/lib/contentful-api/post';
 import { Box, Container } from '@/components/global/matic-ds';
 import type { Metadata } from 'next';
-import AirImage from '@/components/global/AirImage';
+import AirImage from '@/components/media/AirImage';
 
 // Define the params type for generateMetadata and page (Next.js 15+)
 interface PostPageParams {

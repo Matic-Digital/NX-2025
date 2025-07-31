@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/global/AirImage';
+import { AirImage } from '@/components/media/AirImage';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
 
 export function ContentGridItem(props: ContentGridItemType) {

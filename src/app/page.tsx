@@ -10,7 +10,6 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { Hero } from '@/components/global/Hero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
-import { SectionHeading } from '@/components/SectionHeading';
 import type { FooterResponse } from '@/types/contentful/Footer';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
@@ -28,8 +27,7 @@ export const metadata: Metadata = {
 const componentMap = {
   CtaBanner: CtaBanner,
   ContentGrid: ContentGrid,
-  Hero: Hero,
-  SectionHeading: SectionHeading
+  Hero: Hero
   // Add other component types here as they are created
 };
 

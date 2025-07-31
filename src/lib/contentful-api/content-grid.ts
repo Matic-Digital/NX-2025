@@ -4,6 +4,7 @@ import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from './post';
+import { VIDEO_GRAPHQL_FIELDS } from './video';
 
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -66,6 +67,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
       ... on Post {
         ${POST_GRAPHQL_FIELDS_SIMPLE}
+      }
+      ... on Video {
+        ${VIDEO_GRAPHQL_FIELDS}
       }
     }
   }

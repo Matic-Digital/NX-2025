@@ -13,7 +13,7 @@ import type { CtaBanner } from '@/types/contentful/CtaBanner';
 import Image from 'next/image';
 import { useState } from 'react';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
-import { AirImage } from '@/components/global/AirImage';
+import { AirImage } from '@/components/media/AirImage';
 
 export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
