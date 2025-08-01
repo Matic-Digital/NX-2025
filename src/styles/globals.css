@@ -68,7 +68,7 @@
 
   --primary-border-focus: #c4b5fd;
 
-  --secondary: #6366f1;
+  --secondary: #111827;
   --tertiary: #3b82f6;
 
   /* Success */
@@ -149,7 +149,7 @@
   --popover-foreground: var(--text-body);
   --primary: #fe5000;
   --primary-foreground: #ffffff;
-  --secondary: var(--secondary);
+  --secondary: #111827;
   --secondary-foreground: var(--white);
   --muted: var(--muted);
   --muted-foreground: var(--text-muted);
@@ -235,7 +235,7 @@
 
   --primary-focus-border: #a78bfa;
 
-  --secondary: #a5b4fc;
+  --secondary: #111827;
   --tertiary: #93c5fd;
 
   /* Success */
@@ -442,6 +442,21 @@
   --color-primary-muted-border: var(--primary-muted-border);
 
   --color-primary-focus-border: var(--primary-focus-border);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-muted: var(--secondary-muted);
+
+  --color-secondary-border: var(--secondary-border);
+  --color-secondary-hover-border: var(--secondary-hover-border);
+
+  --color-secondary-disabled: var(--secondary-disabled);
+  --color-secondary-disabled-border: var(--secondary-disabled-border);
+
+  --color-secondary-muted: var(--secondary-muted);
+  --color-secondary-muted-border: var(--secondary-muted-border);
+
+  --color-secondary-focus-border: var(--secondary-focus-border);
 
   /* Success */
   --color-success: var(--success);

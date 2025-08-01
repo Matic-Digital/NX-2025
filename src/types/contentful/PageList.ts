@@ -2,7 +2,7 @@ import type { CtaBanner } from './CtaBanner';
 import type { ContentGrid } from './ContentGrid';
 import type { Footer } from './Footer';
 import type { Header } from './Header';
-import type { Hero } from './Hero';
+import type { BannerHero } from './BannerHero';
 import type { Page } from './Page';
 import type { SectionHeading } from './SectionHeading';
 
@@ -17,7 +17,7 @@ export interface PageList {
   };
   header?: Header;
   pageContentCollection?: {
-    items: (CtaBanner | ContentGrid | Hero | SectionHeading)[];
+    items: (CtaBanner | ContentGrid | BannerHero | SectionHeading)[];
   };
   footer?: Footer;
   __typename?: string;

@@ -7,7 +7,7 @@ import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/api';
 import { getAllFooters } from '@/lib/api';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
-import { Hero } from '@/components/global/Hero';
+import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  CtaBanner: CtaBanner,
+  BannerHero: BannerHero,
   ContentGrid: ContentGrid,
-  Hero: Hero
+  CtaBanner: CtaBanner
   // Add other component types here as they are created
 };
 

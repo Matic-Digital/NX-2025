@@ -131,16 +131,18 @@ describe('Preview API Route', () => {
     expect(response.headers.get('Location')).toContain('/header-preview?headerName=test-header');
   });
 
-  it('redirects to hero preview with valid heroId', async () => {
+  it('redirects to banner hero preview with valid bannerHeroId', async () => {
     const request = createMockRequest({
       secret: 'test-preview-secret',
-      heroId: 'test-hero-id'
+      bannerHeroId: 'test-banner-hero-id'
     });
 
     const response = await GET(request);
 
     expect(response.status).toBe(307);
-    expect(response.headers.get('Location')).toContain('/hero-preview?heroId=test-hero-id');
+    expect(response.headers.get('Location')).toContain(
+      '/banner-hero-preview?bannerHeroId=test-banner-hero-id'
+    );
   });
 
   it('prioritizes slug over other parameters when multiple are provided', async () => {

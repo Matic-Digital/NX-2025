@@ -2,8 +2,7 @@
  * Page Component
  *
  * This component renders a page based on content from Contentful. It displays
- * a page title, description, and dynamically renders page content components
- * (such as Hero sections) based on the content structure defined in Contentful.
+ * a page title, description, and dynamically renders page content components based on the content structure defined in Contentful.
  *
  * The component is integrated with Contentful's Live Preview functionality,
  * allowing content editors to see real-time updates in the preview environment.
@@ -25,7 +24,6 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { Container, Box } from '@/components/global/matic-ds';
-import { Hero } from './Hero';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import type { Header as HeaderType } from '@/types/contentful/Header';
@@ -166,20 +164,11 @@ export function Page(props: PageProps) {
         </Box>
       </Container>
 
-      {/* Render Page Content (Hero components) */}
+      {/* Render Page Content */}
       <div {...inspectorProps({ fieldId: 'pageContentCollection' })}>
         {page.pageContentCollection?.items && page.pageContentCollection.items.length > 0 && (
           <div className="page-content">
             {page.pageContentCollection.items.map((content, index) => {
-              // Check if the content is a Hero
-              if (content.__typename === 'Hero') {
-                return (
-                  <div key={content.sys.id || index} className="mb-12">
-                    <Hero {...content} />
-                  </div>
-                );
-              }
-
               // Default case if content type is not recognized
               return (
                 <div key={content.sys.id || index} className="mb-12">
