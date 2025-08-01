@@ -13,6 +13,7 @@ export const SectionHeadingSchema = z.object({
       items: z.array(ButtonSchema)
     })
     .optional(),
+  componentType: z.string().optional(),
   __typename: z.string().optional()
 });
 

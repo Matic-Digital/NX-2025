@@ -21,11 +21,12 @@ import type {
 import {
   CTABANNER_GRAPHQL_FIELDS,
   CONTENTGRID_GRAPHQL_FIELDS,
-  HERO_GRAPHQL_FIELDS,
+  BANNERHERO_GRAPHQL_FIELDS,
   SECTIONHEADING_GRAPHQL_FIELDS
 } from '@/lib/contentful-api';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
+import { HERO_GRAPHQL_FIELDS } from './contentful-api/hero';
 
 // Base fields for all content types
 const SYS_FIELDS = `
@@ -139,8 +140,8 @@ const PAGELIST_GRAPHQL_FIELDS = `
       ... on ContentGrid {
         ${CONTENTGRID_GRAPHQL_FIELDS}
       }
-      ... on Hero {
-        ${HERO_GRAPHQL_FIELDS}
+      ... on BannerHero {
+        ${BANNERHERO_GRAPHQL_FIELDS}
       }
       ... on CtaBanner {
         ${CTABANNER_GRAPHQL_FIELDS}
@@ -178,8 +179,8 @@ const PAGE_GRAPHQL_FIELDS = `
       ... on ContentGrid {
         ${CONTENTGRID_GRAPHQL_FIELDS}
       }
-      ... on Hero {
-        ${HERO_GRAPHQL_FIELDS}
+      ... on BannerHero {
+        ${BANNERHERO_GRAPHQL_FIELDS}
       }
       ... on CtaBanner {
         ${CTABANNER_GRAPHQL_FIELDS}

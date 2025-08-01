@@ -20,7 +20,7 @@
 
 import { notFound } from 'next/navigation';
 import { getPageBySlug, getPageListBySlug } from '@/lib/api';
-import { Hero } from '@/components/global/Hero';
+import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import { Footer } from '@/components/global/Footer';
@@ -33,9 +33,9 @@ import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  Hero: Hero,
-  CtaBanner: CtaBanner,
-  ContentGrid: ContentGrid
+  BannerHero: BannerHero,
+  ContentGrid: ContentGrid,
+  CtaBanner: CtaBanner
   // Add other component types here as they are created
 };
 
@@ -187,10 +187,7 @@ function renderPageList(pageList: PageListType) {
       <main className="min-h-screen py-12">
         {/* Render components from pageContentCollection */}
         {pageContentItems.map((item, index) => {
-          if (item.__typename === 'Hero') {
-            const HeroComponent = componentMap.Hero;
-            return <HeroComponent key={item.sys.id || `hero-${index}`} {...item} />;
-          } else if (item.__typename === 'CtaBanner') {
+          if (item.__typename === 'CtaBanner') {
             const CtaBannerComponent = componentMap.CtaBanner;
             // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
             return (
