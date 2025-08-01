@@ -23,7 +23,7 @@ describe('Button component', () => {
   it('renders with different variants', () => {
     const { getByText } = render(
       <div>
-        <Button variant="default" data-testid="default-button">
+        <Button variant="primary" data-testid="default-button">
           Default
         </Button>
         <Button variant="destructive" data-testid="destructive-button">
