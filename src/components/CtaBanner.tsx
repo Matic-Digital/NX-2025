@@ -79,7 +79,7 @@ export function CtaBanner(props: CtaBanner) {
                 )}
                 {ctaBanner.secondaryCta && (
                   <Button
-                    className="bg-gray-900 text-white hover:bg-gray-800"
+                    variant="secondary"
                     {...inspectorProps({ fieldId: 'secondaryCta' })}
                     onClick={ctaBanner.secondaryCta.modal && handleModalTrigger}
                   >
