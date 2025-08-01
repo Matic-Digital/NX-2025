@@ -7,7 +7,7 @@
  * handle error cases appropriately.
  *
  * Key aspects tested:
- * - Fetching various content types (Heroes, Pages, NavBars, PageLists)
+ * - Fetching various content types (BannerHeroes, Pages, NavBars, PageLists)
  * - Handling of GraphQL errors
  * - Handling of empty responses
  * - Proper parameter passing to the GraphQL API
@@ -195,30 +195,23 @@ describe('API Module', () => {
   });
 
   /**
-   * Tests for getAllHeroes function
+   * Tests for getAllBannerHeroes function
    *
-   * Verifies that the function correctly fetches hero content from Contentful,
+   * Verifies that the function correctly fetches banner hero content from Contentful,
    * handles pagination parameters, and processes the response structure according
    * to Contentful's GraphQL API conventions.
    */
-  describe('getAllHeroes', () => {
-    it('fetches heroes with correct query and parameters', async () => {
-      // Mock successful response with heroes
-      const mockHeroesResponse = {
+  describe('getAllBannerHeroes', () => {
+    it('fetches banner heroes with correct query and parameters', async () => {
+      // Mock successful response with banner heroes
+      const mockBannerHeroesResponse = {
         data: {
-          heroCollection: {
+          bannerHeroCollection: {
             items: [
               {
-                sys: { id: 'hero1' },
-                name: 'Hero 1',
-                description: 'Description 1',
-                __typename: 'Hero'
-              },
-              {
-                sys: { id: 'hero2' },
-                name: 'Hero 2',
-                description: 'Description 2',
-                __typename: 'Hero'
+                sys: { id: 'banner-hero1' },
+                name: 'Banner Hero 1',
+                __typename: 'BannerHero'
               }
             ],
             total: 2
@@ -228,33 +221,33 @@ describe('API Module', () => {
 
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue(mockHeroesResponse)
+        json: vi.fn().mockResolvedValue(mockBannerHeroesResponse)
       };
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const result = await api.getAllHeroes(false, 10, 0);
+      const result = await api.getAllBannerHeroes(false, 10, 0);
 
       // Verify the result
       expect(result?.items).toHaveLength(2);
-      expect(result?.items?.[0]?.name).toBe('Hero 1');
-      expect(result?.items?.[1]?.name).toBe('Hero 2');
+      expect(result?.items?.[0]?.name).toBe('Banner Hero 1');
+      expect(result?.items?.[1]?.name).toBe('Banner Hero 2');
       expect(result?.total).toBe(2);
 
       // Verify fetch was called with correct query
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: expect.stringContaining('heroCollection')
+          body: expect.stringContaining('bannerHeroCollection')
         })
       );
     });
 
-    it('handles empty hero collection', async () => {
+    it('handles empty banner hero collection', async () => {
       // Mock empty response
       const mockEmptyResponse = {
         data: {
-          heroCollection: {
+          bannerHeroCollection: {
             items: [],
             total: 0
           }
@@ -268,7 +261,7 @@ describe('API Module', () => {
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const result = await api.getAllHeroes();
+      const result = await api.getAllBannerHeroes();
 
       expect(result?.items).toHaveLength(0);
       expect(result?.total).toBe(0);
@@ -276,26 +269,26 @@ describe('API Module', () => {
   });
 
   /**
-   * Tests for getHero function
+   * Tests for getBannerHero function
    *
-   * Ensures the function correctly fetches a single hero by ID,
-   * properly constructs the GraphQL query with the hero ID parameter,
-   * and handles cases where the hero is not found.
+   * Ensures the function correctly fetches a single banner hero by ID,
+   * properly constructs the GraphQL query with the banner hero ID parameter,
+   * and handles cases where the banner hero is not found.
    */
-  describe('getHero', () => {
-    it('fetches a single hero by ID', async () => {
-      const heroId = 'hero123';
+  describe('getBannerHero', () => {
+    it('fetches a single banner hero by ID', async () => {
+      const bannerHeroId = 'banner-hero123';
 
-      // Mock successful response with a hero
-      const mockHeroResponse = {
+      // Mock successful response with a banner hero
+      const mockBannerHeroResponse = {
         data: {
-          heroCollection: {
+          bannerHeroCollection: {
             items: [
               {
-                sys: { id: heroId },
-                name: 'Test Hero',
+                sys: { id: bannerHeroId },
+                name: 'Test Banner Hero',
                 description: 'Test Description',
-                __typename: 'Hero'
+                __typename: 'BannerHero'
               }
             ]
           }
@@ -304,32 +297,32 @@ describe('API Module', () => {
 
       const mockResponse = {
         ok: true,
-        json: vi.fn().mockResolvedValue(mockHeroResponse)
+        json: vi.fn().mockResolvedValue(mockBannerHeroResponse)
       };
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const result = await api.getHero(heroId);
+      const result = await api.getBannerHero(bannerHeroId);
 
       // Verify the result
       expect(result).not.toBeNull();
-      expect(result?.sys?.id).toBe(heroId);
-      expect(result?.name).toBe('Test Hero');
+      expect(result?.sys?.id).toBe(bannerHeroId);
+      expect(result?.name).toBe('Test Banner Hero');
 
       // Verify fetch was called with correct query and variables
       expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: expect.stringContaining(heroId)
+          body: expect.stringContaining(bannerHeroId)
         })
       );
     });
 
-    it('returns null when hero is not found', async () => {
-      // Mock response with no hero
+    it('returns null when banner hero is not found', async () => {
+      // Mock response with no banner hero
       const mockEmptyResponse = {
         data: {
-          heroCollection: {
+          bannerHeroCollection: {
             items: []
           }
         }
@@ -342,7 +335,7 @@ describe('API Module', () => {
 
       (global.fetch as any).mockResolvedValue(mockResponse);
 
-      const result = await api.getHero('non-existent-id');
+      const result = await api.getBannerHero('non-existent-id');
 
       expect(result).toBeNull();
     });
@@ -372,10 +365,10 @@ describe('API Module', () => {
                 pageContentCollection: {
                   items: [
                     {
-                      sys: { id: 'hero1' },
-                      name: 'Hero Component',
-                      description: 'Hero Description',
-                      __typename: 'Hero'
+                      sys: { id: 'banner-hero1' },
+                      name: 'Banner Hero Component',
+                      description: 'Banner Hero Description',
+                      __typename: 'BannerHero'
                     }
                   ]
                 },
@@ -400,7 +393,7 @@ describe('API Module', () => {
       expect(result?.slug).toBe(slug);
       expect(result?.name).toBe('Test Page');
       expect(result?.pageContentCollection?.items).toHaveLength(1);
-      expect(result?.pageContentCollection?.items?.[0]?.name).toBe('Hero Component');
+      expect(result?.pageContentCollection?.items?.[0]?.name).toBe('Banner Hero Component');
 
       // Verify fetch was called with correct query and variables
       expect(global.fetch).toHaveBeenCalledWith(

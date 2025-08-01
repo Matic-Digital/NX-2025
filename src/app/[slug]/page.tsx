@@ -9,7 +9,7 @@
  * - Dynamic routing using Next.js file-based routing with [slug] parameter
  * - Support for both Page and PageList content types under the same URL structure
  * - Server-side rendering of content from Contentful
- * - Component mapping to render different content types (Hero, PageList, etc.)
+ * - Component mapping to render different content types (BannerHero, CtaBanner, ContentGrid, PageList, etc.)
  * - Error handling for content that doesn't exist (404 Not Found)
  * - Support for both static site generation and dynamic rendering
  *
@@ -26,7 +26,6 @@ import { ContentGrid } from '@/components/ContentGrid';
 import { Footer } from '@/components/global/Footer';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
-import type { Hero as _HeroType } from '@/types/contentful/Hero';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';

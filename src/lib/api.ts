@@ -5,8 +5,8 @@
 
 // Types
 import type {
-  Hero,
-  HeroResponse,
+  BannerHero,
+  BannerHeroResponse,
   Page,
   Footer,
   FooterResponse,
@@ -26,7 +26,6 @@ import {
 } from '@/lib/contentful-api';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
-import { HERO_GRAPHQL_FIELDS } from './contentful-api/hero';
 
 // Base fields for all content types
 const SYS_FIELDS = `
@@ -274,26 +273,26 @@ export async function fetchGraphQL<T>(
   }
 }
 
-export const HEROES_PER_PAGE = 10;
+export const BANNERHEROES_PER_PAGE = 10;
 
 /**
- * Fetches all heroes from Contentful
+ * Fetches all banner heroes from Contentful
  * @param preview - Whether to fetch draft content
- * @param limit - Maximum number of heroes to fetch
- * @param skip - Number of heroes to skip for pagination
- * @returns Promise resolving to heroes response with pagination info
+ * @param limit - Maximum number of banner heroes to fetch
+ * @param skip - Number of banner heroes to skip for pagination
+ * @returns Promise resolving to banner heroes response with pagination info
  */
-export async function getAllHeroes(
+export async function getAllBannerHeroes(
   preview = false,
-  limit = HEROES_PER_PAGE,
+  limit = BANNERHEROES_PER_PAGE,
   skip = 0
-): Promise<HeroResponse> {
+): Promise<BannerHeroResponse> {
   try {
-    const response = await fetchGraphQL<Hero>(
-      `query GetAllHeroes($preview: Boolean!, $limit: Int!, $skip: Int!) {
-        heroCollection(preview: $preview, limit: $limit, skip: $skip) {
+    const response = await fetchGraphQL<BannerHero>(
+      `query GetAllBannerHeroes($preview: Boolean!, $limit: Int!, $skip: Int!) {
+        bannerHeroCollection(preview: $preview, limit: $limit, skip: $skip) {
           items {
-            ${HERO_GRAPHQL_FIELDS}
+            ${BANNERHERO_GRAPHQL_FIELDS}
           }
           total
         }
@@ -302,38 +301,38 @@ export async function getAllHeroes(
       preview
     );
 
-    if (!response.data?.heroCollection) {
-      throw new ContentfulError('Failed to fetch heroes from Contentful');
+    if (!response.data?.bannerHeroCollection) {
+      throw new ContentfulError('Failed to fetch banner heroes from Contentful');
     }
 
     return {
-      items: response.data.heroCollection.items,
-      total: response.data.heroCollection.total
+      items: response.data.bannerHeroCollection.items,
+      total: response.data.bannerHeroCollection.total
     };
   } catch (error) {
     if (error instanceof ContentfulError) {
       throw error;
     }
     if (error instanceof Error) {
-      throw new NetworkError(`Error fetching heroes: ${error.message}`);
+      throw new NetworkError(`Error fetching banner heroes: ${error.message}`);
     }
-    throw new Error('Unknown error fetching heroes');
+    throw new Error('Unknown error fetching banner heroes');
   }
 }
 
 /**
- * Fetches a single hero by ID
- * @param id - The ID of the hero to fetch
+ * Fetches a single banner hero by ID
+ * @param id - The ID of the banner hero to fetch
  * @param preview - Whether to fetch draft content
- * @returns Promise resolving to the hero or null if not found
+ * @returns Promise resolving to the banner hero or null if not found
  */
-export async function getHero(id: string, preview = true): Promise<Hero | null> {
+export async function getBannerHero(id: string, preview = true): Promise<BannerHero | null> {
   try {
-    const response = await fetchGraphQL<Hero>(
-      `query GetHeroById($id: String!, $preview: Boolean!) {
-        heroCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+    const response = await fetchGraphQL<BannerHero>(
+      `query GetBannerHeroById($id: String!, $preview: Boolean!) {
+        bannerHeroCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
           items {
-            ${HERO_GRAPHQL_FIELDS}
+            ${BANNERHERO_GRAPHQL_FIELDS}
           }
         }
       }`,
@@ -341,16 +340,16 @@ export async function getHero(id: string, preview = true): Promise<Hero | null> 
       preview
     );
 
-    if (!response.data?.heroCollection?.items?.length) {
+    if (!response.data?.bannerHeroCollection?.items?.length) {
       return null;
     }
 
-    return response.data.heroCollection.items[0]!;
+    return response.data.bannerHeroCollection.items[0]!;
   } catch (error) {
     if (error instanceof Error) {
-      throw new NetworkError(`Error fetching hero: ${error.message}`);
+      throw new NetworkError(`Error fetching banner hero: ${error.message}`);
     }
-    throw new Error('Unknown error fetching hero');
+    throw new Error('Unknown error fetching banner hero');
   }
 }
 

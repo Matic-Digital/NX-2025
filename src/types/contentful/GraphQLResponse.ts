@@ -6,7 +6,7 @@
  */
 export interface GraphQLResponse<T> {
   data?: {
-    heroCollection?: {
+    bannerHeroCollection?: {
       items: T[];
       total: number;
     };

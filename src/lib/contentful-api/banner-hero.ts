@@ -16,7 +16,7 @@ const IMAGE_FIELDS = `
   altText
 `;
 
-// Hero fields
+// BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   name

@@ -17,16 +17,15 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPageBySlugInPageList } from '@/lib/api';
-import { Hero } from '@/components/global/Hero';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
-import type { Hero as _HeroType } from '@/types/contentful/Hero';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList } from '@/types/contentful/PageList';
+import { BannerHero } from '@/components/BannerHero';
 
 // Define the component mapping for pageContent items
 const componentMap = {
-  Hero: Hero
+  BannerHero: BannerHero
   // Add other component types here as they are created
 };
 
@@ -175,7 +174,8 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            return <ComponentType key={component.sys.id} {...component} />;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
           // Log a warning if we don't have a component for this type

@@ -16,4 +16,5 @@ export type BannerHero = z.infer<typeof BannerHeroSchema>;
 
 export interface BannerHeroResponse {
   items: BannerHero[];
+  total: number;
 }
