@@ -14,7 +14,7 @@ const SYS_FIELDS = `
 // Image fields
 export const IMAGE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  internalName
+  title
   link
   altText
 `;

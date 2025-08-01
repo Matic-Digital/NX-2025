@@ -29,14 +29,14 @@ vi.mock('@/lib/api', () => ({
 const mockImages = [
   {
     sys: { id: 'image1' },
-    internalName: 'Test Image 1',
+    title: 'Test Image 1',
     link: 'https://example.com/images/test1.jpg',
     altText: 'Test image 1 description',
     __typename: 'Image'
   },
   {
     sys: { id: 'image2' },
-    internalName: 'Test Image 2',
+    title: 'Test Image 2',
     link: 'https://example.com/images/test2.jpg',
     altText: 'Test image 2 description',
     __typename: 'Image'
@@ -82,8 +82,8 @@ describe('Image API Module', () => {
 
       // Verify the result
       expect(result?.items).toHaveLength(2);
-      expect(result?.items?.[0]?.internalName).toBe('Test Image 1');
-      expect(result?.items?.[1]?.internalName).toBe('Test Image 2');
+      expect(result?.items?.[0]?.title).toBe('Test Image 1');
+      expect(result?.items?.[1]?.title).toBe('Test Image 2');
 
       // Verify fetchGraphQL was called with correct query and parameters
       expect(fetchGraphQL).toHaveBeenCalledWith(
@@ -190,7 +190,7 @@ describe('Image API Module', () => {
       // Verify the result
       expect(result).not.toBeNull();
       expect(result?.sys?.id).toBe(imageId);
-      expect(result?.internalName).toBe('Test Image 1');
+      expect(result?.title).toBe('Test Image 1');
       expect(result?.link).toBe('https://example.com/images/test1.jpg');
 
       // Verify fetchGraphQL was called with correct query and variables

@@ -25,7 +25,7 @@ const ASSET_FIELDS = `
 // Image fields
 const IMAGE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  internalName
+  title
   link
   altText
 `;

@@ -11,7 +11,7 @@ const IMAGE_FIELDS = `
   sys {
     id
   }
-  internalName
+  title 
   link
   altText
 `;
@@ -19,7 +19,7 @@ const IMAGE_FIELDS = `
 // BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  name
+  title
   heading {
     ${SECTIONHEADING_GRAPHQL_FIELDS}
   }

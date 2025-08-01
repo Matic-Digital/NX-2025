@@ -22,7 +22,7 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
     sys {
       id
     }
-    internalName
+    title
     link
     altText
   }
@@ -52,7 +52,7 @@ export const POST_GRAPHQL_FIELDS = `
     sys {
       id
     }
-    internalName
+    title
     link
     altText
   }
@@ -66,7 +66,7 @@ export const POST_GRAPHQL_FIELDS = `
           }
           __typename
           ... on Image {
-            internalName
+            title
             link
             altText
           }
@@ -77,7 +77,7 @@ export const POST_GRAPHQL_FIELDS = `
           }
           __typename
           ... on Image {
-            internalName
+            title
             link
             altText
           }
@@ -103,7 +103,7 @@ export const POST_GRAPHQL_FIELDS = `
     sys {
       id
     }
-    internalName
+    title
     link
     altText
   }

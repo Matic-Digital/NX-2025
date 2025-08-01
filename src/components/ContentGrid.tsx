@@ -6,8 +6,10 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
 import { PostCard } from '@/components/global/PostCard';
+import { ServiceCard } from '@/components/global/ServiceCard';
 import { MuxVideo } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
+import AirImage from '@/components/media/AirImage';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
 
 export function ContentGrid(props: ContentGrid) {
@@ -19,8 +21,8 @@ export function ContentGrid(props: ContentGrid) {
   return (
     <ErrorBoundary>
       <Section>
-        <Container>
-          <Box direction="col" gap={12}>
+        <Container className="">
+          <Box direction="col" gap={12} className="relative z-20">
             {/* section heading */}
             <SectionHeading {...contentGrid.heading} />
 
@@ -85,6 +87,14 @@ export function ContentGrid(props: ContentGrid) {
                     if (isVideo) {
                       // Type assertion since we've verified it's a proper Video
                       return <MuxVideo key={item.sys?.id || index} {...item} />;
+                    }
+
+                    const isService =
+                      item.__typename === 'Service' && 'slug' in item && 'cardTitle' in item;
+
+                    if (isService) {
+                      // Type assertion since we've verified it's a proper Service
+                      return <ServiceCard key={item.sys?.id || index} {...item} />;
                     }
 
                     // Type guard: Check if item is a ContentGridItem with proper ContentGridItem structure
