@@ -226,7 +226,7 @@ export function ContactForm() {
 
         <CardFooter>
           <Button
-            variant={theme === 'dark' ? 'secondary' : 'default'}
+            variant={theme === 'dark' ? 'secondary' : 'primary'}
             type="submit"
             className="w-full"
             disabled={isSubmitting}

@@ -61,7 +61,7 @@ export function SectionHeading(props: SectionHeading) {
                   (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
                     ? 'outline'
                     : index === 0
-                      ? 'default'
+                      ? 'primary'
                       : 'outline'
                 }
               >
@@ -120,10 +120,10 @@ export function SectionHeading(props: SectionHeading) {
                 <Button
                   variant={
                     (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'outline'
+                      ? 'white'
                       : index === 0
-                        ? 'outline'
-                        : 'default'
+                        ? 'white'
+                        : 'primary'
                   }
                 >
                   {cta.text}
