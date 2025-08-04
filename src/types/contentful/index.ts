@@ -12,3 +12,4 @@ export * from './PageList';
 export * from './Post';
 export * from './SectionHeading';
 export * from './Video';
+export * from './Service';

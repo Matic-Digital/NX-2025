@@ -5,6 +5,7 @@ import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from './post';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
+import { SERVICE_GRAPHQL_FIELDS } from './service';
 
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -30,7 +31,7 @@ const IMAGE_FIELDS = `
   sys {
     id
   }
-  internalName
+  title
   link
   altText
 `;
@@ -60,6 +61,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
   heading {
     ${SECTIONHEADING_GRAPHQL_FIELDS}
   }
+  backgroundImage {
+    ${IMAGE_FIELDS}
+  }
   itemsCollection(limit: 6) {
     items {
       ... on ContentGridItem {
@@ -70,6 +74,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
       ... on Video {
         ${VIDEO_GRAPHQL_FIELDS}
+      }
+      ... on Service {
+        ${SERVICE_GRAPHQL_FIELDS}
       }
     }
   }

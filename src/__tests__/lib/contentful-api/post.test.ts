@@ -37,7 +37,7 @@ const mockPosts: Post[] = [
     datePublished: '2024-01-15',
     mainImage: {
       sys: { id: 'image1' },
-      internalName: 'Test Image 1',
+      title: 'Test Image 1',
       link: 'https://example.com/images/test1.jpg',
       altText: 'Test image 1 description',
       __typename: 'Image'
@@ -70,7 +70,7 @@ const mockPosts: Post[] = [
     tags: ['technology', 'development'],
     openGraphImage: {
       sys: { id: 'image2' },
-      internalName: 'OG Image',
+      title: 'OG Image',
       link: 'https://example.com/images/og.jpg',
       altText: 'Open graph image',
       __typename: 'Image'

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 interface AirImageProps {
   sys?: { id: string };
-  internalName?: string;
+  title?: string;
   link?: string;
   altText?: string;
   __typename?: string;
@@ -21,7 +21,12 @@ interface AirImageProps {
  * @param quality - Image quality (1-100)
  * @returns Optimized image URL
  */
-const optimizeContentfulImage = (url: string, width?: number, height?: number, quality = 80): string => {
+const optimizeContentfulImage = (
+  url: string,
+  width?: number,
+  height?: number,
+  quality = 80
+): string => {
   if (!url.includes('images.ctfassets.net') && !url.includes('assets.ctfassets.net')) {
     return url; // Not a Contentful image, return as-is
   }
@@ -62,7 +67,7 @@ export const AirImage: React.FC<AirImageProps> = (props) => {
   // Use higher default resolutions for better quality
   const defaultWidth = width ?? 1200;
   const defaultHeight = height ?? 800;
-  
+
   // Optimize the Contentful image URL
   const optimizedSrc = optimizeContentfulImage(link, defaultWidth, defaultHeight, 85);
 

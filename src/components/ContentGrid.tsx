@@ -6,8 +6,11 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
 import { PostCard } from '@/components/global/PostCard';
+import { ServiceCard } from '@/components/global/ServiceCard';
 import { MuxVideo } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
+import AirImage from '@/components/media/AirImage';
+import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
 
 export function ContentGrid(props: ContentGrid) {
@@ -18,9 +21,16 @@ export function ContentGrid(props: ContentGrid) {
 
   return (
     <ErrorBoundary>
-      <Section>
-        <Container>
-          <Box direction="col" gap={12}>
+      <Section className="relative">
+        <Box className="absolute top-0 left-0 h-full w-full">
+          <AirImage
+            link={contentGrid.backgroundImage?.link}
+            altText={contentGrid.backgroundImage?.altText}
+            className="h-full w-full object-cover"
+          />
+        </Box>
+        <Container className="">
+          <Box direction="col" gap={12} className="relative z-20">
             {/* section heading */}
             <SectionHeading {...contentGrid.heading} />
 
@@ -45,7 +55,10 @@ export function ContentGrid(props: ContentGrid) {
                 (item) => 'playbackId' in item && item.playbackId
               );
 
-              return (
+              // Check if there are any service cards to wrap with provider
+              const hasServiceCards = validItems.some((item) => item.__typename === 'Service');
+
+              const gridContent = (
                 <Box
                   cols={{
                     base: 1,
@@ -87,6 +100,30 @@ export function ContentGrid(props: ContentGrid) {
                       return <MuxVideo key={item.sys?.id || index} {...item} />;
                     }
 
+                    const isService =
+                      item.__typename === 'Service' && 'slug' in item && 'cardTitle' in item;
+
+                    if (isService) {
+                      // Find the first service item index
+                      const serviceItems = validItems.filter(
+                        (item) => item.__typename === 'Service'
+                      );
+                      const serviceIndex = serviceItems.findIndex(
+                        (serviceItem) => serviceItem.sys?.id === item.sys?.id
+                      );
+                      const isFirstService = serviceIndex === 0;
+
+                      // Type assertion since we've verified it's a proper Service
+                      return (
+                        <ServiceCard
+                          key={item.sys?.id || index}
+                          cardId={item.sys?.id || `service-${index}`}
+                          isFirst={isFirstService}
+                          {...item}
+                        />
+                      );
+                    }
+
                     // Type guard: Check if item is a ContentGridItem with proper ContentGridItem structure
                     const isContentGridItem = 'link' in item && 'description' in item;
 
@@ -99,6 +136,13 @@ export function ContentGrid(props: ContentGrid) {
                     return null;
                   })}
                 </Box>
+              );
+
+              // Return content wrapped with ServiceCardProvider if service cards are present
+              return hasServiceCards ? (
+                <ServiceCardProvider>{gridContent}</ServiceCardProvider>
+              ) : (
+                gridContent
               );
             })()}
           </Box>

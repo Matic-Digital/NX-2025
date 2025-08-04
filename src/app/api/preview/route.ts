@@ -32,7 +32,9 @@ export async function GET(request: NextRequest) {
   } else if (headerName) {
     return NextResponse.redirect(new URL(`/header-preview?headerName=${headerName}`, request.url));
   } else if (bannerHeroId) {
-    return NextResponse.redirect(new URL(`/banner-hero-preview?bannerHeroId=${bannerHeroId}`, request.url));
+    return NextResponse.redirect(
+      new URL(`/banner-hero-preview?bannerHeroId=${bannerHeroId}`, request.url)
+    );
   } else if (id) {
     return NextResponse.redirect(new URL(`/footer-preview?footerId=${id}`, request.url));
   }
