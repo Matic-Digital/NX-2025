@@ -20,7 +20,14 @@ export function ContentGrid(props: ContentGrid) {
 
   return (
     <ErrorBoundary>
-      <Section>
+      <Section className="relative">
+        <Box className="absolute top-0 left-0 h-full w-full">
+          <AirImage
+            link={contentGrid.backgroundImage?.link}
+            altText={contentGrid.backgroundImage?.altText}
+            className="h-full w-full object-cover"
+          />
+        </Box>
         <Container className="">
           <Box direction="col" gap={12} className="relative z-20">
             {/* section heading */}
