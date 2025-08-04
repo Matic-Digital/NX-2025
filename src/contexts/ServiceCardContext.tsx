@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { type ReactNode, createContext, useContext, useState } from 'react';
 
 interface ServiceCardContextType {
   activeCardId: string | null;

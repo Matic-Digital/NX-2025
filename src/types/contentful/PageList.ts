@@ -3,8 +3,8 @@ import type { ContentGrid } from './ContentGrid';
 import type { Footer } from './Footer';
 import type { Header } from './Header';
 import type { BannerHero } from './BannerHero';
+import type { ImageBetween } from './ImageBetween';
 import type { Page } from './Page';
-import type { SectionHeading } from './SectionHeading';
 
 export interface PageList {
   sys: {
@@ -17,7 +17,7 @@ export interface PageList {
   };
   header?: Header;
   pageContentCollection?: {
-    items: (CtaBanner | ContentGrid | BannerHero | SectionHeading)[];
+    items: (BannerHero | ContentGrid | CtaBanner | ImageBetween)[];
   };
   footer?: Footer;
   __typename?: string;

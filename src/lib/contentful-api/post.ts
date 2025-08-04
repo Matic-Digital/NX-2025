@@ -16,7 +16,6 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
   slug
-  excerpt
   datePublished
   mainImage {
     sys {
@@ -25,18 +24,6 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
     title
     link
     altText
-  }
-  content {
-    json
-  }
-  authorsCollection(limit: 2) {
-    items {
-      sys {
-        id
-      }
-      name
-      jobTitle
-    }
   }
   categories
 `;

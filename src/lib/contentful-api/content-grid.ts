@@ -2,9 +2,11 @@ import { fetchGraphQL } from '../api';
 
 import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from './post';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
+import { SOLUTION_GRAPHQL_FIELDS } from './solution';
 import { SERVICE_GRAPHQL_FIELDS } from './service';
 
 import { ContentfulError, NetworkError } from '../errors';
@@ -27,15 +29,6 @@ const ASSET_FIELDS = `
   height
 `;
 
-const IMAGE_FIELDS = `
-  sys {
-    id
-  }
-  title
-  link
-  altText
-`;
-
 // ContentGridItem fields
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -51,7 +44,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
     ${ASSET_FIELDS}
   }
   image {
-    ${IMAGE_FIELDS}
+    ${IMAGE_GRAPHQL_FIELDS}
   }
 `;
 
@@ -62,9 +55,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
     ${SECTIONHEADING_GRAPHQL_FIELDS}
   }
   backgroundImage {
-    ${IMAGE_FIELDS}
+    ${IMAGE_GRAPHQL_FIELDS}
   }
-  itemsCollection(limit: 6) {
+  itemsCollection(limit: 20) {
     items {
       ... on ContentGridItem {
         ${CONTENTGRIDITEM_GRAPHQL_FIELDS}
@@ -72,11 +65,14 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Post {
         ${POST_GRAPHQL_FIELDS_SIMPLE}
       }
-      ... on Video {
-        ${VIDEO_GRAPHQL_FIELDS}
-      }
       ... on Service {
         ${SERVICE_GRAPHQL_FIELDS}
+      }
+      ... on Solution {
+        ${SOLUTION_GRAPHQL_FIELDS}
+      }
+      ... on Video {
+        ${VIDEO_GRAPHQL_FIELDS}
       }
     }
   }

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
-import { SectionHeadingSchema } from './SectionHeading';
 import { ImageSchema } from './Image';
 import { PostSchema } from './Post';
+import { SectionHeadingSchema } from './SectionHeading';
+import { SolutionSchema } from './Solution';
 import { VideoSchema } from './Video';
 import { ServiceSchema } from './Service';
 
@@ -30,8 +31,9 @@ export type ContentGridItem = z.infer<typeof ContentGridItemSchema>;
 const ContentGridItemUnion = z.union([
   ContentGridItemSchema,
   PostSchema,
-  VideoSchema,
-  ServiceSchema
+  ServiceSchema,
+  SolutionSchema,
+  VideoSchema
 ]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 

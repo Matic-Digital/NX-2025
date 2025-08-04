@@ -6,7 +6,7 @@ export const BannerHeroSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  name: z.string(),
+  title: z.string(),
   heading: SectionHeadingSchema,
   backgroundImage: ImageSchema,
   __typename: z.string().optional()
