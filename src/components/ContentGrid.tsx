@@ -6,9 +6,16 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
 import { PostCard } from '@/components/global/PostCard';
+import { Solution } from '@/components/Solution';
 import { MuxVideo } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
+import type {
+  ContentGridItem as ContentGridItemType,
+  Video as VideoType,
+  Post as PostType,
+  Solution as SolutionType
+} from '@/types/contentful/';
 
 export function ContentGrid(props: ContentGrid) {
   const contentGrid = useContentfulLiveUpdates(props);
@@ -16,21 +23,26 @@ export function ContentGrid(props: ContentGrid) {
   console.log('content grid props', props);
   console.log('content grid items:', contentGrid.itemsCollection?.items);
 
+  // Filter out empty/incomplete items
+  const validItems =
+    contentGrid.itemsCollection?.items?.filter((item) => item && (item.title || item.__typename)) ||
+    [];
+
+  const allItemsAreSolutions =
+    validItems.length > 0 && validItems.every((item) => item.__typename === 'Solution');
+
+  const direction = allItemsAreSolutions ? 'row' : 'col';
+
   return (
     <ErrorBoundary>
       <Section>
         <Container>
-          <Box direction="col" gap={12}>
+          <Box direction={direction} gap={12}>
             {/* section heading */}
             <SectionHeading {...contentGrid.heading} />
 
             {/* items */}
             {(() => {
-              // Filter out empty/incomplete items
-              const validItems =
-                contentGrid.itemsCollection?.items?.filter(
-                  (item) => item && (item.title || item.__typename)
-                ) || [];
               // Check if any valid item has an image
               const isFullWidthGrid = contentGrid.itemsCollection?.items?.some(
                 (item) => 'image' in item && item.image
@@ -45,16 +57,16 @@ export function ContentGrid(props: ContentGrid) {
                 (item) => 'playbackId' in item && item.playbackId
               );
 
+              const cols = {
+                base: 1,
+                md: 2,
+                lg: isVideo ? 1 : allItemsArePosts ? 4 : isFullWidthGrid ? 1 : 3
+              };
+
+              const gap = allItemsArePosts ? 5 : allItemsAreSolutions ? 4 : 12;
+
               return (
-                <Box
-                  cols={{
-                    base: 1,
-                    md: 2,
-                    lg: isVideo ? 1 : allItemsArePosts ? 4 : isFullWidthGrid ? 1 : 3
-                  }}
-                  gap={allItemsArePosts ? 5 : 12}
-                  wrap={true}
-                >
+                <Box cols={cols} gap={gap} wrap={true}>
                   {validItems.map((item, index) => {
                     // Debug: Log each item's structure and typename
                     console.log(`ContentGrid item ${index}:`, {
@@ -66,33 +78,42 @@ export function ContentGrid(props: ContentGrid) {
                       item: item
                     });
 
-                    // Type guard: Check if item is a Post with essential Post structure
-                    // Note: PostCard doesn't require author information, so we only check for core fields
-                    const isPost =
-                      item.__typename === 'Post' && 'slug' in item && 'content' in item;
-
-                    if (isPost) {
-                      // Type assertion since we've verified it's a proper Post
-                      return <PostCard key={item.sys?.id || index} {...item} />;
-                    }
-
-                    const isVideo =
-                      item.__typename === 'Video' &&
-                      'playbackId' in item &&
-                      'id' in item &&
-                      'title' in item;
-
-                    if (isVideo) {
-                      // Type assertion since we've verified it's a proper Video
-                      return <MuxVideo key={item.sys?.id || index} {...item} />;
-                    }
-
                     // Type guard: Check if item is a ContentGridItem with proper ContentGridItem structure
-                    const isContentGridItem = 'link' in item && 'description' in item;
+                    const isContentGridItem = item.__typename === 'ContentGridItem';
 
                     if (isContentGridItem) {
                       // Type assertion since we've verified it's a proper ContentGridItem
-                      return <ContentGridItem key={item.sys?.id || index} {...item} />;
+                      return (
+                        <ContentGridItem
+                          key={item.sys?.id || index}
+                          {...(item as ContentGridItemType)}
+                        />
+                      );
+                    }
+
+                    // Type guard: Check if item is a Post with essential Post structure
+                    // Note: PostCard doesn't require author information, so we only check for core fields
+                    const isPost = item.__typename === 'Post';
+
+                    if (isPost) {
+                      // Type assertion since we've verified it's a proper Post
+                      return <PostCard key={item.sys?.id || index} {...(item as PostType)} />;
+                    }
+
+                    // Type guard: Check if item is a Video with essential Video structure
+                    const isVideo = item.__typename === 'Video';
+
+                    if (isVideo) {
+                      // Type assertion since we've verified it's a proper Video
+                      return <MuxVideo key={item.sys?.id || index} {...(item as VideoType)} />;
+                    }
+
+                    // Type guard: Check if item is a Solution with essential Solution structure
+                    const isSolution = item.__typename === 'Solution';
+
+                    if (isSolution) {
+                      // Type assertion since we've verified it's a proper Solution
+                      return <Solution key={item.sys?.id || index} {...(item as SolutionType)} />;
                     }
 
                     // Fallback: skip unrecognized items
