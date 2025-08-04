@@ -4,7 +4,6 @@ import type { Footer } from './Footer';
 import type { Header } from './Header';
 import type { BannerHero } from './BannerHero';
 import type { ImageBetween } from './ImageBetween';
-import type { SectionHeading } from './SectionHeading';
 
 export interface Page {
   sys: {
@@ -16,7 +15,7 @@ export interface Page {
   header?: Header;
   footer?: Footer;
   pageContentCollection?: {
-    items: (BannerHero | ContentGrid | CtaBanner | ImageBetween | SectionHeading)[];
+    items: (BannerHero | ContentGrid | CtaBanner | ImageBetween)[];
   };
   __typename?: string;
 }

@@ -5,6 +5,7 @@ import { PostSchema } from './Post';
 import { SectionHeadingSchema } from './SectionHeading';
 import { SolutionSchema } from './Solution';
 import { VideoSchema } from './Video';
+import { ServiceSchema } from './Service';
 
 // Define the ContentGridItem schema
 export const ContentGridItemSchema = z.object({
@@ -30,8 +31,9 @@ export type ContentGridItem = z.infer<typeof ContentGridItemSchema>;
 const ContentGridItemUnion = z.union([
   ContentGridItemSchema,
   PostSchema,
-  VideoSchema,
-  SolutionSchema
+  ServiceSchema,
+  SolutionSchema,
+  VideoSchema
 ]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 
@@ -41,6 +43,7 @@ export const ContentGridSchema = z.object({
   }),
   title: z.string(),
   heading: SectionHeadingSchema,
+  backgroundImage: ImageSchema.optional(),
   itemsCollection: z.object({
     items: z.array(ContentGridItemUnion)
   }),

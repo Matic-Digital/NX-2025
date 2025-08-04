@@ -1,9 +1,3 @@
-import { fetchGraphQL } from '../api';
-
-import type { Video, VideoResponse } from '@/types/contentful';
-
-import { ContentfulError, NetworkError } from '../errors';
-
 const SYS_FIELDS = `
   sys {
     id

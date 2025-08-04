@@ -114,8 +114,8 @@ const FOOTER_GRAPHQL_FIELDS = `
   }
 `;
 
-// Complete PageList fields (with page references)
-const PAGELIST_GRAPHQL_FIELDS = `
+// Minimal PageList fields for initial fetch
+const PAGELIST_MINIMAL_FIELDS = `
   ${PAGELIST_BASIC_FIELDS}
   pagesCollection(limit: 10) {
     items {
@@ -124,31 +124,22 @@ const PAGELIST_GRAPHQL_FIELDS = `
       }
     }
   }
+`;
+
+// PageList fields with header/footer references only (no full data)
+const PAGELIST_WITH_REFS_FIELDS = `
+  ${PAGELIST_MINIMAL_FIELDS}
   header {
-    ... on Header {
-      ${HEADER_GRAPHQL_FIELDS}
+    sys {
+      id
     }
+    __typename
   }
   footer {
-    ... on Footer {
-      ${FOOTER_GRAPHQL_FIELDS}
+    sys {
+      id
     }
-  }
-  pageContentCollection {
-    items {
-      ... on BannerHero {
-        ${BANNERHERO_GRAPHQL_FIELDS}
-      }
-      ... on ContentGrid {
-        ${CONTENTGRID_GRAPHQL_FIELDS}
-      }
-      ... on CtaBanner {
-        ${CTABANNER_GRAPHQL_FIELDS}
-      }
-      ... on ImageBetween {
-        ${IMAGEBETWEEN_GRAPHQL_FIELDS}
-      }
-    }
+    __typename
   }
 `;
 
@@ -164,30 +155,20 @@ const PAGELIST_SIMPLIFIED_FIELDS = `
   }
 `;
 
-// Complete Page fields (with component references)
-const PAGE_GRAPHQL_FIELDS = `
+// Page fields with header/footer references only (no full data)
+const PAGE_WITH_REFS_FIELDS = `
   ${PAGE_BASIC_FIELDS}
   header {
-    ${HEADER_GRAPHQL_FIELDS}
+    sys {
+      id
+    }
+    __typename
   }
   footer {
-    ${FOOTER_GRAPHQL_FIELDS}
-  }
-  pageContentCollection(limit: 10) {
-    items {
-      ... on BannerHero {
-        ${BANNERHERO_GRAPHQL_FIELDS}
-      }
-      ... on ContentGrid {
-        ${CONTENTGRID_GRAPHQL_FIELDS}
-      }
-      ... on CtaBanner {
-        ${CTABANNER_GRAPHQL_FIELDS}
-      }
-      ... on ImageBetween {
-        ${IMAGEBETWEEN_GRAPHQL_FIELDS}
-      }
+    sys {
+      id
     }
+    __typename
   }
 `;
 
@@ -362,11 +343,12 @@ export async function getBannerHero(id: string, preview = true): Promise<BannerH
  */
 export async function getAllPages(preview = false, skip = 0, limit = 10): Promise<PageResponse> {
   try {
+    // Use minimal fields for listing pages to avoid QUERY_TOO_BIG
     const response = await fetchGraphQL<Page>(
       `query GetAllPages($preview: Boolean!, $skip: Int!, $limit: Int!) {
         pageCollection(preview: $preview, skip: $skip, limit: $limit) {
           items {
-            ${PAGE_GRAPHQL_FIELDS}
+            ${PAGE_WITH_REFS_FIELDS}
           }
           total
         }
@@ -402,11 +384,12 @@ export async function getAllPages(preview = false, skip = 0, limit = 10): Promis
  */
 export async function getPageBySlug(slug: string, preview = true): Promise<Page | null> {
   try {
+    // First, fetch the basic page data with references
     const response = await fetchGraphQL<Page>(
       `query GetPageBySlug($slug: String!, $preview: Boolean!) {
         pageCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
-            ${PAGE_GRAPHQL_FIELDS}
+            ${PAGE_WITH_REFS_FIELDS}
           }
         }
       }`,
@@ -418,7 +401,69 @@ export async function getPageBySlug(slug: string, preview = true): Promise<Page 
       return null;
     }
 
-    return response.data.pageCollection.items[0]!;
+    const page = response.data.pageCollection.items[0]!;
+
+    // Fetch header data if referenced
+    let header = null;
+    if (page.header?.sys?.id) {
+      header = await getHeaderById(page.header.sys.id, preview);
+    }
+
+    // Fetch footer data if referenced
+    let footer = null;
+    if (page.footer?.sys?.id) {
+      footer = await getFooterById(page.footer.sys.id, preview);
+    }
+
+    // Fetch page content separately
+    const pageContentResponse = await fetchGraphQL(
+      `query GetPageContent($slug: String!, $preview: Boolean!) {
+        pageCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+          items {
+            pageContentCollection(limit: 10) {
+              items {
+                ... on BannerHero {
+                  ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on ContentGrid {
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                }
+                ... on CtaBanner {
+                  ${CTABANNER_GRAPHQL_FIELDS}
+                }
+                ... on ImageBetween {
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { slug, preview },
+      preview
+    );
+
+    // Safely extract page content with proper error checking
+    let pageContent = null;
+    try {
+      const items = pageContentResponse.data?.pageCollection?.items;
+      if (items && items.length > 0 && items[0]) {
+        // Type assertion is safe here since we know the GraphQL query structure
+        const pageItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
+        pageContent = pageItem.pageContentCollection ?? null;
+      }
+    } catch (error) {
+      console.warn('Failed to extract page content:', error);
+      pageContent = null;
+    }
+
+    // Combine all the data
+    return {
+      ...page,
+      header,
+      footer,
+      pageContentCollection: pageContent
+    } as Page;
   } catch (error) {
     if (error instanceof Error) {
       throw new NetworkError(`Error fetching page by slug: ${error.message}`);
@@ -579,17 +624,18 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
     // Log the request for debugging
     console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
 
-    // Use the full fields to get header, footer, and page content
-    const query = `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
-      pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
-        items {
-          ${PAGELIST_GRAPHQL_FIELDS}
+    // First, fetch the basic PageList data with references
+    const response = await fetchGraphQL<PageList>(
+      `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
+        pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+          items {
+            ${PAGELIST_WITH_REFS_FIELDS}
+          }
         }
-      }
-    }`;
-
-    // Execute the query
-    const response = await fetchGraphQL(query, { slug, preview }, preview);
+      }`,
+      { slug, preview },
+      preview
+    );
 
     // Check if we have any results
     if (!response.data?.pageListCollection?.items?.length) {
@@ -599,20 +645,81 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
 
     console.log(`Successfully fetched PageList with slug: ${slug}`);
 
-    // Get the first item from the collection
-    const pageList = response.data.pageListCollection.items[0] as PageList;
+    const pageList = response.data.pageListCollection.items[0]!;
+
+    // Fetch header data if referenced
+    let header = null;
+    if (pageList.header?.sys?.id) {
+      header = await getHeaderById(pageList.header.sys.id, preview);
+    }
+
+    // Fetch footer data if referenced
+    let footer = null;
+    if (pageList.footer?.sys?.id) {
+      footer = await getFooterById(pageList.footer.sys.id, preview);
+    }
+
+    // Fetch page content separately
+    const pageContentResponse = await fetchGraphQL(
+      `query GetPageListContent($slug: String!, $preview: Boolean!) {
+        pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+          items {
+            pageContentCollection {
+              items {
+                ... on BannerHero {
+                  ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on ContentGrid {
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                }
+                ... on CtaBanner {
+                  ${CTABANNER_GRAPHQL_FIELDS}
+                }
+                ... on ImageBetween {
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { slug, preview },
+      preview
+    );
+
+    // Safely extract page content with proper error checking
+    let pageContent = null;
+    try {
+      const items = pageContentResponse.data?.pageListCollection?.items;
+      if (items && items.length > 0 && items[0]) {
+        // Type assertion is safe here since we know the GraphQL query structure
+        const pageListItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
+        pageContent = pageListItem.pageContentCollection ?? null;
+      }
+    } catch (error) {
+      console.warn('Failed to extract page list content:', error);
+      pageContent = null;
+    }
+
+    // Combine all the data
+    const result = {
+      ...pageList,
+      header,
+      footer,
+      pageContentCollection: pageContent
+    } as PageList;
 
     // Debug the PageList structure
     console.log('PageList structure:', {
-      name: pageList.name,
-      slug: pageList.slug,
-      hasHeader: !!pageList.header,
-      hasFooter: !!pageList.footer,
-      hasPageContent: !!pageList.pageContentCollection,
-      pagesCount: pageList.pagesCollection?.items?.length ?? 0
+      name: result.name,
+      slug: result.slug,
+      hasHeader: !!result.header,
+      hasFooter: !!result.footer,
+      hasPageContent: !!result.pageContentCollection,
+      pagesCount: result.pagesCollection?.items?.length ?? 0
     });
 
-    return pageList;
+    return result;
   } catch (error) {
     console.error(`Error handling slug: ${slug}`, error);
     if (error instanceof Error) {

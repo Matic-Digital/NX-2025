@@ -14,3 +14,4 @@ export * from './Post';
 export * from './SectionHeading';
 export * from './Solution';
 export * from './Video';
+export * from './Service';
