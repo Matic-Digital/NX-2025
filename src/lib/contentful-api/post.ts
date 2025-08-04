@@ -16,27 +16,14 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
   slug
-  excerpt
   datePublished
   mainImage {
     sys {
       id
     }
-    internalName
+    title
     link
     altText
-  }
-  content {
-    json
-  }
-  authorsCollection(limit: 2) {
-    items {
-      sys {
-        id
-      }
-      name
-      jobTitle
-    }
   }
   categories
 `;
@@ -52,7 +39,7 @@ export const POST_GRAPHQL_FIELDS = `
     sys {
       id
     }
-    internalName
+    title
     link
     altText
   }
@@ -66,7 +53,7 @@ export const POST_GRAPHQL_FIELDS = `
           }
           __typename
           ... on Image {
-            internalName
+            title
             link
             altText
           }
@@ -77,7 +64,7 @@ export const POST_GRAPHQL_FIELDS = `
           }
           __typename
           ... on Image {
-            internalName
+            title
             link
             altText
           }
@@ -103,7 +90,7 @@ export const POST_GRAPHQL_FIELDS = `
     sys {
       id
     }
-    internalName
+    title
     link
     altText
   }

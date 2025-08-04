@@ -5,7 +5,7 @@ export const ImageSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  internalName: z.string(),
+  title: z.string(),
   link: z.string(),
   altText: z.string().optional(),
   __typename: z.string().optional()

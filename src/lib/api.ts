@@ -19,10 +19,10 @@ import type {
 } from '@/types/contentful';
 
 import {
+  BANNERHERO_GRAPHQL_FIELDS,
   CTABANNER_GRAPHQL_FIELDS,
   CONTENTGRID_GRAPHQL_FIELDS,
-  BANNERHERO_GRAPHQL_FIELDS,
-  SECTIONHEADING_GRAPHQL_FIELDS
+  IMAGEBETWEEN_GRAPHQL_FIELDS
 } from '@/lib/contentful-api';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
@@ -136,17 +136,17 @@ const PAGELIST_GRAPHQL_FIELDS = `
   }
   pageContentCollection {
     items {
-      ... on ContentGrid {
-        ${CONTENTGRID_GRAPHQL_FIELDS}
-      }
       ... on BannerHero {
         ${BANNERHERO_GRAPHQL_FIELDS}
+      }
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
       }
       ... on CtaBanner {
         ${CTABANNER_GRAPHQL_FIELDS}
       }
-      ... on SectionHeading {
-        ${SECTIONHEADING_GRAPHQL_FIELDS}
+      ... on ImageBetween {
+        ${IMAGEBETWEEN_GRAPHQL_FIELDS}
       }
     }
   }
@@ -155,7 +155,7 @@ const PAGELIST_GRAPHQL_FIELDS = `
 // Simplified PageList fields for listing and reference checks
 const PAGELIST_SIMPLIFIED_FIELDS = `
   ${PAGELIST_BASIC_FIELDS}
-  pagesCollection(limit: 10) {
+  pagesCollection(limit: 20) {
     items {
       ... on Page {
         ${PAGE_BASIC_FIELDS}
@@ -175,17 +175,17 @@ const PAGE_GRAPHQL_FIELDS = `
   }
   pageContentCollection(limit: 10) {
     items {
-      ... on ContentGrid {
-        ${CONTENTGRID_GRAPHQL_FIELDS}
-      }
       ... on BannerHero {
         ${BANNERHERO_GRAPHQL_FIELDS}
+      }
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
       }
       ... on CtaBanner {
         ${CTABANNER_GRAPHQL_FIELDS}
       }
-      ... on SectionHeading {
-        ${SECTIONHEADING_GRAPHQL_FIELDS}
+      ... on ImageBetween {
+        ${IMAGEBETWEEN_GRAPHQL_FIELDS}
       }
     }
   }

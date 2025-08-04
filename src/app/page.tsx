@@ -11,6 +11,7 @@ import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';
+import { ImageBetween } from '@/components/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
@@ -27,7 +28,8 @@ export const metadata: Metadata = {
 const componentMap = {
   BannerHero: BannerHero,
   ContentGrid: ContentGrid,
-  CtaBanner: CtaBanner
+  CtaBanner: CtaBanner,
+  ImageBetween: ImageBetween
   // Add other component types here as they are created
 };
 

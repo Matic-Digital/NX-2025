@@ -24,6 +24,7 @@ import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import { Footer } from '@/components/global/Footer';
+import { ImageBetween } from '@/components/ImageBetween';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
@@ -34,7 +35,8 @@ import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 const componentMap = {
   BannerHero: BannerHero,
   ContentGrid: ContentGrid,
-  CtaBanner: CtaBanner
+  CtaBanner: CtaBanner,
+  ImageBetween: ImageBetween
   // Add other component types here as they are created
 };
 

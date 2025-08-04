@@ -3,6 +3,7 @@ import type { ContentGrid } from './ContentGrid';
 import type { Footer } from './Footer';
 import type { Header } from './Header';
 import type { BannerHero } from './BannerHero';
+import type { ImageBetween } from './ImageBetween';
 import type { SectionHeading } from './SectionHeading';
 
 export interface Page {
@@ -15,7 +16,7 @@ export interface Page {
   header?: Header;
   footer?: Footer;
   pageContentCollection?: {
-    items: (CtaBanner | ContentGrid | BannerHero | SectionHeading)[];
+    items: (BannerHero | ContentGrid | CtaBanner | ImageBetween | SectionHeading)[];
   };
   __typename?: string;
 }

@@ -1,3 +1,4 @@
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 
 const SYS_FIELDS = `
@@ -7,23 +8,14 @@ const SYS_FIELDS = `
   __typename
 `;
 
-const IMAGE_FIELDS = `
-  sys {
-    id
-  }
-  internalName
-  link
-  altText
-`;
-
 // BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  name
+  title
   heading {
     ${SECTIONHEADING_GRAPHQL_FIELDS}
   }
   backgroundImage {
-    ${IMAGE_FIELDS}
+    ${IMAGE_GRAPHQL_FIELDS}
   }
 `;

@@ -210,7 +210,7 @@ describe('API Module', () => {
             items: [
               {
                 sys: { id: 'banner-hero1' },
-                name: 'Banner Hero 1',
+                title: 'Banner Hero 1',
                 __typename: 'BannerHero'
               }
             ],
@@ -230,8 +230,8 @@ describe('API Module', () => {
 
       // Verify the result
       expect(result?.items).toHaveLength(2);
-      expect(result?.items?.[0]?.name).toBe('Banner Hero 1');
-      expect(result?.items?.[1]?.name).toBe('Banner Hero 2');
+      expect(result?.items?.[0]?.title).toBe('Banner Hero 1');
+      expect(result?.items?.[1]?.title).toBe('Banner Hero 2');
       expect(result?.total).toBe(2);
 
       // Verify fetch was called with correct query
@@ -286,7 +286,7 @@ describe('API Module', () => {
             items: [
               {
                 sys: { id: bannerHeroId },
-                name: 'Test Banner Hero',
+                title: 'Test Banner Hero',
                 description: 'Test Description',
                 __typename: 'BannerHero'
               }
@@ -307,7 +307,7 @@ describe('API Module', () => {
       // Verify the result
       expect(result).not.toBeNull();
       expect(result?.sys?.id).toBe(bannerHeroId);
-      expect(result?.name).toBe('Test Banner Hero');
+      expect(result?.title).toBe('Test Banner Hero');
 
       // Verify fetch was called with correct query and variables
       expect(global.fetch).toHaveBeenCalledWith(
@@ -366,7 +366,7 @@ describe('API Module', () => {
                   items: [
                     {
                       sys: { id: 'banner-hero1' },
-                      name: 'Banner Hero Component',
+                      title: 'Banner Hero Component',
                       description: 'Banner Hero Description',
                       __typename: 'BannerHero'
                     }
@@ -393,7 +393,7 @@ describe('API Module', () => {
       expect(result?.slug).toBe(slug);
       expect(result?.name).toBe('Test Page');
       expect(result?.pageContentCollection?.items).toHaveLength(1);
-      expect(result?.pageContentCollection?.items?.[0]?.name).toBe('Banner Hero Component');
+      expect(result?.pageContentCollection?.items?.[0]?.title).toBe('Banner Hero Component');
 
       // Verify fetch was called with correct query and variables
       expect(global.fetch).toHaveBeenCalledWith(
