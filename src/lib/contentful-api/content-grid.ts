@@ -63,6 +63,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Post {
         ${POST_GRAPHQL_FIELDS_SIMPLE}
       }
+      ... on Product {
+        ${SYS_FIELDS}
+      }
       ... on Service {
         ${SERVICE_GRAPHQL_FIELDS}
       }
