@@ -9,6 +9,8 @@ export const SolutionSysSchema = z.object({
   __typename: z.string().optional()
 });
 
+export type SolutionSys = z.infer<typeof SolutionSysSchema>;
+
 // a video from Mux
 export const SolutionSchema = z.object({
   sys: z.object({
@@ -25,7 +27,6 @@ export const SolutionSchema = z.object({
 });
 
 export type Solution = z.infer<typeof SolutionSchema>;
-export type SolutionSys = z.infer<typeof SolutionSysSchema>;
 
 export interface SolutionResponse {
   items: Solution[];

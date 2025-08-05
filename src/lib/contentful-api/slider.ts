@@ -35,7 +35,7 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
-  itemsCollection(limit: 5) {
+  itemsCollection(limit: 10) {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }

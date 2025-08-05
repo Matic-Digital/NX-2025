@@ -10,6 +10,8 @@ export const VideoSysSchema = z.object({
   __typename: z.string().optional()
 });
 
+export type VideoSys = z.infer<typeof VideoSysSchema>;
+
 export const VideoSchema = z.object({
   sys: z.object({
     id: z.string()
@@ -21,7 +23,6 @@ export const VideoSchema = z.object({
 });
 
 export type Video = z.infer<typeof VideoSchema>;
-export type VideoSys = z.infer<typeof VideoSysSchema>;
 
 export interface VideoResponse {
   items: Video[];

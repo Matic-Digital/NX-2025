@@ -16,6 +16,7 @@ export type SliderItem = z.infer<typeof SliderItemSchema>;
 
 // Union type for slider items
 const SliderItemUnion = z.union([SliderItemSchema, ImageSchema]);
+
 export type SliderItemOrImage = z.infer<typeof SliderItemUnion>;
 
 export const SliderSysSchema = z.object({
@@ -25,6 +26,8 @@ export const SliderSysSchema = z.object({
   title: z.string(),
   __typename: z.string().optional()
 });
+
+export type SliderSys = z.infer<typeof SliderSysSchema>;
 
 export const SliderSchema = z.object({
   sys: z.object({
@@ -38,7 +41,6 @@ export const SliderSchema = z.object({
 });
 
 export type Slider = z.infer<typeof SliderSchema>;
-export type SliderSys = z.infer<typeof SliderSysSchema>;
 
 export interface SliderResponse {
   items: Slider[];
