@@ -17,7 +17,7 @@
  * Reusable utility patterns */
 
 :root {
-  --black: #171717;
+  --black: #111111;
   --white: #ffffff;
 
   /* Background colors */
@@ -176,7 +176,7 @@
 
 .dark {
   /* Dark mode overrides */
-  --black: #171717;
+  --black: #111111;
   --white: #ffffff;
 
   /* Background colors */

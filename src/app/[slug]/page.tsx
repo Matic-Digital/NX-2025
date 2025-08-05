@@ -24,6 +24,7 @@ import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import { Footer } from '@/components/global/Footer';
+import { Main } from '@/components/global/matic-ds';
 import { ImageBetween } from '@/components/ImageBetween';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -140,33 +141,31 @@ function renderPage(page: Page) {
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <main>
-        <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.name}</h1>
 
-        {/* Render the page content components */}
-        {page.pageContentCollection?.items.map((component) => {
-          if (!component) return null;
+      {/* Render the page content components */}
+      {page.pageContentCollection?.items.map((component) => {
+        if (!component) return null;
 
-          // Type guard to check if component has __typename
-          if (!('__typename' in component)) {
-            console.warn('Component missing __typename:', component);
-            return null;
-          }
-
-          const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
-
-          // Check if we have a component for this type
-          if (typeName && typeName in componentMap) {
-            const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return <ComponentType key={component.sys.id} {...(component as any)} />;
-          }
-
-          // Log a warning if we don't have a component for this type
-          console.warn(`No component found for type: ${typeName}`);
+        // Type guard to check if component has __typename
+        if (!('__typename' in component)) {
+          console.warn('Component missing __typename:', component);
           return null;
-        })}
-      </main>
+        }
+
+        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+
+        // Check if we have a component for this type
+        if (typeName && typeName in componentMap) {
+          const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return <ComponentType key={component.sys.id} {...(component as any)} />;
+        }
+
+        // Log a warning if we don't have a component for this type
+        console.warn(`No component found for type: ${typeName}`);
+        return null;
+      })}
 
       {/* Render the page-specific footer if available */}
       {pageFooter && <Footer footerData={pageFooter} />}
@@ -185,7 +184,7 @@ function renderPageList(pageList: PageListType) {
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <main className="min-h-screen py-12">
+      <Main className="min-h-screen py-12">
         {/* Render components from pageContentCollection */}
         {pageContentItems.map((item, index) => {
           if (item.__typename === 'CtaBanner') {
@@ -205,7 +204,7 @@ function renderPageList(pageList: PageListType) {
           {/* Render the PageList component */}
           <PageList {...pageList} />
         </div>
-      </main>
+      </Main>
 
       {/* Render the page-specific footer if available */}
       {pageFooter && <Footer footerData={pageFooter} />}

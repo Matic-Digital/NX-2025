@@ -9,12 +9,12 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGrid } from '@/components/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
 import type { ImageBetween } from '@/types/contentful/ImageBetween';
+import { cn } from '@/lib/utils';
 
 export function ImageBetween(props: ImageBetween) {
   const imageBetween = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: imageBetween?.sys?.id });
 
-  console.log('imageBetween', imageBetween);
   return (
     <ErrorBoundary>
       <Section className="relative h-full w-full overflow-hidden" {...inspectorProps}>
@@ -37,9 +37,7 @@ export function ImageBetween(props: ImageBetween) {
           <Box direction="col" gap={8}>
             {/* Top Content Grid */}
             {imageBetween.contentTop && (
-              <div className="text-white">
-                <ContentGrid {...imageBetween.contentTop} />
-              </div>
+              <ContentGrid {...imageBetween.contentTop} isDarkMode={true} />
             )}
           </Box>
         </div>

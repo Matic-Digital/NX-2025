@@ -17,27 +17,29 @@ export function SectionHeading(props: SectionHeading) {
 
   const hasCtaCollection = (props.ctaCollection?.items?.length ?? 0) > 0;
 
+  const gap = hasCtaCollection ? 12 : 0;
+  const cols = { base: 1, md: 2, xl: hasCtaCollection ? 3 : 2 };
+
   const DefaultSectionHeading = (
-    <Box
-      cols={{ base: 1, md: 2, xl: 3 }}
-      gap={hasCtaCollection ? 12 : 0}
-      {...inspectorProps({ fieldId: 'heading' })}
-    >
+    <Box cols={cols} gap={gap} {...inspectorProps({ fieldId: 'heading' })}>
       {/* overline and title */}
-      <Box direction="col" gap={2} className="col-span-2 max-w-[600px]">
+      <Box direction="col" gap={{ base: 2, md: 4 }} className="col-span-2 max-w-[600px]">
         {sectionHeading.overline && (
-          <p className="uppercase" {...inspectorProps({ fieldId: 'heading.overline' })}>
+          <p
+            className="text-foreground uppercase"
+            {...inspectorProps({ fieldId: 'heading.overline' })}
+          >
             {sectionHeading.overline}
           </p>
         )}
         <h2
-          className="text-headline-lg text-foreground"
+          className="text-headline-lg text-foreground leading-tight"
           {...inspectorProps({ fieldId: 'heading.title' })}
         >
           {sectionHeading.title}
         </h2>
         {sectionHeading.description && (
-          <p {...inspectorProps({ fieldId: 'heading.description' })}>
+          <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
             {sectionHeading.description}
           </p>
         )}
@@ -135,7 +137,11 @@ export function SectionHeading(props: SectionHeading) {
     </Box>
   );
 
-  return sectionHeading.componentType === 'banner-hero'
-    ? BannerHeroSectionHeading
-    : DefaultSectionHeading;
+  return (
+    <div className={sectionHeading.isDarkMode ? 'dark' : undefined}>
+      {sectionHeading.componentType === 'banner-hero'
+        ? BannerHeroSectionHeading
+        : DefaultSectionHeading}
+    </div>
+  );
 }

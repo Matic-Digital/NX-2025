@@ -14,6 +14,7 @@ export const SectionHeadingSchema = z.object({
     })
     .optional(),
   componentType: z.string().optional(),
+  isDarkMode: z.boolean().optional(),
   __typename: z.string().optional()
 });
 

@@ -63,34 +63,32 @@ async function renderContentfulHomePage(page: Page) {
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <main>
-        <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.name}</h1>
 
-        {/* Render the page content components */}
-        {page.pageContentCollection?.items.map((component) => {
-          if (!component) return null;
+      {/* Render the page content components */}
+      {page.pageContentCollection?.items.map((component) => {
+        if (!component) return null;
 
-          // Type guard to check if component has __typename
-          if (!('__typename' in component)) {
-            console.warn('Component missing __typename:', component);
-            return null;
-          }
-
-          const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
-
-          // Check if we have a component for this type
-          if (typeName && typeName in componentMap) {
-            const ComponentType = componentMap[typeName as keyof typeof componentMap];
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return <ComponentType key={component.sys.id} {...(component as any)} />;
-          }
-
-          // Log a warning if we don't have a component for this type
-          console.warn(`No component found for type: ${typeName}`);
+        // Type guard to check if component has __typename
+        if (!('__typename' in component)) {
+          console.warn('Component missing __typename:', component);
           return null;
-        })}
-      </main>
+        }
+
+        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+
+        // Check if we have a component for this type
+        if (typeName && typeName in componentMap) {
+          const ComponentType = componentMap[typeName as keyof typeof componentMap];
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return <ComponentType key={component.sys.id} {...(component as any)} />;
+        }
+
+        // Log a warning if we don't have a component for this type
+        console.warn(`No component found for type: ${typeName}`);
+        return null;
+      })}
 
       {/* Render the page-specific footer if available */}
       {pageFooter && <Footer footerData={pageFooter} />}
