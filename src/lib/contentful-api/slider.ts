@@ -11,15 +11,23 @@ const SYS_FIELDS = `
   __typename
 `;
 
-// Minimal slider item fields to avoid QUERY_TOO_BIG
+// Minimal slider item fields with inline fragments for union types
 const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
-  ${SYS_FIELDS}
-  title
-  heading {
-    ${SECTIONHEADING_GRAPHQL_FIELDS}
+  ... on SliderItem {
+    ${SYS_FIELDS}
+    title
+    heading {
+      ${SECTIONHEADING_GRAPHQL_FIELDS}
+    }
+    image {
+      ${IMAGE_GRAPHQL_FIELDS}
+    }
   }
-  image {
-    ${IMAGE_GRAPHQL_FIELDS}
+  ... on Image {
+    ${SYS_FIELDS}
+    title
+    link
+    altText
   }
 `;
 
@@ -27,7 +35,7 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
-  itemsCollection(limit: 5) {
+  itemsCollection(limit: 10) {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }
