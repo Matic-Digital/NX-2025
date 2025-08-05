@@ -9,6 +9,7 @@ import { PostCard } from '@/components/global/PostCard';
 import { Slider } from '@/components/Slider';
 import { SolutionCard } from '@/components/SolutionCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
+import { ProductCard } from '@/components/global/ProductCard';
 import { MuxVideo } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
 import AirImage from '@/components/media/AirImage';
@@ -18,6 +19,7 @@ import type {
   ContentGridItem as ContentGridItemType,
   VideoSys as VideoType,
   Post as PostType,
+  ProductSys as ProductType,
   Service as ServiceType,
   SliderSys as SliderType,
   SolutionSys as SolutionType
@@ -131,6 +133,17 @@ export function ContentGrid(props: ContentGrid) {
                       if (isVideo) {
                         // Type assertion since we've verified it's a proper Video
                         return <MuxVideo key={item.sys?.id || index} {...(item as VideoType)} />;
+                      }
+
+                      // Type guard: Check if item is a Product with essential Product structure
+                      const isProduct = item.__typename === 'Product';
+
+                      if (isProduct) {
+                        const product = item as ProductType;
+                        // Transform Product to ContentGridItem format, mapping slug to link and icon to image
+                        return (
+                          <ProductCard key={item.sys?.id || index} {...(item as ProductType)} />
+                        );
                       }
 
                       // Type guard: Check if item is a Solution with essential Solution structure

@@ -4,6 +4,7 @@ export * from './cta-banner';
 export * from './image-between';
 export * from './image';
 export * from './post';
+export * from './product';
 export * from './section-heading';
 export * from './service';
 export * from './slider';

@@ -11,6 +11,7 @@ export * from './ImageBetween';
 export * from './Page';
 export * from './PageList';
 export * from './Post';
+export * from './Product';
 export * from './SectionHeading';
 export * from './Slider';
 export * from './Solution';
