@@ -19,7 +19,7 @@ export function ImageBetween(props: ImageBetween) {
   return (
     <ErrorBoundary>
       <div className="relative max-w-screen overflow-hidden">
-        <div className="pointer-events-none absolute z-10 h-full w-full opacity-10 invert">
+        <div className="pointer-events-none absolute z-30 h-full w-full opacity-10 invert">
           {/* Background Media */}
           {imageBetween.backgroundMedia && (
             <AirImage
