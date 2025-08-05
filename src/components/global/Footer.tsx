@@ -36,7 +36,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   // If no footer data is provided, render a minimal footer
   if (!footerData) {
     return (
-      <footer className="bg-background mt-24 border-t border-gray-200 py-12 dark:border-gray-800">
+      <footer className="bg-background mt-24 border-t border-gray-200 py-12">
         <Container width="full">
           <p className="text-muted-foreground text-center">Footer data not available</p>
         </Container>
@@ -45,7 +45,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   }
 
   return (
-    <footer className="bg-background mt-24 border-t border-gray-200 py-12 dark:border-gray-800">
+    <footer className="bg-background mt-24 border-t border-gray-200 py-12">
       <Container width="full">
         {/* Main footer content grid */}
         <Box cols={{ sm: 2 }} gap={12}>

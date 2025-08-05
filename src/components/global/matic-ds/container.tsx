@@ -27,14 +27,11 @@ export const Container = ({ children, className, id, width }: ContainerProps) =>
   return (
     <div
       className={cn(
-        'container mx-auto px-4',
+        'container mx-auto max-w-[1440px] px-4',
         {
           'max-w-full': width === 'full',
           'sm:px-6': width !== 'full',
-          'md:px-8': width !== 'full',
-          'lg:px-10': width !== 'full',
-          'xl:px-12': width !== 'full',
-          '2xl:px-16': width !== 'full'
+          'md:px-9': width !== 'full'
         },
         className
       )}

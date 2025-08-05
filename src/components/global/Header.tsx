@@ -168,7 +168,7 @@ export function Header(props: HeaderProps) {
                           </Link>
                           {/* Custom dropdown that appears when state is set */}
                           <div
-                            className={`absolute top-full left-0 z-50 mt-0 overflow-hidden rounded-md border border-gray-200 pt-1 shadow-md transition-opacity duration-200 dark:border-gray-800 ${openDropdown === pageList.sys.id ? 'visible opacity-100' : 'pointer-events-none invisible opacity-0'}`}
+                            className={`absolute top-full left-0 z-50 mt-0 overflow-hidden rounded-md border border-gray-200 pt-1 shadow-md transition-opacity duration-200 ${openDropdown === pageList.sys.id ? 'visible opacity-100' : 'pointer-events-none invisible opacity-0'}`}
                           >
                             <div className="m-0 max-h-[60vh] w-[220px] overflow-auto p-0">
                               <div className="bg-background text-foreground m-0 rounded-md p-0">
@@ -212,7 +212,7 @@ export function Header(props: HeaderProps) {
               <Sheet>
                 <SheetTrigger asChild>
                   <button
-                    className="ml-2 flex h-10 w-10 items-center justify-center rounded-md bg-transparent p-0 text-base hover:bg-slate-200 dark:hover:bg-slate-800"
+                    className="ml-2 flex h-10 w-10 items-center justify-center rounded-md bg-transparent p-0 text-base hover:bg-slate-200"
                     aria-label="Open menu"
                   >
                     <Menu className="h-5 w-5" />

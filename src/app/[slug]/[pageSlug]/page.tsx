@@ -92,97 +92,93 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <main>
-        {/* Breadcrumb navigation */}
-        <div className="mx-auto max-w-7xl px-4 py-4">
-          <nav className="flex" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-3">
-              <li className="inline-flex items-center">
-                <Link
-                  href="/"
-                  className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+      {/* Breadcrumb navigation */}
+      <div className="mx-auto max-w-7xl px-4 py-4">
+        <nav className="flex" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-3">
+            <li className="inline-flex items-center">
+              <Link
+                href="/"
+                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg
+                  className="mx-1 h-3 w-3 text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
                 >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <div className="flex items-center">
-                  <svg
-                    className="mx-1 h-3 w-3 text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <a
-                    href={`/${pageList.slug}`}
-                    className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
-                  >
-                    {pageList.name}
-                  </a>
-                </div>
-              </li>
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <svg
-                    className="mx-1 h-3 w-3 text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 6 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 9 4-4-4-4"
-                    />
-                  </svg>
-                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
-                    {page.name}
-                  </span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-        </div>
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <a
+                  href={`/${pageList.slug}`}
+                  className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
+                >
+                  {pageList.name}
+                </a>
+              </div>
+            </li>
+            <li aria-current="page">
+              <div className="flex items-center">
+                <svg
+                  className="mx-1 h-3 w-3 text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">{page.name}</span>
+              </div>
+            </li>
+          </ol>
+        </nav>
+      </div>
 
-        <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.name}</h1>
 
-        {/* Render the page content components */}
-        {page.pageContentCollection?.items.map((component) => {
-          if (!component) return null;
+      {/* Render the page content components */}
+      {page.pageContentCollection?.items.map((component) => {
+        if (!component) return null;
 
-          // Type guard to check if component has __typename
-          if (!('__typename' in component)) {
-            console.warn('Component missing __typename:', component);
-            return null;
-          }
-
-          // We've checked that __typename exists with the 'in' operator
-          const typeName = component.__typename!;
-
-          // Check if we have a component for this type
-          if (typeName && typeName in componentMap) {
-            const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return <ComponentType key={component.sys.id} {...(component as any)} />;
-          }
-
-          // Log a warning if we don't have a component for this type
-          console.warn(`No component found for type: ${typeName}`);
+        // Type guard to check if component has __typename
+        if (!('__typename' in component)) {
+          console.warn('Component missing __typename:', component);
           return null;
-        })}
-      </main>
+        }
+
+        // We've checked that __typename exists with the 'in' operator
+        const typeName = component.__typename!;
+
+        // Check if we have a component for this type
+        if (typeName && typeName in componentMap) {
+          const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return <ComponentType key={component.sys.id} {...(component as any)} />;
+        }
+
+        // Log a warning if we don't have a component for this type
+        console.warn(`No component found for type: ${typeName}`);
+        return null;
+      })}
 
       {/* Render the page-specific footer if available */}
       {pageFooter && <Footer footerData={pageFooter} />}
