@@ -6,6 +6,7 @@ const SYS_FIELDS = `
   sys {
     id
   }
+  title
   __typename
 `;
 
@@ -34,6 +35,9 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
     }
     ... on Video {
       ${VIDEO_GRAPHQL_FIELDS}
+    }
+    ... on Slider {
+      ${SYS_FIELDS}
     }
   }
   backgroundMedia {
