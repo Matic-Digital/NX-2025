@@ -1,0 +1,41 @@
+import { z } from 'zod';
+import { SectionHeadingSchema } from './SectionHeading';
+import { ImageSchema } from './Image';
+
+const SliderItemSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  heading: SectionHeadingSchema,
+  image: ImageSchema,
+  __typename: z.string().optional()
+});
+
+export type SliderItem = z.infer<typeof SliderItemSchema>;
+
+export const SliderSysSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  __typename: z.string().optional()
+});
+
+export const SliderSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  itemsCollection: z.object({
+    items: z.array(SliderItemSchema)
+  }),
+  __typename: z.string().optional()
+});
+
+export type Slider = z.infer<typeof SliderSchema>;
+export type SliderSys = z.infer<typeof SliderSysSchema>;
+
+export interface SliderResponse {
+  items: Slider[];
+}

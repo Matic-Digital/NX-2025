@@ -3,8 +3,6 @@ import { AssetSchema } from './Asset';
 import { ImageSchema } from './Image';
 import { PostSchema } from './Post';
 import { SectionHeadingSchema } from './SectionHeading';
-import { SolutionSchema } from './Solution';
-import { VideoSchema } from './Video';
 import { ServiceSchema } from './Service';
 
 // Define the ContentGridItem schema
@@ -28,13 +26,7 @@ export const ContentGridItemSchema = z.object({
 export type ContentGridItem = z.infer<typeof ContentGridItemSchema>;
 
 // Union type for items
-const ContentGridItemUnion = z.union([
-  ContentGridItemSchema,
-  PostSchema,
-  ServiceSchema,
-  SolutionSchema,
-  VideoSchema
-]);
+const ContentGridItemUnion = z.union([ContentGridItemSchema, PostSchema, ServiceSchema]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 
 export const ContentGridSchema = z.object({

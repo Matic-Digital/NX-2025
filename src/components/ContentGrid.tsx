@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
 import { PostCard } from '@/components/global/PostCard';
+import { Slider } from '@/components/Slider';
 import { SolutionCard } from '@/components/SolutionCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
 import { MuxVideo } from '@/components/media/MuxVideo';
@@ -15,10 +16,11 @@ import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
 import type {
   ContentGridItem as ContentGridItemType,
-  Video as VideoType,
+  VideoSys as VideoType,
   Post as PostType,
   Service as ServiceType,
-  Solution as SolutionType
+  SliderSys as SliderType,
+  SolutionSys as SolutionType
 } from '@/types/contentful/';
 
 export function ContentGrid(props: ContentGrid) {
@@ -35,8 +37,8 @@ export function ContentGrid(props: ContentGrid) {
   const allItemsAreSolutions =
     validItems.length > 0 && validItems.every((item) => item.__typename === 'Solution');
 
-  const direction = allItemsAreSolutions ? { base: 'col' as const, xl: 'row' as const } : 'col'; // TODO:
-  const gap = allItemsAreSolutions ? { base: 12, xl: 2 } : 12; // TODO:
+  const direction = allItemsAreSolutions ? { base: 'col' as const, xl: 'row' as const } : 'col';
+  const gap = allItemsAreSolutions ? { base: 12, xl: 2 } : 12;
 
   return (
     <ErrorBoundary>
@@ -65,10 +67,11 @@ export function ContentGrid(props: ContentGrid) {
                 const allItemsArePosts =
                   validItems.length > 0 && validItems.every((item) => item.__typename === 'Post');
 
-                // Check if any valid item is a Video
-                const isVideo = contentGrid.itemsCollection?.items?.some(
-                  (item) => 'playbackId' in item && item.playbackId
-                );
+                // Type guard: Check if item is a Video with essential Video structure
+                const isVideo = validItems.some((item) => item.__typename === 'Video');
+
+                // Type guard: Check if item is a Slider with essential Slider structure
+                const isSlider = validItems.some((item) => item.__typename === 'Slider');
 
                 // Check if there are any service cards to wrap with provider
                 const hasServiceCards = validItems.some((item) => item.__typename === 'Service');
@@ -78,25 +81,18 @@ export function ContentGrid(props: ContentGrid) {
                   md: allItemsAreSolutions ? 1 : 2,
                   lg: isVideo
                     ? 1
-                    : allItemsArePosts
-                      ? 4
-                      : isFullWidthGrid
-                        ? 1
-                        : allItemsAreSolutions
-                          ? 3 // TODO:
-                          : 3
-                  // xl: isVideo
-                  //   ? 1
-                  //   : allItemsArePosts
-                  //     ? 4
-                  //     : isFullWidthGrid
-                  //       ? 1
-                  //       : allItemsAreSolutions
-                  //         ? 3 // TODO:
-                  //         : 3
+                    : isSlider
+                      ? 1
+                      : allItemsArePosts
+                        ? 4
+                        : isFullWidthGrid
+                          ? 1
+                          : allItemsAreSolutions
+                            ? 3
+                            : 3
                 };
 
-                const gap = allItemsArePosts ? 5 : allItemsAreSolutions ? { base: 5, xl: 4 } : 12; // TODO:
+                const gap = allItemsArePosts ? 5 : allItemsAreSolutions ? { base: 5, xl: 4 } : 12;
 
                 const gridContent = (
                   <Box cols={cols} gap={gap} wrap={true}>
@@ -132,9 +128,6 @@ export function ContentGrid(props: ContentGrid) {
                         return <PostCard key={item.sys?.id || index} {...(item as PostType)} />;
                       }
 
-                      // Type guard: Check if item is a Video with essential Video structure
-                      const isVideo = item.__typename === 'Video';
-
                       if (isVideo) {
                         // Type assertion since we've verified it's a proper Video
                         return <MuxVideo key={item.sys?.id || index} {...(item as VideoType)} />;
@@ -146,7 +139,11 @@ export function ContentGrid(props: ContentGrid) {
                       if (isSolution) {
                         // Type assertion since we've verified it's a proper Solution
                         return (
-                          <SolutionCard key={item.sys?.id || index} {...(item as SolutionType)} />
+                          <SolutionCard
+                            key={item.sys?.id || index}
+                            index={index}
+                            {...(item as SolutionType)}
+                          />
                         );
                       }
 
@@ -171,6 +168,13 @@ export function ContentGrid(props: ContentGrid) {
                             {...(item as ServiceType)}
                           />
                         );
+                      }
+
+                      const isSlider = item.__typename === 'Slider';
+
+                      if (isSlider) {
+                        // Type assertion since we've verified it's a proper Slider
+                        return <Slider key={item.sys?.id || index} {...(item as SliderType)} />;
                       }
 
                       // Fallback: skip unrecognized items

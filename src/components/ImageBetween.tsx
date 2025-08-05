@@ -9,7 +9,6 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGrid } from '@/components/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
 import type { ImageBetween } from '@/types/contentful/ImageBetween';
-import { cn } from '@/lib/utils';
 
 export function ImageBetween(props: ImageBetween) {
   const imageBetween = useContentfulLiveUpdates(props);
@@ -27,40 +26,37 @@ export function ImageBetween(props: ImageBetween) {
             }
             width={imageBetween.backgroundMedia.width}
             height={imageBetween.backgroundMedia.height}
-            className="absolute inset-0 h-full w-full object-none"
+            className="absolute inset-0 h-full w-full object-cover"
             priority
           />
         )}
 
         {/* Dark Top Section */}
-        <div className="relative py-16">
-          <Box direction="col" gap={8}>
-            {/* Top Content Grid */}
-            {imageBetween.contentTop && (
-              <ContentGrid {...imageBetween.contentTop} isDarkMode={true} />
-            )}
-          </Box>
-        </div>
+
+        <Box direction="col" gap={8}>
+          {/* Top Content Grid */}
+          {imageBetween.contentTop && (
+            <ContentGrid {...imageBetween.contentTop} isDarkMode={true} />
+          )}
+        </Box>
 
         {/* Central Image */}
-        <div className="relative -my-8">
+        <div className="relative">
           <Container>
-            <div className="w-full">
-              {/* TODO: add video and other assets */}
-              {imageBetween.asset && (
-                <AirImage
-                  link={imageBetween.asset.link}
-                  altText={imageBetween.asset.altText}
-                  className="w-full object-contain"
-                  {...inspectorProps({ fieldId: 'asset' })}
-                />
-              )}
-            </div>
+            {/* TODO: add video and other assets */}
+            {imageBetween.asset && (
+              <AirImage
+                link={imageBetween.asset.link}
+                altText={imageBetween.asset.altText}
+                className="w-full object-contain"
+                {...inspectorProps({ fieldId: 'asset' })}
+              />
+            )}
           </Container>
         </div>
 
         {/* Light Bottom Section */}
-        <div className="relative py-16">
+        <div className="relative">
           <Box direction="col" gap={8}>
             {/* Bottom Content Grid */}
             {imageBetween.contentBottom && (

@@ -3,10 +3,8 @@ import { fetchGraphQL } from '../api';
 import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from './post';
-import { VIDEO_GRAPHQL_FIELDS } from './video';
-import { SOLUTION_GRAPHQL_FIELDS } from './solution';
+import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SERVICE_GRAPHQL_FIELDS } from './service';
 
 import { ContentfulError, NetworkError } from '../errors';
@@ -69,10 +67,13 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
         ${SERVICE_GRAPHQL_FIELDS}
       }
       ... on Solution {
-        ${SOLUTION_GRAPHQL_FIELDS}
+        ${SYS_FIELDS}
       }
       ... on Video {
-        ${VIDEO_GRAPHQL_FIELDS}
+        ${SYS_FIELDS}
+      }
+      ... on Slider {
+        ${SYS_FIELDS}
       }
     }
   }

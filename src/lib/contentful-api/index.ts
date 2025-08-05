@@ -6,5 +6,6 @@ export * from './image';
 export * from './post';
 export * from './section-heading';
 export * from './service';
+export * from './slider';
 export * from './solution';
 export * from './video';
