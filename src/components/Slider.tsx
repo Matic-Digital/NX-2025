@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
   type CarouselApi
 } from '@/components/ui/carousel';
-import type { Slider, SliderSys, SliderItem } from '@/types/contentful';
+import type { Slider, SliderSys, SliderItem, SliderItemOrImage, Image } from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
 import { Box } from '@/components/global/matic-ds';
 import {
@@ -24,12 +24,17 @@ const SliderItem = ({
   index,
   current
 }: {
-  item: SliderItem;
+  item: SliderItemOrImage;
   index: number;
   current: number;
 }) => {
   const sliderItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: sliderItem?.sys?.id });
+
+  // Type guard to check if item is a SliderItem (has heading and image properties)
+  const isSliderItem = 'heading' in sliderItem && 'image' in sliderItem;
+  // Type guard to check if item is an Image (has link property)
+  const isImage = 'link' in sliderItem && !('heading' in sliderItem);
 
   return (
     <div
@@ -38,47 +43,61 @@ const SliderItem = ({
       })}
     >
       <AirImage
-        link={sliderItem.image?.link}
-        altText={sliderItem.image?.altText}
+        link={isSliderItem ? sliderItem.image?.link : isImage ? sliderItem.link : undefined}
+        altText={
+          isSliderItem ? sliderItem.image?.altText : isImage ? sliderItem.altText : undefined
+        }
         className="absolute h-full w-full object-cover"
       />
-      {/* overline and title */}
-      <div className="relative h-full">
-        <div
-          className="flex h-full w-full max-w-[393px] flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px]"
-          style={{
-            background:
-              'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-          }}
-        >
-          <Box direction="col" gap={5}>
-            <Box direction="col" gap={1.5}>
-              {item.heading.overline && (
-                <p
-                  className="text-body-sm text-white uppercase"
-                  {...inspectorProps({ fieldId: 'heading.overline' })}
+      {/* Content overlay - only show for SliderItem, for Image just show the image */}
+      {isSliderItem && (
+        <div className="relative h-full">
+          <div
+            className="flex h-full w-full max-w-[393px] flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px]"
+            style={{
+              background:
+                'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+            }}
+          >
+            <Box direction="col" gap={5}>
+              <Box direction="col" gap={1.5}>
+                {sliderItem.heading.overline && (
+                  <p
+                    className="text-body-sm text-white uppercase"
+                    {...inspectorProps({ fieldId: 'heading.overline' })}
+                  >
+                    {sliderItem.heading.overline}
+                  </p>
+                )}
+                <h2
+                  className="text-headline-sm leading-tight text-white"
+                  {...inspectorProps({ fieldId: 'heading.title' })}
                 >
-                  {item.heading.overline}
+                  {sliderItem.heading.title}
+                </h2>
+              </Box>
+              {sliderItem.heading.description && (
+                <p
+                  className="text-body-xs letter-spacing-[0.14px] leading-normal text-white"
+                  {...inspectorProps({ fieldId: 'heading.description' })}
+                >
+                  {sliderItem.heading.description}
                 </p>
               )}
-              <h2
-                className="text-headline-sm leading-tight text-white"
-                {...inspectorProps({ fieldId: 'heading.title' })}
-              >
-                {item.heading.title}
-              </h2>
             </Box>
-            {item.heading.description && (
-              <p
-                className="text-body-xs letter-spacing-[0.14px] leading-normal text-white"
-                {...inspectorProps({ fieldId: 'heading.description' })}
-              >
-                {item.heading.description}
-              </p>
-            )}
-          </Box>
+          </div>
         </div>
-      </div>
+      )}
+      {/* For Image items, show a simple title overlay */}
+      {isImage && (
+        <div className="relative h-full">
+          <div className="flex h-full w-full flex-col justify-end p-10">
+            <div className="rounded-[2px] bg-black/20 p-4 backdrop-blur-[14px]">
+              <h2 className="text-headline-sm leading-tight text-white">{sliderItem.title}</h2>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -135,7 +154,7 @@ export function Slider(props: SliderSys) {
     >
       <CarouselContent>
         {sliderData.itemsCollection.items.map((item, index) => (
-          <CarouselItem key={item.sys.id} className="basis-full sm:basis-4/5">
+          <CarouselItem key={`${item.sys.id}-${index}`} className="basis-full sm:basis-4/5">
             <SliderItem index={index} current={current} item={item} />
           </CarouselItem>
         ))}

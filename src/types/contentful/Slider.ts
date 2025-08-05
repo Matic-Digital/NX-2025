@@ -14,6 +14,10 @@ const SliderItemSchema = z.object({
 
 export type SliderItem = z.infer<typeof SliderItemSchema>;
 
+// Union type for slider items
+const SliderItemUnion = z.union([SliderItemSchema, ImageSchema]);
+export type SliderItemOrImage = z.infer<typeof SliderItemUnion>;
+
 export const SliderSysSchema = z.object({
   sys: z.object({
     id: z.string()
@@ -28,7 +32,7 @@ export const SliderSchema = z.object({
   }),
   title: z.string(),
   itemsCollection: z.object({
-    items: z.array(SliderItemSchema)
+    items: z.array(SliderItemUnion)
   }),
   __typename: z.string().optional()
 });
