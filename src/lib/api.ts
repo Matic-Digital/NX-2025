@@ -92,7 +92,7 @@ const HEADER_GRAPHQL_FIELDS = `
 // Footer fields
 const FOOTER_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  name
+  title
   description
   copyright
   logo {

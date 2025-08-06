@@ -125,7 +125,7 @@ function FooterPreviewContent() {
             <strong>ID:</strong> {footer.sys.id}
           </p>
           <p className="mb-2">
-            <strong>Name:</strong> {footer.name}
+            <strong>Title:</strong> {footer.title}
           </p>
           <div className="mt-8 rounded bg-gray-100 p-4">
             <p className="text-sm text-gray-600">

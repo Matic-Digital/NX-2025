@@ -32,7 +32,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
-        <DevTools theme="dark" />
+        {/* <DevTools theme="dark" /> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -48,7 +48,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
             <WrapBalancerProvider>{children}</WrapBalancerProvider>
           </ContentfulLivePreviewProvider>
         </ThemeProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </JotaiProvider>
     </QueryClientProvider>
   );

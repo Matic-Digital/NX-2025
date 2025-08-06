@@ -37,7 +37,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   if (!footerData) {
     return (
       <footer className="bg-background mt-24 border-t border-gray-200 py-12">
-        <Container width="full">
+        <Container>
           <p className="text-muted-foreground text-center">Footer data not available</p>
         </Container>
       </footer>
@@ -45,81 +45,86 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   }
 
   return (
-    <footer className="bg-background mt-24 border-t border-gray-200 py-12">
-      <Container width="full">
-        {/* Main footer content grid */}
-        <Box cols={{ sm: 2 }} gap={12}>
-          {/* Company information */}
-          <div>
-            {liveFooterData.logo ? (
-              <div
-                className="mb-4"
-                {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'logo' })}
-              >
+    <footer className="bg-foreground py-24">
+      <Box direction="col" gap={6} className="px-41">
+        <Container>
+          {/* Main footer content grid */}
+          <Box cols={{ sm: 2 }} gap={0}>
+            {/* Company information */}
+            <div>
+              {liveFooterData.logo ? (
                 <Image
                   src={liveFooterData.logo.url}
-                  alt={liveFooterData.logo.title ?? liveFooterData.name ?? 'Logo'}
+                  alt={liveFooterData.logo.title ?? 'Logo'}
                   width={liveFooterData.logo.width ?? 150}
                   height={liveFooterData.logo.height ?? 50}
-                  className="h-8 rounded-none border-none"
+                  className="h-8 w-auto rounded-none border-none"
                 />
-              </div>
-            ) : (
-              <Logo />
-            )}
-            <p
-              className="text-muted-foreground max-w-xs text-sm"
-              {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'description' })}
-            >
-              {liveFooterData.description ??
-                'Modern blog platform built with Next.js, Contentful and Mux'}
-            </p>
-          </div>
-
-          <Box
-            gap={12}
-            className="justify-start lg:justify-between"
-            {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'pageListsCollection' })}
-          >
-            {/* Footer sections with links from Contentful */}
-            {liveFooterData.pageListsCollection?.items.map((pageList) => (
-              <div key={pageList.sys.id}>
-                <h3
-                  className="text-body-xs font-medium"
-                  {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'name' })}
+              ) : (
+                <Logo />
+              )}
+              {liveFooterData.description && (
+                <p
+                  className="text-muted-foreground text-body-sm max-w-xs"
+                  {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'description' })}
                 >
-                  <Link href={`/${pageList.slug}`} className="hover:text-primary">
-                    {pageList.name}
-                  </Link>
-                </h3>
-                <nav>
-                  <ul
-                    className="mt-4 ml-1 space-y-2"
-                    {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'pagesCollection' })}
+                  {liveFooterData.description ?? ''}
+                </p>
+              )}
+            </div>
+
+            <Box
+              gap={12}
+              className="justify-start lg:justify-between"
+              {...inspectorProps({
+                entryId: liveFooterData.sys.id,
+                fieldId: 'pageListsCollection'
+              })}
+            >
+              {/* Footer sections with links from Contentful */}
+              {liveFooterData.pageListsCollection?.items.map((pageList) => (
+                <Box direction="col" gap={4} key={pageList.sys.id}>
+                  <h3
+                    className="text-body-sm text-text-input leading-[160%] tracking-wide uppercase"
+                    {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'name' })}
                   >
-                    {pageList.pagesCollection?.items.map((page) => (
-                      <li
-                        key={page.sys.id}
-                        {...inspectorProps({ entryId: page.sys.id, fieldId: 'name' })}
-                      >
-                        <Link
-                          href={`/${page.slug}`}
-                          className="text-muted-foreground hover:text-primary text-sm"
+                    <Link href={`/${pageList.slug}`} className="hover:text-primary">
+                      {pageList.name}
+                    </Link>
+                  </h3>
+
+                  <nav>
+                    <ul
+                      className="flex flex-col gap-5"
+                      {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'pagesCollection' })}
+                    >
+                      {pageList.pagesCollection?.items.map((page) => (
+                        <li
+                          key={page.sys.id}
+                          {...inspectorProps({ entryId: page.sys.id, fieldId: 'name' })}
                         >
-                          {page.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
-            ))}
+                          <Link
+                            href={`/${page.slug}`}
+                            className="text-text-on-invert hover:text-primary text-body-sm tracking-tight"
+                          >
+                            {page.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </Box>
+              ))}
+            </Box>
           </Box>
-        </Box>
-      </Container>
-      {/* Copyright section */}
-      <div className="mt-8 border-t pt-8">
-        <Container width="full">
+        </Container>
+
+        <Container className="py-6">
+          <hr className="border-input-hover-border/10 border-t" />
+        </Container>
+        {/* Copyright section */}
+
+        <Container>
           <p
             className="text-muted-foreground text-right text-sm"
             {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
@@ -128,7 +133,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
             reserved.
           </p>
         </Container>
-      </div>
+      </Box>
     </footer>
   );
 }
