@@ -139,7 +139,7 @@ export function ContentGrid(props: ContentGrid) {
                       const isProduct = item.__typename === 'Product';
 
                       if (isProduct) {
-                        const product = item as ProductType;
+                        // const product = item as ProductType;s
                         // Transform Product to ContentGridItem format, mapping slug to link and icon to image
                         return (
                           <ProductCard key={item.sys?.id || index} {...(item as ProductType)} />

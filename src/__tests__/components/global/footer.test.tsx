@@ -49,7 +49,7 @@ beforeEach(() => {
 describe('Footer Component', () => {
   const mockFooterData = {
     sys: { id: 'footer-1' },
-    name: 'Test Footer',
+    title: 'Test Footer',
     logo: {
       url: 'https://images.ctfassets.net/test-logo.png',
       title: 'Test Logo',

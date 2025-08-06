@@ -171,7 +171,7 @@ async function renderDefaultHomePage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {footers.items.map((footer) => (
               <div key={footer.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{footer.name}</h3>
+                <h3 className="text-body-lg mb-2 font-medium">{footer.title}</h3>
                 {footer.description && <p className="text-body-xs">{footer.description}</p>}
               </div>
             ))}
