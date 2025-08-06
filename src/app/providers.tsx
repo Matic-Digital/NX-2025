@@ -15,8 +15,8 @@ import { Provider as WrapBalancerProvider } from 'react-wrap-balancer';
 import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
 
 // Utils
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { DevTools } from 'jotai-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { DevTools } from 'jotai-devtools';
 import 'jotai-devtools/styles.css';
 
 /**

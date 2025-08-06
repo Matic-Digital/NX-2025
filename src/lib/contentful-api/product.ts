@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '../api';
-import type { Product, ProductResponse } from '@/types/contentful/Product';
+import type { Product } from '@/types/contentful/Product';
 import { ContentfulError, NetworkError } from '../errors';
 
 const SYS_FIELDS = `

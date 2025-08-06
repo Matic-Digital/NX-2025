@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
-} from '@contentful/live-preview/react';
+import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import Image from 'next/image';
 import type { Product, ProductSys } from '@/types/contentful/Product';
