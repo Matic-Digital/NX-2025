@@ -122,16 +122,37 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
         <Container className="py-6">
           <hr className="border-input-hover-border/10 border-t" />
         </Container>
-        {/* Copyright section */}
 
+        {/* Copyright section */}
         <Container>
-          <p
-            className="text-muted-foreground text-right text-sm"
-            {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
-          >
-            © {new Date().getFullYear()} {liveFooterData.copyright ?? 'Matic'}. All rights
-            reserved.
-          </p>
+          <Box gap={2} className="items-center justify-between">
+            <p
+              className="text-body-xs text-text-on-invert text-left"
+              {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
+            >
+              © {liveFooterData.copyright}, {new Date().getFullYear()}
+            </p>
+            <Box direction="row" gap={8}>
+              <Link
+                href="/privacy"
+                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+              >
+                Global Data Protection Policy
+              </Link>
+              <Link
+                href="/cookies"
+                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+              >
+                Cookie Policy
+              </Link>
+              <Link
+                href="/legal"
+                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+              >
+                Legal Disclaimer
+              </Link>
+            </Box>
+          </Box>
         </Container>
       </Box>
     </footer>
