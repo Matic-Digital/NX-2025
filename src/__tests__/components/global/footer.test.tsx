@@ -62,17 +62,17 @@ describe('Footer Component', () => {
       items: [
         {
           sys: { id: 'page-list-1' },
-          name: 'Products',
+          title: 'Products',
           pagesCollection: {
             items: [
               {
                 sys: { id: 'page-1' },
-                name: 'Product 1',
+                title: 'Product 1',
                 slug: 'product-1'
               },
               {
                 sys: { id: 'page-2' },
-                name: 'Product 2',
+                title: 'Product 2',
                 slug: 'product-2'
               }
             ]
@@ -80,17 +80,17 @@ describe('Footer Component', () => {
         },
         {
           sys: { id: 'page-list-2' },
-          name: 'Company',
+          title: 'Company',
           pagesCollection: {
             items: [
               {
                 sys: { id: 'page-3' },
-                name: 'About',
+                title: 'About',
                 slug: 'about'
               },
               {
                 sys: { id: 'page-4' },
-                name: 'Contact',
+                title: 'Contact',
                 slug: 'contact'
               }
             ]

@@ -2,14 +2,8 @@ import { fetchGraphQL } from '../api';
 
 import type { Image, ImageResponse } from '@/types/contentful';
 
+import { SYS_FIELDS } from './constants';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
 
 // Image fields
 export const IMAGE_GRAPHQL_FIELDS = `

@@ -16,11 +16,14 @@
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getPageBySlugInPageList } from '@/lib/api';
+import { getPageBySlug } from '@/lib/contentful-api/page';
+import { getPageListBySlug } from '@/lib/contentful-api/page-list';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList } from '@/types/contentful/PageList';
+import type { Header } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 import { BannerHero } from '@/components/BannerHero';
 
 // Define the component mapping for pageContent items
@@ -63,18 +66,33 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   try {
     console.log(`Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`);
 
-    // Fetch the page and pageList data based on the slugs
-    const result = await getPageBySlugInPageList(pageListSlug, pageSlug, preview);
-    page = result.page;
-    pageList = result.pageList;
+    // First, fetch the PageList
+    pageList = await getPageListBySlug(pageListSlug, preview);
 
-    // If no page or pageList is found, or the page doesn't belong to the pageList, return a 404
-    if (!page || !pageList) {
-      console.log(`Page not found: ${pageSlug} in PageList: ${pageListSlug}`);
+    if (!pageList?.pagesCollection?.items.length) {
+      console.log(`PageList not found or empty: ${pageListSlug}`);
+      notFound();
+    }
+
+    // Then fetch the page
+    page = await getPageBySlug(pageSlug, preview);
+
+    if (!page) {
+      console.log(`Page not found: ${pageSlug}`);
+      notFound();
+    }
+
+    // Check if the page is in the PageList
+    const pageInList = pageList.pagesCollection.items.some((item) => item.sys.id === page!.sys.id);
+
+    if (!pageInList) {
+      console.log(`Page ${pageSlug} does not belong to PageList ${pageListSlug}`);
       notFound();
     }
 
     console.log(`Successfully found page: ${pageSlug} in PageList: ${pageListSlug}`);
+
+    // At this point, we know page and pageList are not null due to the checks above
   } catch (error) {
     console.error(`Error fetching page: ${pageSlug} in PageList: ${pageListSlug}`, error);
     notFound();
@@ -87,8 +105,8 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   }
 
   // Get the page-specific header and footer if they exist
-  const pageHeader = page.header;
-  const pageFooter = page.footer;
+  const pageHeader = page.header as Header | undefined;
+  const pageFooter = page.footer as FooterType | undefined;
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
@@ -125,7 +143,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
                   href={`/${pageList.slug}`}
                   className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
                 >
-                  {pageList.name}
+                  {pageList.title}
                 </a>
               </div>
             </li>
@@ -146,14 +164,14 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
                     d="m1 9 4-4-4-4"
                   />
                 </svg>
-                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">{page.name}</span>
+                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">{page.title}</span>
               </div>
             </li>
           </ol>
         </nav>
       </div>
 
-      <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.title}</h1>
 
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {

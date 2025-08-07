@@ -1,13 +1,7 @@
 import { fetchGraphQL } from '../api';
 import type { Video } from '@/types/contentful';
+import { SYS_FIELDS } from './constants';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
 
 // Video fields
 export const VIDEO_GRAPHQL_FIELDS = `

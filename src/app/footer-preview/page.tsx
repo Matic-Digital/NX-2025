@@ -21,7 +21,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import { getFooterById } from '@/lib/api';
+import { getFooterById } from '@/lib/contentful-api/footer';
 import { Footer } from '@/components/global/Footer';
 import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
 import { Container, Box } from '@/components/global/matic-ds';

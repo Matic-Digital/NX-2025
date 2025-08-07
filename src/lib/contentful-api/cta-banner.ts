@@ -1,34 +1,9 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaBanner, CtaBannerResponse } from '@/types/contentful';
-
+import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
-
-const ASSET_FIELDS = `
-  sys {
-    id
-  }
-  title
-  description
-  url
-  width
-  height
-`;
-
-// Image fields
-const IMAGE_GRAPHQL_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  link
-  altText
-`;
 
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `
