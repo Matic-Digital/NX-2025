@@ -1,15 +1,9 @@
 import { fetchGraphQL } from '../api';
 
 import type { Post, PostResponse } from '@/types/contentful/Post';
-
+import { SYS_FIELDS } from './constants';
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
 
 // Simplified Post fields for ContentGrid (to avoid complexity limits)
 export const POST_GRAPHQL_FIELDS_SIMPLE = `
@@ -18,12 +12,7 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   slug
   datePublished
   mainImage {
-    sys {
-      id
-    }
-    title
-    link
-    altText
+    ${IMAGE_GRAPHQL_FIELDS}
   }
   categories
 `;
@@ -36,12 +25,7 @@ export const POST_GRAPHQL_FIELDS = `
   excerpt
   datePublished
   mainImage {
-    sys {
-      id
-    }
-    title
-    link
-    altText
+    ${IMAGE_GRAPHQL_FIELDS}
   }
   content {
     json
@@ -87,12 +71,7 @@ export const POST_GRAPHQL_FIELDS = `
   categories
   tags
   openGraphImage {
-    sys {
-      id
-    }
-    title
-    link
-    altText
+    ${IMAGE_GRAPHQL_FIELDS}
   }
   seoTitle
   seoDescription

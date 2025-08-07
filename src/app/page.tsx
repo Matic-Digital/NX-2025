@@ -2,9 +2,9 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
-import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/api';
+import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
 
-import { getAllFooters } from '@/lib/api';
+import { getAllFooters } from '@/lib/contentful-api/footer';
 import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
@@ -15,6 +15,8 @@ import { ImageBetween } from '@/components/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
+import type { Header } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 /**
  * Metadata configuration for SEO
@@ -58,12 +60,12 @@ export default async function HomePage() {
  */
 async function renderContentfulHomePage(page: Page) {
   // Get the page-specific header and footer if they exist
-  const pageHeader = page.header;
-  const pageFooter = page.footer;
+  const pageHeader = page.header as Header | undefined;
+  const pageFooter = page.footer as FooterType | undefined;
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.title}</h1>
 
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {
@@ -136,7 +138,7 @@ async function renderDefaultHomePage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {pages.items.map((page) => (
               <div key={page.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{page.name}</h3>
+                <h3 className="text-body-lg mb-2 font-medium">{page.title}</h3>
                 {page.description && <p className="text-gray-600">{page.description}</p>}
               </div>
             ))}
@@ -150,7 +152,7 @@ async function renderDefaultHomePage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {pageLists.items.map((pageList) => (
               <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{pageList.name}</h3>
+                <h3 className="text-body-lg mb-2 font-medium">{pageList.title}</h3>
                 <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
               </div>
             ))}

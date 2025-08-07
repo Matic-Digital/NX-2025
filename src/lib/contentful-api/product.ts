@@ -1,25 +1,7 @@
 import { fetchGraphQL } from '../api';
 import type { Product } from '@/types/contentful/Product';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
-
-// Asset fields for icon
-const ASSET_FIELDS = `
-  sys {
-    id
-  }
-  title
-  description
-  url
-  width
-  height
-`;
+import { SYS_FIELDS, ASSET_FIELDS } from './constants';
 
 // Product fields
 export const PRODUCT_GRAPHQL_FIELDS = `

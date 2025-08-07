@@ -3,28 +3,21 @@ import { fetchGraphQL } from '../api';
 import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { POST_GRAPHQL_FIELDS_SIMPLE } from './post';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SERVICE_GRAPHQL_FIELDS } from './service';
-
+import { SYS_FIELDS, ASSET_FIELDS } from './constants';
 import { ContentfulError, NetworkError } from '../errors';
 
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
-
-const ASSET_FIELDS = `
-  sys {
-    id
-  }
+// Simplified Post fields for ContentGrid (to avoid circular dependency)
+const POST_GRAPHQL_FIELDS_SIMPLE = `
+  ${SYS_FIELDS}
   title
-  description
-  url
-  width
-  height
+  slug
+  datePublished
+  mainImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  categories
 `;
 
 // ContentGridItem fields

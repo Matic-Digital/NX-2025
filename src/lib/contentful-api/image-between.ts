@@ -1,25 +1,7 @@
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  title
-  __typename
-`;
-
-const ASSET_FIELDS = `
-  sys {
-    id
-  }
-  title
-  description
-  url
-  width
-  height
-`;
+import { SYS_FIELDS, ASSET_FIELDS } from './constants';
 
 // ImageBetween fields
 export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
@@ -29,7 +11,7 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
     ${CONTENTGRID_GRAPHQL_FIELDS}
   }
   asset {
-      __typename
+    __typename
     ... on Image {
       ${IMAGE_GRAPHQL_FIELDS}
     }

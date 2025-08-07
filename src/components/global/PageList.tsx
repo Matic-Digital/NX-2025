@@ -31,14 +31,14 @@ interface PageListProps {
   sys: {
     id: string;
   };
-  name?: string;
+  title?: string;
   slug?: string;
   pagesCollection?: {
     items: Array<{
       sys: {
         id: string;
       };
-      name?: string;
+      title?: string;
       slug?: string;
       description?: string;
       __typename?: string;
@@ -73,12 +73,12 @@ export function PageList(props: PageListProps) {
     <div className="page-list-component">
       <Container className="py-16 md:py-24">
         <Box className="flex-col items-start">
-          {pageList.name && (
+          {pageList.title && (
             <h1
               className="text-headline-md sm:text-headline-lg mb-6 max-w-4xl font-bold tracking-tight"
-              {...inspectorProps({ fieldId: 'name' })}
+              {...inspectorProps({ fieldId: 'title' })}
             >
-              {pageList.name}
+              {pageList.title}
             </h1>
           )}
 
@@ -105,7 +105,7 @@ export function PageList(props: PageListProps) {
                       // Add a custom prop to indicate this page belongs to a PageList
                       parentPageList={{
                         slug: pageList.slug,
-                        name: pageList.name
+                        title: pageList.title
                       }}
                     />
                   </div>

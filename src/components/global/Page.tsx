@@ -33,7 +33,7 @@ interface PageProps {
   sys: {
     id: string;
   };
-  name?: string;
+  title?: string;
   slug?: string;
   description?: string;
   header?: HeaderType | null;
@@ -43,7 +43,7 @@ interface PageProps {
       sys: {
         id: string;
       };
-      name?: string;
+      title?: string;
       description?: string;
       __typename?: string;
     }>;
@@ -52,7 +52,7 @@ interface PageProps {
   // Add optional parentPageList prop to indicate if this page belongs to a PageList
   parentPageList?: {
     slug?: string;
-    name?: string;
+    title?: string;
   };
 }
 
@@ -119,12 +119,12 @@ export function Page(props: PageProps) {
 
       <Container className="py-16 md:py-24">
         <Box className="flex-col items-start">
-          {page.name && (
+          {page.title && (
             <h1
               className="text-headline-md sm:text-headline-lg mb-6 max-w-4xl font-bold tracking-tight"
-              {...inspectorProps({ fieldId: 'name' })}
+              {...inspectorProps({ fieldId: 'title' })}
             >
-              {page.name}
+              {page.title}
             </h1>
           )}
 

@@ -12,7 +12,8 @@ import { Main } from '@/components/global/matic-ds';
 import { Footer } from '@/components/global/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/global/Header';
-import { getHeaderById, getFooterById } from '@/lib/api';
+import { getHeaderById } from '@/lib/contentful-api/header';
+import { getFooterById } from '@/lib/contentful-api/footer';
 
 const inter = Inter({
   subsets: ['latin'],

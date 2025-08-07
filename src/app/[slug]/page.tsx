@@ -19,7 +19,7 @@
  */
 
 import { notFound } from 'next/navigation';
-import { getPageBySlug, getPageListBySlug } from '@/lib/api';
+import { getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
@@ -28,6 +28,8 @@ import { Main } from '@/components/global/matic-ds';
 import { ImageBetween } from '@/components/ImageBetween';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
+import type { Header } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
@@ -136,12 +138,12 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 // Helper function to render a Page
 function renderPage(page: Page) {
   // Get the page-specific header and footer if they exist
-  const pageHeader = page.header;
-  const pageFooter = page.footer;
+  const pageHeader = page.header as Header | undefined;
+  const pageFooter = page.footer as FooterType | undefined;
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <h1 className="sr-only">{page.name}</h1>
+      <h1 className="sr-only">{page.title}</h1>
 
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {
@@ -176,8 +178,8 @@ function renderPage(page: Page) {
 // Helper function to render a PageList
 function renderPageList(pageList: PageListType) {
   // Extract header and footer from the PageList
-  const pageHeader = pageList.header;
-  const pageFooter = pageList.footer;
+  const pageHeader = pageList.header as Header | undefined;
+  const pageFooter = pageList.footer as FooterType | undefined;
 
   // Extract page content items if available
   const pageContentItems = pageList.pageContentCollection?.items ?? [];

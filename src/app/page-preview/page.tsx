@@ -20,7 +20,7 @@
 
 import { draftMode } from 'next/headers';
 import ContentfulLivePreviewInitializer from '@/components/global/ContentfulLivePreviewInitializer';
-import { getPageBySlug } from '@/lib/api';
+import { getPageBySlug } from '@/lib/contentful-api';
 import { PagePreviewContent } from '@/components/preview/PagePreviewContent';
 
 // Force dynamic rendering for this page to ensure live updates work
