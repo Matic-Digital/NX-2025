@@ -2,7 +2,7 @@
  * Header Preview Page
  *
  * This page enables content editors to preview Header components directly from Contentful's
- * preview environment. It fetches Header content by name from the query parameters and
+ * preview environment. It fetches Header content by title from the query parameters and
  * renders it within the Contentful Live Preview context, allowing real-time updates as
  * content is edited in Contentful.
  *
@@ -21,7 +21,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import { getHeaderByName } from '@/lib/api';
+import { getHeaderByName } from '@/lib/contentful-api';
 import { Header } from '@/components/global/Header';
 import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
 import { Container, Box } from '@/components/global/matic-ds';

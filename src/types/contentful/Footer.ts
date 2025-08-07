@@ -1,25 +1,41 @@
 import { z } from 'zod';
+import { PageListSchema } from './PageList';
+import { SocialSchema } from './Social';
 
-import type { PageList } from './PageList';
+export const FooterSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  logo: z
+    .object({
+      url: z.string(),
+      title: z.string().optional(),
+      width: z.number().optional(),
+      height: z.number().optional()
+    })
+    .optional(),
+  description: z.string(),
+  pageListsCollection: z
+    .object({
+      items: z.array(PageListSchema)
+    })
+    .optional(),
+  copyright: z.string(),
+  legalPageListsCollection: z
+    .object({
+      items: z.array(PageListSchema)
+    })
+    .optional(),
+  socialNetworksCollection: z
+    .object({
+      items: z.array(SocialSchema)
+    })
+    .optional(),
+  __typename: z.string().optional()
+});
 
-export interface Footer {
-  sys: {
-    id: string;
-  };
-  title: string;
-  description?: string;
-  pageListsCollection?: {
-    items: Array<PageList>;
-  };
-  copyright?: string;
-  logo?: {
-    url: string;
-    title?: string;
-    width?: number;
-    height?: number;
-  };
-  __typename?: string;
-}
+export type Footer = z.infer<typeof FooterSchema>;
 
 export interface FooterResponse {
   items: Array<Footer>;

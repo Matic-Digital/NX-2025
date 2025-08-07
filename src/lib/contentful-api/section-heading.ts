@@ -1,9 +1,4 @@
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
+import { SYS_FIELDS } from './constants';
 
 // SectionHeading fields
 export const SECTIONHEADING_GRAPHQL_FIELDS = `

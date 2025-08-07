@@ -7,7 +7,7 @@ import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 
 interface PageLinkResolverProps {
   slug: string | undefined;
-  name: string | undefined;
+  title: string | undefined;
   className?: string;
   _isActive?: boolean;
   isNavigationLink?: boolean;
@@ -15,7 +15,7 @@ interface PageLinkResolverProps {
 
 export function PageLinkResolver({
   slug,
-  name,
+  title,
   className,
   // Prefix with underscore to indicate it's not used
   _isActive = false,
@@ -40,7 +40,7 @@ export function PageLinkResolver({
           className={navigationMenuTriggerStyle()}
           {...(isLinkActive && { 'data-active': true })}
         >
-          {name}
+          {title}
         </NavigationMenuLink>
       </Link>
     );
@@ -53,7 +53,7 @@ export function PageLinkResolver({
 
   return (
     <Link href={resolvedUrl} className={mobileClassName}>
-      {name}
+      {title}
     </Link>
   );
 }

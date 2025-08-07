@@ -24,6 +24,7 @@ import type { Footer as FooterType } from '@/types/contentful/Footer';
  * - Copyright notice
  */
 export function Footer({ footerData }: { footerData: FooterType | null }) {
+  console.log('footerData', footerData);
   // Use our custom hook to ensure theme changes are properly applied
   useThemeSync();
 
@@ -51,15 +52,20 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
           {/* Main footer content grid */}
           <Box cols={{ sm: 2 }} gap={0}>
             {/* Company information */}
-            <div>
+            <Box direction="col" gap={8}>
               {liveFooterData.logo ? (
-                <Image
-                  src={liveFooterData.logo.url}
-                  alt={liveFooterData.logo.title ?? 'Logo'}
-                  width={liveFooterData.logo.width ?? 150}
-                  height={liveFooterData.logo.height ?? 50}
-                  className="h-8 w-auto rounded-none border-none"
-                />
+                <Link href="/">
+                  <Box direction="row" gap={4} className="items-center">
+                    <Image
+                      src={liveFooterData.logo.url}
+                      alt={liveFooterData.logo.title ?? 'Logo'}
+                      width={liveFooterData.logo.width ?? 150}
+                      height={liveFooterData.logo.height ?? 50}
+                      className="h-8 w-auto rounded-full border-none"
+                    />
+                    <h4 className="text-text-on-invert text-headline-sm">NextPower</h4>
+                  </Box>
+                </Link>
               ) : (
                 <Logo />
               )}
@@ -71,7 +77,20 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                   {liveFooterData.description ?? ''}
                 </p>
               )}
-            </div>
+              <Box direction="row" gap={8}>
+                {liveFooterData.socialNetworksCollection?.items?.map((social) => (
+                  <Link key={social.sys.id} href={social.link}>
+                    <Image
+                      src={social.icon.url}
+                      alt={social.title}
+                      width={social.icon.width}
+                      height={social.icon.height}
+                      className="size-6"
+                    />
+                  </Link>
+                ))}
+              </Box>
+            </Box>
 
             <Box
               gap={12}
@@ -86,11 +105,15 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                 <Box direction="col" gap={4} key={pageList.sys.id}>
                   <h3
                     className="text-body-sm text-text-input leading-[160%] tracking-wide uppercase"
-                    {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'name' })}
+                    {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'title' })}
                   >
-                    <Link href={`/${pageList.slug}`} className="hover:text-primary">
-                      {pageList.name}
-                    </Link>
+                    {pageList.header && pageList.footer ? (
+                      <Link href={`/${pageList.slug}`} className="hover:text-primary">
+                        {pageList.title}
+                      </Link>
+                    ) : (
+                      <span>{pageList.title}</span>
+                    )}
                   </h3>
 
                   <nav>
@@ -98,19 +121,25 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                       className="flex flex-col gap-5"
                       {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'pagesCollection' })}
                     >
-                      {pageList.pagesCollection?.items.map((page) => (
-                        <li
-                          key={page.sys.id}
-                          {...inspectorProps({ entryId: page.sys.id, fieldId: 'name' })}
-                        >
-                          <Link
-                            href={`/${page.slug}`}
-                            className="text-text-on-invert hover:text-primary text-body-sm tracking-tight"
+                      {pageList.pagesCollection?.items
+                        .filter((page) => page != null)
+                        .map((page, index) => (
+                          <li
+                            key={page.sys?.id || `page-${index}`}
+                            {...inspectorProps({ entryId: page.sys?.id, fieldId: 'title' })}
                           >
-                            {page.name}
-                          </Link>
-                        </li>
-                      ))}
+                            <Link
+                              href={'link' in page ? page.link : `/${page.slug}`}
+                              className="text-text-on-invert hover:text-primary text-body-sm tracking-tight"
+                              {...('link' in page && {
+                                target: '_blank',
+                                rel: 'noopener noreferrer'
+                              })}
+                            >
+                              {page.title}
+                            </Link>
+                          </li>
+                        ))}
                     </ul>
                   </nav>
                 </Box>
@@ -133,24 +162,17 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
               © {liveFooterData.copyright}, {new Date().getFullYear()}
             </p>
             <Box direction="row" gap={8}>
-              <Link
-                href="/privacy"
-                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
-              >
-                Global Data Protection Policy
-              </Link>
-              <Link
-                href="/cookies"
-                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
-              >
-                Cookie Policy
-              </Link>
-              <Link
-                href="/legal"
-                className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
-              >
-                Legal Disclaimer
-              </Link>
+              {liveFooterData.legalPageListsCollection?.items?.[0]?.pagesCollection?.items
+                ?.filter((legalPage) => 'slug' in legalPage)
+                ?.map((legalPage) => (
+                  <Link
+                    key={legalPage.sys.id}
+                    href={`/${legalPage.slug}`}
+                    className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+                  >
+                    {legalPage.title}
+                  </Link>
+                ))}
             </Box>
           </Box>
         </Container>

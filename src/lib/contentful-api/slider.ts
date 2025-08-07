@@ -1,15 +1,9 @@
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SYS_FIELDS } from './constants';
 import type { Slider } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
 
 // Minimal slider item fields with inline fragments for union types
 const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `

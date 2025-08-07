@@ -145,7 +145,7 @@ export function Header(props: HeaderProps) {
                               className: isActive(`/${page.slug}`) ? 'bg-accent' : ''
                             })}
                           >
-                            {page.name}
+                            {page.title}
                           </Link>
                         </NavigationMenuItem>
                       );
@@ -164,7 +164,7 @@ export function Header(props: HeaderProps) {
                             href={`/${pageList.slug}`}
                             className={`${navigationMenuTriggerStyle()} ${isActive(`/${pageList.slug}`) || openDropdown === pageList.sys.id ? 'bg-accent' : ''}`}
                           >
-                            {pageList.name}
+                            {pageList.title}
                           </Link>
                           {/* Custom dropdown that appears when state is set */}
                           <div
@@ -178,10 +178,10 @@ export function Header(props: HeaderProps) {
                                     {pageList.pagesCollection.items.map((page) => (
                                       <li key={page.sys.id} className="m-0 w-full p-0">
                                         <Link
-                                          href={`/${pageList.slug}/${page.slug}`}
-                                          className={`block w-full px-4 py-2 text-sm font-medium no-underline outline-hidden transition-colors select-none ${isActive(`/${pageList.slug}/${page.slug}`) ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground'} focus:bg-accent focus:text-accent-foreground rounded-sm`}
+                                          href={'link' in page ? page.link : `/${page.slug}`}
+                                          className={`block w-full px-4 py-2 text-sm font-medium no-underline outline-hidden transition-colors select-none ${isActive(`/${pageList.slug}/${'link' in page ? page.link : page.slug}`) ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground'} focus:bg-accent focus:text-accent-foreground rounded-sm`}
                                         >
-                                          {page.name}
+                                          {page.title}
                                         </Link>
                                       </li>
                                     ))}
@@ -237,7 +237,7 @@ export function Header(props: HeaderProps) {
                                       : 'text-foreground'
                                   }`}
                                 >
-                                  {page.name}
+                                  {page.title}
                                 </Link>
                               </SheetClose>
                             </li>
@@ -258,7 +258,7 @@ export function Header(props: HeaderProps) {
                                     onClick={() => (window.location.href = `/${pageList.slug}`)}
                                     className="grow"
                                   >
-                                    {pageList.name}
+                                    {pageList.title}
                                   </span>
                                   <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
                                 </summary>
@@ -267,14 +267,20 @@ export function Header(props: HeaderProps) {
                                     <li key={page.sys.id}>
                                       <SheetClose asChild>
                                         <Link
-                                          href={`/${pageList.slug}/${page.slug}`}
+                                          href={
+                                            'link' in page
+                                              ? page.link
+                                              : `/${pageList.slug}/${page.slug}`
+                                          }
                                           className={`block py-1 text-sm ${
-                                            isActive(`/${pageList.slug}/${page.slug}`)
+                                            isActive(
+                                              `/${pageList.slug}/${'link' in page ? page.link : page.slug}`
+                                            )
                                               ? 'text-primary font-medium'
                                               : 'text-muted-foreground'
                                           }`}
                                         >
-                                          {page.name}
+                                          {page.title}
                                         </Link>
                                       </SheetClose>
                                     </li>

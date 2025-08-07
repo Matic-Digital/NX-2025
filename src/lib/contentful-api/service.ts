@@ -4,13 +4,7 @@ import type { Service, ServiceResponse } from '@/types/contentful/Service';
 
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-
-const SYS_FIELDS = `
-  sys {
-    id
-  }
-  __typename
-`;
+import { SYS_FIELDS } from './constants';
 
 // Service fields
 export const SERVICE_GRAPHQL_FIELDS = `
