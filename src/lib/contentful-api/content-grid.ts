@@ -24,6 +24,7 @@ const POST_GRAPHQL_FIELDS_SIMPLE = `
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
+  heading
   link {
     sys {
       id
