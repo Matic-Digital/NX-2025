@@ -47,10 +47,14 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
 
   return (
     <footer className="bg-foreground py-24">
-      <Box direction="col" gap={6} className="px-41">
+      <Box direction="col" gap={6} className="xl:px-41">
         <Container>
           {/* Main footer content grid */}
-          <Box cols={{ sm: 2 }} gap={0}>
+          <Box
+            direction={{ base: 'col', lg: 'row' }}
+            cols={{ base: 1, lg: 2 }}
+            gap={{ base: 12, lg: 0 }}
+          >
             {/* Company information */}
             <Box direction="col" gap={8}>
               {liveFooterData.logo ? (
@@ -92,8 +96,11 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
               </Box>
             </Box>
 
+            {/* Page Navigation Menu */}
             <Box
-              gap={12}
+              direction={{ base: 'col', lg: 'row' }}
+              cols={{ base: 1, sm: 2, lg: 4 }}
+              gap={{ base: 12, lg: 0 }}
               className="justify-start lg:justify-between"
               {...inspectorProps({
                 entryId: liveFooterData.sys.id,
@@ -154,21 +161,25 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
 
         {/* Copyright section */}
         <Container>
-          <Box gap={2} className="items-center justify-between">
+          <Box
+            direction={{ base: 'col', lg: 'row' }}
+            gap={{ base: 12, lg: 2 }}
+            className="items-start justify-between lg:items-center"
+          >
             <p
-              className="text-body-xs text-text-on-invert text-left"
+              className="text-body-xs text-text-on-invert order-2 text-left lg:order-1"
               {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
             >
               © {liveFooterData.copyright}, {new Date().getFullYear()}
             </p>
-            <Box direction="row" gap={8}>
+            <Box direction={{ base: 'col', md: 'row' }} gap={8} className="order-1 lg:order-2">
               {liveFooterData.legalPageListsCollection?.items?.[0]?.pagesCollection?.items
                 ?.filter((legalPage) => 'slug' in legalPage)
                 ?.map((legalPage) => (
                   <Link
                     key={legalPage.sys.id}
                     href={`/${legalPage.slug}`}
-                    className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+                    className="text-text-input text-body-xs w-max border-b-[.5px] hover:border-white hover:text-white"
                   >
                     {legalPage.title}
                   </Link>
