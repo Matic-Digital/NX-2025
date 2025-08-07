@@ -68,7 +68,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
     // First, fetch the PageList
     pageList = await getPageListBySlug(pageListSlug, preview);
-    
+
     if (!pageList?.pagesCollection?.items.length) {
       console.log(`PageList not found or empty: ${pageListSlug}`);
       notFound();
@@ -91,7 +91,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     }
 
     console.log(`Successfully found page: ${pageSlug} in PageList: ${pageListSlug}`);
-    
+
     // At this point, we know page and pageList are not null due to the checks above
   } catch (error) {
     console.error(`Error fetching page: ${pageSlug} in PageList: ${pageListSlug}`, error);
