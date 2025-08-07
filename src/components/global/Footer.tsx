@@ -12,6 +12,7 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box, Container } from '@/components/global/matic-ds';
 import { useThemeSync } from '@/hooks/useThemeSync';
 import { Logo } from '@/components/global/Logo';
+import { SvgIcon } from '@/components/ui/svg-icon';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 /**
@@ -46,7 +47,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   }
 
   return (
-    <footer className="bg-foreground py-24">
+    <footer className="dark bg-background py-24">
       <Box direction="col" gap={6} className="xl:px-41">
         <Container>
           {/* Main footer content grid */}
@@ -67,7 +68,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                       height={liveFooterData.logo.height ?? 50}
                       className="h-8 w-auto rounded-full border-none"
                     />
-                    <h4 className="text-text-on-invert text-headline-sm">NextPower</h4>
+                    <h4 className="text-foreground text-headline-sm">NextPower</h4>
                   </Box>
                 </Link>
               ) : (
@@ -84,12 +85,12 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
               <Box direction="row" gap={8}>
                 {liveFooterData.socialNetworksCollection?.items?.map((social) => (
                   <Link key={social.sys.id} href={social.link}>
-                    <Image
+                    <SvgIcon
                       src={social.icon.url}
                       alt={social.title}
-                      width={social.icon.width}
-                      height={social.icon.height}
-                      className="size-6"
+                      width={24}
+                      height={24}
+                      className="text-foreground hover:text-text-primary transition-colors duration-200"
                     />
                   </Link>
                 ))}
@@ -115,7 +116,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                     {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'title' })}
                   >
                     {pageList.header && pageList.footer ? (
-                      <Link href={`/${pageList.slug}`} className="hover:text-primary">
+                      <Link href={`/${pageList.slug}`} className="hover:text-text-primary">
                         {pageList.title}
                       </Link>
                     ) : (
@@ -137,7 +138,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                           >
                             <Link
                               href={'link' in page ? page.link : `/${page.slug}`}
-                              className="text-text-on-invert hover:text-primary text-body-sm tracking-tight"
+                              className="text-foreground hover:text-text-primary text-body-sm tracking-tight"
                               {...('link' in page && {
                                 target: '_blank',
                                 rel: 'noopener noreferrer'
