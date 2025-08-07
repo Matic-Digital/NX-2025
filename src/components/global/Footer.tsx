@@ -168,7 +168,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
             className="items-start justify-between lg:items-center"
           >
             <p
-              className="text-body-xs text-text-on-invert order-2 text-left lg:order-1"
+              className="text-body-xs text-foreground order-2 text-left lg:order-1"
               {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
             >
               © {liveFooterData.copyright}, {new Date().getFullYear()}
