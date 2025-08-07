@@ -2,7 +2,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/* @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *));
+ */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Use globals.css for:
  * Base element styles
@@ -128,7 +130,7 @@
   --text-input: #737373;
   --text-input-hover: #525252;
   --text-input-focus: var(--black);
-  --text-primary: #8b5cf6;
+  --text-primary: #fe5000;
   --text-primary-hover: #6d28d9;
   --text-primary-link: #8b5cf6;
   --text-primary-link-hover: #7c3aed;
@@ -295,7 +297,7 @@
   --text-input: #737373;
   --text-input-hover: #525252;
   --text-input-focus: var(--black);
-  --text-primary: #ddd6fe;
+  --text-primary: #fe5000;
   --text-primary-hover: #7c3aed;
   --text-primary-link: #ddd6fe;
   --text-primary-link-hover: #7c3aed;

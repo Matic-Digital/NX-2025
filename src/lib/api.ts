@@ -31,8 +31,13 @@ export async function fetchGraphQL<T>(
         ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
 
+    // Debug: Log the environment variable value
+    console.log('CONTENTFUL_ENVIRONMENT:', process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT);
+    const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'development';
+    console.log('Using environment:', environment);
+
     const response = await fetch(
-      `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/environments/staging`,
+      `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/environments/${environment}`,
       {
         method: 'POST',
         headers: {
