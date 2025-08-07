@@ -12,6 +12,7 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box, Container } from '@/components/global/matic-ds';
 import { useThemeSync } from '@/hooks/useThemeSync';
 import { Logo } from '@/components/global/Logo';
+import { SvgIcon } from '@/components/ui/svg-icon';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 /**
@@ -46,11 +47,15 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
   }
 
   return (
-    <footer className="bg-foreground py-24">
-      <Box direction="col" gap={6} className="px-41">
+    <footer className="dark bg-background py-24">
+      <Box direction="col" gap={6} className="xl:px-41">
         <Container>
           {/* Main footer content grid */}
-          <Box cols={{ sm: 2 }} gap={0}>
+          <Box
+            direction={{ base: 'col', lg: 'row' }}
+            cols={{ base: 1, lg: 2 }}
+            gap={{ base: 12, lg: 0 }}
+          >
             {/* Company information */}
             <Box direction="col" gap={8}>
               {liveFooterData.logo ? (
@@ -63,7 +68,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                       height={liveFooterData.logo.height ?? 50}
                       className="h-8 w-auto rounded-full border-none"
                     />
-                    <h4 className="text-text-on-invert text-headline-sm">NextPower</h4>
+                    <h4 className="text-foreground text-headline-sm">NextPower</h4>
                   </Box>
                 </Link>
               ) : (
@@ -80,20 +85,23 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
               <Box direction="row" gap={8}>
                 {liveFooterData.socialNetworksCollection?.items?.map((social) => (
                   <Link key={social.sys.id} href={social.link}>
-                    <Image
+                    <SvgIcon
                       src={social.icon.url}
                       alt={social.title}
-                      width={social.icon.width}
-                      height={social.icon.height}
-                      className="size-6"
+                      width={24}
+                      height={24}
+                      className="text-foreground hover:text-text-primary transition-colors duration-200"
                     />
                   </Link>
                 ))}
               </Box>
             </Box>
 
+            {/* Page Navigation Menu */}
             <Box
-              gap={12}
+              direction={{ base: 'col', lg: 'row' }}
+              cols={{ base: 1, sm: 2, lg: 4 }}
+              gap={{ base: 12, lg: 0 }}
               className="justify-start lg:justify-between"
               {...inspectorProps({
                 entryId: liveFooterData.sys.id,
@@ -108,7 +116,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                     {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'title' })}
                   >
                     {pageList.header && pageList.footer ? (
-                      <Link href={`/${pageList.slug}`} className="hover:text-primary">
+                      <Link href={`/${pageList.slug}`} className="hover:text-text-primary">
                         {pageList.title}
                       </Link>
                     ) : (
@@ -130,7 +138,7 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
                           >
                             <Link
                               href={'link' in page ? page.link : `/${page.slug}`}
-                              className="text-text-on-invert hover:text-primary text-body-sm tracking-tight"
+                              className="text-foreground hover:text-text-primary text-body-sm tracking-tight"
                               {...('link' in page && {
                                 target: '_blank',
                                 rel: 'noopener noreferrer'
@@ -154,21 +162,25 @@ export function Footer({ footerData }: { footerData: FooterType | null }) {
 
         {/* Copyright section */}
         <Container>
-          <Box gap={2} className="items-center justify-between">
+          <Box
+            direction={{ base: 'col', lg: 'row' }}
+            gap={{ base: 12, lg: 2 }}
+            className="items-start justify-between lg:items-center"
+          >
             <p
-              className="text-body-xs text-text-on-invert text-left"
+              className="text-body-xs text-foreground order-2 text-left lg:order-1"
               {...inspectorProps({ entryId: liveFooterData.sys.id, fieldId: 'copyright' })}
             >
               © {liveFooterData.copyright}, {new Date().getFullYear()}
             </p>
-            <Box direction="row" gap={8}>
+            <Box direction={{ base: 'col', md: 'row' }} gap={8} className="order-1 lg:order-2">
               {liveFooterData.legalPageListsCollection?.items?.[0]?.pagesCollection?.items
                 ?.filter((legalPage) => 'slug' in legalPage)
                 ?.map((legalPage) => (
                   <Link
                     key={legalPage.sys.id}
                     href={`/${legalPage.slug}`}
-                    className="text-text-input text-body-xs border-b-[.5px] hover:border-white hover:text-white"
+                    className="text-text-input text-body-xs w-max border-b-[.5px] hover:border-white hover:text-white"
                   >
                     {legalPage.title}
                   </Link>
