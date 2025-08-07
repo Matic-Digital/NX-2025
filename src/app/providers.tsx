@@ -35,7 +35,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         {/* <DevTools theme="dark" /> */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           enableColorScheme
           storageKey="matic-ui-theme"
