@@ -39,43 +39,11 @@ export async function generateMetadata(): Promise<Metadata> {
   // Construct the base URL for absolute image URLs
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
 
-  // Type for the Open Graph image
-  type OpenGraphImage = {
-    url: string;
-    width?: number;
-    height?: number;
-    title?: string;
-  };
+  // Import utility functions for safe metadata extraction
+  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import('@/lib/metadata-utils');
 
   // Safely extract the openGraphImage with proper typing
-  const openGraphImage: OpenGraphImage | undefined = (() => {
-    const img = homePage.openGraphImage as OpenGraphImage;
-    if (!img) return undefined;
-
-    const result: OpenGraphImage = { url: '' };
-
-    // Safely set URL with proper type checking
-    if (img && 'url' in img && typeof img.url === 'string') {
-      result.url = img.url;
-    }
-
-    // Safely set width with proper type checking
-    if (img && 'width' in img && typeof img.width === 'number') {
-      result.width = img.width;
-    }
-
-    // Safely set height with proper type checking
-    if (img && 'height' in img && typeof img.height === 'number') {
-      result.height = img.height;
-    }
-
-    // Safely set title with proper type checking
-    if (img && 'title' in img && typeof img.title === 'string') {
-      result.title = img.title;
-    }
-
-    return result.url ? result : undefined;
-  })();
+  const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
 
   // Safely extract image URL
   const getImageUrl = (url: string): string => {
@@ -98,9 +66,8 @@ export async function generateMetadata(): Promise<Metadata> {
     : [];
 
   // Build the metadata object with Open Graph tags
-  const title = homePage.seoTitle ?? homePage.title ?? defaultMetadata.title;
-  const description =
-    homePage.seoDescription ?? homePage.description ?? defaultMetadata.description;
+  const title = extractSEOTitle(homePage, defaultMetadata.title);
+  const description = extractSEODescription(homePage, defaultMetadata.description);
 
   return {
     title,
