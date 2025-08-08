@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
 
 export function ContentGridItem(props: ContentGridItemType) {
-  const { icon, title, description, link, image, sys } = props;
+  const { icon, heading, description, link, image, sys } = props;
   const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
 
   // Render the appropriate icon based on the icon name
@@ -52,9 +52,9 @@ export function ContentGridItem(props: ContentGridItemType) {
           >
             <h2
               className="text-headline-xs transition-all"
-              {...inspectorProps({ fieldId: 'title' })}
+              {...inspectorProps({ fieldId: 'heading' })}
             >
-              {title}
+              {heading}
             </h2>
             <span className="text-primary hidden transition-all group-hover:block">
               <ArrowUpRight className="size-12 stroke-1" />
@@ -92,8 +92,8 @@ export function ContentGridItem(props: ContentGridItemType) {
               <div className="size-16 items-center">{renderIcon()}</div>
 
               <Box direction="col" gap={2}>
-                <h3 className="text-headline-md" {...inspectorProps({ fieldId: 'title' })}>
-                  {title}
+                <h3 className="text-headline-md" {...inspectorProps({ fieldId: 'heading' })}>
+                  {heading}
                 </h3>
                 <p className="text-white" {...inspectorProps({ fieldId: 'description' })}>
                   {description}
