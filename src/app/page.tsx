@@ -19,12 +19,107 @@ import type { Header } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 /**
- * Metadata configuration for SEO
+ * Generate metadata for the page, including Open Graph tags
  */
-export const metadata: Metadata = {
-  title: 'Nextracker',
-  description: 'Nextracker Website 2025'
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Try to fetch the home page data
+  const homePage = await getPageBySlug('/', false);
+
+  // Default metadata
+  const defaultMetadata = {
+    title: 'Nextracker',
+    description: 'Nextracker Website 2025'
+  };
+
+  // If no home page data, return defaults
+  if (!homePage) {
+    return defaultMetadata;
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  // Type for the Open Graph image
+  type OpenGraphImage = {
+    url: string;
+    width?: number;
+    height?: number;
+    title?: string;
+  };
+
+  // Safely extract the openGraphImage with proper typing
+  const openGraphImage: OpenGraphImage | undefined = (() => {
+    const img = homePage.openGraphImage as OpenGraphImage;
+    if (!img) return undefined;
+
+    const result: OpenGraphImage = { url: '' };
+
+    // Safely set URL with proper type checking
+    if (img && 'url' in img && typeof img.url === 'string') {
+      result.url = img.url;
+    }
+
+    // Safely set width with proper type checking
+    if (img && 'width' in img && typeof img.width === 'number') {
+      result.width = img.width;
+    }
+
+    // Safely set height with proper type checking
+    if (img && 'height' in img && typeof img.height === 'number') {
+      result.height = img.height;
+    }
+
+    // Safely set title with proper type checking
+    if (img && 'title' in img && typeof img.title === 'string') {
+      result.title = img.title;
+    }
+
+    return result.url ? result : undefined;
+  })();
+
+  // Safely extract image URL
+  const getImageUrl = (url: string): string => {
+    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+  };
+
+  // Get the image URL safely
+  const imageUrl = openGraphImage?.url ? getImageUrl(openGraphImage.url) : undefined;
+
+  // Build the images array for Open Graph
+  const ogImages = imageUrl
+    ? [
+        {
+          url: imageUrl,
+          width: openGraphImage?.width ?? 1200,
+          height: openGraphImage?.height ?? 630,
+          alt: openGraphImage?.title ?? homePage.title ?? 'Nextracker'
+        }
+      ]
+    : [];
+
+  // Build the metadata object with Open Graph tags
+  const title = homePage.seoTitle ?? homePage.title ?? defaultMetadata.title;
+  const description =
+    homePage.seoDescription ?? homePage.description ?? defaultMetadata.description;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImages,
+      siteName: 'Nextracker',
+      type: 'website'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : []
+    }
+  };
+}
 
 // Define the component mapping for pageContent items
 const componentMap = {

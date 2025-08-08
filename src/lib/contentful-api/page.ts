@@ -9,12 +9,18 @@ import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 
 export const PAGE_BASIC_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
   description
+  openGraphImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  seoTitle
+  seoDescription
 `;
 
 // Page fields with header/footer references only (no full data)
