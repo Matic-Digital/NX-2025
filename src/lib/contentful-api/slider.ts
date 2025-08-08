@@ -4,6 +4,7 @@ import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS } from './constants';
 import type { Slider } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
+import { POST_SLIDER_GRAPHQL_FIELDS } from './post';
 
 // Minimal slider item fields with inline fragments for union types
 const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
@@ -18,10 +19,10 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
     }
   }
   ... on Image {
-    ${SYS_FIELDS}
-    title
-    link
-    altText
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  ... on Post {
+    ${POST_SLIDER_GRAPHQL_FIELDS}
   }
 `;
 

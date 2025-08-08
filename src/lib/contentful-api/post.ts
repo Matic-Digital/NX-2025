@@ -17,6 +17,20 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   categories
 `;
 
+export const POST_SLIDER_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  slug
+  excerpt
+  mainImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  categories
+  content {
+    json
+  }
+`;
+
 // Full Post fields for individual Post queries
 export const POST_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
