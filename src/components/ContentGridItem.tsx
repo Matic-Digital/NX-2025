@@ -8,6 +8,7 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
 
 export function ContentGridItem(props: ContentGridItemType) {
@@ -15,11 +16,15 @@ export function ContentGridItem(props: ContentGridItemType) {
   const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
 
   // Render the appropriate icon based on the icon name
-  const renderIcon = () => {
+  const renderIcon = (isBackgroundImage = false) => {
     // Only render icon if it exists and has a valid URL
     if (!icon?.url) {
       return (
-        <div className="group-hover:bg-primary mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2">
+        <div
+          className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+            'group-hover:bg-primary': !isBackgroundImage
+          })}
+        >
           {/* Placeholder for when no icon is available */}
           <div className="h-8 w-8 rounded bg-white/20" />
         </div>
@@ -27,7 +32,11 @@ export function ContentGridItem(props: ContentGridItemType) {
     }
 
     return (
-      <div className="group-hover:bg-primary mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2">
+      <div
+        className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+          'group-hover:bg-primary': !isBackgroundImage
+        })}
+      >
         <Image
           src={icon.url}
           alt={`${icon.title ?? 'Icon'}`}
@@ -42,72 +51,92 @@ export function ContentGridItem(props: ContentGridItemType) {
 
   const LinkItem = () => {
     return (
-      <Link href={`/${link.slug}`} className="block">
-        <Box direction="col" className="hover:bg-muted/50 group h-full p-4 transition-all">
-          {renderIcon()}
+      <Link href={`/${link.slug}`} className="group block h-full w-full">
+        <Box
+          direction="col"
+          className="border-border bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col border p-6 transition-all"
+        >
+          <div>
+            <div className="mb-6">{renderIcon(false)}</div>
 
-          <Box
-            gap={0}
-            className="group-hover:text-primary text-headline-xs mb-2 flex items-center transition-all"
-          >
-            <h2
-              className="text-headline-xs transition-all"
-              {...inspectorProps({ fieldId: 'heading' })}
-            >
-              {heading}
-            </h2>
-            <span className="text-primary hidden transition-all group-hover:block">
-              <ArrowUpRight className="size-12 stroke-1" />
-            </span>
-          </Box>
+            <Box gap={2} className="mb-4 flex items-start">
+              <h2
+                className="text-headline-sm line-clamp-2 flex-1 font-medium"
+                {...inspectorProps({ fieldId: 'heading' })}
+              >
+                {heading}
+              </h2>
+              <span className="text-muted-foreground group-hover:text-primary mt-1 transition-transform group-hover:translate-x-1">
+                <ArrowUpRight className="size-5" />
+              </span>
+            </Box>
 
-          <p
-            className="group-hover:text-primary text-muted-foreground text-sm"
-            {...inspectorProps({ fieldId: 'description' })}
-          >
-            {description}
-          </p>
+            {description && (
+              <p
+                className="text-muted-foreground group-hover:text-primary/80 line-clamp-3 text-sm"
+                {...inspectorProps({ fieldId: 'description' })}
+              >
+                {description}
+              </p>
+            )}
+          </div>
         </Box>
       </Link>
     );
   };
 
   const BackgroundImageItem = () => (
-    <Box>
-      <div className="relative w-full">
-        {/* Background image */}
-        <AirImage
-          link={image?.link ?? ''}
-          altText={image?.altText ?? ''}
-          className="h-[502px] w-full object-cover"
-        />
-        {/* Overlay card */}
-        <div className="absolute top-8 right-8 bottom-8 left-8 flex w-auto items-center justify-end px-0 md:left-auto">
-          <Box
-            direction="col"
-            gap={12}
-            className="h-[439px] max-w-[531px] bg-black/30 p-10 px-12 py-16 text-white shadow-xl backdrop-blur-lg"
-          >
-            <Box direction="col" gap={6}>
-              <div className="size-16 items-center">{renderIcon()}</div>
+    <div className="group relative min-h-[500px] w-full overflow-hidden">
+      {/* Background image */}
+      <AirImage
+        link={image?.link ?? ''}
+        altText={image?.altText ?? ''}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
 
-              <Box direction="col" gap={2}>
-                <h3 className="text-headline-md" {...inspectorProps({ fieldId: 'heading' })}>
+      {/* Overlay card */}
+      <div className="absolute inset-0 flex items-end justify-end p-4 md:p-6 lg:p-8">
+        <Box
+          direction="col"
+          gap={6}
+          className="flex h-full w-full max-w-[531px] flex-col bg-black/30 p-6 text-white shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
+        >
+          <div className="flex h-full flex-col">
+            <div>
+              <div className="mb-6">{renderIcon(true)}</div>
+
+              <Box direction="col" gap={4} className="mb-8">
+                <h3
+                  className="text-headline-md line-clamp-2 font-medium"
+                  {...inspectorProps({ fieldId: 'heading' })}
+                >
                   {heading}
                 </h3>
-                <p className="text-white" {...inspectorProps({ fieldId: 'description' })}>
-                  {description}
-                </p>
+                {description && (
+                  <p
+                    className="line-clamp-3 text-white/90"
+                    {...inspectorProps({ fieldId: 'description' })}
+                  >
+                    {description}
+                  </p>
+                )}
               </Box>
-            </Box>
+            </div>
 
-            <Link href={`/${link.slug}`}>
-              <Button variant="outlineWhite">Learn More</Button>
-            </Link>
-          </Box>
-        </div>
+            <div className="mt-auto">
+              <Link href={`/${link.slug}`} className="inline-block w-auto">
+                <Button
+                  variant="outlineWhite"
+                  className="transition-all hover:bg-white hover:text-black"
+                >
+                  Learn More
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Box>
       </div>
-    </Box>
+    </div>
   );
 
   return image ? <BackgroundImageItem /> : <LinkItem />;
