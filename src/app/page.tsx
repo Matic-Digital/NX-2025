@@ -77,7 +77,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: ogImages,
       siteName: 'Nextracker',
-      type: 'website'
+      type: 'website',
+      url: baseUrl
     },
     twitter: {
       card: 'summary_large_image',
