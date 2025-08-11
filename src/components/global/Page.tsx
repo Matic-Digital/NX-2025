@@ -189,7 +189,7 @@ export function Page(props: PageProps) {
           className="page-specific-footer"
           data-component-type="Page Footer"
         >
-          <Footer footerData={page.footer} />
+          <Footer {...page.footer} />
         </div>
       )}
     </div>

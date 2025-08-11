@@ -23,16 +23,15 @@ import { getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
-import { Footer } from '@/components/global/Footer';
-import { Main } from '@/components/global/matic-ds';
 import { ImageBetween } from '@/components/ImageBetween';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
-import type { Header } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
+import type { Header as HeaderType } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -137,14 +136,12 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
 // Helper function to render a Page
 function renderPage(page: Page) {
-  // Get the page-specific header and footer if they exist
-  const pageHeader = page.header as Header | undefined;
-  const pageFooter = page.footer as FooterType | undefined;
-
+  const pageLayout = page.pageLayout as PageLayoutType | undefined;
+  const pageHeader = pageLayout?.header as HeaderType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <h1 className="sr-only">{page.title}</h1>
-
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {
         if (!component) return null;
@@ -168,48 +165,40 @@ function renderPage(page: Page) {
         console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
-
-      {/* Render the page-specific footer if available */}
-      {pageFooter && <Footer footerData={pageFooter} />}
     </PageLayout>
   );
 }
 
 // Helper function to render a PageList
 function renderPageList(pageList: PageListType) {
-  // Extract header and footer from the PageList
-  const pageHeader = pageList.header as Header | undefined;
-  const pageFooter = pageList.footer as FooterType | undefined;
+  const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
+  const pageHeader = pageLayout?.header as HeaderType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
 
   // Extract page content items if available
   const pageContentItems = pageList.pageContentCollection?.items ?? [];
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <Main className="min-h-screen py-12">
-        {/* Render components from pageContentCollection */}
-        {pageContentItems.map((item, index) => {
-          if (item.__typename === 'CtaBanner') {
-            const CtaBannerComponent = componentMap.CtaBanner;
-            // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
-            return (
-              <CtaBannerComponent
-                key={item.sys.id || `cta-banner-${index}`}
-                {...(item as CtaBannerType)}
-              />
-            );
-          }
-          return null;
-        })}
+      {/* Render components from pageContentCollection */}
+      {pageContentItems.map((item, index) => {
+        if (item.__typename === 'CtaBanner') {
+          const CtaBannerComponent = componentMap.CtaBanner;
+          // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
+          return (
+            <CtaBannerComponent
+              key={item.sys.id || `cta-banner-${index}`}
+              {...(item as CtaBannerType)}
+            />
+          );
+        }
+        return null;
+      })}
 
-        <div className="mx-auto max-w-7xl px-4">
-          {/* Render the PageList component */}
-          <PageList {...pageList} />
-        </div>
-      </Main>
-
-      {/* Render the page-specific footer if available */}
-      {pageFooter && <Footer footerData={pageFooter} />}
+      <div className="mx-auto max-w-7xl px-4">
+        {/* Render the PageList component */}
+        <PageList {...pageList} />
+      </div>
     </PageLayout>
   );
 }

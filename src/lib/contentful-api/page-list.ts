@@ -1,8 +1,16 @@
 import { fetchGraphQL } from '../api';
 
 import type { PageList, PageListResponse, PageListWithRefs } from '@/types/contentful/PageList';
+import type { Header } from '@/types/contentful/Header';
+import type { Footer } from '@/types/contentful/Footer';
+import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
-import { EXTERNAL_PAGE_FIELDS } from './external-page';
+
+// Define a new interface that extends PageList with header and footer
+interface PageListWithHeaderFooter extends PageList {
+  header: Header | null;
+  footer: Footer | null;
+}
 
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
@@ -11,64 +19,44 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
-import { SYS_FIELDS } from './constants';
-
-// Inline PAGE_BASIC_FIELDS to avoid circular dependency
-const PAGE_BASIC_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-  description
-`;
-
-export const PAGELIST_BASIC_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-`;
+import {
+  getEXTERNAL_PAGE_FIELDS,
+  getPAGE_BASIC_FIELDS,
+  getPAGELIST_BASIC_FIELDS,
+  getPAGELIST_WITH_REFS_FIELDS
+} from './graphql-fields';
 
 // Minimal PageList fields for initial fetch
 export const PAGELIST_MINIMAL_FIELDS = `
-  ${PAGELIST_BASIC_FIELDS}
+  ${getPAGELIST_BASIC_FIELDS()}
   pagesCollection(limit: 10) {
     items {
       ... on Page {
-        ${PAGE_BASIC_FIELDS}
+        ${getPAGE_BASIC_FIELDS()}
       }
       ... on ExternalPage {
-        ${EXTERNAL_PAGE_FIELDS}
+        ${getEXTERNAL_PAGE_FIELDS()}
       }
     }
   }
 `;
 
-// PageList fields with header/footer references only (no full data)
+// PageList fields with page layout (header/footer references) only (no full data)
 export const PAGELIST_WITH_REFS_FIELDS = `
-  ${PAGELIST_MINIMAL_FIELDS}
-  header {
-    sys {
-      id
-    }
-    __typename
-  }
-  footer {
-    sys {
-      id
-    }
-    __typename
-  }
+    ${getPAGELIST_BASIC_FIELDS()}
+    ${getPAGELIST_WITH_REFS_FIELDS()}
 `;
 
 // Simplified PageList fields for listing and reference checks
 export const PAGELIST_SIMPLIFIED_FIELDS = `
-  ${PAGELIST_BASIC_FIELDS}
+  ${getPAGELIST_BASIC_FIELDS()}
   pagesCollection(limit: 20) {
     items {
       ... on Page {
-        ${PAGE_BASIC_FIELDS}
+        ${getPAGE_BASIC_FIELDS()}
       }
       ... on ExternalPage {
-        ${EXTERNAL_PAGE_FIELDS}
+        ${getEXTERNAL_PAGE_FIELDS()}
       }
     }
   }
@@ -131,7 +119,7 @@ export async function checkPageBelongsToPageList(
     throw new Error('Unknown error checking if page belongs to any PageList');
   }
 }
-
+  
 // Note: getPageBySlugInPageList function removed to avoid circular dependency
 // This function would require importing getPageBySlug from './page' which creates a circular dependency
 
@@ -179,9 +167,9 @@ export async function getAllPageLists(preview = false): Promise<PageListResponse
  * Fetches a single page list by slug
  * @param slug - The slug of the page list to fetch
  * @param preview - Whether to fetch draft content
- * @returns Promise resolving to the page list or null if not found
+ * @returns Promise resolving to the page list with header and footer or null if not found
  */
-export async function getPageListBySlug(slug: string, preview = false): Promise<PageList | null> {
+export async function getPageListBySlug(slug: string, preview = false): Promise<PageListWithHeaderFooter | null> {
   try {
     // Log the request for debugging
     console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
@@ -209,16 +197,27 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
 
     const pageListData = response.data.pageListCollection.items[0]!;
 
+    // Type assertion for pageLayout to avoid 'any' type
+    const pageLayout = pageListData.pageLayout as PageLayout | undefined;
+    
     // Fetch header data if referenced
     let header = null;
-    if (pageListData.header?.sys?.id) {
-      header = await getHeaderById(pageListData.header.sys.id, preview);
+    if (pageLayout?.header) {
+      // Type assertion for header reference
+      const headerRef = pageLayout.header as { sys: { id: string } };
+      if (headerRef.sys?.id) {
+        header = await getHeaderById(headerRef.sys.id, preview);
+      }
     }
 
     // Fetch footer data if referenced
     let footer = null;
-    if (pageListData.footer?.sys?.id) {
-      footer = await getFooterById(pageListData.footer.sys.id, preview);
+    if (pageLayout?.footer) {
+      // Type assertion for footer reference
+      const footerRef = pageLayout.footer as { sys: { id: string } };
+      if (footerRef.sys?.id) {
+        footer = await getFooterById(footerRef.sys.id, preview);
+      }
     }
 
     // Fetch page content separately
@@ -269,7 +268,7 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
       header,
       footer,
       pageContentCollection: pageContent
-    } as PageList;
+    } as PageListWithHeaderFooter;
 
     // Debug the PageList structure
     console.log('PageList structure:', {

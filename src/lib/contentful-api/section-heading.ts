@@ -1,4 +1,4 @@
-import { SYS_FIELDS } from './constants';
+import { SYS_FIELDS } from './graphql-fields';
 
 // SectionHeading fields
 export const SECTIONHEADING_GRAPHQL_FIELDS = `

@@ -1,7 +1,7 @@
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 
 // ImageBetween fields
 export const IMAGEBETWEEN_GRAPHQL_FIELDS = `

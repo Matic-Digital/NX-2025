@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaBanner, CtaBannerResponse } from '@/types/contentful';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
 

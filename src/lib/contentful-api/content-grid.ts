@@ -5,7 +5,7 @@ import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SERVICE_GRAPHQL_FIELDS } from './service';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
 // Simplified Post fields for ContentGrid (to avoid circular dependency)
