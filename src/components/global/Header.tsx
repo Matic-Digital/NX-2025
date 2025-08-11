@@ -11,7 +11,6 @@
  * - Support for nested navigation with dropdowns for PageList items
  * - Active link highlighting based on current route
  * - Contentful Live Preview integration for real-time updates
- * - Theme toggle for light/dark mode
  */
 
 'use client';
@@ -26,7 +25,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, Search } from 'lucide-react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-
+import { Button } from '@/components/ui/button';
 import { Container, Box } from '@/components/global/matic-ds';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Page } from '@/types/contentful/Page';
@@ -45,10 +44,6 @@ import {
 // Sheet components for mobile menu from shadcn
 import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 
-// Theme toggle component
-import { ThemeToggle } from '@/components/global/ThemeToggle';
-import { useThemeSync } from '@/hooks/useThemeSync';
-
 // No need for an empty interface, just use the HeaderType directly
 type HeaderProps = HeaderType;
 
@@ -64,9 +59,6 @@ type HeaderProps = HeaderType;
 export function Header(props: HeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = React.useState(false);
-
-  // Use our custom hook to ensure theme changes are properly applied
-  useThemeSync();
 
   // Important: We'll use CSS-only dark mode with the 'dark:' variant
   // This prevents hydration mismatches by ensuring server and client render the same HTML
@@ -141,7 +133,7 @@ export function Header(props: HeaderProps) {
             )}
 
             {/* Desktop Navigation */}
-            <div className="hidden items-center md:flex">
+            <div className="hidden items-center lg:flex">
               <NavigationMenu
                 className={`rounded-xxs mr-4 ${!isScrolled ? 'bg-black/40 backdrop-blur-2xl' : ''}`}
               >
@@ -207,22 +199,30 @@ export function Header(props: HeaderProps) {
                 </NavigationMenuList>
               </NavigationMenu>
 
-              {/* Theme Toggle */}
               <Search className="text-text-on-invert" />
             </div>
 
             {/* Mobile Navigation */}
-            <div className="flex items-center md:hidden">
-              <ThemeToggle />
+            <Box direction="row" gap={2} className="items-center lg:hidden">
+              <Button
+                variant="ghost"
+                className={`text-text-on-invert rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 backdrop-blur-2xl`}
+                aria-label="Open menu"
+              >
+                <Search className="size-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+
               <Sheet>
                 <SheetTrigger asChild>
-                  <button
-                    className="ml-2 flex h-10 w-10 items-center justify-center rounded-md bg-transparent p-0"
+                  <Button
+                    variant="ghost"
+                    className={`text-text-on-invert rounded-xxs ml-2 flex items-center justify-center bg-black/40 p-2 backdrop-blur-2xl`}
                     aria-label="Open menu"
                   >
-                    <Menu className="h-5 w-5" />
+                    <Menu className="size-5" />
                     <span className="sr-only">Open menu</span>
-                  </button>
+                  </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
                   <SheetHeader className="text-left text-lg font-semibold">Menu</SheetHeader>
@@ -302,7 +302,7 @@ export function Header(props: HeaderProps) {
                   </nav>
                 </SheetContent>
               </Sheet>
-            </div>
+            </Box>
           </Box>
         </header>
       </Container>
