@@ -28,6 +28,9 @@ export const PageSchema = z.object({
       items: z.array(PageContentUnion)
     })
     .optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
   __typename: z.string().optional()
 });
 
@@ -41,6 +44,9 @@ export const PageWithRefsSchema = z.object({
   slug: z.string(),
   description: z.string().optional(),
   pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
   __typename: z.string().optional()
 });
 

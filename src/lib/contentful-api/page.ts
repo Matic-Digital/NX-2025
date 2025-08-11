@@ -68,7 +68,10 @@ export async function getAllPages(preview = false, skip = 0, limit = 10): Promis
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the page with header and footer or null if not found
  */
-export async function getPageBySlug(slug: string, preview = true): Promise<PageWithHeaderFooter | null> {
+export async function getPageBySlug(
+  slug: string,
+  preview = true
+): Promise<PageWithHeaderFooter | null> {
   try {
     // First, fetch the basic page data with references
     const response = await fetchGraphQL<PageWithRefs>(
@@ -91,7 +94,7 @@ export async function getPageBySlug(slug: string, preview = true): Promise<PageW
 
     // Type assertion for pageLayout to avoid 'any' type
     const pageLayout = pageData.pageLayout as PageLayout | undefined;
-    
+
     // Fetch header data if referenced
     let header = null;
     if (pageLayout?.header) {

@@ -23,7 +23,16 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Nextracker',
   description: 'Modern content management and digital experiences',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }]
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  viewport: 'width=device-width, initial-scale=1',
+  robots: 'index, follow',
+  openGraph: {
+    siteName: 'Nextracker',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image'
+  }
 };
 
 /**

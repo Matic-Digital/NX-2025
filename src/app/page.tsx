@@ -18,12 +18,75 @@ import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 
 /**
- * Metadata configuration for SEO
+ * Generate metadata for the page, including Open Graph tags
  */
-export const metadata: Metadata = {
-  title: 'Nextracker',
-  description: 'Nextracker Website 2025'
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Try to fetch the home page data
+  const homePage = await getPageBySlug('/', false);
+
+  // Default metadata
+  const defaultMetadata = {
+    title: 'Nextracker',
+    description: 'Nextracker Website 2025'
+  };
+
+  // If no home page data, return defaults
+  if (!homePage) {
+    return defaultMetadata;
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  // Import utility functions for safe metadata extraction
+  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import('@/lib/metadata-utils');
+
+  // Safely extract the openGraphImage with proper typing
+  const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
+
+  // Safely extract image URL
+  const getImageUrl = (url: string): string => {
+    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+  };
+
+  // Get the image URL safely
+  const imageUrl = openGraphImage?.url ? getImageUrl(openGraphImage.url) : undefined;
+
+  // Build the images array for Open Graph
+  const ogImages = imageUrl
+    ? [
+        {
+          url: imageUrl,
+          width: openGraphImage?.width ?? 1200,
+          height: openGraphImage?.height ?? 630,
+          alt: openGraphImage?.title ?? homePage.title ?? 'Nextracker'
+        }
+      ]
+    : [];
+
+  // Build the metadata object with Open Graph tags
+  const title = extractSEOTitle(homePage, defaultMetadata.title);
+  const description = extractSEODescription(homePage, defaultMetadata.description);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImages,
+      siteName: 'Nextracker',
+      type: 'website',
+      url: baseUrl
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : []
+    }
+  };
+}
 
 // Define the component mapping for pageContent items
 const componentMap = {

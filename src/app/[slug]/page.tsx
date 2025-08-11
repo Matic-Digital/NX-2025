@@ -19,6 +19,7 @@
  */
 
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
@@ -32,6 +33,11 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import {
+  extractOpenGraphImage,
+  extractSEOTitle,
+  extractSEODescription
+} from '@/lib/metadata-utils';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -53,6 +59,110 @@ export async function generateStaticParams() {
   // This would typically fetch all pages and page lists to pre-render
   // For now, we'll return an empty array as we're focusing on dynamic rendering
   return [];
+}
+
+// Generate metadata for SEO using Page component data
+export async function generateMetadata({ params }: ContentPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const slug = resolvedParams?.slug;
+
+  if (!slug) {
+    return {
+      title: 'Page Not Found',
+      description: 'The requested page could not be found.'
+    };
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  try {
+    // Try to fetch as a Page first
+    const page = await getPageBySlug(slug, false);
+
+    if (page) {
+      // Extract SEO data from Page component using utility functions
+      const title = extractSEOTitle(page, 'Nextracker');
+      const description = extractSEODescription(page, 'Nextracker Website');
+
+      // Handle OG image from Page component
+      const openGraphImage = extractOpenGraphImage(page, baseUrl, title);
+
+      const ogImages = openGraphImage
+        ? [
+            {
+              url: openGraphImage.url,
+              width: openGraphImage.width,
+              height: openGraphImage.height,
+              alt: openGraphImage.title ?? title
+            }
+          ]
+        : [];
+
+      return {
+        title,
+        description,
+        openGraph: {
+          title,
+          description,
+          images: ogImages,
+          siteName: 'Nextracker',
+          type: 'website',
+          url: `${baseUrl}/${slug}`
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title,
+          description,
+          images: openGraphImage ? [openGraphImage.url] : []
+        },
+        alternates: {
+          canonical: `${baseUrl}/${slug}`
+        }
+      };
+    }
+
+    // Try to fetch as a PageList
+    const pageList = await getPageListBySlug(slug, false);
+
+    if (pageList) {
+      // Extract SEO data from PageList component (PageList doesn't have SEO fields, so use basic fields)
+      const title = pageList.title ?? 'Nextracker';
+      const description = 'Nextracker Website';
+
+      return {
+        title,
+        description,
+        openGraph: {
+          title,
+          description,
+          siteName: 'Nextracker',
+          type: 'website',
+          url: `${baseUrl}/${slug}`
+        },
+        twitter: {
+          card: 'summary_large_image',
+          title,
+          description
+        },
+        alternates: {
+          canonical: `${baseUrl}/${slug}`
+        }
+      };
+    }
+
+    // If neither found, return 404 metadata
+    return {
+      title: 'Page Not Found',
+      description: 'The requested page could not be found.'
+    };
+  } catch (error) {
+    console.error(`Error generating metadata for slug: ${slug}`, error);
+    return {
+      title: 'Error',
+      description: 'An error occurred while loading this page.'
+    };
+  }
 }
 
 // The dynamic content component that handles both Page and PageList
