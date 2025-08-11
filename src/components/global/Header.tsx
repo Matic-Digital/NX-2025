@@ -104,11 +104,23 @@ export function Header(props: HeaderProps) {
     setOpenDropdown(null);
   };
 
+  if (!header) {
+    return (
+      <header className="bg-background/95 px-6 py-4">
+        <Container>
+          <Box direction="row" className="items-center justify-between">
+            <p>No header found</p>
+          </Box>
+        </Container>
+      </header>
+    );
+  }
+
   return (
     <ErrorBoundary>
-      <Container className="sticky top-0 z-50">
+      <Container className="sticky top-0 z-50 pt-6">
         <header
-          className="bg-background/95 supports-backdrop-filter:bg-background/60 mt-6 rounded-xl border border-b border-slate-400 px-6 backdrop-blur-sm max-md:py-1.5 lg:w-full"
+          className="bg-background/95 supports-backdrop-filter:bg-background/60 rounded-xl border border-b border-slate-400 px-6 backdrop-blur-sm max-md:py-1.5 lg:w-full"
           {...inspectorProps({ fieldId: 'name' })}
         >
           <Box className="items-center justify-between">
@@ -121,7 +133,7 @@ export function Header(props: HeaderProps) {
                     alt={header.logo.title ?? 'Site Logo'}
                     width={header.logo.width ?? 40}
                     height={header.logo.height ?? 40}
-                    className="h-10 w-auto object-contain"
+                    className="h-10 w-auto rounded-full object-contain"
                     priority
                   />
                 </div>

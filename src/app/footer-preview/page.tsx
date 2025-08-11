@@ -116,7 +116,7 @@ function FooterPreviewContent() {
   return (
     <>
       {/* Footer is the primary footer component */}
-      <Footer footerData={footer} />
+      <Footer {...footer} />
 
       <Container className="mt-24">
         <Box className="py-12">

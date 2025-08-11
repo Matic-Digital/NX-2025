@@ -22,13 +22,12 @@ export const PageSchema = z.object({
   title: z.string(),
   slug: z.string(),
   description: z.string().optional(),
-  header: z.lazy(() => require('./Header').HeaderSchema).optional(),
+  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   pageContentCollection: z
     .object({
       items: z.array(PageContentUnion)
     })
     .optional(),
-  footer: z.lazy(() => require('./Footer').FooterSchema).optional(),
   openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
@@ -44,22 +43,7 @@ export const PageWithRefsSchema = z.object({
   title: z.string(),
   slug: z.string(),
   description: z.string().optional(),
-  header: z
-    .object({
-      sys: z.object({
-        id: z.string()
-      }),
-      __typename: z.string()
-    })
-    .optional(),
-  footer: z
-    .object({
-      sys: z.object({
-        id: z.string()
-      }),
-      __typename: z.string()
-    })
-    .optional(),
+  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),

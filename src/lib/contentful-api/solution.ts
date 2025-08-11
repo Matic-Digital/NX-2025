@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SYS_FIELDS } from './constants';
+import { SYS_FIELDS } from './graphql-fields';
 
 import type { Solution } from '@/types/contentful';
 

@@ -3,7 +3,7 @@ import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
-import { SYS_FIELDS } from './constants';
+import { SYS_FIELDS } from './graphql-fields';
 
 // BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `

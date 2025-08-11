@@ -3,9 +3,7 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-
 import { getAllFooters } from '@/lib/contentful-api/footer';
-import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
@@ -15,8 +13,9 @@ import { ImageBetween } from '@/components/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
-import type { Header } from '@/types/contentful/Header';
+import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 
 /**
  * Generate metadata for the page, including Open Graph tags
@@ -122,10 +121,9 @@ export default async function HomePage() {
  * Renders a Contentful page as the homepage
  */
 async function renderContentfulHomePage(page: Page) {
-  // Get the page-specific header and footer if they exist
-  const pageHeader = page.header as Header | undefined;
-  const pageFooter = page.footer as FooterType | undefined;
-
+  const pageLayout = page.pageLayout as PageLayoutType | undefined;
+  const pageHeader = pageLayout?.header as HeaderType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <h1 className="sr-only">{page.title}</h1>
@@ -154,9 +152,7 @@ async function renderContentfulHomePage(page: Page) {
         console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
-
       {/* Render the page-specific footer if available */}
-      {pageFooter && <Footer footerData={pageFooter} />}
     </PageLayout>
   );
 }
