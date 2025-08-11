@@ -65,26 +65,6 @@ const nextConfig = {
     ignoreBuildErrors: isDocker
   },
 
-  // Security headers to allow Contentful iframe embedding
-  async headers() {
-    return [
-      {
-        // Apply to preview pages
-        source: '/section-heading-preview/:path*',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'ALLOWALL'
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://*.contentful.com https://app.contentful.com;"
-          }
-        ]
-      }
-    ];
-  },
-
   // Environment variable configuration
   env: {
     NEXT_PUBLIC_CONTENTFUL_SPACE_ID: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
