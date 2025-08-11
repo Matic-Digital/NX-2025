@@ -5,11 +5,7 @@ import { NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
-  const slug = searchParams.get('slug');
-  const pageListSlug = searchParams.get('pageListSlug');
-  const headerName = searchParams.get('headerName');
-  const bannerHeroId = searchParams.get('bannerHeroId');
-  const id = searchParams.get('id'); // Used for footer previews
+  const sectionHeadingId = searchParams.get('sectionHeadingId');
 
   // Check the secret and validate it
   if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
@@ -21,24 +17,11 @@ export async function GET(request: NextRequest) {
   const draft = await draftMode();
   draft.enable();
 
-  // Determine redirect target based on provided parameters
-  // Priority: slug > pageListSlug > headerName > bannerHeroId > footerId
-  if (slug) {
-    return NextResponse.redirect(new URL(`/page-preview?slug=${slug}`, request.url));
-  } else if (pageListSlug) {
-    return NextResponse.redirect(
-      new URL(`/page-list-preview?pageListSlug=${pageListSlug}`, request.url)
-    );
-  } else if (headerName) {
-    return NextResponse.redirect(new URL(`/header-preview?headerName=${headerName}`, request.url));
-  } else if (bannerHeroId) {
-    return NextResponse.redirect(
-      new URL(`/banner-hero-preview?bannerHeroId=${bannerHeroId}`, request.url)
-    );
-  } else if (id) {
-    return NextResponse.redirect(new URL(`/footer-preview?footerId=${id}`, request.url));
+  // Redirect to Section Heading preview
+  if (sectionHeadingId) {
+    return NextResponse.redirect(new URL(`/section-heading-preview?id=${sectionHeadingId}`, request.url));
   }
 
   // If no valid parameters were provided
-  return NextResponse.json({ message: 'No valid preview parameters provided' }, { status: 400 });
+  return NextResponse.json({ message: 'No Section Heading ID provided' }, { status: 400 });
 }
