@@ -56,7 +56,7 @@ export function PostCard(props: Post) {
     <Link
       href={`/resources/${post.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
-      className="flex h-full"
+      className="flex h-full group"
     >
       <Box direction="col" gap={0} className="">
         <AirImage
@@ -69,13 +69,13 @@ export function PostCard(props: Post) {
             <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
               {post.categories.map((category, index) => (
                 <span key={index}>
-                  <span className={categoryColorMap(category)}>{category}</span>
+                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>{category}</span>
                   {index < post.categories.length - 1 ? ', ' : ''}
                 </span>
               ))}
             </p>
             <h2
-              className="text-headline-xs leading-[120%]"
+              className="text-headline-xs group-hover:text-primary leading-[120%]"
               {...inspectorProps({ fieldId: 'title' })}
             >
               {' '}
@@ -96,11 +96,11 @@ export function PostCard(props: Post) {
                 height="20"
                 viewBox="0 0 20 20"
                 fill="none"
+                className="stroke-[#5B5B5B] group-hover:stroke-primary"
               >
                 <g clipPath="url(#clip0_7391_79602)">
                   <path
                     d="M1 1H19M19 1V19M19 1L1 19"
-                    stroke="#5B5B5B"
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
