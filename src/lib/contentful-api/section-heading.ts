@@ -1,4 +1,4 @@
-import { SYS_FIELDS } from './graphql-fields';
+import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from './graphql-fields';
 
 // SectionHeading fields
 export const SECTIONHEADING_GRAPHQL_FIELDS = `
@@ -8,22 +8,15 @@ export const SECTIONHEADING_GRAPHQL_FIELDS = `
   description
   ctaCollection(limit: 2) {
     items {
-      sys {
-        id
-      }
+      sys { id }
       internalText
       text
       internalLink {
-        sys {
-          id
-        }
-        slug
+        ${INTERNAL_LINK_FIELDS}
       }
       externalLink
       modal {
-        sys {
-          id
-        }
+        sys { id }
         title
         description
       }

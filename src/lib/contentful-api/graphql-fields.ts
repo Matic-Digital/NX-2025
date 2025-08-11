@@ -15,6 +15,17 @@ export const ASSET_FIELDS = `
   __typename
 `;
 
+export const INTERNAL_LINK_FIELDS = `
+  ... on Page {
+    sys { id }
+    slug
+  }
+  ... on PageList {
+    sys { id }
+    slug
+  }
+`;
+
 // Define all fragments using lazy initialization pattern
 const fragments = {
   PAGE_BASIC_FIELDS: () => `

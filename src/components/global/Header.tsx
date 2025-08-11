@@ -24,7 +24,7 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, Search } from 'lucide-react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 
 import { Container, Box } from '@/components/global/matic-ds';
@@ -37,7 +37,9 @@ import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
-  navigationMenuTriggerStyle
+  navigationMenuTriggerStyle,
+  NavigationMenuTrigger,
+  NavigationMenuContent
 } from '@/components/ui/navigation-menu';
 
 // Sheet components for mobile menu from shadcn
@@ -61,6 +63,7 @@ type HeaderProps = HeaderType;
  */
 export function Header(props: HeaderProps) {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = React.useState(false);
 
   // Use our custom hook to ensure theme changes are properly applied
   useThemeSync();
@@ -73,35 +76,27 @@ export function Header(props: HeaderProps) {
   // Add inspector mode for Contentful editing
   const inspectorProps = useContentfulInspectorMode({ entryId: header?.sys?.id });
 
-  // State to track which dropdown is open
-  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
+  // Handle scroll events to add frosted glass effect to header
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 10);
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Initial check
+    handleScroll();
+
+    // Clean up event listener
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Function to check if a link is active
   const isActive = (href: string) => {
     if (!pathname) return false;
     return pathname === href || pathname.startsWith(`${href}/`);
-  };
-
-  // Handle mouse enter for PageList button or dropdown
-  const handleMouseEnter = (id: string) => {
-    setOpenDropdown(id);
-  };
-
-  // Add a small delay before closing the dropdown
-  const handleMouseLeave = (id: string) => {
-    // Use a timeout to delay closing the dropdown
-    // This gives the user time to move from the trigger to the dropdown content
-    setTimeout(() => {
-      if (openDropdown === id) {
-        setOpenDropdown(null);
-      }
-    }, 100);
-  };
-
-  // Handle mouse leave for the entire header navigation area
-  const handleNavMouseLeave = () => {
-    // Close all dropdowns when leaving the entire navigation area
-    setOpenDropdown(null);
   };
 
   if (!header) {
@@ -118,32 +113,38 @@ export function Header(props: HeaderProps) {
 
   return (
     <ErrorBoundary>
-      <Container className="sticky top-0 z-50 pt-6">
+      <Container
+        className={`sticky top-0 z-50 pt-6 ${isScrolled ? 'transition-all duration-300' : ''}`}
+      >
         <header
-          className="bg-background/95 supports-backdrop-filter:bg-background/60 rounded-xl border border-b border-slate-400 px-6 backdrop-blur-sm max-md:py-1.5 lg:w-full"
+          className={`px-6 max-md:py-1.5 lg:w-full ${isScrolled ? '' : ''} ${isScrolled ? 'bg-black/40 backdrop-blur-2xl transition-all duration-300' : ''}`}
           {...inspectorProps({ fieldId: 'name' })}
         >
           <Box className="items-center justify-between">
             {/* Logo Section */}
             {header?.logo?.url && (
               <Link href="/" className="flex items-center gap-2 py-4">
-                <div {...inspectorProps({ fieldId: 'logo' })}>
-                  <Image
-                    src={header.logo.url}
-                    alt={header.logo.title ?? 'Site Logo'}
-                    width={header.logo.width ?? 40}
-                    height={header.logo.height ?? 40}
-                    className="h-10 w-auto rounded-full object-contain"
-                    priority
-                  />
-                </div>
-                <span className="text-xl font-bold">{header.name}</span>
+                <Box gap={4}>
+                  <div {...inspectorProps({ fieldId: 'logo' })}>
+                    <Image
+                      src={header.logo.url}
+                      alt={header.logo.title ?? 'Site Logo'}
+                      width={header.logo.width ?? 40}
+                      height={header.logo.height ?? 40}
+                      className="h-10 w-auto rounded-full object-contain"
+                      priority
+                    />
+                  </div>
+                  <span className="text-headline-xs text-text-on-invert">{header.name}</span>
+                </Box>
               </Link>
             )}
 
             {/* Desktop Navigation */}
-            <div className="hidden items-center md:flex" onMouseLeave={handleNavMouseLeave}>
-              <NavigationMenu className="mr-4">
+            <div className="hidden items-center md:flex">
+              <NavigationMenu
+                className={`rounded-xxs mr-4 ${!isScrolled ? 'bg-black/40 backdrop-blur-2xl' : ''}`}
+              >
                 <NavigationMenuList>
                   {header?.navLinksCollection?.items.map((item) => {
                     // Handle Page items
@@ -166,22 +167,14 @@ export function Header(props: HeaderProps) {
                     else if (item.__typename === 'PageList') {
                       const pageList = item as PageList;
                       return (
-                        <div
-                          key={pageList.sys.id}
-                          className="group relative"
-                          onMouseEnter={() => handleMouseEnter(pageList.sys.id)}
-                          onMouseLeave={() => handleMouseLeave(pageList.sys.id)}
-                        >
-                          <Link
-                            href={`/${pageList.slug}`}
-                            className={`${navigationMenuTriggerStyle()} ${isActive(`/${pageList.slug}`) || openDropdown === pageList.sys.id ? 'bg-accent' : ''}`}
+                        <NavigationMenuItem key={pageList.sys.id}>
+                          <NavigationMenuTrigger
+                            className={isActive(`/${pageList.slug}`) ? 'bg-accent' : ''}
                           >
                             {pageList.title}
-                          </Link>
-                          {/* Custom dropdown that appears when state is set */}
-                          <div
-                            className={`absolute top-full left-0 z-50 mt-0 overflow-hidden rounded-md border border-gray-200 pt-1 shadow-md transition-opacity duration-200 ${openDropdown === pageList.sys.id ? 'visible opacity-100' : 'pointer-events-none invisible opacity-0'}`}
-                          >
+                          </NavigationMenuTrigger>
+                          {/* Dropdown content */}
+                          <NavigationMenuContent>
                             <div className="m-0 max-h-[60vh] w-[220px] overflow-auto p-0">
                               <div className="bg-background text-foreground m-0 rounded-md p-0">
                                 {pageList.pagesCollection?.items &&
@@ -205,8 +198,8 @@ export function Header(props: HeaderProps) {
                                 )}
                               </div>
                             </div>
-                          </div>
-                        </div>
+                          </NavigationMenuContent>
+                        </NavigationMenuItem>
                       );
                     }
                     return null;
@@ -215,7 +208,7 @@ export function Header(props: HeaderProps) {
               </NavigationMenu>
 
               {/* Theme Toggle */}
-              <ThemeToggle />
+              <Search className="text-text-on-invert" />
             </div>
 
             {/* Mobile Navigation */}
@@ -224,7 +217,7 @@ export function Header(props: HeaderProps) {
               <Sheet>
                 <SheetTrigger asChild>
                   <button
-                    className="ml-2 flex h-10 w-10 items-center justify-center rounded-md bg-transparent p-0 text-base hover:bg-slate-200"
+                    className="ml-2 flex h-10 w-10 items-center justify-center rounded-md bg-transparent p-0"
                     aria-label="Open menu"
                   >
                     <Menu className="h-5 w-5" />
@@ -272,7 +265,8 @@ export function Header(props: HeaderProps) {
                                   >
                                     {pageList.title}
                                   </span>
-                                  <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+                                  {/* <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" /> */}
+                                  <NavigationMenuTrigger />
                                 </summary>
                                 <ul className="mt-2 space-y-2 pl-4">
                                   {pageList.pagesCollection?.items.map((page) => (
