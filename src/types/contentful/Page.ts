@@ -29,6 +29,9 @@ export const PageSchema = z.object({
     })
     .optional(),
   footer: z.lazy(() => require('./Footer').FooterSchema).optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
   __typename: z.string().optional()
 });
 
@@ -57,6 +60,9 @@ export const PageWithRefsSchema = z.object({
       __typename: z.string()
     })
     .optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
   __typename: z.string().optional()
 });
 
