@@ -94,7 +94,7 @@ function BannerHeroPreviewContent() {
         <Box className="py-12">
           <h1 className="text-headline-xs font-bold text-red-600">Error</h1>
           <p>Error fetching Banner Hero: {error.message}</p>
-          <p className="text-sm text-gray-600 mt-2">ID: {bannerHeroId}</p>
+          <p className="mt-2 text-sm text-gray-600">ID: {bannerHeroId}</p>
         </Box>
       </Container>
     );
@@ -115,7 +115,7 @@ function BannerHeroPreviewContent() {
       <BannerHero {...bannerHero} />
 
       {/* Small indicator that this is a preview */}
-      <div className="fixed right-4 bottom-4 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md z-20">
+      <div className="fixed right-4 bottom-4 z-20 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
         <p>Banner Hero Preview</p>
         <p className="text-xs opacity-75">ID: {bannerHero.sys.id}</p>
         <p className="text-xs opacity-75">Title: {bannerHero.title}</p>

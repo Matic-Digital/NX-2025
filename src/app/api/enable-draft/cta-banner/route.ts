@@ -1,4 +1,4 @@
-import { getImageById } from '@/lib/contentful-api/image';
+import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { draftMode, cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -15,11 +15,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
   }
 
-  const image = await getImageById(id, true);
-  console.log('enable-draft-image', image?.sys.id, id);
+  const ctaBanner = await getCtaBannerById(id, true);
+  console.log('enable-draft-cta-banner', ctaBanner?.sys.id, id);
 
-  if (!image) {
-    return NextResponse.json({ message: 'Image not found' }, { status: 404 });
+  if (!ctaBanner) {
+    return NextResponse.json({ message: 'CtaBanner not found' }, { status: 404 });
   }
 
   const draft = await draftMode();
@@ -39,5 +39,5 @@ export async function GET(request: Request) {
     });
   }
 
-  return NextResponse.redirect(new URL(`/image-preview?id=${id}`, request.url));
+  return NextResponse.redirect(new URL(`/cta-banner-preview?id=${id}`, request.url));
 }

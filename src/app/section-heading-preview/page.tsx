@@ -24,7 +24,11 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { getSectionHeadingById } from '@/lib/contentful-api/section-heading';
 import { SectionHeading } from '@/components/SectionHeading';
-import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
+import {
+  ContentfulLivePreviewProvider,
+  useContentfulLiveUpdates,
+  useContentfulInspectorMode
+} from '@contentful/live-preview/react';
 import { Container, Box, Main } from '@/components/global/matic-ds';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful';
 
@@ -52,6 +56,10 @@ function SectionHeadingPreviewContent() {
   const [sectionHeading, setSectionHeading] = useState<SectionHeadingType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
+  // Enable live updates and inspector mode
+  const liveSectionHeading = useContentfulLiveUpdates(sectionHeading);
+  const inspectorProps = useContentfulInspectorMode({ entryId: liveSectionHeading?.sys?.id });
 
   useEffect(() => {
     async function fetchSectionHeading() {
@@ -92,11 +100,11 @@ function SectionHeadingPreviewContent() {
         <Box className="py-12">
           <h1 className="text-headline-xs font-bold text-red-600">Error</h1>
           <p>Error fetching Section Heading: {error.message}</p>
-          <p className="text-sm text-gray-600 mt-2">ID: {sectionHeadingId}</p>
+          <p className="mt-2 text-sm text-gray-600">ID: {sectionHeadingId}</p>
         </Box>
       </Container>
     );
-  } else if (!sectionHeading) {
+  } else if (!sectionHeading || !liveSectionHeading) {
     return (
       <Container>
         <Box className="py-12">
@@ -109,21 +117,20 @@ function SectionHeadingPreviewContent() {
 
   return (
     <>
-    <Main>
+      <Main>
         <Container>
-            <div className="pt-40">
-                <SectionHeading {...sectionHeading} />
-            </div>
+          <div className="pt-40" {...inspectorProps({ fieldId: 'heading' })}>
+            <SectionHeading {...liveSectionHeading} />
+          </div>
         </Container>
-    </Main>
-      {/* Just the Section Heading component - no containers or styling */}
+      </Main>
 
       {/* Small indicator that this is a preview */}
       <div className="fixed right-4 bottom-4 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
         <p>Section Heading Preview</p>
-        <p className="text-xs opacity-75">ID: {sectionHeading.sys.id}</p>
-        {sectionHeading.componentType && (
-          <p className="text-xs opacity-75">Type: {sectionHeading.componentType}</p>
+        <p className="text-xs opacity-75">ID: {liveSectionHeading?.sys.id}</p>
+        {liveSectionHeading?.componentType && (
+          <p className="text-xs opacity-75">Type: {liveSectionHeading.componentType}</p>
         )}
       </div>
     </>
