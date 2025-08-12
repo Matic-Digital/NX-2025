@@ -28,6 +28,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Image as ImageType } from '@/types/contentful/Image';
 
 interface PageProps {
   sys: {
@@ -49,6 +50,9 @@ interface PageProps {
     }>;
   };
   __typename?: string; // Add typename for GraphQL identification
+  openGraphImage?: ImageType;
+  seoTitle?: string;
+  seoDescription?: string;
   // Add optional parentPageList prop to indicate if this page belongs to a PageList
   parentPageList?: {
     slug?: string;
@@ -181,7 +185,6 @@ export function Page(props: PageProps) {
           </div>
         )}
       </div>
-
       {/* Render the page-specific footer if available */}
       {page.footer && (
         <div
@@ -189,7 +192,7 @@ export function Page(props: PageProps) {
           className="page-specific-footer"
           data-component-type="Page Footer"
         >
-          <Footer footerData={page.footer} />
+          <Footer {...page.footer} />
         </div>
       )}
     </div>

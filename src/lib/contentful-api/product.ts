@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../api';
 import type { Product } from '@/types/contentful/Product';
 import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 
 // Product fields
 export const PRODUCT_GRAPHQL_FIELDS = `

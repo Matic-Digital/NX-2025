@@ -22,6 +22,11 @@ export async function fetchGraphQL<T>(
   cacheConfig?: { next: { revalidate: number } }
 ): Promise<GraphQLResponse<T>> {
   try {
+    console.log(
+      `[fetchGraphQL] query: ${query.substring(0, 100)}${query.length > 100 ? '...' : ''}`
+    );
+    console.log('[fetchGraphQL] variables:', variables);
+
     // Use explicit cache settings based on preview mode
     // For preview content, use no-store to ensure fresh content
     // For production content, use force-cache when not explicitly configured
@@ -70,15 +75,17 @@ export async function fetchGraphQL<T>(
 
     const json = (await response.json()) as GraphQLResponse<T>;
 
+    console.log('[fetchGraphQL] response:', json.data);
+
     // Check for GraphQL errors - ensure we're checking the array length
     if (json.errors && json.errors.length > 0) {
-      console.error('GraphQL errors:', JSON.stringify(json.errors, null, 2));
+      console.error('[fetchGraphQL] GraphQL errors:', json.errors);
       throw new GraphQLError('GraphQL query execution error', json.errors);
     }
 
     return json;
   } catch (error: unknown) {
-    console.error('Error in fetchGraphQL:', error);
+    console.error('[fetchGraphQL] Fetch failed:', error);
 
     // Log additional information about the query that failed
     console.error('Failed query:', query);

@@ -1,7 +1,9 @@
 import { fetchGraphQL } from '../api';
 import type { Page, PageResponse, PageWithRefs } from '@/types/contentful/Page';
+import type { Header } from '@/types/contentful/Header';
+import type { Footer } from '@/types/contentful/Footer';
+import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS } from './constants';
 import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
@@ -10,29 +12,13 @@ import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
 
-export const PAGE_BASIC_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-  description
-`;
+import { getPAGE_WITH_REFS_FIELDS } from './graphql-fields';
 
-// Page fields with header/footer references only (no full data)
-export const PAGE_WITH_REFS_FIELDS = `
-  ${PAGE_BASIC_FIELDS}
-  header {
-    sys {
-      id
-    }
-    __typename
-  }
-  footer {
-    sys {
-      id
-    }
-    __typename
-  }
-`;
+// Define a new interface that extends Page with header and footer
+interface PageWithHeaderFooter extends Page {
+  header: Header | null;
+  footer: Footer | null;
+}
 
 /**
  * Fetches all pages from Contentful
@@ -48,7 +34,7 @@ export async function getAllPages(preview = false, skip = 0, limit = 10): Promis
       `query GetAllPages($preview: Boolean!, $skip: Int!, $limit: Int!) {
         pageCollection(preview: $preview, skip: $skip, limit: $limit) {
           items {
-            ${PAGE_WITH_REFS_FIELDS}
+            ${getPAGE_WITH_REFS_FIELDS()}
           }
           total
         }
@@ -80,16 +66,19 @@ export async function getAllPages(preview = false, skip = 0, limit = 10): Promis
  * Fetches a single page by slug
  * @param slug - The slug of the page to fetch
  * @param preview - Whether to fetch draft content
- * @returns Promise resolving to the page or null if not found
+ * @returns Promise resolving to the page with header and footer or null if not found
  */
-export async function getPageBySlug(slug: string, preview = true): Promise<Page | null> {
+export async function getPageBySlug(
+  slug: string,
+  preview = true
+): Promise<PageWithHeaderFooter | null> {
   try {
     // First, fetch the basic page data with references
     const response = await fetchGraphQL<PageWithRefs>(
       `query GetPageBySlug($slug: String!, $preview: Boolean!) {
         pageCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
-            ${PAGE_WITH_REFS_FIELDS}
+            ${getPAGE_WITH_REFS_FIELDS()}
           }
         }
       }`,
@@ -103,16 +92,27 @@ export async function getPageBySlug(slug: string, preview = true): Promise<Page 
 
     const pageData = response.data.pageCollection.items[0]!;
 
+    // Type assertion for pageLayout to avoid 'any' type
+    const pageLayout = pageData.pageLayout as PageLayout | undefined;
+
     // Fetch header data if referenced
     let header = null;
-    if (pageData.header?.sys?.id) {
-      header = await getHeaderById(pageData.header.sys.id, preview);
+    if (pageLayout?.header) {
+      // Type assertion for header reference
+      const headerRef = pageLayout.header as { sys: { id: string } };
+      if (headerRef.sys?.id) {
+        header = await getHeaderById(headerRef.sys.id, preview);
+      }
     }
 
     // Fetch footer data if referenced
     let footer = null;
-    if (pageData.footer?.sys?.id) {
-      footer = await getFooterById(pageData.footer.sys.id, preview);
+    if (pageLayout?.footer) {
+      // Type assertion for footer reference
+      const footerRef = pageLayout.footer as { sys: { id: string } };
+      if (footerRef.sys?.id) {
+        footer = await getFooterById(footerRef.sys.id, preview);
+      }
     }
 
     // Fetch page content separately
@@ -163,7 +163,7 @@ export async function getPageBySlug(slug: string, preview = true): Promise<Page 
       header,
       footer,
       pageContentCollection: pageContent
-    } as Page;
+    } as PageWithHeaderFooter;
   } catch (error) {
     if (error instanceof Error) {
       throw new NetworkError(`Error fetching page by slug: ${error.message}`);

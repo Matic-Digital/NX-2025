@@ -1,51 +1,9 @@
+import { cache } from 'react';
 import { fetchGraphQL } from '../api';
 import type { Header, HeaderResponse } from '@/types/contentful/Header';
 import { ContentfulError, NetworkError, GraphQLError } from '../errors';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
 
-// Inline constants to avoid circular dependencies
-const PAGE_BASIC_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-  description
-`;
-
-const PAGELIST_BASIC_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-`;
-
-// Header fields
-export const HEADER_GRAPHQL_FIELDS = `
-  ${SYS_FIELDS}
-  name
-  logo {
-    ${ASSET_FIELDS}
-  }
-  navLinksCollection {
-    items {
-      ... on Page {
-        ${PAGE_BASIC_FIELDS}
-      }
-      ... on PageList {
-        ${PAGELIST_BASIC_FIELDS}
-        pagesCollection {
-          items {
-            ... on Page {
-              ${SYS_FIELDS}
-              title
-              slug
-              description
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
+import { getHEADER_GRAPHQL_FIELDS } from './graphql-fields';
 /**
  * Fetches all Headers from Contentful
  * @param preview - Whether to fetch draft content
@@ -57,7 +15,7 @@ export async function getAllHeaders(preview = false): Promise<HeaderResponse> {
       `query GetAllHeaders($preview: Boolean!) {
         headerCollection(preview: $preview) {
           items {
-            ${HEADER_GRAPHQL_FIELDS}
+            ${getHEADER_GRAPHQL_FIELDS()}
           }
           total
         }
@@ -100,7 +58,7 @@ export async function getHeaderByName(name: string, preview = false): Promise<He
       `query GetHeaderByName($name: String!, $preview: Boolean!) {
         headerCollection(where: { name: $name }, limit: 1, preview: $preview) {
           items {
-            ${HEADER_GRAPHQL_FIELDS}
+            ${getHEADER_GRAPHQL_FIELDS()}
           }
         }
       }`,
@@ -127,13 +85,13 @@ export async function getHeaderByName(name: string, preview = false): Promise<He
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the Header or null if not found
  */
-export async function getHeaderById(id: string, preview = false): Promise<Header | null> {
+export const getHeaderById = cache(async (id: string, preview = false): Promise<Header | null> => {
   try {
     const response = await fetchGraphQL<Header>(
       `query GetHeaderById($id: String!, $preview: Boolean!) {
         headerCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
           items {
-            ${HEADER_GRAPHQL_FIELDS}
+            ${getHEADER_GRAPHQL_FIELDS()}
           }
         }
       }`,
@@ -160,4 +118,4 @@ export async function getHeaderById(id: string, preview = false): Promise<Header
     }
     throw new Error('Unknown error fetching Header by ID');
   }
-}
+});

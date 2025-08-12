@@ -3,9 +3,7 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-
 import { getAllFooters } from '@/lib/contentful-api/footer';
-import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
@@ -15,16 +13,80 @@ import { ImageBetween } from '@/components/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
-import type { Header } from '@/types/contentful/Header';
+import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 
 /**
- * Metadata configuration for SEO
+ * Generate metadata for the page, including Open Graph tags
  */
-export const metadata: Metadata = {
-  title: 'Nextracker',
-  description: 'Nextracker Website 2025'
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Try to fetch the home page data
+  const homePage = await getPageBySlug('/', false);
+
+  // Default metadata
+  const defaultMetadata = {
+    title: 'Nextracker',
+    description: 'Nextracker Website 2025'
+  };
+
+  // If no home page data, return defaults
+  if (!homePage) {
+    return defaultMetadata;
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  // Import utility functions for safe metadata extraction
+  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import('@/lib/metadata-utils');
+
+  // Safely extract the openGraphImage with proper typing
+  const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
+
+  // Safely extract image URL
+  const getImageUrl = (url: string): string => {
+    return url.startsWith('http') ? url : `${baseUrl}${url}`;
+  };
+
+  // Get the image URL safely
+  const imageUrl = openGraphImage?.url ? getImageUrl(openGraphImage.url) : undefined;
+
+  // Build the images array for Open Graph
+  const ogImages = imageUrl
+    ? [
+        {
+          url: imageUrl,
+          width: openGraphImage?.width ?? 1200,
+          height: openGraphImage?.height ?? 630,
+          alt: openGraphImage?.title ?? homePage.title ?? 'Nextracker'
+        }
+      ]
+    : [];
+
+  // Build the metadata object with Open Graph tags
+  const title = extractSEOTitle(homePage, defaultMetadata.title);
+  const description = extractSEODescription(homePage, defaultMetadata.description);
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImages,
+      siteName: 'Nextracker',
+      type: 'website',
+      url: baseUrl
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : []
+    }
+  };
+}
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -59,10 +121,9 @@ export default async function HomePage() {
  * Renders a Contentful page as the homepage
  */
 async function renderContentfulHomePage(page: Page) {
-  // Get the page-specific header and footer if they exist
-  const pageHeader = page.header as Header | undefined;
-  const pageFooter = page.footer as FooterType | undefined;
-
+  const pageLayout = page.pageLayout as PageLayoutType | undefined;
+  const pageHeader = pageLayout?.header as HeaderType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <h1 className="sr-only">{page.title}</h1>
@@ -91,9 +152,7 @@ async function renderContentfulHomePage(page: Page) {
         console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
-
       {/* Render the page-specific footer if available */}
-      {pageFooter && <Footer footerData={pageFooter} />}
     </PageLayout>
   );
 }
