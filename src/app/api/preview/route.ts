@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   const secret = searchParams.get('secret');
   const sectionHeadingId = searchParams.get('sectionHeadingId');
   const bannerHeroId = searchParams.get('bannerHeroId');
+  const imageId = searchParams.get('imageId');
 
   // Check the secret and validate it
   if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
@@ -28,6 +29,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL(`/banner-hero-preview?id=${bannerHeroId}`, request.url));
   }
 
+  // Redirect to Image preview
+  if (imageId) {
+    return NextResponse.redirect(new URL(`/image-preview?id=${imageId}`, request.url));
+  }
+
   // If no valid parameters were provided
-  return NextResponse.json({ message: 'No Section Heading ID or Banner Hero ID provided' }, { status: 400 });
+  return NextResponse.json({ message: 'No Section Heading ID, Banner Hero ID, or Image ID provided' }, { status: 400 });
 }
