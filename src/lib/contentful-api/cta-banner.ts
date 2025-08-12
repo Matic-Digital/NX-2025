@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaBanner, CtaBannerResponse } from '@/types/contentful';
-import { SYS_FIELDS, ASSET_FIELDS } from './constants';
+import { INTERNAL_LINK_FIELDS, SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -17,26 +17,24 @@ export const CTABANNER_GRAPHQL_FIELDS = `
     ${IMAGE_GRAPHQL_FIELDS}
   }
   primaryCta {
-    ${SYS_FIELDS}
+    sys { id }
     text
     internalText
     internalLink {
-      ${SYS_FIELDS}
-      slug
+      ${INTERNAL_LINK_FIELDS}
     }
     externalLink
   }
   secondaryCta {
-    ${SYS_FIELDS}
+    sys { id }
     text
     internalText
     internalLink {
-      ${SYS_FIELDS}
-      slug
+      ${INTERNAL_LINK_FIELDS}
     }
     externalLink
     modal {
-      ${SYS_FIELDS}
+      sys { id }
       title
       description
     }

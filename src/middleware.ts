@@ -20,6 +20,20 @@ import { NextResponse } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
+  // Handle CORS for preview pages and API routes first
+  if (request.nextUrl.pathname.includes('-preview') || request.nextUrl.pathname.startsWith('/api/preview')) {
+    const response = NextResponse.next();
+    
+    // Remove restrictive headers and allow iframe embedding from Contentful
+    response.headers.delete('X-Frame-Options');
+    response.headers.set(
+      'Content-Security-Policy',
+      "frame-ancestors 'self' https://app.contentful.com;"
+    );
+    
+    return response;
+  }
+
   // Only process GET requests to potential page routes
   if (request.method !== 'GET') {
     return NextResponse.next();
@@ -36,6 +50,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith('/page-preview') ||
     path.startsWith('/page-list-preview') ||
     path.startsWith('/banner-hero-preview') ||
+    path.startsWith('/section-heading-preview') ||
     path.startsWith('/header-preview') ||
     path.startsWith('/footer-preview') ||
     path === '/favicon.ico' ||

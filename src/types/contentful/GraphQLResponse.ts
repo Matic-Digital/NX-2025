@@ -30,6 +30,7 @@ export interface GraphQLResponse<T> {
       items: T[];
       total: number;
     };
+    sectionHeading?: T;
   };
   errors?: Array<{
     message: string;

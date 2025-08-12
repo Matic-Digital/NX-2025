@@ -1,14 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
-import type { Header, Footer } from '@/types/contentful';
-
+import { useEffect, useState } from 'react';
+import type { Header as HeaderType, Footer as FooterType } from '@/types/contentful';
+import { Header } from '@/components/global/Header';
+import { Footer } from '@/components/global/Footer';
+import { Main } from '@/components/global/matic-ds';
 // Import the layout CSS
 import '@/styles/layout.css';
+import { getHeaderById } from '@/lib/contentful-api/header';
+import { getFooterById } from '@/lib/contentful-api/footer';
 
 interface PageLayoutProps {
-  header?: Header | null;
-  footer?: Footer | null;
+  header?: HeaderType | null;
+  footer?: FooterType | null;
   children: React.ReactNode;
 }
 
@@ -20,20 +24,51 @@ interface PageLayoutProps {
  * the default header and footer in the root layout.
  */
 export function PageLayout({ header, footer, children }: PageLayoutProps) {
+  const [fullHeader, setFullHeader] = useState<HeaderType | null>(null);
+  const [fullFooter, setFullFooter] = useState<FooterType | null>(null);
+
+  // Fetch full header and footer data
   useEffect(() => {
-    // Add classes to body when header or footer are present
-    if (header) {
+    async function fetchHeaderFooter() {
+      try {
+        // Only fetch if we have IDs
+        if (header?.sys?.id) {
+          const headerData = await getHeaderById(header.sys.id);
+          setFullHeader(headerData);
+        }
+
+        if (footer?.sys?.id) {
+          const footerData = await getFooterById(footer.sys.id);
+          setFullFooter(footerData);
+        }
+      } catch (error) {
+        console.error('Error fetching header/footer:', error);
+      }
+    }
+
+    // Use void to explicitly mark the promise as handled
+    void fetchHeaderFooter();
+  }, [header?.sys?.id, footer?.sys?.id]);
+
+  // Add body classes
+  useEffect(() => {
+    if (fullHeader) {
       document.body.classList.add('page-has-header');
     }
-    if (footer) {
+    if (fullFooter) {
       document.body.classList.add('page-has-footer');
     }
 
-    // Clean up function to remove classes when component unmounts
     return () => {
       document.body.classList.remove('page-has-header', 'page-has-footer');
     };
-  }, [header, footer]);
+  }, [fullHeader, fullFooter]);
 
-  return <>{children}</>;
+  return (
+    <>
+      {fullHeader && <Header {...fullHeader} />}
+      <Main className="-mt-25">{children}</Main>
+      {fullFooter && <Footer {...fullFooter} />}
+    </>
+  );
 }

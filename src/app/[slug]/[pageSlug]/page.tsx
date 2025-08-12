@@ -18,13 +18,13 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPageBySlug } from '@/lib/contentful-api/page';
 import { getPageListBySlug } from '@/lib/contentful-api/page-list';
-import { Footer } from '@/components/global/Footer';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList } from '@/types/contentful/PageList';
-import type { Header } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
+import type { Header as HeaderType } from '@/types/contentful/Header';
+import type { Footer as FooterType } from '@/types/contentful/Footer';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -104,9 +104,9 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     notFound();
   }
 
-  // Get the page-specific header and footer if they exist
-  const pageHeader = page.header as Header | undefined;
-  const pageFooter = page.footer as FooterType | undefined;
+  const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
+  const pageHeader = pageLayout?.header as HeaderType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
@@ -197,9 +197,6 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
         console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
-
-      {/* Render the page-specific footer if available */}
-      {pageFooter && <Footer footerData={pageFooter} />}
     </PageLayout>
   );
 }

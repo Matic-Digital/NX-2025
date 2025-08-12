@@ -3,66 +3,12 @@
  * Provides functions for fetching and managing blog articles from Contentful CMS
  */
 
+import { cache } from 'react';
 // Types
 import type { Footer, FooterResponse } from '@/types/contentful';
 import { fetchGraphQL } from '../api';
-import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS, ASSET_FIELDS, SOCIAL_BASIC_FIELDS } from './constants';
-import { PAGE_BASIC_FIELDS, PAGE_WITH_REFS_FIELDS } from './page';
-import { PAGELIST_BASIC_FIELDS, PAGELIST_WITH_REFS_FIELDS } from './page-list';
-import { EXTERNAL_PAGE_FIELDS } from './external-page';
-
-// Footer fields
-const FOOTER_GRAPHQL_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  logo {
-    ${ASSET_FIELDS}
-  }
-  description
-  pageListsCollection(limit: 5) {
-    items {
-      ... on PageList {
-        ${PAGELIST_WITH_REFS_FIELDS}
-        pagesCollection(limit: 10) {
-          items {
-            ... on Page {
-              ${PAGE_WITH_REFS_FIELDS}
-            }
-            ... on ExternalPage {
-              ${EXTERNAL_PAGE_FIELDS}
-            }
-          }
-        }
-      }
-    }
-  }
-  copyright
-  legalPageListsCollection(limit: 5) {
-    items {
-      ... on PageList {
-        ${PAGELIST_BASIC_FIELDS}
-        pagesCollection(limit: 10) {
-          items {
-            ... on Page {
-              ${PAGE_BASIC_FIELDS}
-            }
-            ... on ExternalPage {
-              ${EXTERNAL_PAGE_FIELDS}
-            }
-          }
-        }
-      }
-    }
-  }
-  socialNetworksCollection(limit: 5) {
-    items {
-      ... on Social {
-        ${SOCIAL_BASIC_FIELDS}
-      }
-    }
-  }
-`;
+import { ContentfulError, NetworkError, GraphQLError } from '../errors';
+import { getFOOTER_GRAPHQL_FIELDS } from './graphql-fields';
 
 /**
  * Fetches all footers from Contentful
@@ -75,7 +21,7 @@ export async function getAllFooters(preview = true): Promise<FooterResponse> {
       `query GetAllFooters($preview: Boolean!) {
         footerCollection(preview: $preview) {
           items {
-            ${FOOTER_GRAPHQL_FIELDS}
+            ${getFOOTER_GRAPHQL_FIELDS()}
           }
           total
         }
@@ -109,13 +55,13 @@ export async function getAllFooters(preview = true): Promise<FooterResponse> {
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the Footer or null if not found
  */
-export async function getFooterById(id: string, preview = true): Promise<Footer | null> {
+export const getFooterById = cache(async (id: string, preview = false): Promise<Footer | null> => {
   try {
     const response = await fetchGraphQL<Footer>(
       `query GetFooterById($id: String!, $preview: Boolean!) {
         footerCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
           items {
-            ${FOOTER_GRAPHQL_FIELDS}
+            ${getFOOTER_GRAPHQL_FIELDS()}
           }
         }
       }`,
@@ -127,11 +73,18 @@ export async function getFooterById(id: string, preview = true): Promise<Footer 
       return null;
     }
 
-    return response.data.footerCollection.items[0]!;
+    const footer = response.data.footerCollection.items[0];
+    return footer ?? null;
   } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof GraphQLError) {
+      throw error;
+    }
     if (error instanceof Error) {
       throw new NetworkError(`Error fetching Footer by ID: ${error.message}`);
     }
     throw new Error('Unknown error fetching Footer by ID');
   }
-}
+});

@@ -11,6 +11,7 @@ export const ContentGridItemSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
+  heading: z.string(),
   description: z.string(),
   link: z.object({
     sys: z.object({

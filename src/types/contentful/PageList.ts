@@ -24,18 +24,17 @@ export const PageListSchema = z.object({
   }),
   title: z.string().optional(),
   slug: z.string().optional(),
+  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   pagesCollection: z
     .object({
       items: z.array(PageListPagesUnion)
     })
     .optional(),
-  header: z.lazy(() => require('./Header').HeaderSchema).optional(),
   pageContentCollection: z
     .object({
       items: z.array(PageListContentUnion)
     })
     .optional(),
-  footer: z.lazy(() => require('./Footer').FooterSchema).optional(),
   __typename: z.string().optional()
 });
 
@@ -47,30 +46,15 @@ export const PageListWithRefsSchema = z.object({
   }),
   title: z.string().optional(),
   slug: z.string().optional(),
+  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   pagesCollection: z
     .object({
       items: z.array(PageSchema)
     })
     .optional(),
-  header: z
-    .object({
-      sys: z.object({
-        id: z.string()
-      }),
-      __typename: z.string()
-    })
-    .optional(),
   pageContentCollection: z
     .object({
       items: z.array(PageListContentUnion)
-    })
-    .optional(),
-  footer: z
-    .object({
-      sys: z.object({
-        id: z.string()
-      }),
-      __typename: z.string()
     })
     .optional(),
   __typename: z.string().optional()

@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../api';
 
 import type { Post, PostResponse } from '@/types/contentful/Post';
-import { SYS_FIELDS } from './constants';
+import { SYS_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -15,6 +15,20 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
     ${IMAGE_GRAPHQL_FIELDS}
   }
   categories
+`;
+
+export const POST_SLIDER_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  slug
+  excerpt
+  mainImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  categories
+  content {
+    json
+  }
 `;
 
 // Full Post fields for individual Post queries
