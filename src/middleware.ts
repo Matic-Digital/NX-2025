@@ -20,8 +20,8 @@ import { NextResponse } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
-  // Handle CORS for preview pages first
-  if (request.nextUrl.pathname.includes('-preview')) {
+  // Handle CORS for preview pages and API routes first
+  if (request.nextUrl.pathname.includes('-preview') || request.nextUrl.pathname.startsWith('/api/preview')) {
     const response = NextResponse.next();
     
     // Remove restrictive headers and allow iframe embedding from Contentful
