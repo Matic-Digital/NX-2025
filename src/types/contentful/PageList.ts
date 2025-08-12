@@ -6,12 +6,14 @@ import { BannerHeroSchema } from './BannerHero';
 import { ImageBetweenSchema } from './ImageBetween';
 import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';
+import { ContentSchema } from './Content';
 
 const PageListPagesUnion = z.union([PageSchema, ExternalPageSchema]);
 export type PageListPages = z.infer<typeof PageListPagesUnion>;
 
 const PageListContentUnion = z.union([
   BannerHeroSchema,
+  ContentSchema,
   ContentGridSchema,
   CtaBannerSchema,
   ImageBetweenSchema

@@ -5,9 +5,11 @@ import { ContentGridSchema } from './ContentGrid';
 import { BannerHeroSchema } from './BannerHero';
 import { ImageBetweenSchema } from './ImageBetween';
 import { ImageSchema } from './Image';
+import { ContentSchema } from './Content';
 
 const PageContentUnion = z.union([
   BannerHeroSchema,
+  ContentSchema,  
   ContentGridSchema,
   CtaBannerSchema,
   ImageSchema,

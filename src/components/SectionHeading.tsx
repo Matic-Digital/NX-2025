@@ -122,7 +122,7 @@ export function SectionHeading(props: SectionHeading) {
                 <Button
                   variant={
                     (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'white'
+                      ? 'primary'
                       : index === 0
                         ? 'white'
                         : 'primary'

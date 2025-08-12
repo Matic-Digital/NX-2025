@@ -2,6 +2,7 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
+import { Content } from '@/components/Content';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
 import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -39,7 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
 
   // Import utility functions for safe metadata extraction
-  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import('@/lib/metadata-utils');
+  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import(
+    '@/lib/metadata-utils'
+  );
 
   // Safely extract the openGraphImage with proper typing
   const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
@@ -126,7 +129,7 @@ async function renderContentfulHomePage(page: Page) {
   const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <h1 className="sr-only">{page.title}</h1>
+      <h1 className="sr-only">{page.title}</h1> 
 
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {

@@ -8,6 +8,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
@@ -124,6 +125,9 @@ export async function getPageBySlug(
               items {
                 ... on BannerHero {
                   ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on Content {
+                  ${SYS_FIELDS}
                 }
                 ... on ContentGrid {
                   ${CONTENTGRID_GRAPHQL_FIELDS}
