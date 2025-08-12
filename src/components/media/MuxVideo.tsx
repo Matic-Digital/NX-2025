@@ -12,6 +12,7 @@ export function MuxVideo(props: VideoSys) {
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
+        setLoading(true);
         const videos = await getVideosByIds([props.sys.id]);
         if (videos.length > 0 && videos[0]) {
           setVideoData(videos[0]);

@@ -23,6 +23,7 @@ import type { Metadata } from 'next';
 import { getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
+import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import { PageList } from '@/components/global/PageList';
@@ -42,6 +43,7 @@ import {
 // Define the component mapping for pageContent items
 const componentMap = {
   BannerHero: BannerHero,
+  Content: Content,
   ContentGrid: ContentGrid,
   CtaBanner: CtaBanner,
   ImageBetween: ImageBetween
@@ -266,10 +268,10 @@ function renderPage(page: Page) {
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
-          const ComponentType = componentMap[typeName as keyof typeof componentMap];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
-        }
+            const ComponentType = componentMap[typeName as keyof typeof componentMap];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
+          }
 
         // Log a warning if we don't have a component for this type
         console.warn(`No component found for type: ${typeName}`);
@@ -292,7 +294,7 @@ function renderPageList(pageList: PageListType) {
     <PageLayout header={pageHeader} footer={pageFooter}>
       {/* Render components from pageContentCollection */}
       {pageContentItems.map((item, index) => {
-        if (item.__typename === 'CtaBanner') {
+        if (item?.__typename === 'CtaBanner') {
           const CtaBannerComponent = componentMap.CtaBanner;
           // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
           return (

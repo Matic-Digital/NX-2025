@@ -1,6 +1,7 @@
 export * from './Asset';
 export * from './BannerHero';
 export * from './Button';
+export * from './Content';
 export * from './ContentGrid';
 export * from './CtaBanner';
 export * from './Footer';

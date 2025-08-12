@@ -5,6 +5,7 @@ import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
+import { SYS_FIELDS } from './graphql-fields';
 
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
@@ -119,7 +120,7 @@ export async function checkPageBelongsToPageList(
     throw new Error('Unknown error checking if page belongs to any PageList');
   }
 }
-  
+
 // Note: getPageBySlugInPageList function removed to avoid circular dependency
 // This function would require importing getPageBySlug from './page' which creates a circular dependency
 
@@ -169,7 +170,10 @@ export async function getAllPageLists(preview = false): Promise<PageListResponse
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the page list with header and footer or null if not found
  */
-export async function getPageListBySlug(slug: string, preview = false): Promise<PageListWithHeaderFooter | null> {
+export async function getPageListBySlug(
+  slug: string,
+  preview = false
+): Promise<PageListWithHeaderFooter | null> {
   try {
     // Log the request for debugging
     console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
@@ -199,7 +203,7 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
 
     // Type assertion for pageLayout to avoid 'any' type
     const pageLayout = pageListData.pageLayout as PageLayout | undefined;
-    
+
     // Fetch header data if referenced
     let header = null;
     if (pageLayout?.header) {
@@ -229,6 +233,9 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
               items {
                 ... on BannerHero {
                   ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on Content {
+                  ${SYS_FIELDS}
                 }
                 ... on ContentGrid {
                   ${CONTENTGRID_GRAPHQL_FIELDS}
