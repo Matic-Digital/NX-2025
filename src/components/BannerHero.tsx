@@ -14,6 +14,10 @@ export function BannerHero(props: BannerHero) {
   const bannerHero = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: bannerHero?.sys?.id });
 
+  console.log('BannerHero props:', props);
+  console.log('BannerHero bannerHero:', bannerHero);
+  console.log('BannerHero heading data:', bannerHero?.heading);
+
   return (
     <ErrorBoundary>
       <Section className="relative flex h-[789px] items-end" {...inspectorProps}>
