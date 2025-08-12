@@ -24,11 +24,11 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/section-heading-preview')) {
     const response = NextResponse.next();
     
-    // Remove restrictive headers and allow iframe embedding from anywhere
+    // Remove restrictive headers and allow iframe embedding from Contentful
     response.headers.delete('X-Frame-Options');
     response.headers.set(
       'Content-Security-Policy',
-      "frame-ancestors *;"
+      "frame-ancestors 'self' https://app.contentful.com;"
     );
     
     return response;
