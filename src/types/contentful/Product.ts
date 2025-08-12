@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
+import { ImageSchema } from './Image';
 
 export const ProductSysSchema = z.object({
   sys: z.object({
@@ -11,12 +12,22 @@ export const ProductSysSchema = z.object({
 
 export const ProductSchema = z.object({
   sys: z.object({
-    id: z.string()
+    id: z.string(),
+    contentType: z
+      .object({
+        sys: z.object({
+          id: z.string()
+        })
+      })
+      .optional(),
+    updatedAt: z.string().optional()
   }),
   title: z.string(),
   slug: z.string(),
-  icon: AssetSchema.optional(),
+  tags: z.array(z.string()).optional(),
   description: z.string().optional(),
+  icon: AssetSchema.optional(),
+  image: ImageSchema.optional(),
   __typename: z.string().optional()
 });
 
