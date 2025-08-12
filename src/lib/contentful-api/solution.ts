@@ -20,6 +20,40 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   }
 `;
 
+export async function getSolutionById(id: string, preview = false): Promise<Solution | null> {
+  try {
+    const response = await fetchGraphQL<Solution>(
+      `query GetSolutionById($id: String!, $preview: Boolean!) {
+        solution(id: $id, preview: $preview) {
+          ${SOLUTION_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { solution?: Solution };
+
+    if (!data.solution) {
+      return null;
+    }
+
+    return data.solution;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Solution: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Solution');
+  }
+}
+
 export async function getSolutionsByIds(
   solutionsIds: string[],
   preview = false
@@ -39,7 +73,7 @@ export async function getSolutionsByIds(
   `;
 
   try {
-    const response = await fetchGraphQL(query, {
+    const response = await fetchGraphQL<Solution>(query, {
       ids: solutionsIds,
       preview
     });

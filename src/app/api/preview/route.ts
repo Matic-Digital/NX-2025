@@ -11,6 +11,9 @@ export async function GET(request: NextRequest) {
   const ctaBannerId = searchParams.get('ctaBannerId');
   const buttonId = searchParams.get('buttonId');
   const socialId = searchParams.get('socialId');
+  const serviceId = searchParams.get('serviceId');
+  const solutionId = searchParams.get('solutionId');
+  const productId = searchParams.get('productId');
 
   // Check the secret and validate it
   if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
@@ -44,6 +47,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL(`/cta-banner-preview?id=${ctaBannerId}`, request.url));
   }
 
+  // Redirect to Service preview
+  if (serviceId) {
+    return NextResponse.redirect(new URL(`/service-preview?id=${serviceId}`, request.url));
+  }
+
   // Redirect to Button preview
   if (buttonId) {
     return NextResponse.redirect(new URL(`/button-preview?id=${buttonId}`, request.url));
@@ -52,6 +60,16 @@ export async function GET(request: NextRequest) {
   // Redirect to Social preview
   if (socialId) {
     return NextResponse.redirect(new URL(`/social-preview?id=${socialId}`, request.url));
+  }
+
+  // Redirect to Solution preview
+  if (solutionId) {
+    return NextResponse.redirect(new URL(`/solution-preview?id=${solutionId}`, request.url));
+  }
+
+  // Redirect to Product preview
+  if (productId) {
+    return NextResponse.redirect(new URL(`/product-preview?id=${productId}`, request.url));
   }
 
   // If no valid parameters were provided
