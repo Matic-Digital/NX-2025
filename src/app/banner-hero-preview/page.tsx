@@ -64,6 +64,8 @@ function BannerHeroPreviewContent() {
       try {
         setIsLoading(true);
         const fetchedBannerHero = await getBannerHero(bannerHeroId, true);
+        console.log('Fetched Banner Hero:', fetchedBannerHero);
+        console.log('Banner Hero heading:', fetchedBannerHero?.heading);
         setBannerHero(fetchedBannerHero);
         setIsLoading(false);
       } catch (err) {
