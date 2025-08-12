@@ -30,9 +30,7 @@ export interface OpenGraphImageResult {
  */
 function isContentfulImage(obj: unknown): obj is ContentfulImage {
   return (
-    obj !== null &&
-    typeof obj === 'object' &&
-    ('link' in obj || 'title' in obj || 'altText' in obj)
+    obj !== null && typeof obj === 'object' && ('link' in obj || 'title' in obj || 'altText' in obj)
   );
 }
 
@@ -43,7 +41,11 @@ export function hasContentfulSEOFields(obj: unknown): obj is ContentfulPageSEO {
   return (
     obj !== null &&
     typeof obj === 'object' &&
-    ('title' in obj || 'seoTitle' in obj || 'seoDescription' in obj || 'description' in obj || 'openGraphImage' in obj)
+    ('title' in obj ||
+      'seoTitle' in obj ||
+      'seoDescription' in obj ||
+      'description' in obj ||
+      'openGraphImage' in obj)
   );
 }
 
@@ -52,9 +54,9 @@ export function hasContentfulSEOFields(obj: unknown): obj is ContentfulPageSEO {
  */
 export function extractImageUrl(image: unknown, baseUrl: string): string | undefined {
   if (!isContentfulImage(image)) return undefined;
-  
+
   if (!image.link || typeof image.link !== 'string') return undefined;
-  
+
   return image.link.startsWith('http') ? image.link : `${baseUrl}${image.link}`;
 }
 
@@ -63,15 +65,15 @@ export function extractImageUrl(image: unknown, baseUrl: string): string | undef
  */
 export function extractImageAlt(image: unknown, fallback: string): string {
   if (!isContentfulImage(image)) return fallback;
-  
+
   if (image.altText && typeof image.altText === 'string') {
     return image.altText;
   }
-  
+
   if (image.title && typeof image.title === 'string') {
     return image.title;
   }
-  
+
   return fallback;
 }
 
@@ -84,24 +86,24 @@ export function extractOpenGraphImage(
   fallbackTitle: string
 ): OpenGraphImageResult | undefined {
   if (!hasContentfulSEOFields(page)) return undefined;
-  
+
   const image = page.openGraphImage;
   if (!isContentfulImage(image)) return undefined;
-  
+
   const url = extractImageUrl(image, baseUrl);
   if (!url) return undefined;
-  
+
   const result: OpenGraphImageResult = {
     url,
     width: 1200,
     height: 630
   };
-  
+
   const title = extractImageAlt(image, fallbackTitle);
   if (title !== fallbackTitle) {
     result.title = title;
   }
-  
+
   return result;
 }
 
@@ -110,15 +112,15 @@ export function extractOpenGraphImage(
  */
 export function extractSEOTitle(page: unknown, fallback: string): string {
   if (!hasContentfulSEOFields(page)) return fallback;
-  
+
   if (page.seoTitle && typeof page.seoTitle === 'string') {
     return page.seoTitle;
   }
-  
+
   if (page.title && typeof page.title === 'string') {
     return page.title;
   }
-  
+
   return fallback;
 }
 
@@ -127,14 +129,14 @@ export function extractSEOTitle(page: unknown, fallback: string): string {
  */
 export function extractSEODescription(page: unknown, fallback: string): string {
   if (!hasContentfulSEOFields(page)) return fallback;
-  
+
   if (page.seoDescription && typeof page.seoDescription === 'string') {
     return page.seoDescription;
   }
-  
+
   if (page.description && typeof page.description === 'string') {
     return page.description;
   }
-  
+
   return fallback;
 }

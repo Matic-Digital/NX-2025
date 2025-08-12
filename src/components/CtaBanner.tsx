@@ -67,7 +67,13 @@ export function CtaBanner(props: CtaBanner) {
 
               <Box wrap={true} gap={3} className="max-md:items-center">
                 {ctaBanner.primaryCta && (
-                  <Link href={ctaBanner.primaryCta.internalLink?.slug ?? ctaBanner.primaryCta.externalLink ?? '#'}>
+                  <Link
+                    href={
+                      ctaBanner.primaryCta.internalLink?.slug ??
+                      ctaBanner.primaryCta.externalLink ??
+                      '#'
+                    }
+                  >
                     <Button variant="outlineWhite" {...inspectorProps({ fieldId: 'primaryCta' })}>
                       {ctaBanner.primaryCta.text}
                     </Button>

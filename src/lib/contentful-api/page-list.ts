@@ -119,7 +119,7 @@ export async function checkPageBelongsToPageList(
     throw new Error('Unknown error checking if page belongs to any PageList');
   }
 }
-  
+
 // Note: getPageBySlugInPageList function removed to avoid circular dependency
 // This function would require importing getPageBySlug from './page' which creates a circular dependency
 
@@ -169,7 +169,10 @@ export async function getAllPageLists(preview = false): Promise<PageListResponse
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the page list with header and footer or null if not found
  */
-export async function getPageListBySlug(slug: string, preview = false): Promise<PageListWithHeaderFooter | null> {
+export async function getPageListBySlug(
+  slug: string,
+  preview = false
+): Promise<PageListWithHeaderFooter | null> {
   try {
     // Log the request for debugging
     console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
@@ -199,7 +202,7 @@ export async function getPageListBySlug(slug: string, preview = false): Promise<
 
     // Type assertion for pageLayout to avoid 'any' type
     const pageLayout = pageListData.pageLayout as PageLayout | undefined;
-    
+
     // Fetch header data if referenced
     let header = null;
     if (pageLayout?.header) {
