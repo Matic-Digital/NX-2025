@@ -7,6 +7,13 @@ import { type Metadata } from 'next';
 
 // Components
 import { Providers } from '@/app/providers';
+<<<<<<< Updated upstream
+=======
+import { draftMode } from 'next/headers';
+
+import { Main } from '@/components/global/matic-ds';
+import { Footer } from '@/components/global/Footer';
+>>>>>>> Stashed changes
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({
@@ -46,6 +53,29 @@ export const metadata: Metadata = {
  * @param header - Page-specific header
  * @param footer - Page-specific footer
  */
+<<<<<<< Updated upstream
+=======
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Check if we're in preview/draft mode
+  const draft = await draftMode();
+  const isPreview = draft.isEnabled;
+
+  // Only fetch header/footer if not in preview mode
+  let defaultHeader = null;
+  let defaultFooter = null;
+
+  if (!isPreview) {
+    // Fetch the default Header with the specific ID
+    defaultHeader = await getHeaderById('2M7Meoj7QefWD7Y8EhliGU', false);
+
+    // Fetch the default Footer with the specific ID
+    try {
+      defaultFooter = await getFooterById('5kECu6nUbEquZVRCuEU9Ev', false);
+    } catch (error) {
+      console.error('Error fetching footer data:', error);
+    }
+  }
+>>>>>>> Stashed changes
 
 export default async function RootLayout({
   children
