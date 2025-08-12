@@ -65,6 +65,22 @@ const nextConfig = {
     ignoreBuildErrors: isDocker
   },
 
+  // Security headers for Contentful live preview
+  async headers() {
+    return [
+      {
+        // Apply to all routes
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://app.contentful.com"
+          }
+        ]
+      }
+    ];
+  },
+
   // Environment variable configuration
   env: {
     NEXT_PUBLIC_CONTENTFUL_SPACE_ID: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,

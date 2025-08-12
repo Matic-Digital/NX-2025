@@ -20,15 +20,15 @@ import { NextResponse } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
-  // Handle CORS for preview pages first
-  if (request.nextUrl.pathname.startsWith('/section-heading-preview')) {
+  // Handle CORS for preview pages and API routes first
+  if (request.nextUrl.pathname.includes('-preview') || request.nextUrl.pathname.startsWith('/api/preview')) {
     const response = NextResponse.next();
     
-    // Remove restrictive headers and allow iframe embedding from anywhere
+    // Remove restrictive headers and allow iframe embedding from Contentful
     response.headers.delete('X-Frame-Options');
     response.headers.set(
       'Content-Security-Policy',
-      "frame-ancestors *;"
+      "frame-ancestors 'self' https://app.contentful.com;"
     );
     
     return response;

@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { ModalSchema } from './Modal';
 
+// We don't use the union directly in the schema to avoid GraphQL issues
+// Instead, we'll use a simple reference object and handle the union in code
+
 export const ButtonSchema = z.object({
   sys: z.object({
     id: z.string()

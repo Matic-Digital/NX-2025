@@ -1,4 +1,4 @@
-import { SYS_FIELDS } from './graphql-fields';
+import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from './graphql-fields';
 import { fetchGraphQL } from '../api';
 import type { SectionHeading } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
@@ -11,22 +11,15 @@ export const SECTIONHEADING_GRAPHQL_FIELDS = `
   description
   ctaCollection(limit: 2) {
     items {
-      sys {
-        id
-      }
+      sys { id }
       internalText
       text
       internalLink {
-        sys {
-          id
-        }
-        slug
+        ${INTERNAL_LINK_FIELDS}
       }
       externalLink
       modal {
-        sys {
-          id
-        }
+        sys { id }
         title
         description
       }
@@ -35,30 +28,29 @@ export const SECTIONHEADING_GRAPHQL_FIELDS = `
 `;
 
 export const getSectionHeadingById = async (id: string, preview: boolean) => {
-    try {
-        const response = await fetchGraphQL<SectionHeading>(
-            `query GetSectionHeadingById($preview: Boolean!, $id: String!) {
+  try {
+    const response = await fetchGraphQL<SectionHeading>(
+      `query GetSectionHeadingById($preview: Boolean!, $id: String!) {
                 sectionHeading(id: $id, preview: $preview) {
                     ${SECTIONHEADING_GRAPHQL_FIELDS}
                 }
             }`,
-            { id, preview },
-            preview
-        );
+      { id, preview },
+      preview
+    );
 
-        if (!response.data?.sectionHeading) {
-            throw new ContentfulError('Failed to fetch section heading from Contentful');
-        }
-
-        return response.data.sectionHeading;
-    } catch (error) {
-        if (error instanceof ContentfulError) {
-            throw error;
-        }
-        if (error instanceof Error) {
-            throw new NetworkError(`Error fetching section heading: ${error.message}`);
-        }
-        throw new Error('Unknown error fetching section heading');
+    if (!response.data?.sectionHeading) {
+      throw new ContentfulError('Failed to fetch section heading from Contentful');
     }
-}
 
+    return response.data.sectionHeading;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching section heading: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching section heading');
+  }
+};
