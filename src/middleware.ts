@@ -21,7 +21,7 @@ import { NextResponse } from 'next/server';
  */
 export async function middleware(request: NextRequest) {
   // Handle CORS for preview pages first
-  if (request.nextUrl.pathname.startsWith('/section-heading-preview')) {
+  if (request.nextUrl.pathname.includes('-preview')) {
     const response = NextResponse.next();
     
     // Remove restrictive headers and allow iframe embedding from Contentful
