@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
 
 export function ContentGridItem(props: ContentGridItemType) {
-  const { icon, heading, description, link, image, sys } = props;
+  const { sys, heading, description, link, icon, image } = props;
   const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
 
   // Render the appropriate icon based on the icon name
@@ -49,15 +49,23 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
+  const ContentItem = () => {
+    return (
+      <div>
+        <div>ContentItem</div>
+      </div>
+    );
+  };
+
   const LinkItem = () => {
     return (
-      <Link href={`/${link.slug}`} className="group block h-full w-full">
+      <Link href={`/${link?.slug}`} className="group block h-full w-full">
         <Box
           direction="col"
           className="border-border bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col border p-6 transition-all"
         >
           <div>
-            <div className="mb-6">{renderIcon(false)}</div>
+            {icon && <div className="mb-6">{renderIcon(false)}</div>}
 
             <Box gap={2} className="mb-4 flex items-start">
               <h2
@@ -124,7 +132,7 @@ export function ContentGridItem(props: ContentGridItemType) {
             </div>
 
             <div className="mt-auto">
-              <Link href={`/${link.slug}`} className="inline-block w-auto">
+              <Link href={`/${link?.slug}`} className="inline-block w-auto">
                 <Button
                   variant="outlineWhite"
                   className="transition-all hover:bg-white hover:text-black"
