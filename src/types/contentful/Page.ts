@@ -9,7 +9,7 @@ import { ContentSchema } from './Content';
 
 const PageContentUnion = z.union([
   BannerHeroSchema,
-  ContentSchema,  
+  ContentSchema,
   ContentGridSchema,
   CtaBannerSchema,
   ImageSchema,

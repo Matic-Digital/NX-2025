@@ -296,3 +296,136 @@ export async function getPageListBySlug(
     throw new Error('Unknown error fetching page list by slug');
   }
 }
+
+/**
+ * Fetches a single page list by ID
+ * @param id - The ID of the page list to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to the page list with header and footer or null if not found
+ */
+export async function getPageListById(
+  id: string,
+  preview = false
+): Promise<PageListWithHeaderFooter | null> {
+  try {
+    // Log the request for debugging
+    console.log(`Fetching PageList with ID: ${id}, preview: ${preview}`);
+
+    // First, fetch the basic PageList data with references
+    const response = await fetchGraphQL<PageListWithRefs>(
+      `query GetPageListById($id: String!, $preview: Boolean!) {
+        pageListCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            ${PAGELIST_WITH_REFS_FIELDS}
+          }
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Check if we have any results
+    if (!response.data?.pageListCollection?.items?.length) {
+      console.log(`No PageList found with ID: ${id}`);
+      return null;
+    }
+
+    console.log(`Successfully fetched PageList with ID: ${id}`);
+
+    const pageListData = response.data.pageListCollection.items[0]!;
+
+    // Type assertion for pageLayout to avoid 'any' type
+    const pageLayout = pageListData.pageLayout as PageLayout | undefined;
+
+    // Fetch header data if referenced
+    let header = null;
+    if (pageLayout?.header) {
+      // Type assertion for header reference
+      const headerRef = pageLayout.header as { sys: { id: string } };
+      if (headerRef.sys?.id) {
+        header = await getHeaderById(headerRef.sys.id, preview);
+      }
+    }
+
+    // Fetch footer data if referenced
+    let footer = null;
+    if (pageLayout?.footer) {
+      // Type assertion for footer reference
+      const footerRef = pageLayout.footer as { sys: { id: string } };
+      if (footerRef.sys?.id) {
+        footer = await getFooterById(footerRef.sys.id, preview);
+      }
+    }
+
+    // Fetch page content separately
+    const pageContentResponse = await fetchGraphQL(
+      `query GetPageListContentById($id: String!, $preview: Boolean!) {
+        pageListCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            pageContentCollection {
+              items {
+                ... on BannerHero {
+                  ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on Content {
+                  ${SYS_FIELDS}
+                }
+                ... on ContentGrid {
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                }
+                ... on CtaBanner {
+                  ${CTABANNER_GRAPHQL_FIELDS}
+                }
+                ... on ImageBetween {
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Safely extract page content with proper error checking
+    let pageContent = null;
+    try {
+      const items = pageContentResponse.data?.pageListCollection?.items;
+      if (items && items.length > 0 && items[0]) {
+        // Type assertion is safe here since we know the GraphQL query structure
+        const pageListItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
+        pageContent = pageListItem.pageContentCollection ?? null;
+      }
+    } catch (error) {
+      console.warn('Failed to extract page list content:', error);
+      pageContent = null;
+    }
+
+    // Combine all the data
+    const result = {
+      ...pageListData,
+      header,
+      footer,
+      pageContentCollection: pageContent
+    } as PageListWithHeaderFooter;
+
+    // Debug the PageList structure
+    console.log('PageList structure:', {
+      title: result.title,
+      slug: result.slug,
+      hasHeader: !!result.header,
+      hasFooter: !!result.footer,
+      hasPageContent: !!result.pageContentCollection,
+      pagesCount: result.pagesCollection?.items?.length ?? 0
+    });
+
+    return result;
+  } catch (error) {
+    console.error(`Error handling ID: ${id}`, error);
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching page list by ID: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching page list by ID');
+  }
+}

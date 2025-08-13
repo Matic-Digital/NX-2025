@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
-import { Content } from '@/components/Content';
+
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
 import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/layout/PageLayout';
@@ -129,7 +129,7 @@ async function renderContentfulHomePage(page: Page) {
   const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      <h1 className="sr-only">{page.title}</h1> 
+      <h1 className="sr-only">{page.title}</h1>
 
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {
