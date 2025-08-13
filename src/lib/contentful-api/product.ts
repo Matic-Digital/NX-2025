@@ -2,16 +2,21 @@ import { fetchGraphQL } from '../api';
 import type { Product } from '@/types/contentful/Product';
 import { ContentfulError, NetworkError } from '../errors';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
+import { IMAGE_GRAPHQL_FIELDS } from './image';
 
 // Product fields
 export const PRODUCT_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
+  tags
+  description
   icon {
     ${ASSET_FIELDS}
   }
-  description
+  image {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
 `;
 
 export async function getProductsByIds(productsIds: string[], preview = false): Promise<Product[]> {
