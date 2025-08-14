@@ -5,6 +5,7 @@ import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
+import { SYS_FIELDS } from './graphql-fields';
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
   header: Header | null;
@@ -13,6 +14,11 @@ interface PageListWithHeaderFooter extends PageList {
 
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
+
+import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
+import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
+import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import {
   getEXTERNAL_PAGE_FIELDS,
   getPAGE_BASIC_FIELDS,
