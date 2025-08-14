@@ -49,6 +49,14 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
+  const ContentItem = () => {
+    return (
+      <div>
+        <div>ContentItem</div>
+      </div>
+    );
+  };
+
   const LinkItem = () => {
     return (
       <Link href={`/${link?.slug}`} className="group block h-full w-full">

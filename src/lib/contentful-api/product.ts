@@ -19,6 +19,40 @@ export const PRODUCT_GRAPHQL_FIELDS = `
   }
 `;
 
+export async function getProductById(id: string, preview = false): Promise<Product | null> {
+  try {
+    const response = await fetchGraphQL<Product>(
+      `query GetProductById($id: String!, $preview: Boolean!) {
+        product(id: $id, preview: $preview) {
+          ${PRODUCT_GRAPHQL_FIELDS}
+        }   
+      }`,
+      { id, preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { product?: Product };
+
+    if (!data.product) {
+      return null;
+    }
+
+    return data.product;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Product: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Product');
+  }
+}
+
 export async function getProductsByIds(productsIds: string[], preview = false): Promise<Product[]> {
   if (productsIds.length === 0) {
     return [];

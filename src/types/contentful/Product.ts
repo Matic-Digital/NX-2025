@@ -12,7 +12,15 @@ export const ProductSysSchema = z.object({
 
 export const ProductSchema = z.object({
   sys: z.object({
-    id: z.string()
+    id: z.string(),
+    contentType: z
+      .object({
+        sys: z.object({
+          id: z.string()
+        })
+      })
+      .optional(),
+    updatedAt: z.string().optional()
   }),
   title: z.string(),
   slug: z.string(),
