@@ -22,7 +22,6 @@ import type {
   VideoSys as VideoType,
   Post as PostType,
   ProductSys as ProductType,
-  Service as ServiceType,
   SliderSys as SliderType,
   SolutionSys as SolutionType
 } from '@/types/contentful/';
@@ -183,7 +182,7 @@ export function ContentGrid(props: ContentGrid) {
                             key={item.sys?.id || index}
                             cardId={item.sys?.id || `service-${index}`}
                             isFirst={isFirstService}
-                            {...(item as ServiceType)}
+                            serviceId={item.sys?.id || `service-${index}`}
                           />
                         );
                       }

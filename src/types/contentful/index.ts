@@ -16,6 +16,7 @@ export * from './Page';
 export * from './PageList';
 export * from './Post';
 export * from './Product';
+export * from './FeatureSliderItem';
 export * from './SectionHeading';
 export * from './Service';
 export * from './Slider';
