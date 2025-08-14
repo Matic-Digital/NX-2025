@@ -45,15 +45,17 @@ export function SolutionCard(props: SolutionProps) {
   return (
     <div className="group relative w-full cursor-pointer overflow-hidden bg-gray-100 p-6 transition-all duration-300 xl:mt-12 xl:h-[531px] xl:w-[243px] xl:p-8 xl:hover:mt-[-23px] xl:hover:h-[602px] dark:bg-[#1D1E1F]">
       {/* Background Image - appears on hover */}
-      <div className="absolute inset-0 -left-1 transition-opacity duration-300 group-hover:opacity-100 xl:opacity-0">
-        <Image
-          src={solutionData?.cardBackgroundImage.link}
-          alt={solutionData?.cardBackgroundImage.altText ?? ''}
-          fill
-          className="object-cover"
-          priority={false}
-        />
-      </div>
+      {solutionData?.cardBackgroundImage?.link && (
+        <div className="absolute inset-0 -left-1 transition-opacity duration-300 group-hover:opacity-100 xl:opacity-0">
+          <Image
+            src={solutionData.cardBackgroundImage.link}
+            alt={solutionData.cardBackgroundImage.altText ?? ''}
+            fill
+            className="object-cover"
+            priority={false}
+          />
+        </div>
+      )}
 
       <div className="relative z-10 h-full">
         <Box direction="col" gap={12}>

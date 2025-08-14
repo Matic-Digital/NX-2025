@@ -30,11 +30,11 @@ export async function generateMetadata({ params }: PostPageParams): Promise<Meta
     title: post.seoTitle ?? post.title ?? 'Post',
     description: post.seoDescription ?? post.excerpt ?? 'Post description',
     keywords: post.seoFocusKeyword ?? undefined,
-    openGraph: post.openGraphImage
+    openGraph: post.openGraphImage?.link
       ? {
           images: [
             {
-              url: post.openGraphImage.link ?? undefined,
+              url: post.openGraphImage.link,
               alt: post.openGraphImage.altText ?? post.title
             }
           ]

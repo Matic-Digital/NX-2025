@@ -5,11 +5,10 @@ import type { Image, ImageResponse } from '@/types/contentful';
 import { SYS_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
-// Image fields for Image content type (not Contentful Asset)
+// Image fields for Image content type (not Contentful Asset) - handle broken references gracefully
 export const IMAGE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
-  link
   altText
 `;
 

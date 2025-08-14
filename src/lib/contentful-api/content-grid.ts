@@ -19,17 +19,11 @@ const POST_GRAPHQL_FIELDS_SIMPLE = `
   categories
 `;
 
-// ContentGridItem fields
+// ContentGridItem fields - handle broken references gracefully
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   heading
-  link {
-    sys {
-      id
-    }
-    slug
-  }
   description
   icon {
     ${ASSET_FIELDS}
