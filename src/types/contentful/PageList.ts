@@ -7,8 +7,19 @@ import { ImageBetweenSchema } from './ImageBetween';
 import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';
 import { ContentSchema } from './Content';
+import { ProductSchema } from './Product';
+import { ServiceSchema } from './Service';
+import { SolutionSchema } from './Solution';
+import { PostSchema } from './Post';
 
-const PageListPagesUnion = z.union([PageSchema, ExternalPageSchema]);
+const PageListPagesUnion = z.union([
+  PageSchema,
+  ExternalPageSchema,
+  ProductSchema,
+  ServiceSchema,
+  SolutionSchema,
+  PostSchema
+]);
 export type PageListPages = z.infer<typeof PageListPagesUnion>;
 
 const PageListContentUnion = z.union([
@@ -16,7 +27,8 @@ const PageListContentUnion = z.union([
   ContentSchema,
   ContentGridSchema,
   CtaBannerSchema,
-  ImageBetweenSchema
+  ImageBetweenSchema,
+  ProductSchema
 ]);
 export type PageListContent = z.infer<typeof PageListContentUnion>;
 

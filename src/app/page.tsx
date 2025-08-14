@@ -2,7 +2,6 @@
 import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
-
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
 import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/layout/PageLayout';

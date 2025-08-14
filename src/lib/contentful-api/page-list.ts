@@ -5,8 +5,6 @@ import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS } from './graphql-fields';
-
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
   header: Header | null;
@@ -15,14 +13,13 @@ interface PageListWithHeaderFooter extends PageList {
 
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
-
-import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
-import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
-import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import {
   getEXTERNAL_PAGE_FIELDS,
   getPAGE_BASIC_FIELDS,
+  getPRODUCT_BASIC_FIELDS,
+  getSERVICE_BASIC_FIELDS,
+  getSOLUTION_BASIC_FIELDS,
+  getPOST_BASIC_FIELDS,
   getPAGELIST_BASIC_FIELDS,
   getPAGELIST_WITH_REFS_FIELDS
 } from './graphql-fields';
@@ -37,6 +34,18 @@ export const PAGELIST_MINIMAL_FIELDS = `
       }
       ... on ExternalPage {
         ${getEXTERNAL_PAGE_FIELDS()}
+      }
+      ... on Product {
+        ${getPRODUCT_BASIC_FIELDS()}
+      }
+      ... on Service {
+        ${getSERVICE_BASIC_FIELDS()}
+      }
+      ... on Solution {
+        ${getSOLUTION_BASIC_FIELDS()}
+      }
+      ... on Post {
+        ${getPOST_BASIC_FIELDS()}
       }
     }
   }
@@ -58,6 +67,18 @@ export const PAGELIST_SIMPLIFIED_FIELDS = `
       }
       ... on ExternalPage {
         ${getEXTERNAL_PAGE_FIELDS()}
+      }
+      ... on Product {
+        ${getPRODUCT_BASIC_FIELDS()}
+      }
+      ... on Service {
+        ${getSERVICE_BASIC_FIELDS()}
+      }
+      ... on Solution {
+        ${getSOLUTION_BASIC_FIELDS()}
+      }
+      ... on Post {
+        ${getPOST_BASIC_FIELDS()}
       }
     }
   }
@@ -183,7 +204,73 @@ export async function getPageListBySlug(
       `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
-            ${PAGELIST_WITH_REFS_FIELDS}
+            sys {
+              id
+            }
+            title
+            slug
+            pagesCollection(limit: 10) {
+              items {
+                __typename
+                ... on Page {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on ExternalPage {
+                  sys {
+                    id
+                  }
+                  title
+                  link
+                }
+                ... on Product {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Service {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Solution {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Post {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+              }
+            }
+            pageLayout {
+              sys {
+                id
+              }
+              header {
+                sys {
+                  id
+                }
+              }
+              footer {
+                sys {
+                  id
+                }
+              }
+            }
           }
         }
       }`,
@@ -224,27 +311,38 @@ export async function getPageListBySlug(
       }
     }
 
-    // Fetch page content separately
+    // Fetch page content separately with simplified fields
     const pageContentResponse = await fetchGraphQL(
       `query GetPageListContent($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
             pageContentCollection {
               items {
+                __typename
                 ... on BannerHero {
-                  ${BANNERHERO_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on Content {
-                  ${SYS_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ContentGrid {
-                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on CtaBanner {
-                  ${CTABANNER_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ImageBetween {
-                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
               }
             }

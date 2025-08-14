@@ -66,10 +66,11 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Solution {
         ${SYS_FIELDS}
       }
-      ... on Video {
+
+      ... on Slider {
         ${SYS_FIELDS}
       }
-      ... on Slider {
+      ... on CtaGrid {
         ${SYS_FIELDS}
       }
     }
