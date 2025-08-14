@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { getProductBySlug } from '@/lib/contentful-api/product';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
