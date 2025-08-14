@@ -49,7 +49,7 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
-  const ContentItem = () => {
+  const _ContentItem = () => {
     return (
       <div>
         <div>ContentItem</div>
