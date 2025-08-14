@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-// an image from AIR DAM - handle broken references gracefully
+// an image from AIR DAM
 export const ImageSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
   title: z.string(),
-  link: z.string().optional(),
+  link: z.string(),
   altText: z.string().optional(),
   __typename: z.string().optional()
 });
