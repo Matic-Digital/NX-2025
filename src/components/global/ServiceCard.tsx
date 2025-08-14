@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/media/AirImage';
@@ -9,19 +9,44 @@ import Link from 'next/link';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { useServiceCard } from '@/contexts/ServiceCardContext';
+import { getServiceById } from '@/lib/contentful-api/service';
 
-interface ServiceCardProps extends Service {
+interface ServiceCardProps {
+  serviceId: string;
   cardId: string;
   isFirst?: boolean;
 }
 
 export function ServiceCard(props: ServiceCardProps) {
-  const { cardId, isFirst = false, ...serviceProps } = props;
-  const service = useContentfulLiveUpdates(serviceProps);
+  const { serviceId, cardId, isFirst = false } = props;
+  const [serviceData, setServiceData] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
+  const service = useContentfulLiveUpdates(serviceData);
   const { activeCardId, setActiveCardId } = useServiceCard();
 
+  console.log('serviceData', serviceData);
+
+  // Fetch service data
+  useEffect(() => {
+    async function fetchServiceData() {
+      try {
+        setLoading(true);
+        const data = await getServiceById(serviceId);
+        setServiceData(data);
+      } catch (error) {
+        console.error('Error fetching service data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (serviceId) {
+      void fetchServiceData();
+    }
+  }, [serviceId]);
+
   // Set first card as active on mount if no card is active
-  React.useEffect(() => {
+  useEffect(() => {
     if (isFirst && activeCardId === null) {
       setActiveCardId(cardId);
     }
@@ -32,6 +57,17 @@ export function ServiceCard(props: ServiceCardProps) {
   const handleMouseEnter = () => {
     setActiveCardId(cardId);
   };
+
+  // Show loading state
+  if (loading || !service) {
+    return (
+      <ErrorBoundary>
+        <div className="group relative z-10 min-h-[31.125rem] animate-pulse overflow-hidden bg-gray-100 backdrop-blur transition-all duration-500 ease-in-out">
+          <div className="absolute inset-0 bg-gray-200" />
+        </div>
+      </ErrorBoundary>
+    );
+  }
 
   return (
     <ErrorBoundary>
@@ -63,12 +99,12 @@ export function ServiceCard(props: ServiceCardProps) {
           >
             <h3 className="text-headline-md mb-[1rem] text-white">{service.cardTitle}</h3>
             {service.cardTags?.map((tag, index) => (
-              <React.Fragment key={index}>
+              <Fragment key={index}>
                 <p className="text-white">{tag}</p>
                 {index < (service.cardTags?.length ?? 0) - 1 && (
                   <hr className="my-2 border-t border-gray-300" />
                 )}
-              </React.Fragment>
+              </Fragment>
             ))}
             <Box direction="col" className="z-10 mt-6 pb-[2rem]">
               <Link href={`/services/${service.slug}`}>
