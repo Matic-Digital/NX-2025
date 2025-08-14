@@ -19,6 +19,8 @@ export function CtaGrid(props: CtaGrid) {
   const liveCtaGrid = useContentfulLiveUpdates(ctaGrid);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveCtaGrid?.sys?.id });
 
+  console.log('🚀 CtaGrid props:', ctaGrid);
+
   useEffect(() => {
     const fetchCtaGrid = async () => {
       try {
@@ -90,24 +92,36 @@ export function CtaGrid(props: CtaGrid) {
             {/* CTA Button */}
             {liveCtaGrid.ctaCollection?.items?.length > 0 && (
               <div className="mt-auto">
-                {liveCtaGrid.ctaCollection.items.map((cta, index) => (
-                  <Button
-                    key={cta.sys?.id || index}
-                    variant="primary"
-                    {...inspectorProps({ fieldId: 'ctaCollection' })}
-                    asChild
-                  >
-                    {cta.internalLink ? (
-                      <Link href={`/${cta.internalLink.slug}`}>{cta.text || cta.internalText}</Link>
-                    ) : cta.externalLink ? (
-                      <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
-                        {cta.text || cta.internalText}
-                      </a>
-                    ) : (
-                      <span>{cta.text || cta.internalText}</span>
-                    )}
-                  </Button>
-                ))}
+                {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                  const isProduct = cta.internalLink?.__typename === 'Product';
+
+                  return (
+                    <Button
+                      key={cta.sys?.id || index}
+                      variant="primary"
+                      {...inspectorProps({ fieldId: 'ctaCollection' })}
+                      asChild
+                    >
+                      {cta.internalLink ? (
+                        <Link
+                          href={
+                            isProduct
+                              ? `/products/${cta.internalLink.slug}`
+                              : `/${cta.internalLink.slug}`
+                          }
+                        >
+                          {cta.text || cta.internalText}
+                        </Link>
+                      ) : cta.externalLink ? (
+                        <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
+                          {cta.text || cta.internalText}
+                        </a>
+                      ) : (
+                        <span>{cta.text || cta.internalText}</span>
+                      )}
+                    </Button>
+                  );
+                })}
               </div>
             )}
           </Box>

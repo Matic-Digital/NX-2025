@@ -21,6 +21,12 @@ export const BUTTON_GRAPHQL_FIELDS = `
       }
       slug
     }
+    ... on Product {
+      sys {
+        id
+      }
+      slug
+    }
   }
   externalLink
   modal {
