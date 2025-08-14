@@ -10,10 +10,28 @@ import { getContentById } from '@/lib/contentful-api/content';
 import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
 import type { PostSliderItem } from '@/types/contentful/Post';
+import type { Product } from '@/types/contentful/Product';
 import { Box, Container } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
 
 interface ContentOverlayProps {
+  children: React.ReactNode;
+}
+
+interface ContentCardProps {
+  image: {
+    link?: string;
+    altText?: string;
+    title?: string;
+  };
+  category?: string;
+  title: string;
+  description?: string;
+  slug: string;
+  inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
+}
+
+interface ContentContainerProps {
   children: React.ReactNode;
 }
 
@@ -71,76 +89,121 @@ export function Content(props: Content) {
     );
   }
 
+  // Shared Components
+  const ContentContainer = ({ children }: ContentContainerProps) => (
+    <Container className="relative mt-10 mb-20 h-[502px]">{children}</Container>
+  );
+
+  const ContentOverlay = ({ children }: ContentOverlayProps) => (
+    <div
+      className="flex h-full w-full max-w-[558px] p-10 backdrop-blur-[14px]"
+      style={{
+        background:
+          'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+      }}
+    >
+      {children}
+    </div>
+  );
+
+  const ContentCard = ({
+    image,
+    category,
+    title,
+    description,
+    slug,
+    inspectorProps
+  }: ContentCardProps) => (
+    <ContentContainer>
+      <AirImage
+        link={image.link}
+        altText={image.altText ?? image.title}
+        className="absolute h-full object-cover"
+      />
+      <ContentOverlay>
+        <Box direction="col" gap={12} className="w-full items-center justify-center text-center">
+          <Box direction="col" gap={5}>
+            <Box direction="col" gap={1.5}>
+              {category && (
+                <p
+                  className="text-body-sm text-text-on-invert uppercase"
+                  {...inspectorProps({ fieldId: 'categories' })}
+                >
+                  {category}
+                </p>
+              )}
+              <h2
+                className="text-headline-lg text-text-on-invert leading-tight"
+                {...inspectorProps({ fieldId: 'title' })}
+              >
+                {title}
+              </h2>
+            </Box>
+            {description && (
+              <p
+                className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                {...inspectorProps({ fieldId: 'excerpt' })}
+              >
+                {description}
+              </p>
+            )}
+          </Box>
+
+          <Button
+            variant="white"
+            {...inspectorProps({ fieldId: 'button' })}
+            className="w-fit"
+            asChild
+          >
+            <Link href={slug}>Explore {title}</Link>
+          </Button>
+        </Box>
+      </ContentOverlay>
+    </ContentContainer>
+  );
+
   if (liveContent && 'item' in liveContent && liveContent.item) {
     const item = liveContent.item;
-
-    const ContentOverlay = ({ children }: ContentOverlayProps) => (
-      <div
-        className="flex h-full w-full max-w-[558px] p-10 backdrop-blur-[14px]"
-        style={{
-          background:
-            'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-        }}
-      >
-        {children}
-      </div>
-    );
 
     // Post Content
     if ('__typename' in item && item.__typename === 'Post') {
       const postItem = item as unknown as PostSliderItem;
 
       return (
-        <Container className="relative my-10 h-[502px] !p-0">
-          <AirImage
-            link={postItem.mainImage?.link}
-            altText={postItem.mainImage?.altText}
-            className="absolute h-full w-full object-cover"
-          />
-          <ContentOverlay>
-            <Box
-              direction="col"
-              gap={12}
-              className="w-full items-center justify-center text-center"
-            >
-              <Box direction="col" gap={5}>
-                <Box direction="col" gap={1.5}>
-                  {postItem.categories && (
-                    <p
-                      className="text-body-sm text-text-on-invert uppercase"
-                      {...inspectorProps({ fieldId: 'categories' })}
-                    >
-                      {postItem.categories}
-                    </p>
-                  )}
-                  <h2
-                    className="text-headline-lg text-text-on-invert leading-tight"
-                    {...inspectorProps({ fieldId: 'title' })}
-                  >
-                    {postItem.title}
-                  </h2>
-                </Box>
-                {postItem.excerpt && (
-                  <p
-                    className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                    {...inspectorProps({ fieldId: 'excerpt' })}
-                  >
-                    {postItem.excerpt}
-                  </p>
-                )}
-              </Box>
+        <ContentCard
+          image={{
+            link: postItem.mainImage?.link,
+            altText: postItem.mainImage?.altText
+          }}
+          category={
+            Array.isArray(postItem.categories)
+              ? postItem.categories.join(', ')
+              : postItem.categories
+          }
+          title={postItem.title}
+          description={postItem.excerpt}
+          slug={postItem.slug}
+          inspectorProps={inspectorProps}
+        />
+      );
+    }
 
-              <Button
-                variant="white"
-                {...inspectorProps({ fieldId: 'button' })}
-                className="w-fit"
-                asChild
-              >
-                <Link href={postItem.slug}>Explore More</Link>
-              </Button>
-            </Box>
-          </ContentOverlay>
-        </Container>
+    // Product Content
+    if ('__typename' in item && item.__typename === 'Product') {
+      const product = item as unknown as Product;
+
+      return (
+        <ContentCard
+          image={{
+            link: product.image?.link,
+            altText: product.image?.title
+          }}
+          category={Array.isArray(product.tags) ? product.tags.join(', ') : product.tags}
+          title={product.title}
+          description={product.description}
+          slug={product.slug}
+          inspectorProps={inspectorProps}
+        />
       );
     }
   }
