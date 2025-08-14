@@ -103,7 +103,7 @@ export function Footer(props: FooterType) {
               <Box
                 direction={{ base: 'col', lg: 'row' }}
                 cols={{ base: 1, sm: 2, lg: 4 }}
-                gap={{ base: 12, lg: 0 }}
+                gap={{ base: 12, lg: 4 }}
                 className="justify-start lg:justify-between"
                 {...inspectorProps({
                   entryId: footer.sys.id,

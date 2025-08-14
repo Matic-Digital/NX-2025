@@ -11,7 +11,7 @@ import { Slider } from '@/components/Slider';
 import { SolutionCard } from '@/components/SolutionCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
 import { ProductCard } from '@/components/global/ProductCard';
-import { MuxVideo } from '@/components/media/MuxVideo';
+import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
 import AirImage from '@/components/media/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
@@ -137,7 +137,9 @@ export function ContentGrid(props: ContentGrid) {
 
                       if (isVideo) {
                         // Type assertion since we've verified it's a proper Video
-                        return <MuxVideo key={item.sys?.id || index} {...(item as VideoType)} />;
+                        return (
+                          <MuxVideoPlayer key={item.sys?.id || index} {...(item as VideoType)} />
+                        );
                       }
 
                       // Type guard: Check if item is a Product with essential Product structure

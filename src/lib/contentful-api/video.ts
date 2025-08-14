@@ -2,13 +2,16 @@ import { fetchGraphQL } from '../api';
 import type { Video } from '@/types/contentful';
 import { SYS_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
+import { IMAGE_SIMPLE_GRAPHQL_FIELDS } from './image';
 
 // Video fields
 export const VIDEO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  playbackId
-  id
   title
+  playbackId
+  posterImage {
+    ${IMAGE_SIMPLE_GRAPHQL_FIELDS}
+  }
 `;
 
 export async function getVideosByIds(videoIds: string[], preview = false): Promise<Video[]> {

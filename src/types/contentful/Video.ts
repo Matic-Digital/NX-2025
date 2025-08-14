@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ImageSchema } from './Image';
 
 // a video from Mux
 
@@ -19,6 +20,7 @@ export const VideoSchema = z.object({
   title: z.string(),
   id: z.string(),
   playbackId: z.string(),
+  posterImage: ImageSchema,
   __typename: z.string().optional()
 });
 
