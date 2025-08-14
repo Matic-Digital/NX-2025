@@ -91,7 +91,7 @@ export function Content(props: Content) {
 
   // Shared Components
   const ContentContainer = ({ children }: ContentContainerProps) => (
-    <Container className="relative mt-10 mb-20 h-[502px] !p-0">{children}</Container>
+    <Container className="relative mt-10 mb-20 h-[502px]">{children}</Container>
   );
 
   const ContentOverlay = ({ children }: ContentOverlayProps) => (
@@ -118,7 +118,7 @@ export function Content(props: Content) {
       <AirImage
         link={image.link}
         altText={image.altText ?? image.title}
-        className="absolute h-full w-full object-cover"
+        className="absolute h-full object-cover"
       />
       <ContentOverlay>
         <Box direction="col" gap={12} className="w-full items-center justify-center text-center">

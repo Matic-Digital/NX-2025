@@ -5,6 +5,7 @@ import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGridItem } from './ContentGridItem';
+import { CtaGrid } from './CtaGrid';
 import { PostCard } from '@/components/global/PostCard';
 import { Slider } from '@/components/Slider';
 import { SolutionCard } from '@/components/SolutionCard';
@@ -17,6 +18,7 @@ import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import type { ContentGrid } from '@/types/contentful/ContentGrid';
 import type {
   ContentGridItem as ContentGridItemType,
+  CtaGrid as CtaGridType,
   VideoSys as VideoType,
   Post as PostType,
   ProductSys as ProductType,
@@ -39,8 +41,29 @@ export function ContentGrid(props: ContentGrid) {
   const allItemsAreSolutions =
     validItems.length > 0 && validItems.every((item) => item.__typename === 'Solution');
 
+  // Type guard: Check if item is a CtaGrid with essential CtaGrid structure
+  const isCtaGrid = validItems.some((item) => item.__typename === 'CtaGrid');
+
+  // Check if any valid item has an image
+  const isFullWidthGrid = contentGrid.itemsCollection?.items?.some(
+    (item) => 'image' in item && item.image
+  );
+
+  // Check if all valid items are Posts
+  const allItemsArePosts =
+    validItems.length > 0 && validItems.every((item) => item.__typename === 'Post');
+
+  // Type guard: Check if item is a Video with essential Video structure
+  const isVideo = validItems.some((item) => item.__typename === 'Video');
+
+  // Type guard: Check if item is a Slider with essential Slider structure
+  const isSlider = validItems.some((item) => item.__typename === 'Slider');
+
+  // Check if there are any service cards to wrap with provider
+  const hasServiceCards = validItems.some((item) => item.__typename === 'Service');
+
   const direction = allItemsAreSolutions ? { base: 'col' as const, xl: 'row' as const } : 'col';
-  const gap = allItemsAreSolutions ? { base: 12, xl: 2 } : 12;
+  const gap = allItemsAreSolutions ? { base: 12, xl: 2 } : isCtaGrid ? 12 : 12;
 
   return (
     <ErrorBoundary>
@@ -60,40 +83,23 @@ export function ContentGrid(props: ContentGrid) {
 
               {/* items */}
               {(() => {
-                // Check if any valid item has an image
-                const isFullWidthGrid = contentGrid.itemsCollection?.items?.some(
-                  (item) => 'image' in item && item.image
-                );
-
-                // Check if all valid items are Posts
-                const allItemsArePosts =
-                  validItems.length > 0 && validItems.every((item) => item.__typename === 'Post');
-
-                // Type guard: Check if item is a Video with essential Video structure
-                const isVideo = validItems.some((item) => item.__typename === 'Video');
-
-                // Type guard: Check if item is a Slider with essential Slider structure
-                const isSlider = validItems.some((item) => item.__typename === 'Slider');
-
-                // Check if there are any service cards to wrap with provider
-                const hasServiceCards = validItems.some((item) => item.__typename === 'Service');
-
                 const cols = {
                   base: 1,
-                  md: allItemsAreSolutions ? 1 : 2,
+                  md: allItemsAreSolutions ? 1 : isCtaGrid ? 1 : 2,
                   lg: isVideo
                     ? 1
                     : isSlider
                       ? 1
-                      : allItemsArePosts
-                        ? 4
-                        : isFullWidthGrid
-                          ? 1
-                          : allItemsAreSolutions
-                            ? 3
-                            : 3
+                      : isCtaGrid
+                        ? 1
+                        : allItemsArePosts
+                          ? 4
+                          : isFullWidthGrid
+                            ? 1
+                            : allItemsAreSolutions
+                              ? 3
+                              : 3
                 };
-
                 const gap = allItemsArePosts ? 5 : allItemsAreSolutions ? { base: 5, xl: 4 } : 12;
 
                 const gridContent = (
@@ -187,6 +193,13 @@ export function ContentGrid(props: ContentGrid) {
                       if (isSlider) {
                         // Type assertion since we've verified it's a proper Slider
                         return <Slider key={item.sys?.id || index} {...(item as SliderType)} />;
+                      }
+
+                      const isCtaGrid = item.__typename === 'CtaGrid';
+
+                      if (isCtaGrid) {
+                        // Type assertion since we've verified it's a proper CtaGrid
+                        return <CtaGrid key={item.sys?.id || index} {...(item as CtaGridType)} />;
                       }
 
                       // Fallback: skip unrecognized items

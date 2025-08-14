@@ -1,35 +1,26 @@
 import { z } from 'zod';
-import { AssetSchema } from './Asset';
 import { ImageSchema } from './Image';
 import { PostSchema } from './Post';
 import { SectionHeadingSchema } from './SectionHeading';
 import { ServiceSchema } from './Service';
-
-// Define the ContentGridItem schema
-export const ContentGridItemSchema = z.object({
-  sys: z.object({
-    id: z.string()
-  }),
-  title: z.string(),
-  heading: z.string(),
-  description: z.string(),
-  link: z
-    .object({
-      sys: z.object({
-        id: z.string()
-      }),
-      slug: z.string()
-    })
-    .optional(),
-  icon: AssetSchema.optional(),
-  image: ImageSchema.optional(),
-  __typename: z.string().optional()
-});
-
-export type ContentGridItem = z.infer<typeof ContentGridItemSchema>;
+import { ContentGridItemSchema } from './ContentGridItem';
+import { CtaGridSchema } from './CtaGrid';
+import { VideoSchema } from './Video';
+import { SliderSchema } from './Slider';
+import { SolutionSchema } from './Solution';
+import { ProductSchema } from './Product';
 
 // Union type for items
-const ContentGridItemUnion = z.union([ContentGridItemSchema, PostSchema, ServiceSchema]);
+const ContentGridItemUnion = z.union([
+  ContentGridItemSchema,
+  PostSchema,
+  ServiceSchema,
+  CtaGridSchema,
+  VideoSchema,
+  SliderSchema,
+  SolutionSchema,
+  ProductSchema
+]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 
 export const ContentGridSchema = z.object({

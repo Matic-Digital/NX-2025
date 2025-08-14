@@ -9,7 +9,7 @@ import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
+import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
 
 export function ContentGridItem(props: ContentGridItemType) {
   const { sys, heading, description, link, icon, image } = props;

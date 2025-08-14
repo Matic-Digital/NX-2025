@@ -65,7 +65,7 @@ export const AirImage: React.FC<AirImageProps> = (props) => {
   }
 
   // Use higher default resolutions for better quality
-  const defaultWidth = width ?? 1200;
+  const defaultWidth = width ?? 1208;
   const defaultHeight = height ?? 800;
 
   // Optimize the Contentful image URL
