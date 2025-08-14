@@ -54,6 +54,47 @@ export async function getSolutionById(id: string, preview = false): Promise<Solu
   }
 }
 
+export async function getSolutionBySlug(slug: string, preview = false): Promise<Solution | null> {
+  try {
+    const response = await fetchGraphQL<Solution>(
+      `query GetSolutionBySlug($slug: String!, $preview: Boolean!) {
+        solutionCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+          items {
+            ${SOLUTION_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { slug, preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { solutionCollection?: { items?: Solution[] } };
+
+    if (!data.solutionCollection?.items?.length) {
+      return null;
+    }
+
+    const solution = data.solutionCollection.items[0];
+    if (!solution) {
+      return null;
+    }
+
+    return solution;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Solution by slug: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Solution by slug');
+  }
+}
+
 export async function getSolutionsByIds(
   solutionsIds: string[],
   preview = false

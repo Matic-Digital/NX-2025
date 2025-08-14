@@ -11,7 +11,7 @@ import type { CtaGrid } from '@/types/contentful/CtaGrid';
 import { ErrorBoundary } from './global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
-import { Box, Container, Section } from '@/components/global/matic-ds';
+import { Box, Container } from '@/components/global/matic-ds';
 
 export function CtaGrid(props: CtaGrid) {
   const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);

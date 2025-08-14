@@ -268,10 +268,10 @@ function renderPage(page: Page) {
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
-            const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return <ComponentType key={component.sys.id} {...(component as any)} />;
-          }
+          const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return <ComponentType key={component.sys.id} {...(component as any)} />;
+        }
 
         // Log a warning if we don't have a component for this type
         console.warn(`No component found for type: ${typeName}`);

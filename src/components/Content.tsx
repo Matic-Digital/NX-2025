@@ -195,8 +195,8 @@ export function Content(props: Content) {
       return (
         <ContentCard
           image={{
-            link: product.image?.link,
-            altText: product.image?.title
+            link: product.image?.link ?? '',
+            altText: product.image?.title ?? ''
           }}
           category={Array.isArray(product.tags) ? product.tags.join(', ') : product.tags}
           title={product.title}

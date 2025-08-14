@@ -172,16 +172,32 @@ export function Header(props: HeaderProps) {
                                 {pageList.pagesCollection?.items &&
                                 pageList.pagesCollection.items.length > 0 ? (
                                   <ul className="m-0 w-full list-none p-0">
-                                    {pageList.pagesCollection.items.map((page) => (
-                                      <li key={page.sys.id} className="m-0 w-full p-0">
-                                        <Link
-                                          href={'link' in page ? page.link : `/${page.slug}`}
-                                          className={`block w-full px-4 py-2 text-sm font-medium no-underline outline-hidden transition-colors select-none ${isActive(`/${pageList.slug}/${'link' in page ? page.link : page.slug}`) ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground'} focus:bg-accent focus:text-accent-foreground rounded-sm`}
-                                        >
-                                          {page.title}
-                                        </Link>
-                                      </li>
-                                    ))}
+                                    {pageList.pagesCollection.items
+                                      .filter((item) => item?.sys?.id)
+                                      .map((item) => {
+                                        // Handle different content types in PageList
+                                        const getItemHref = () => {
+                                          if ('link' in item) {
+                                            // ExternalPage
+                                            return item.link;
+                                          }
+                                          // All other types (Page, Product, Service, Solution, Post)
+                                          return `/${pageList.slug}/${item.slug}`;
+                                        };
+
+                                        const itemHref = getItemHref();
+
+                                        return (
+                                          <li key={item.sys.id} className="m-0 w-full p-0">
+                                            <Link
+                                              href={itemHref}
+                                              className={`block w-full px-4 py-2 text-sm font-medium no-underline outline-hidden transition-colors select-none ${isActive(itemHref) ? 'bg-accent text-accent-foreground' : 'hover:bg-accent hover:text-accent-foreground'} focus:bg-accent focus:text-accent-foreground rounded-sm`}
+                                            >
+                                              {item.title}
+                                            </Link>
+                                          </li>
+                                        );
+                                      })}
                                   </ul>
                                 ) : (
                                   <p className="text-muted-foreground p-3 text-sm">
@@ -269,28 +285,38 @@ export function Header(props: HeaderProps) {
                                   <NavigationMenuTrigger />
                                 </summary>
                                 <ul className="mt-2 space-y-2 pl-4">
-                                  {pageList.pagesCollection?.items.map((page) => (
-                                    <li key={page.sys.id}>
-                                      <SheetClose asChild>
-                                        <Link
-                                          href={
-                                            'link' in page
-                                              ? page.link
-                                              : `/${pageList.slug}/${page.slug}`
-                                          }
-                                          className={`block py-1 text-sm ${
-                                            isActive(
-                                              `/${pageList.slug}/${'link' in page ? page.link : page.slug}`
-                                            )
-                                              ? 'text-primary font-medium'
-                                              : 'text-muted-foreground'
-                                          }`}
-                                        >
-                                          {page.title}
-                                        </Link>
-                                      </SheetClose>
-                                    </li>
-                                  ))}
+                                  {pageList.pagesCollection?.items
+                                    .filter((item) => item?.sys?.id)
+                                    .map((item) => {
+                                      // Handle different content types in PageList
+                                      const getItemHref = () => {
+                                        if ('link' in item) {
+                                          // ExternalPage
+                                          return item.link;
+                                        }
+                                        // All other types (Page, Product, Service, Solution, Post)
+                                        return `/${pageList.slug}/${item.slug}`;
+                                      };
+
+                                      const itemHref = getItemHref();
+
+                                      return (
+                                        <li key={item.sys.id}>
+                                          <SheetClose asChild>
+                                            <Link
+                                              href={itemHref}
+                                              className={`block py-1 text-sm ${
+                                                isActive(itemHref)
+                                                  ? 'text-primary font-medium'
+                                                  : 'text-muted-foreground'
+                                              }`}
+                                            >
+                                              {item.title}
+                                            </Link>
+                                          </SheetClose>
+                                        </li>
+                                      );
+                                    })}
                                 </ul>
                               </details>
                             </li>
