@@ -19,7 +19,7 @@ const POST_GRAPHQL_FIELDS_SIMPLE = `
   categories
 `;
 
-// ContentGridItem fields - handle broken references gracefully
+// ContentGridItem fields - minimal for initial load (no link field)
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
@@ -71,6 +71,59 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
     }
   }
 `;
+
+/**
+ * Fetches link details for a ContentGridItem by its sys.id
+ * @param entryId - The sys.id of the ContentGridItem
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to link details (slug and __typename)
+ */
+export async function getContentGridItemLink(
+  entryId: string,
+  preview = false
+): Promise<{ link: { slug: string; __typename: string } } | null> {
+  try {
+    const response = await fetchGraphQL(
+      `query GetContentGridItemLink($id: String!, $preview: Boolean!) {
+        contentGridItem(id: $id, preview: $preview) {
+          link {
+            __typename
+            ... on Page {
+              slug
+            }
+            ... on PageList {
+              slug
+            }
+            ... on Product {
+              slug
+            }
+          }
+        }
+      }`,
+      { id: entryId, preview },
+      preview
+    );
+
+    const data = response?.data as {
+      contentGridItem?: { link?: { slug?: string; __typename?: string } };
+    };
+    const linkData = data?.contentGridItem?.link;
+
+    if (linkData?.slug) {
+      return {
+        link: {
+          slug: linkData.slug,
+          __typename: linkData.__typename ?? 'Unknown'
+        }
+      };
+    }
+
+    return null;
+  } catch {
+    // Silently handle GraphQL errors to prevent console spam
+    return null;
+  }
+}
 
 /**
  * Fetches all ContentGrids from Contentful

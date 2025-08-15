@@ -25,7 +25,6 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 
-
 // Import content components for dynamic rendering
 import { BannerHero } from '../BannerHero';
 import { Content } from '../Content';
@@ -87,12 +86,10 @@ function renderContentItem(content: any, index: number) {
                 <p className="text-sm text-red-800">
                   <strong>BannerHero Error:</strong> Missing background image data
                 </p>
-                <p className="text-xs text-red-600 mt-1">
-                  Content ID: {content.sys?.id}
-                </p>
+                <p className="mt-1 text-xs text-red-600">Content ID: {content.sys?.id}</p>
                 <details className="mt-2">
-                  <summary className="text-xs cursor-pointer">Debug Info</summary>
-                  <pre className="text-xs mt-1 overflow-auto">
+                  <summary className="cursor-pointer text-xs">Debug Info</summary>
+                  <pre className="mt-1 overflow-auto text-xs">
                     {JSON.stringify(content, null, 2)}
                   </pre>
                 </details>
@@ -118,9 +115,7 @@ function renderContentItem(content: any, index: number) {
                 <p className="text-sm text-red-800">
                   <strong>CtaBanner Error:</strong> Missing background media
                 </p>
-                <p className="text-xs text-red-600 mt-1">
-                  Content ID: {content.sys?.id}
-                </p>
+                <p className="mt-1 text-xs text-red-600">Content ID: {content.sys?.id}</p>
               </div>
             </div>
           );
@@ -143,12 +138,12 @@ function renderContentItem(content: any, index: number) {
                 <p className="text-sm text-red-800">
                   <strong>Slider Error:</strong> Missing required data
                 </p>
-                <p className="text-xs text-red-600 mt-1">
+                <p className="mt-1 text-xs text-red-600">
                   The Slider component needs to be added back to the GraphQL query
                 </p>
                 <details className="mt-2">
-                  <summary className="text-xs cursor-pointer">Debug Info</summary>
-                  <pre className="text-xs mt-1 overflow-auto">
+                  <summary className="cursor-pointer text-xs">Debug Info</summary>
+                  <pre className="mt-1 overflow-auto text-xs">
                     {JSON.stringify(content, null, 2)}
                   </pre>
                 </details>
@@ -165,19 +160,11 @@ function renderContentItem(content: any, index: number) {
               <p className="text-sm text-yellow-800">
                 <strong>Unknown content type:</strong> {content.__typename}
               </p>
-              <p className="text-xs text-yellow-600 mt-1">
-                Content ID: {content.sys?.id}
-              </p>
-              {content.title && (
-                <p className="text-xs text-yellow-600">
-                  Title: {content.title}
-                </p>
-              )}
+              <p className="mt-1 text-xs text-yellow-600">Content ID: {content.sys?.id}</p>
+              {content.title && <p className="text-xs text-yellow-600">Title: {content.title}</p>}
               <details className="mt-2">
-                <summary className="text-xs cursor-pointer">Debug Info</summary>
-                <pre className="text-xs mt-1 overflow-auto">
-                  {JSON.stringify(content, null, 2)}
-                </pre>
+                <summary className="cursor-pointer text-xs">Debug Info</summary>
+                <pre className="mt-1 overflow-auto text-xs">{JSON.stringify(content, null, 2)}</pre>
               </details>
             </div>
           </div>
@@ -191,12 +178,10 @@ function renderContentItem(content: any, index: number) {
           <p className="text-sm text-red-800">
             <strong>Render Error:</strong> {content.__typename}
           </p>
-          <p className="text-xs text-red-600 mt-1">
+          <p className="mt-1 text-xs text-red-600">
             {error instanceof Error ? error.message : 'Unknown error'}
           </p>
-          <p className="text-xs text-red-600">
-            Content ID: {content.sys?.id}
-          </p>
+          <p className="text-xs text-red-600">Content ID: {content.sys?.id}</p>
         </div>
       </div>
     );
@@ -223,13 +208,14 @@ export function PageList(props: PageListProps) {
     <div className="page-component">
       {/* Render Page Content */}
       <div {...inspectorProps({ fieldId: 'pageContentCollection' })}>
-        {pageList.pageContentCollection?.items && pageList.pageContentCollection.items.length > 0 && (
-          <div className="page-content">
-            {pageList.pageContentCollection.items.map((content, index) => 
-              renderContentItem(content, index)
-            )}
-          </div>
-        )}
+        {pageList.pageContentCollection?.items &&
+          pageList.pageContentCollection.items.length > 0 && (
+            <div className="page-content">
+              {pageList.pageContentCollection.items.map((content, index) =>
+                renderContentItem(content, index)
+              )}
+            </div>
+          )}
       </div>
     </div>
   );

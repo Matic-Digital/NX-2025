@@ -10,10 +10,13 @@ import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
+import { getContentGridItemLink } from '@/lib/contentful-api/content-grid';
+import { useState, useEffect } from 'react';
 
 export function ContentGridItem(props: ContentGridItemType) {
-  const { sys, heading, description, link, icon, image } = props;
+  const { sys, heading, description, icon, image } = props;
   const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
+  const [linkHref, setLinkHref] = useState<string>('#');
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -57,9 +60,34 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
+  // Fetch link details on component mount
+  useEffect(() => {
+    const fetchLinkDetails = async () => {
+      if (!sys?.id) {
+        return;
+      }
+
+      try {
+        const linkData = await getContentGridItemLink(sys.id);
+        if (linkData?.link?.slug) {
+          setLinkHref(`/${linkData.link.slug}`);
+        }
+      } catch {
+        // Silently handle the error - links will remain as '#' if they fail to resolve
+        // This prevents console spam while maintaining functionality
+      }
+    };
+
+    void fetchLinkDetails();
+  }, [sys?.id]);
+
+  const getHref = () => {
+    return linkHref;
+  };
+
   const LinkItem = () => {
     return (
-      <Link href={`/${link?.slug}`} className="group block h-full w-full">
+      <Link href={getHref()} className="group block h-full w-full">
         <Box
           direction="col"
           className="border-border bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col border p-6 transition-all"
@@ -132,7 +160,7 @@ export function ContentGridItem(props: ContentGridItemType) {
             </div>
 
             <div className="mt-auto">
-              <Link href={`/${link?.slug}`} className="inline-block w-auto">
+              <Link href={getHref()} className="inline-block w-auto">
                 <Button
                   variant="outlineWhite"
                   className="transition-all hover:bg-white hover:text-black"

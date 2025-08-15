@@ -225,24 +225,20 @@ export function Content(props: Content) {
             <Box direction="col" gap={8}>
               {/* PageList title and description */}
               <Box direction="col" gap={4} className="text-center">
-                <h2 
-                  className="text-headline-lg" 
-                  {...inspectorProps({ fieldId: 'title' })}
-                >
+                <h2 className="text-headline-lg" {...inspectorProps({ fieldId: 'title' })}>
                   {pageList.title}
                 </h2>
-
               </Box>
 
               {/* Product grid */}
-              <Box 
-                direction="row" 
-                gap={6} 
+              <Box
+                direction="row"
+                gap={6}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
               >
                 {pageList.pagesCollection.items.map((productItem, index) => (
-                  <ProductCard 
-                    key={productItem.sys?.id || index} 
+                  <ProductCard
+                    key={productItem.sys?.id || index}
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     {...(productItem as unknown as any)}
                   />

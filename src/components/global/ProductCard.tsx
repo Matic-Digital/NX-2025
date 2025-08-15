@@ -40,7 +40,7 @@ export const ProductCard = (props: ProductSys) => {
       try {
         // Find the parent PageList for this Product
         const parentPageList = await checkPageBelongsToPageList(productData.sys.id, false);
-        
+
         if (parentPageList) {
           // Use the PageList slug + Product slug format
           setProductUrl(`/${parentPageList.slug}/${productData.slug}`);

@@ -53,7 +53,7 @@ export function CtaGrid(props: CtaGrid) {
           try {
             // Find the parent PageList for this Product
             const parentPageList = await checkPageBelongsToPageList(cta.internalLink.sys.id, false);
-            
+
             if (parentPageList) {
               // Use the PageList slug + Product slug format
               urlMap[cta.internalLink.sys.id] = `/${parentPageList.slug}/${cta.internalLink.slug}`;
@@ -63,7 +63,10 @@ export function CtaGrid(props: CtaGrid) {
               urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
             }
           } catch (error) {
-            console.error(`Error finding parent PageList for Product ${cta.internalLink.slug}:`, error);
+            console.error(
+              `Error finding parent PageList for Product ${cta.internalLink.slug}:`,
+              error
+            );
             // Fallback to the old format on error
             urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
           }
@@ -143,7 +146,8 @@ export function CtaGrid(props: CtaGrid) {
                         <Link
                           href={
                             isProduct
-                              ? productUrls[cta.internalLink.sys.id] ?? `/products/${cta.internalLink.slug}`
+                              ? (productUrls[cta.internalLink.sys.id] ??
+                                `/products/${cta.internalLink.slug}`)
                               : `/${cta.internalLink.slug}`
                           }
                         >

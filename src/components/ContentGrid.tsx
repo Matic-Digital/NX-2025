@@ -208,7 +208,7 @@ export function ContentGrid(props: ContentGrid) {
 
                       if (isPageList) {
                         const pageList = item as PageListType;
-                        
+
                         // Check if the PageList contains only Products
                         const allItemsAreProducts = pageList.pagesCollection?.items?.every(
                           (pageItem) => pageItem.__typename === 'Product'
@@ -217,21 +217,26 @@ export function ContentGrid(props: ContentGrid) {
                         if (allItemsAreProducts && pageList.pagesCollection?.items?.length) {
                           // Render as a grid of ProductCards
                           return (
-                            <Box key={item.sys?.id || index} direction="col" gap={8} className="w-full">
+                            <Box
+                              key={item.sys?.id || index}
+                              direction="col"
+                              gap={8}
+                              className="w-full"
+                            >
                               {/* PageList title */}
                               <Box direction="col" gap={4} className="text-center">
                                 <h3 className="text-headline-md">{pageList.title}</h3>
                               </Box>
 
                               {/* Product grid */}
-                              <Box 
-                                direction="row" 
-                                gap={6} 
+                              <Box
+                                direction="row"
+                                gap={6}
                                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                               >
                                 {pageList.pagesCollection.items.map((productItem, productIndex) => (
-                                  <ProductCard 
-                                    key={productItem.sys?.id || productIndex} 
+                                  <ProductCard
+                                    key={productItem.sys?.id || productIndex}
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     {...(productItem as unknown as any)}
                                   />
@@ -242,10 +247,16 @@ export function ContentGrid(props: ContentGrid) {
                         } else {
                           // Fallback: render PageList title only if not all Products
                           return (
-                            <Box key={item.sys?.id || index} direction="col" gap={4} className="text-center">
+                            <Box
+                              key={item.sys?.id || index}
+                              direction="col"
+                              gap={4}
+                              className="text-center"
+                            >
                               <h3 className="text-headline-md">{pageList.title}</h3>
                               <p className="text-body-sm text-gray-600">
-                                Mixed content PageList ({pageList.pagesCollection?.items?.length ?? 0} items)
+                                Mixed content PageList (
+                                {pageList.pagesCollection?.items?.length ?? 0} items)
                               </p>
                             </Box>
                           );
