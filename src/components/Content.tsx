@@ -11,6 +11,8 @@ import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
 import type { PostSliderItem } from '@/types/contentful/Post';
 import type { Product } from '@/types/contentful/Product';
+import type { PageList } from '@/types/contentful/PageList';
+import { ProductCard } from '@/components/global/ProductCard';
 import { Box, Container } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
 
@@ -205,6 +207,66 @@ export function Content(props: Content) {
           inspectorProps={inspectorProps}
         />
       );
+    }
+
+    // PageList Content
+    if ('__typename' in item && item.__typename === 'PageList') {
+      const pageList = item as unknown as PageList;
+
+      // Check if the PageList contains only Products
+      const allItemsAreProducts = pageList.pagesCollection?.items?.every(
+        (pageItem) => pageItem.__typename === 'Product'
+      );
+
+      if (allItemsAreProducts && pageList.pagesCollection?.items?.length) {
+        // Render as a grid of ProductCards
+        return (
+          <Container className="py-16">
+            <Box direction="col" gap={8}>
+              {/* PageList title and description */}
+              <Box direction="col" gap={4} className="text-center">
+                <h2 
+                  className="text-headline-lg" 
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {pageList.title}
+                </h2>
+
+              </Box>
+
+              {/* Product grid */}
+              <Box 
+                direction="row" 
+                gap={6} 
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              >
+                {pageList.pagesCollection.items.map((productItem, index) => (
+                  <ProductCard 
+                    key={productItem.sys?.id || index} 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {...(productItem as unknown as any)}
+                  />
+                ))}
+              </Box>
+            </Box>
+          </Container>
+        );
+      } else {
+        // Fallback: render as a regular ContentCard if not all Products
+        return (
+          <ContentCard
+            image={{
+              link: '',
+              altText: pageList.title ?? 'PageList'
+            }}
+            category="Page List"
+            title={pageList.title ?? 'Untitled PageList'}
+            description=""
+            slug={pageList.slug ?? '#'}
+            inspectorProps={inspectorProps}
+          />
+        );
+      }
     }
   }
 

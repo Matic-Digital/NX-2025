@@ -31,13 +31,26 @@ import type { Solution } from '@/types/contentful/Solution';
 import type { Post } from '@/types/contentful/Post';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner';
+import { Content } from '@/components/Content';
+import { ContentGrid } from '@/components/ContentGrid';
+import { ImageBetween } from '@/components/ImageBetween';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Metadata } from 'next';
+import {
+  extractOpenGraphImage,
+  extractSEOTitle,
+  extractSEODescription
+} from '@/lib/metadata-utils';
 
-// Define the component mapping for pageContent items
+// Define the component mapping for content items (same as standalone Product page)
 const componentMap = {
-  BannerHero: BannerHero
-  // Add other component types here as they are created
+  BannerHero,
+  Content,
+  ContentGrid,
+  CtaBanner,
+  ImageBetween
 };
 
 // Define props for the nested page component
@@ -56,6 +69,97 @@ export async function generateStaticParams() {
 // Define appropriate caching behavior for nested dynamic routes
 export const dynamic = 'force-static'; // Prefer static rendering where possible
 export const revalidate = 3600; // Revalidate every hour
+
+// Generate dynamic metadata based on the content item
+export async function generateMetadata({ params }: NestedPageProps): Promise<Metadata> {
+  const { slug: pageListSlug, pageSlug } = await params;
+
+  // Try to fetch the content item as different content types
+  let contentItem: Page | Product | Service | Solution | Post | null = null;
+  let pageList: PageList | null = null;
+
+  try {
+    // First, fetch the PageList
+    pageList = await getPageListBySlug(pageListSlug, false);
+
+    if (!pageList?.pagesCollection?.items.length) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+
+    // Try to fetch the content item as different content types
+    contentItem ??= await getPageBySlug(pageSlug, false);
+    contentItem ??= await getProductBySlug(pageSlug, false);
+    contentItem ??= await getServiceBySlug(pageSlug, false);
+    contentItem ??= await getSolutionBySlug(pageSlug, false);
+    contentItem ??= await getPostBySlug(pageSlug, false);
+
+    if (!contentItem) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+
+    // Check if the content item is in the PageList
+    const itemInList = pageList.pagesCollection.items.some(
+      (item) => item.sys.id === contentItem!.sys.id
+    );
+
+    if (!itemInList) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+  } catch (error) {
+    console.error(`Error generating metadata for: ${pageSlug} in PageList: ${pageListSlug}`, error);
+    return {
+      title: 'Content Not Found',
+      description: 'The requested content could not be found.'
+    };
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  // Extract SEO data from content item using utility functions
+  const title = extractSEOTitle(contentItem, 'Nextracker');
+  const description = extractSEODescription(contentItem, 'Nextracker Content');
+
+  // Handle OG image from content item
+  const openGraphImage = extractOpenGraphImage(contentItem, baseUrl, title);
+
+  const ogImages = openGraphImage
+    ? [
+        {
+          url: openGraphImage.url,
+          width: openGraphImage.width,
+          height: openGraphImage.height,
+          alt: openGraphImage.title ?? title
+        }
+      ]
+    : [];
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImages,
+      type: 'website'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImages.length > 0 ? [ogImages[0]!.url] : []
+    }
+  };
+}
 
 // Helper function to render content based on content type
 function renderContentByType(
@@ -89,7 +193,57 @@ function renderContentByType(
     });
   }
 
-  // For other content types (Product, Service, Solution, Post), render basic content display
+  // For Product content type, render without the constraining container to allow full-width components
+  if (contentType === 'Product') {
+    const product = contentItem as Product;
+    return (
+      <>
+        <h1 className="sr-only">{product.title}</h1>
+        {/* Render the product content components - itemsCollection maps to pageContentCollection */}
+        {product.itemsCollection?.items.map((component, index) => {
+          if (!component) return null;
+
+          // Type guard to check if component has __typename
+          if (!('__typename' in component)) {
+            console.warn('Component missing __typename:', component);
+            return null;
+          }
+
+          const typeName = component.__typename!;
+
+          // Check if we have a component for this type
+          if (typeName && typeName in componentMap) {
+            const ComponentType = componentMap[typeName as keyof typeof componentMap];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (
+              <ComponentType
+                key={component.sys?.id || `component-${index}`}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(component as any)}
+              />
+            );
+          }
+
+          // Fallback: render placeholder if component type not found
+          return (
+            <div
+              key={component.sys?.id || `component-${index}`}
+              className="mb-4 rounded-lg border border-gray-200 p-4"
+            >
+              <h3 className="text-lg font-semibold text-gray-700">{typeName} Component</h3>
+              <p className="text-sm text-gray-500">ID: {component.sys?.id || 'Unknown'}</p>
+              <p className="mt-2 text-xs text-gray-400">
+                Component type not found in componentMap. Available types:{' '}
+                {Object.keys(componentMap).join(', ')}
+              </p>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  // For other content types (Service, Solution, Post), render basic content display
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="prose prose-lg mx-auto">
@@ -99,7 +253,7 @@ function renderContentByType(
         {contentType === 'Product' && (
           <div>
             {/* Render Product's itemsCollection like Page's pageContentCollection */}
-            {(contentItem as Product).itemsCollection?.items.map((component) => {
+            {(contentItem as Product).itemsCollection?.items.map((component, index) => {
               if (!component) return null;
 
               // Type guard to check if component has __typename
@@ -114,12 +268,29 @@ function renderContentByType(
               if (typeName && typeName in componentMap) {
                 const ComponentType = componentMap[typeName as keyof typeof componentMap];
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return <ComponentType key={component.sys.id} {...(component as any)} />;
+                return (
+                  <ComponentType
+                    key={component.sys?.id || `component-${index}`}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {...(component as any)}
+                  />
+                );
               }
 
-              // Log a warning if we don't have a component for this type
-              console.warn(`No component found for type: ${typeName}`);
-              return null;
+              // Fallback: render placeholder if component type not found
+              return (
+                <div
+                  key={component.sys?.id || `component-${index}`}
+                  className="mb-4 rounded-lg border border-gray-200 p-4"
+                >
+                  <h3 className="text-lg font-semibold text-gray-700">{typeName} Component</h3>
+                  <p className="text-sm text-gray-500">ID: {component.sys?.id || 'Unknown'}</p>
+                  <p className="mt-2 text-xs text-gray-400">
+                    Component type not found in componentMap. Available types:{' '}
+                    {Object.keys(componentMap).join(', ')}
+                  </p>
+                </div>
+              );
             })}
           </div>
         )}

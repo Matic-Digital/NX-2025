@@ -1,18 +1,23 @@
 import { fetchGraphQL } from '../api';
-
 import type { PageList, PageListResponse, PageListWithRefs } from '@/types/contentful/PageList';
 import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
+import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
+import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
+import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { SYS_FIELDS } from './graphql-fields';
+
+import { getHeaderById } from './header';
+import { getFooterById } from './footer';
+
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
   header: Header | null;
   footer: Footer | null;
 }
-
-import { getHeaderById } from './header';
-import { getFooterById } from './footer';
 import {
   getEXTERNAL_PAGE_FIELDS,
   getPAGE_BASIC_FIELDS,
@@ -316,33 +321,22 @@ export async function getPageListBySlug(
       `query GetPageListContent($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
-            pageContentCollection {
+            pageContentCollection(limit: 10) {
               items {
-                __typename
                 ... on BannerHero {
-                  sys {
-                    id
-                  }
+                  ${BANNERHERO_GRAPHQL_FIELDS}
                 }
                 ... on Content {
-                  sys {
-                    id
-                  }
+                  ${SYS_FIELDS}
                 }
                 ... on ContentGrid {
-                  sys {
-                    id
-                  }
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
                 }
                 ... on CtaBanner {
-                  sys {
-                    id
-                  }
+                  ${CTABANNER_GRAPHQL_FIELDS}
                 }
                 ... on ImageBetween {
-                  sys {
-                    id
-                  }
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
                 }
               }
             }

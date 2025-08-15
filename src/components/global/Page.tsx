@@ -30,6 +30,9 @@ import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Image as ImageType } from '@/types/contentful/Image';
 
+// Import content components for dynamic rendering
+// Components are imported dynamically in the renderContentItem function
+
 interface PageProps {
   sys: {
     id: string;

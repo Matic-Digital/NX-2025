@@ -307,10 +307,8 @@ function renderPageList(pageList: PageListType) {
         return null;
       })}
 
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Render the PageList component */}
-        <PageList {...pageList} />
-      </div>
+      {/* Render the PageList component */}
+      <PageList {...pageList} />
     </PageLayout>
   );
 }

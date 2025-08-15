@@ -23,7 +23,8 @@ import type {
   Post as PostType,
   ProductSys as ProductType,
   SliderSys as SliderType,
-  SolutionSys as SolutionType
+  SolutionSys as SolutionType,
+  PageList as PageListType
 } from '@/types/contentful/';
 
 export function ContentGrid(props: ContentGrid) {
@@ -201,6 +202,54 @@ export function ContentGrid(props: ContentGrid) {
                       if (isCtaGrid) {
                         // Type assertion since we've verified it's a proper CtaGrid
                         return <CtaGrid key={item.sys?.id || index} {...(item as CtaGridType)} />;
+                      }
+
+                      const isPageList = item.__typename === 'PageList';
+
+                      if (isPageList) {
+                        const pageList = item as PageListType;
+                        
+                        // Check if the PageList contains only Products
+                        const allItemsAreProducts = pageList.pagesCollection?.items?.every(
+                          (pageItem) => pageItem.__typename === 'Product'
+                        );
+
+                        if (allItemsAreProducts && pageList.pagesCollection?.items?.length) {
+                          // Render as a grid of ProductCards
+                          return (
+                            <Box key={item.sys?.id || index} direction="col" gap={8} className="w-full">
+                              {/* PageList title */}
+                              <Box direction="col" gap={4} className="text-center">
+                                <h3 className="text-headline-md">{pageList.title}</h3>
+                              </Box>
+
+                              {/* Product grid */}
+                              <Box 
+                                direction="row" 
+                                gap={6} 
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                              >
+                                {pageList.pagesCollection.items.map((productItem, productIndex) => (
+                                  <ProductCard 
+                                    key={productItem.sys?.id || productIndex} 
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    {...(productItem as unknown as any)}
+                                  />
+                                ))}
+                              </Box>
+                            </Box>
+                          );
+                        } else {
+                          // Fallback: render PageList title only if not all Products
+                          return (
+                            <Box key={item.sys?.id || index} direction="col" gap={4} className="text-center">
+                              <h3 className="text-headline-md">{pageList.title}</h3>
+                              <p className="text-body-sm text-gray-600">
+                                Mixed content PageList ({pageList.pagesCollection?.items?.length ?? 0} items)
+                              </p>
+                            </Box>
+                          );
+                        }
                       }
 
                       // Fallback: skip unrecognized items
