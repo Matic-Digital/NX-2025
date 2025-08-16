@@ -1,17 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-
-interface AirImageProps {
-  sys?: { id: string };
-  title?: string;
-  link?: string;
-  altText?: string;
-  __typename?: string;
-  className?: string;
-  width?: number;
-  height?: number;
-  priority?: boolean;
-}
+import type { AirImage as AirImageType } from '@/types/contentful/Image';
 
 /**
  * Optimizes Contentful image URLs for better quality and performance
@@ -46,7 +35,7 @@ const optimizeContentfulImage = (
  * Uses the link field as the src and altText for accessibility
  * Automatically optimizes Contentful images for better quality
  */
-export const AirImage: React.FC<AirImageProps> = (props) => {
+export const AirImage: React.FC<AirImageType> = (props) => {
   const {
     link,
     altText,

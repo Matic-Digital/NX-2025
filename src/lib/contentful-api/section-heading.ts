@@ -4,7 +4,7 @@ import type { SectionHeading } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 
 // SectionHeading fields
-export const SECTIONHEADING_GRAPHQL_FIELDS = `
+export const SECTION_HEADING_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   overline
   title
@@ -32,7 +32,7 @@ export const getSectionHeadingById = async (id: string, preview: boolean) => {
     const response = await fetchGraphQL<SectionHeading>(
       `query GetSectionHeadingById($preview: Boolean!, $id: String!) {
                 sectionHeading(id: $id, preview: $preview) {
-                    ${SECTIONHEADING_GRAPHQL_FIELDS}
+                    ${SECTION_HEADING_GRAPHQL_FIELDS}
                 }
             }`,
       { id, preview },

@@ -19,7 +19,8 @@ const ContentGridItemUnion = z.union([
   VideoSchema,
   SliderSchema,
   SolutionSchema,
-  ProductSchema
+  ProductSchema,
+  ImageSchema
 ]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 

@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../api';
 import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS } from './graphql-fields';
 
 // BannerHero fields
@@ -10,7 +10,7 @@ export const BANNERHERO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   heading {
-    ${SECTIONHEADING_GRAPHQL_FIELDS}
+    ${SECTION_HEADING_GRAPHQL_FIELDS}
   }
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}

@@ -16,6 +16,7 @@ import { PostCard } from '@/components/global/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
+
 import type {
   ContentGrid as ContentGridType,
   ContentGridItem as ContentGridItemType,
@@ -23,6 +24,7 @@ import type {
   PageListPages as PageListPagesType,
   CtaGrid as CtaGridType,
   Post as PostType,
+  AirImage as AirImageType,
   Video as VideoType,
   Product as ProductType,
   Solution as SolutionType,
@@ -150,6 +152,12 @@ export function ContentGrid(props: ContentGridProps) {
                         );
                       }
 
+                      const isImage = item.__typename === 'Image';
+
+                      if (isImage) {
+                        return <AirImage key={item.sys?.id || index} {...(item as AirImageType)} />;
+                      }
+
                       // Type guard: Check if item is a Product with essential Product structure
                       const isProduct = item.__typename === 'Product';
 
@@ -225,7 +233,7 @@ export function ContentGrid(props: ContentGridProps) {
                           // Render as a grid of ProductCards
                           return (
                             <Box
-                              key={item.sys?.id ?? index}
+                              key={item.sys?.id || index}
                               direction="col"
                               gap={8}
                               className="w-full"
@@ -241,13 +249,15 @@ export function ContentGrid(props: ContentGridProps) {
                                 gap={6}
                                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                               >
-                                {pageList.pagesCollection.items.map((productItem: PageListPagesType, productIndex: number) => (
-                                  <ProductCard
-                                    key={productItem?.sys?.id ?? productIndex}
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    {...(productItem as any)}
-                                  />
-                                ))}
+                                {pageList.pagesCollection.items.map(
+                                  (productItem: PageListPagesType, productIndex: number) => (
+                                    <ProductCard
+                                      key={productItem?.sys?.id ?? productIndex}
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      {...(productItem as any)}
+                                    />
+                                  )
+                                )}
                               </Box>
                             </Box>
                           );
@@ -277,32 +287,39 @@ export function ContentGrid(props: ContentGridProps) {
                                   gap={4}
                                   className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
                                 >
-                                  {pageList.pagesCollection?.items?.map((nestedItem: PageListPagesType, nestedIndex: number) => (
-                                    <Box
-                                      key={nestedItem?.sys?.id ?? nestedIndex}
-                                      direction="col"
-                                      gap={2}
-                                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                                    >
-                                      <h4 className="text-lg font-semibold">{nestedItem?.title}</h4>
-                                      <p className="text-sm text-gray-600">
-                                        {nestedItem?.__typename === 'PageList' ? 'Page List' : nestedItem?.__typename}
-                                      </p>
-                                      {'slug' in nestedItem && nestedItem.slug && (
-                                        <Link 
-                                          href={props.currentPath 
-                                            ? `${props.currentPath}/${pageList.slug}/${nestedItem.slug}`
-                                            : props.parentPageListSlug 
-                                              ? `/${props.parentPageListSlug}/${pageList.slug}/${nestedItem.slug}`
-                                              : `/${pageList.slug}/${nestedItem.slug}`
-                                          } 
-                                          className="text-blue-600 hover:underline"
-                                        >
-                                          View {nestedItem?.__typename}
-                                        </Link>
-                                      )}
-                                    </Box>
-                                  ))}
+                                  {pageList.pagesCollection?.items?.map(
+                                    (nestedItem: PageListPagesType, nestedIndex: number) => (
+                                      <Box
+                                        key={nestedItem?.sys?.id ?? nestedIndex}
+                                        direction="col"
+                                        gap={2}
+                                        className="rounded-lg border border-gray-200 p-4 transition-shadow hover:shadow-md"
+                                      >
+                                        <h4 className="text-lg font-semibold">
+                                          {nestedItem?.title}
+                                        </h4>
+                                        <p className="text-sm text-gray-600">
+                                          {nestedItem?.__typename === 'PageList'
+                                            ? 'Page List'
+                                            : nestedItem?.__typename}
+                                        </p>
+                                        {'slug' in nestedItem && nestedItem.slug && (
+                                          <Link
+                                            href={
+                                              props.currentPath
+                                                ? `${props.currentPath}/${pageList.slug}/${nestedItem.slug}`
+                                                : props.parentPageListSlug
+                                                  ? `/${props.parentPageListSlug}/${pageList.slug}/${nestedItem.slug}`
+                                                  : `/${pageList.slug}/${nestedItem.slug}`
+                                            }
+                                            className="text-blue-600 hover:underline"
+                                          >
+                                            View {nestedItem?.__typename}
+                                          </Link>
+                                        )}
+                                      </Box>
+                                    )
+                                  )}
                                 </Box>
                               </Box>
                             );

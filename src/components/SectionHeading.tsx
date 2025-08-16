@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Box } from '@/components/global/matic-ds';
 import type { SectionHeading } from '@/types/contentful/SectionHeading';
+import { cn } from '@/lib/utils';
 
 export function SectionHeading(props: SectionHeading) {
   const sectionHeading = useContentfulLiveUpdates(props);
@@ -49,7 +50,9 @@ export function SectionHeading(props: SectionHeading) {
       <Box
         gap={2}
         {...inspectorProps({ fieldId: 'heading' })}
-        className="col-span-1 items-end xl:ml-auto"
+        className={cn('col-span-1 items-end xl:ml-auto', {
+          'items-center': sectionHeading.componentType === 'content'
+        })}
       >
         {hasCtaCollection &&
           sectionHeading.ctaCollection?.items?.map((cta, index) => (
@@ -61,7 +64,7 @@ export function SectionHeading(props: SectionHeading) {
               <Button
                 variant={
                   (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                    ? 'outline'
+                    ? 'primary'
                     : index === 0
                       ? 'primary'
                       : 'outline'

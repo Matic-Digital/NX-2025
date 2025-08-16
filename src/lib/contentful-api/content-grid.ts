@@ -3,7 +3,7 @@ import { fetchGraphQL } from '../api';
 import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -37,7 +37,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
 export const CONTENTGRID_GRAPHQL_FIELDS = `
   ${SYS_FIELDS} 
   heading {
-    ${SECTIONHEADING_GRAPHQL_FIELDS}
+    ${SECTION_HEADING_GRAPHQL_FIELDS}
   }
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
