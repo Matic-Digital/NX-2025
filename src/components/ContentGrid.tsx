@@ -1,33 +1,40 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { ContentGridItem } from './ContentGridItem';
-import { CtaGrid } from './CtaGrid';
-import { PostCard } from '@/components/global/PostCard';
-import { Slider } from '@/components/Slider';
-import { SolutionCard } from '@/components/SolutionCard';
-import { ServiceCard } from '@/components/global/ServiceCard';
-import { ProductCard } from '@/components/global/ProductCard';
-import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { SectionHeading } from '@/components/SectionHeading';
-import AirImage from '@/components/media/AirImage';
+import { ContentGridItem } from './ContentGridItem';
+import { AirImage } from '@/components/media/AirImage';
+import { MuxVideoPlayer } from '@/components/media/MuxVideo';
+import { ProductCard } from '@/components/global/ProductCard';
+import { ServiceCard } from '@/components/global/ServiceCard';
+import { SolutionCard } from '@/components/SolutionCard';
+import { PostCard } from '@/components/global/PostCard';
+import { CtaGrid } from '@/components/CtaGrid';
+import { Slider } from '@/components/Slider';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
-import type { ContentGrid } from '@/types/contentful/ContentGrid';
 import type {
+  ContentGrid as ContentGridType,
   ContentGridItem as ContentGridItemType,
+  PageList as PageListType,
+  PageListPages as PageListPagesType,
   CtaGrid as CtaGridType,
-  VideoSys as VideoType,
   Post as PostType,
-  ProductSys as ProductType,
-  SliderSys as SliderType,
-  SolutionSys as SolutionType,
-  PageList as PageListType
-} from '@/types/contentful/';
+  Video as VideoType,
+  Product as ProductType,
+  Solution as SolutionType,
+  Slider as SliderType
+} from '@/types/contentful';
 
-export function ContentGrid(props: ContentGrid) {
+interface ContentGridProps extends ContentGridType {
+  parentPageListSlug?: string; // Optional parent PageList slug for nested routing
+  currentPath?: string; // Full current path for deeply nested structures
+}
+
+export function ContentGrid(props: ContentGridProps) {
   const contentGrid = useContentfulLiveUpdates(props);
 
   console.log('content grid props', props);
@@ -211,14 +218,14 @@ export function ContentGrid(props: ContentGrid) {
 
                         // Check if the PageList contains only Products
                         const allItemsAreProducts = pageList.pagesCollection?.items?.every(
-                          (pageItem) => pageItem.__typename === 'Product'
+                          (pageItem: PageListPagesType) => pageItem?.__typename === 'Product'
                         );
 
                         if (allItemsAreProducts && pageList.pagesCollection?.items?.length) {
                           // Render as a grid of ProductCards
                           return (
                             <Box
-                              key={item.sys?.id || index}
+                              key={item.sys?.id ?? index}
                               direction="col"
                               gap={8}
                               className="w-full"
@@ -234,32 +241,88 @@ export function ContentGrid(props: ContentGrid) {
                                 gap={6}
                                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                               >
-                                {pageList.pagesCollection.items.map((productItem, productIndex) => (
+                                {pageList.pagesCollection.items.map((productItem: PageListPagesType, productIndex: number) => (
                                   <ProductCard
-                                    key={productItem.sys?.id || productIndex}
+                                    key={productItem?.sys?.id ?? productIndex}
                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    {...(productItem as unknown as any)}
+                                    {...(productItem as any)}
                                   />
                                 ))}
                               </Box>
                             </Box>
                           );
                         } else {
-                          // Fallback: render PageList title only if not all Products
-                          return (
-                            <Box
-                              key={item.sys?.id || index}
-                              direction="col"
-                              gap={4}
-                              className="text-center"
-                            >
-                              <h3 className="text-headline-md">{pageList.title}</h3>
-                              <p className="text-body-sm text-gray-600">
-                                Mixed content PageList (
-                                {pageList.pagesCollection?.items?.length ?? 0} items)
-                              </p>
-                            </Box>
+                          // Check if PageList contains nested PageLists
+                          const hasNestedPageLists = pageList.pagesCollection?.items?.some(
+                            (pageItem: PageListPagesType) => pageItem?.__typename === 'PageList'
                           );
+
+                          if (hasNestedPageLists) {
+                            // Render nested PageLists as a navigation structure
+                            return (
+                              <Box
+                                key={item.sys?.id ?? index}
+                                direction="col"
+                                gap={6}
+                                className="w-full"
+                              >
+                                {/* PageList title */}
+                                <Box direction="col" gap={4} className="text-center">
+                                  <h3 className="text-headline-md">{pageList.title}</h3>
+                                </Box>
+
+                                {/* Nested items grid */}
+                                <Box
+                                  direction="row"
+                                  gap={4}
+                                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                                >
+                                  {pageList.pagesCollection?.items?.map((nestedItem: PageListPagesType, nestedIndex: number) => (
+                                    <Box
+                                      key={nestedItem?.sys?.id ?? nestedIndex}
+                                      direction="col"
+                                      gap={2}
+                                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                                    >
+                                      <h4 className="text-lg font-semibold">{nestedItem?.title}</h4>
+                                      <p className="text-sm text-gray-600">
+                                        {nestedItem?.__typename === 'PageList' ? 'Page List' : nestedItem?.__typename}
+                                      </p>
+                                      {'slug' in nestedItem && nestedItem.slug && (
+                                        <Link 
+                                          href={props.currentPath 
+                                            ? `${props.currentPath}/${pageList.slug}/${nestedItem.slug}`
+                                            : props.parentPageListSlug 
+                                              ? `/${props.parentPageListSlug}/${pageList.slug}/${nestedItem.slug}`
+                                              : `/${pageList.slug}/${nestedItem.slug}`
+                                          } 
+                                          className="text-blue-600 hover:underline"
+                                        >
+                                          View {nestedItem?.__typename}
+                                        </Link>
+                                      )}
+                                    </Box>
+                                  ))}
+                                </Box>
+                              </Box>
+                            );
+                          } else {
+                            // Fallback: render PageList title only for mixed content
+                            return (
+                              <Box
+                                key={item.sys?.id ?? index}
+                                direction="col"
+                                gap={4}
+                                className="text-center"
+                              >
+                                <h3 className="text-headline-md">{pageList.title}</h3>
+                                <p className="text-body-sm text-gray-600">
+                                  Mixed content PageList (
+                                  {pageList.pagesCollection?.items?.length ?? 0} items)
+                                </p>
+                              </Box>
+                            );
+                          }
                         }
                       }
 

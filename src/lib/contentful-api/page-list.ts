@@ -52,6 +52,9 @@ export const PAGELIST_MINIMAL_FIELDS = `
       ... on Post {
         ${getPOST_BASIC_FIELDS()}
       }
+      ... on PageList {
+        ${getPAGELIST_BASIC_FIELDS()}
+      }
     }
   }
 `;
@@ -85,6 +88,9 @@ export const PAGELIST_SIMPLIFIED_FIELDS = `
       ... on Post {
         ${getPOST_BASIC_FIELDS()}
       }
+      ... on PageList {
+        ${getPAGELIST_BASIC_FIELDS()}
+      }
     }
   }
 `;
@@ -114,24 +120,26 @@ export async function checkPageBelongsToPageList(
 
     // Check each PageList to see if the page belongs to it
     for (const pageList of pageLists.items) {
-      console.log(`Checking PageList: ${pageList.title} (${pageList.slug})`);
+      console.log(`Checking PageList: ${pageList.title ?? 'Untitled'} (${pageList.slug ?? 'no-slug'})`);
 
-      if (!pageList.pagesCollection?.items.length) {
-        console.log(`PageList ${pageList.title} has no pages`);
+      if (!pageList.pagesCollection?.items?.length) {
+        console.log(`PageList ${pageList.title ?? 'Untitled'} has no pages`);
         continue;
       }
 
-      console.log(`PageList ${pageList.title} has ${pageList.pagesCollection.items.length} pages`);
+      console.log(`PageList ${pageList.title ?? 'Untitled'} has ${pageList.pagesCollection.items.length} pages`);
 
       // Log all page IDs in this PageList for debugging
-      const pageIds = pageList.pagesCollection.items.map((item) => item.sys.id);
-      console.log(`Page IDs in PageList ${pageList.title}:`, pageIds);
+      const pageIds = pageList.pagesCollection.items
+        .map((item) => item?.sys?.id)
+        .filter((id): id is string => Boolean(id));
+      console.log(`Page IDs in PageList ${pageList.title ?? 'Untitled'}:`, pageIds);
 
-      const pageInList = pageList.pagesCollection.items.some((item) => item.sys.id === pageId);
+      const pageInList = pageList.pagesCollection.items.some((item) => item?.sys?.id === pageId);
 
       if (pageInList) {
         console.log(
-          `Page with ID '${pageId}' belongs to PageList '${pageList.title}' (${pageList.slug})`
+          `Page with ID '${pageId}' belongs to PageList '${pageList.title ?? 'Untitled'}' (${pageList.slug ?? 'no-slug'})`
         );
         return pageList;
       }
@@ -259,6 +267,13 @@ export async function getPageListBySlug(
                   title
                   slug
                 }
+                ... on PageList {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
               }
             }
             pageLayout {
@@ -348,26 +363,26 @@ export async function getPageListBySlug(
     );
 
     // Safely extract page content with proper error checking
-    let pageContent = null;
+    let pageContent: { items: unknown[] } | undefined = undefined;
     try {
       const items = pageContentResponse.data?.pageListCollection?.items;
       if (items && items.length > 0 && items[0]) {
         // Type assertion is safe here since we know the GraphQL query structure
         const pageListItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
-        pageContent = pageListItem.pageContentCollection ?? null;
+        pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
       console.warn('Failed to extract page list content:', error);
-      pageContent = null;
+      pageContent = undefined;
     }
 
     // Combine all the data
-    const result = {
+    const result: PageListWithHeaderFooter = {
       ...pageListData,
       header,
       footer,
       pageContentCollection: pageContent
-    } as PageListWithHeaderFooter;
+    };
 
     // Debug the PageList structure
     console.log('PageList structure:', {

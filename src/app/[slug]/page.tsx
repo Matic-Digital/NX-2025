@@ -34,6 +34,7 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageListContent } from '@/types/contentful/PageList';
 import {
   extractOpenGraphImage,
   extractSEOTitle,
@@ -287,16 +288,16 @@ function renderPageList(pageList: PageListType) {
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
-  // Extract page content items if available
-  const pageContentItems = pageList.pageContentCollection?.items ?? [];
+  // Extract page content items if available and type them properly
+  const pageContentItems = (pageList.pageContentCollection?.items ?? [])
+    .filter(Boolean) as PageListContent[];
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       {/* Render components from pageContentCollection */}
       {pageContentItems.map((item, index) => {
-        if (item?.__typename === 'CtaBanner') {
+        if (item.__typename === 'CtaBanner') {
           const CtaBannerComponent = componentMap.CtaBanner;
-          // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
           return (
             <CtaBannerComponent
               key={item.sys.id || `cta-banner-${index}`}
@@ -308,7 +309,23 @@ function renderPageList(pageList: PageListType) {
       })}
 
       {/* Render the PageList component */}
-      <PageList {...pageList} />
+      <PageList 
+        sys={pageList.sys}
+        title={pageList.title}
+        slug={pageList.slug}
+        pagesCollection={pageList.pagesCollection}
+        pageContentCollection={pageList.pageContentCollection ? {
+          items: pageList.pageContentCollection.items.map(item => {
+            const typedItem = item as { sys?: { id?: string }; title?: string; description?: string; __typename?: string };
+            return {
+              sys: { id: typedItem?.sys?.id ?? '' },
+              title: typedItem?.title,
+              description: typedItem?.description,
+              __typename: typedItem?.__typename
+            };
+          })
+        } : undefined}
+      />
     </PageLayout>
   );
 }
