@@ -46,6 +46,11 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
     items {
       ... on ContentGridItem {
         ${SYS_FIELDS}
+        image {
+          sys {
+            id
+          }
+        }
       }
       ... on Post {
         ${POST_GRAPHQL_FIELDS_SIMPLE}

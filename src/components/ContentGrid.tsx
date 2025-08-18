@@ -33,7 +33,7 @@ export function ContentGrid(props: ContentGridProps) {
     [];
 
   // Calculate grid configuration using utilities
-  const { cols, gap } = calculateGridConfig(validItems);
+  const { cols, direction, gap } = calculateGridConfig(validItems);
 
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
@@ -50,7 +50,7 @@ export function ContentGrid(props: ContentGridProps) {
             />
           </Box>
           <Container>
-            <Box direction="col" gap={gap} className="relative z-20">
+            <Box direction={direction} gap={gap} className="relative z-20">
               {/* section heading */}
               <SectionHeading {...contentGrid.heading} isDarkMode={props.isDarkMode} />
 

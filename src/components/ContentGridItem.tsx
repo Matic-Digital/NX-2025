@@ -89,35 +89,20 @@ export function ContentGridItem(props: ContentGridItemType) {
 
   const LinkItem = () => {
     return (
-      <Link href={getHref()} className="group block h-full w-full">
-        <Box
-          direction="col"
-          className="bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col p-6 transition-all"
-        >
-          <div>
-            {icon && <div className="mb-6">{renderIcon(false)}</div>}
-
-            <Box gap={2} className="mb-4 flex items-start">
-              <h2
-                className="text-headline-sm line-clamp-2 flex-1 font-medium"
-                {...inspectorProps({ fieldId: 'heading' })}
-              >
-                {heading}
-              </h2>
-              <span className="text-muted-foreground group-hover:text-primary mt-1 transition-transform group-hover:translate-x-1">
-                <ArrowUpRight className="size-5" />
+      <Link href={getHref()} className="group flex flex-col">
+        <Box direction="col" gap={4}>
+          <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem]">
+            {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
+          </Box>
+          <Box direction="col" gap={2}>
+            <Box direction="row" gap={2} className="items-center">
+              <h3 className="text-headline-sm group-hover:text-primary">{heading}</h3>
+              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-transform group-hover:translate-x-1 group-hover:opacity-100">
+                <ArrowUpRight className="size-10 stroke-1" />
               </span>
             </Box>
-
-            {description && (
-              <p
-                className="text-muted-foreground group-hover:text-primary/80 line-clamp-3 text-sm"
-                {...inspectorProps({ fieldId: 'description' })}
-              >
-                {description}
-              </p>
-            )}
-          </div>
+            <p className="text-body-sm group-hover:text-primary">{description}</p>
+          </Box>
         </Box>
       </Link>
     );

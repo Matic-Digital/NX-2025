@@ -89,6 +89,24 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
 
   // Debug logging for grid analysis
   console.log('Grid: Grid analysis:', analysis);
+  console.log('Grid: hasImages detailed check:', {
+    standaloneImages: items.some(contentTypeDetectors.isImage),
+    contentGridItemsWithImages: items.some(
+      (item) =>
+        contentTypeDetectors.isContentGridItem(item) &&
+        (('image' in item && item.image && typeof item.image === 'object') ??
+          ('icon' in item && item.icon && typeof item.icon === 'object'))
+    ),
+    finalHasImages: analysis.hasImages,
+    contentGridItems: items.filter(contentTypeDetectors.isContentGridItem).map((item) => ({
+      hasImageProp: 'image' in item,
+      imageValue: 'image' in item ? item.image : null,
+      imageType: 'image' in item ? typeof item.image : 'none',
+      hasIconProp: 'icon' in item,
+      iconValue: 'icon' in item ? item.icon : null,
+      iconType: 'icon' in item ? typeof item.icon : 'none'
+    }))
+  });
   console.log(
     'Grid: Items detailed analysis:',
     items.map((item, index) => ({
@@ -133,7 +151,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
 
   const direction = analysis.allItemsAreSolutions
     ? { base: 'col' as const, xl: 'row' as const }
-    : 'row';
+    : ('col' as const);
 
   const sectionGap = analysis.allItemsAreSolutions
     ? { base: 12, xl: 2 }
