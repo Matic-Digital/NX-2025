@@ -1,9 +1,9 @@
 import { fetchGraphQL } from '../api';
 
-import type { ContentGrid, ContentGridResponse } from '@/types/contentful';
+import type { ContentGrid, ContentGridItem, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -37,7 +37,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
 export const CONTENTGRID_GRAPHQL_FIELDS = `
   ${SYS_FIELDS} 
   heading {
-    ${SECTIONHEADING_GRAPHQL_FIELDS}
+    ${SECTION_HEADING_GRAPHQL_FIELDS}
   }
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
@@ -45,7 +45,12 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
   itemsCollection(limit: 20) {
     items {
       ... on ContentGridItem {
-        ${CONTENTGRIDITEM_GRAPHQL_FIELDS}
+        ${SYS_FIELDS}
+        image {
+          sys {
+            id
+          }
+        }
       }
       ... on Post {
         ${POST_GRAPHQL_FIELDS_SIMPLE}
@@ -62,6 +67,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Video {
         ${SYS_FIELDS}
       }
+      ... on Image {
+        ${SYS_FIELDS}
+      }
       ... on Slider {
         ${SYS_FIELDS}
       }
@@ -71,6 +79,91 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
     }
   }
 `;
+
+/**
+ * Fetches all ContentGrids from Contentful
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to ContentGrids response with pagination info
+ */
+export async function getAllContentGrids(preview = false): Promise<ContentGridResponse> {
+  try {
+    const response = await fetchGraphQL<ContentGrid>(
+      `query GetAllContentGrids($preview: Boolean!) {
+        contentGridCollection(preview: $preview) {
+          items {
+            ${CONTENTGRID_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as {
+      contentGridCollection?: { items?: ContentGrid[] };
+    };
+
+    // Validate the data structure
+    if (!data.contentGridCollection?.items?.length) {
+      throw new ContentfulError('Failed to fetch ContentGrids from Contentful');
+    }
+
+    return {
+      items: data.contentGridCollection.items
+    };
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching ContentGrids: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching ContentGrids');
+  }
+}
+
+export async function getContentGridItemById(
+  id: string,
+  preview = false
+): Promise<ContentGridItem | null> {
+  try {
+    const response = await fetchGraphQL<ContentGridItem>(
+      `query GetContentGridItemById($id: String!, $preview: Boolean!) {
+        contentGridItem(id: $id, preview: $preview) {
+          ${CONTENTGRIDITEM_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { contentGridItem?: ContentGridItem };
+
+    if (!data.contentGridItem) {
+      return null;
+    }
+
+    return data.contentGridItem;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching ContentGridItem: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching ContentGridItem');
+  }
+}
 
 /**
  * Fetches link details for a ContentGridItem by its sys.id
@@ -122,53 +215,5 @@ export async function getContentGridItemLink(
   } catch {
     // Silently handle GraphQL errors to prevent console spam
     return null;
-  }
-}
-
-/**
- * Fetches all ContentGrids from Contentful
- * @param preview - Whether to fetch draft content
- * @returns Promise resolving to ContentGrids response with pagination info
- */
-export async function getAllContentGrids(preview = false): Promise<ContentGridResponse> {
-  try {
-    const response = await fetchGraphQL<ContentGrid>(
-      `query GetAllContentGrids($preview: Boolean!) {
-        contentGridCollection(preview: $preview) {
-          items {
-            ${CONTENTGRID_GRAPHQL_FIELDS}
-          }
-        }
-      }`,
-      { preview },
-      preview
-    );
-
-    // Check for valid response
-    if (!response?.data) {
-      throw new ContentfulError('Invalid response from Contentful');
-    }
-
-    // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as {
-      contentGridCollection?: { items?: ContentGrid[] };
-    };
-
-    // Validate the data structure
-    if (!data.contentGridCollection?.items?.length) {
-      throw new ContentfulError('Failed to fetch ContentGrids from Contentful');
-    }
-
-    return {
-      items: data.contentGridCollection.items
-    };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
-    }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching ContentGrids: ${error.message}`);
-    }
-    throw new Error('Unknown error fetching ContentGrids');
   }
 }

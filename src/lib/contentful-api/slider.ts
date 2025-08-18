@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS } from './graphql-fields';
 import type { Slider } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
@@ -13,7 +13,7 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
     ${SYS_FIELDS}
     title
     heading {
-      ${SECTIONHEADING_GRAPHQL_FIELDS}
+      ${SECTION_HEADING_GRAPHQL_FIELDS}
     }
     image {
       ${IMAGE_GRAPHQL_FIELDS}

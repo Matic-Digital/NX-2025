@@ -31,7 +31,6 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { PageListContent } from '@/types/contentful/PageList';
@@ -289,13 +288,14 @@ function renderPageList(pageList: PageListType) {
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
   // Extract page content items if available and type them properly
-  const pageContentItems = (pageList.pageContentCollection?.items ?? [])
-    .filter(Boolean) as PageListContent[];
+  const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
+    Boolean
+  ) as PageListContent[];
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <h1 className="sr-only">{pageList.title}</h1>
-      {/* Render components from pageContentCollection - same as renderPage */}
+      {/* Render components from pageContentCollection directly */}
       {pageContentItems.map((component) => {
         if (!component) return null;
 
@@ -319,23 +319,13 @@ function renderPageList(pageList: PageListType) {
         return null;
       })}
 
-      {/* Render the PageList component */}
-      <PageList 
+      {/* Render the PageList component for pages collection only */}
+      <PageList
         sys={pageList.sys}
         title={pageList.title}
         slug={pageList.slug}
         pagesCollection={pageList.pagesCollection}
-        pageContentCollection={pageList.pageContentCollection ? {
-          items: pageList.pageContentCollection.items.map(item => {
-            const typedItem = item as { sys?: { id?: string }; title?: string; description?: string; __typename?: string };
-            return {
-              sys: { id: typedItem?.sys?.id ?? '' },
-              title: typedItem?.title,
-              description: typedItem?.description,
-              __typename: typedItem?.__typename
-            };
-          })
-        } : undefined}
+        pageContentCollection={undefined}
       />
     </PageLayout>
   );

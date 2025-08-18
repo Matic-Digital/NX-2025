@@ -50,7 +50,7 @@ type PageListType = {
   __typename?: string;
 };
 
-type PageListPagesType = 
+type PageListPagesType =
   | z.infer<typeof PageSchema>
   | z.infer<typeof ExternalPageSchema>
   | z.infer<typeof ProductSchema>

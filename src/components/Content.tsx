@@ -12,9 +12,13 @@ import type { Content } from '@/types/contentful/Content';
 import type { PostSliderItem } from '@/types/contentful/Post';
 import type { Product } from '@/types/contentful/Product';
 import type { PageList } from '@/types/contentful/PageList';
+import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
+import type { Image } from '@/types/contentful/Image';
 import { ProductCard } from '@/components/global/ProductCard';
 import { Box, Container } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
+import { SectionHeading } from './SectionHeading';
+import { cn } from '@/lib/utils';
 
 interface ContentOverlayProps {
   children: React.ReactNode;
@@ -93,7 +97,7 @@ export function Content(props: Content) {
 
   // Shared Components
   const ContentContainer = ({ children }: ContentContainerProps) => (
-    <Container className="relative mt-10 mb-20 h-[502px]">{children}</Container>
+    <Container className={cn('relative mt-10 mb-20 h-[502px]')}>{children}</Container>
   );
 
   const ContentOverlay = ({ children }: ContentOverlayProps) => (
@@ -163,6 +167,34 @@ export function Content(props: Content) {
       </ContentOverlay>
     </ContentContainer>
   );
+
+  const SectionHeadingCard = ({
+    imageAsset,
+    sectionHeading
+  }: {
+    imageAsset: Image;
+    sectionHeading: SectionHeadingType;
+  }) => {
+    return (
+      <ContentContainer>
+        <AirImage
+          link={imageAsset.link}
+          altText={imageAsset.altText ?? imageAsset.title}
+          className="absolute h-full object-cover"
+        />
+        <div className="relative flex h-full items-center justify-center p-10">
+          <SectionHeading
+            sys={{ id: sectionHeading.sys.id }}
+            title={sectionHeading.title}
+            description={sectionHeading.description}
+            ctaCollection={sectionHeading.ctaCollection}
+            componentType={'content'}
+            isDarkMode={true}
+          />
+        </div>
+      </ContentContainer>
+    );
+  };
 
   if (liveContent && 'item' in liveContent && liveContent.item) {
     const item = liveContent.item;
@@ -263,6 +295,26 @@ export function Content(props: Content) {
           />
         );
       }
+    }
+
+    if ('__typename' in item && item.__typename === 'SectionHeading') {
+      const sectionHeading = item as unknown as SectionHeadingType;
+
+      // If Content has a background image, render with ContentCard layout
+      if (liveContent.asset?.__typename === 'Image') {
+        const imageAsset = liveContent.asset as Image;
+        return <SectionHeadingCard imageAsset={imageAsset} sectionHeading={sectionHeading} />;
+      }
+
+      // Fallback to regular SectionHeading component if no background image
+      return (
+        <SectionHeading
+          sys={{ id: sectionHeading.sys.id }}
+          title={sectionHeading.title}
+          description={sectionHeading.description}
+          ctaCollection={sectionHeading.ctaCollection}
+        />
+      );
     }
   }
 
