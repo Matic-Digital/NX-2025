@@ -202,8 +202,9 @@ export function Footer(props: FooterType) {
               </p>
               <Box direction={{ base: 'col', md: 'row' }} gap={8} className="order-1 lg:order-2">
                 {footer.legalPageListsCollection?.items?.[0]?.pagesCollection?.items
-                  ?.filter((legalPage): legalPage is typeof legalPage & { slug: string } => 
-                    'slug' in legalPage && typeof legalPage.slug === 'string'
+                  ?.filter(
+                    (legalPage): legalPage is typeof legalPage & { slug: string } =>
+                      'slug' in legalPage && typeof legalPage.slug === 'string'
                   )
                   ?.map((legalPage) => (
                     <Link
