@@ -18,18 +18,39 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPageBySlug } from '@/lib/contentful-api/page';
 import { getPageListBySlug } from '@/lib/contentful-api/page-list';
+import { getProductBySlug } from '@/lib/contentful-api/product';
+import { getServiceBySlug } from '@/lib/contentful-api/service';
+import { getSolutionBySlug } from '@/lib/contentful-api/solution';
+import { getPostBySlug } from '@/lib/contentful-api/post';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList } from '@/types/contentful/PageList';
+import type { Product } from '@/types/contentful/Product';
+import type { Service } from '@/types/contentful/Service';
+import type { Solution } from '@/types/contentful/Solution';
+import type { Post } from '@/types/contentful/Post';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner';
+import { Content } from '@/components/Content';
+import { ContentGrid } from '@/components/ContentGrid';
+import { ImageBetween } from '@/components/ImageBetween';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Metadata } from 'next';
+import {
+  extractOpenGraphImage,
+  extractSEOTitle,
+  extractSEODescription
+} from '@/lib/metadata-utils';
 
-// Define the component mapping for pageContent items
+// Define the component mapping for content items (same as standalone Product page)
 const componentMap = {
-  BannerHero: BannerHero
-  // Add other component types here as they are created
+  BannerHero,
+  Content,
+  ContentGrid,
+  CtaBanner,
+  ImageBetween
 };
 
 // Define props for the nested page component
@@ -49,6 +70,258 @@ export async function generateStaticParams() {
 export const dynamic = 'force-static'; // Prefer static rendering where possible
 export const revalidate = 3600; // Revalidate every hour
 
+// Generate dynamic metadata based on the content item
+export async function generateMetadata({ params }: NestedPageProps): Promise<Metadata> {
+  const { slug: pageListSlug, pageSlug } = await params;
+
+  // Try to fetch the content item as different content types
+  let contentItem: Page | Product | Service | Solution | Post | null = null;
+  let pageList: PageList | null = null;
+
+  try {
+    // First, fetch the PageList
+    pageList = await getPageListBySlug(pageListSlug, false);
+
+    if (!pageList?.pagesCollection?.items.length) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+
+    // Try to fetch the content item as different content types
+    contentItem ??= await getPageBySlug(pageSlug, false);
+    contentItem ??= await getProductBySlug(pageSlug, false);
+    contentItem ??= await getServiceBySlug(pageSlug, false);
+    contentItem ??= await getSolutionBySlug(pageSlug, false);
+    contentItem ??= await getPostBySlug(pageSlug, false);
+
+    if (!contentItem) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+
+    // Check if the content item is in the PageList
+    const itemInList = pageList.pagesCollection.items.some(
+      (item) => item.sys.id === contentItem!.sys.id
+    );
+
+    if (!itemInList) {
+      return {
+        title: 'Content Not Found',
+        description: 'The requested content could not be found.'
+      };
+    }
+  } catch (error) {
+    console.error(`Error generating metadata for: ${pageSlug} in PageList: ${pageListSlug}`, error);
+    return {
+      title: 'Content Not Found',
+      description: 'The requested content could not be found.'
+    };
+  }
+
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+
+  // Extract SEO data from content item using utility functions
+  const title = extractSEOTitle(contentItem, 'Nextracker');
+  const description = extractSEODescription(contentItem, 'Nextracker Content');
+
+  // Handle OG image from content item
+  const openGraphImage = extractOpenGraphImage(contentItem, baseUrl, title);
+
+  const ogImages = openGraphImage
+    ? [
+        {
+          url: openGraphImage.url,
+          width: openGraphImage.width,
+          height: openGraphImage.height,
+          alt: openGraphImage.title ?? title
+        }
+      ]
+    : [];
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImages,
+      type: 'website'
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ogImages.length > 0 ? [ogImages[0]!.url] : []
+    }
+  };
+}
+
+// Helper function to render content based on content type
+function renderContentByType(
+  contentItem: Page | Product | Service | Solution | Post,
+  contentType: string | null
+) {
+  // For Page content type, render the pageContentCollection
+  if (contentType === 'Page') {
+    const page = contentItem as Page;
+    return page.pageContentCollection?.items.map((component) => {
+      if (!component) return null;
+
+      // Type guard to check if component has __typename
+      if (!('__typename' in component)) {
+        console.warn('Component missing __typename:', component);
+        return null;
+      }
+
+      const typeName = component.__typename!;
+
+      // Check if we have a component for this type
+      if (typeName && typeName in componentMap) {
+        const ComponentType = componentMap[typeName as keyof typeof componentMap];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return <ComponentType key={component.sys.id} {...(component as any)} />;
+      }
+
+      // Log a warning if we don't have a component for this type
+      console.warn(`No component found for type: ${typeName}`);
+      return null;
+    });
+  }
+
+  // For Product content type, render without the constraining container to allow full-width components
+  if (contentType === 'Product') {
+    const product = contentItem as Product;
+    return (
+      <>
+        <h1 className="sr-only">{product.title}</h1>
+        {/* Render the product content components - itemsCollection maps to pageContentCollection */}
+        {product.itemsCollection?.items.map((component, index) => {
+          if (!component) return null;
+
+          // Type guard to check if component has __typename
+          if (!('__typename' in component)) {
+            console.warn('Component missing __typename:', component);
+            return null;
+          }
+
+          const typeName = component.__typename!;
+
+          // Check if we have a component for this type
+          if (typeName && typeName in componentMap) {
+            const ComponentType = componentMap[typeName as keyof typeof componentMap];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (
+              <ComponentType
+                key={component.sys?.id || `component-${index}`}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(component as any)}
+              />
+            );
+          }
+
+          // Fallback: render placeholder if component type not found
+          return (
+            <div
+              key={component.sys?.id || `component-${index}`}
+              className="mb-4 rounded-lg border border-gray-200 p-4"
+            >
+              <h3 className="text-lg font-semibold text-gray-700">{typeName} Component</h3>
+              <p className="text-sm text-gray-500">ID: {component.sys?.id || 'Unknown'}</p>
+              <p className="mt-2 text-xs text-gray-400">
+                Component type not found in componentMap. Available types:{' '}
+                {Object.keys(componentMap).join(', ')}
+              </p>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  // For other content types (Service, Solution, Post), render basic content display
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <div className="prose prose-lg mx-auto">
+        <h1>{contentItem.title}</h1>
+
+        {/* Render content based on specific type */}
+        {contentType === 'Product' && (
+          <div>
+            {/* Render Product's itemsCollection like Page's pageContentCollection */}
+            {(contentItem as Product).itemsCollection?.items.map((component, index) => {
+              if (!component) return null;
+
+              // Type guard to check if component has __typename
+              if (!('__typename' in component)) {
+                console.warn('Component missing __typename:', component);
+                return null;
+              }
+
+              const typeName = component.__typename!;
+
+              // Check if we have a component for this type
+              if (typeName && typeName in componentMap) {
+                const ComponentType = componentMap[typeName as keyof typeof componentMap];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                return (
+                  <ComponentType
+                    key={component.sys?.id || `component-${index}`}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {...(component as any)}
+                  />
+                );
+              }
+
+              // Fallback: render placeholder if component type not found
+              return (
+                <div
+                  key={component.sys?.id || `component-${index}`}
+                  className="mb-4 rounded-lg border border-gray-200 p-4"
+                >
+                  <h3 className="text-lg font-semibold text-gray-700">{typeName} Component</h3>
+                  <p className="text-sm text-gray-500">ID: {component.sys?.id || 'Unknown'}</p>
+                  <p className="mt-2 text-xs text-gray-400">
+                    Component type not found in componentMap. Available types:{' '}
+                    {Object.keys(componentMap).join(', ')}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {contentType === 'Service' && (
+          <div>
+            <p>{(contentItem as Service).cardTitle}</p>
+            {/* Add more Service-specific rendering here */}
+          </div>
+        )}
+
+        {contentType === 'Solution' && (
+          <div>
+            <h2>{(contentItem as Solution).cardHeading}</h2>
+            <h3>{(contentItem as Solution).cardSubheading}</h3>
+            <p>{(contentItem as Solution).cardDescription}</p>
+            {/* Add more Solution-specific rendering here */}
+          </div>
+        )}
+
+        {contentType === 'Post' && (
+          <div>
+            <p>{(contentItem as Post).excerpt}</p>
+            {/* Add more Post-specific rendering here */}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // The nested page component
 export default async function NestedPage({ params, searchParams }: NestedPageProps) {
   // Await the params Promise (required in Next.js)
@@ -60,8 +333,9 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   const pageSlug = resolvedParams?.pageSlug;
   const preview = false; // Set to true if you want to enable preview mode
 
-  let page: Page | null = null;
+  let contentItem: Page | Product | Service | Solution | Post | null = null;
   let pageList: PageList | null = null;
+  let contentType: string | null = null;
 
   try {
     console.log(`Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`);
@@ -74,23 +348,53 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       notFound();
     }
 
-    // Then fetch the page
-    page = await getPageBySlug(pageSlug, preview);
+    // Try to fetch the content item as different content types
+    // First try as a Page
+    contentItem = await getPageBySlug(pageSlug, preview);
+    if (contentItem) {
+      contentType = 'Page';
+    } else {
+      // Try as Product
+      contentItem = await getProductBySlug(pageSlug, preview);
+      if (contentItem) {
+        contentType = 'Product';
+      } else {
+        // Try as Service
+        contentItem = await getServiceBySlug(pageSlug, preview);
+        if (contentItem) {
+          contentType = 'Service';
+        } else {
+          // Try as Solution
+          contentItem = await getSolutionBySlug(pageSlug, preview);
+          if (contentItem) {
+            contentType = 'Solution';
+          } else {
+            // Try as Post
+            contentItem = await getPostBySlug(pageSlug, preview);
+            if (contentItem) {
+              contentType = 'Post';
+            }
+          }
+        }
+      }
+    }
 
-    if (!page) {
-      console.log(`Page not found: ${pageSlug}`);
+    if (!contentItem) {
+      console.log(`Content item not found: ${pageSlug}`);
       notFound();
     }
 
-    // Check if the page is in the PageList
-    const pageInList = pageList.pagesCollection.items.some((item) => item.sys.id === page!.sys.id);
+    // Check if the content item is in the PageList
+    const itemInList = pageList.pagesCollection.items.some(
+      (item) => item.sys.id === contentItem!.sys.id
+    );
 
-    if (!pageInList) {
-      console.log(`Page ${pageSlug} does not belong to PageList ${pageListSlug}`);
+    if (!itemInList) {
+      console.log(`Content item ${pageSlug} does not belong to PageList ${pageListSlug}`);
       notFound();
     }
 
-    console.log(`Successfully found page: ${pageSlug} in PageList: ${pageListSlug}`);
+    console.log(`Successfully found ${contentType}: ${pageSlug} in PageList: ${pageListSlug}`);
 
     // At this point, we know page and pageList are not null due to the checks above
   } catch (error) {
@@ -98,9 +402,9 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     notFound();
   }
 
-  // At this point, we know page and pageList are not null because we would have called notFound() above
+  // At this point, we know contentItem and pageList are not null because we would have called notFound() above
   // TypeScript doesn't know this though, so we need to assert that they are not null
-  if (!page || !pageList) {
+  if (!contentItem || !pageList) {
     notFound();
   }
 
@@ -164,39 +468,19 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
                     d="m1 9 4-4-4-4"
                   />
                 </svg>
-                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">{page.title}</span>
+                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+                  {contentItem.title}
+                </span>
               </div>
             </li>
           </ol>
         </nav>
       </div>
 
-      <h1 className="sr-only">{page.title}</h1>
+      <h1 className="sr-only">{contentItem.title}</h1>
 
-      {/* Render the page content components */}
-      {page.pageContentCollection?.items.map((component) => {
-        if (!component) return null;
-
-        // Type guard to check if component has __typename
-        if (!('__typename' in component)) {
-          console.warn('Component missing __typename:', component);
-          return null;
-        }
-
-        // We've checked that __typename exists with the 'in' operator
-        const typeName = component.__typename!;
-
-        // Check if we have a component for this type
-        if (typeName && typeName in componentMap) {
-          const ComponentType = componentMap[typeName as keyof typeof componentMap];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
-        }
-
-        // Log a warning if we don't have a component for this type
-        console.warn(`No component found for type: ${typeName}`);
-        return null;
-      })}
+      {/* Render content based on content type */}
+      {renderContentByType(contentItem, contentType)}
     </PageLayout>
   );
 }

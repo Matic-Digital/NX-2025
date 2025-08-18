@@ -24,6 +24,11 @@ export const INTERNAL_LINK_FIELDS = `
     sys { id }
     slug
   }
+  ... on Product {
+    sys { id }
+    slug
+    __typename
+  }
 `;
 
 // Define all fragments using lazy initialization pattern
@@ -70,14 +75,26 @@ const fragments = {
     pageListsCollection(limit: 5) {
       items {
         ... on PageList {
-          ${fragments.PAGELIST_WITH_REFS_FIELDS()}
+          ${fragments.PAGELIST_BASIC_FIELDS()}
           pagesCollection(limit: 10) {
             items {
               ... on Page {
-                ${fragments.PAGE_WITH_REFS_FIELDS()}
+                ${fragments.PAGE_BASIC_FIELDS()}
               }
               ... on ExternalPage {
                 ${fragments.EXTERNAL_PAGE_FIELDS()}
+              }
+              ... on Product {
+                ${fragments.PRODUCT_BASIC_FIELDS()}
+              }
+              ... on Service {
+                ${fragments.SERVICE_BASIC_FIELDS()}
+              }
+              ... on Solution {
+                ${fragments.SOLUTION_BASIC_FIELDS()}
+              }
+              ... on Post {
+                ${fragments.POST_BASIC_FIELDS()}
               }
             }
           }
@@ -88,14 +105,26 @@ const fragments = {
     legalPageListsCollection(limit: 5) {
       items {
         ... on PageList {
-          ${fragments.PAGELIST_WITH_REFS_FIELDS()}
+          ${fragments.PAGELIST_BASIC_FIELDS()}
           pagesCollection(limit: 10) {
             items {
               ... on Page {
-                ${fragments.PAGE_WITH_REFS_FIELDS()}
+                ${fragments.PAGE_BASIC_FIELDS()}
               }
               ... on ExternalPage {
                 ${fragments.EXTERNAL_PAGE_FIELDS()}
+              }
+              ... on Product {
+                ${fragments.PRODUCT_BASIC_FIELDS()}
+              }
+              ... on Service {
+                ${fragments.SERVICE_BASIC_FIELDS()}
+              }
+              ... on Solution {
+                ${fragments.SOLUTION_BASIC_FIELDS()}
+              }
+              ... on Post {
+                ${fragments.POST_BASIC_FIELDS()}
               }
             }
           }
@@ -124,6 +153,30 @@ const fragments = {
     icon { 
       ${ASSET_FIELDS} 
     }
+  `,
+
+  PRODUCT_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+  `,
+
+  SERVICE_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+  `,
+
+  SOLUTION_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+  `,
+
+  POST_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
   `,
 
   PAGELIST_BASIC_FIELDS: () => `
@@ -155,6 +208,18 @@ const fragments = {
         ... on ExternalPage {
           ${fragments.EXTERNAL_PAGE_FIELDS()}
         }
+        ... on Product {
+          ${fragments.PRODUCT_BASIC_FIELDS()}
+        }
+        ... on Service {
+          ${fragments.SERVICE_BASIC_FIELDS()}
+        }
+        ... on Solution {
+          ${fragments.SOLUTION_BASIC_FIELDS()}
+        }
+        ... on Post {
+          ${fragments.POST_BASIC_FIELDS()}
+        }
       }
     }
   `,
@@ -183,3 +248,7 @@ export const getHEADER_GRAPHQL_FIELDS = () => fragments.HEADER_GRAPHQL_FIELDS();
 export const getFOOTER_GRAPHQL_FIELDS = () => fragments.FOOTER_GRAPHQL_FIELDS();
 export const getEXTERNAL_PAGE_FIELDS = () => fragments.EXTERNAL_PAGE_FIELDS();
 export const getSOCIAL_BASIC_FIELDS = () => fragments.SOCIAL_BASIC_FIELDS();
+export const getPRODUCT_BASIC_FIELDS = () => fragments.PRODUCT_BASIC_FIELDS();
+export const getSERVICE_BASIC_FIELDS = () => fragments.SERVICE_BASIC_FIELDS();
+export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
+export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();

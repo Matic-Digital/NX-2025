@@ -103,7 +103,7 @@ export function Footer(props: FooterType) {
               <Box
                 direction={{ base: 'col', lg: 'row' }}
                 cols={{ base: 1, sm: 2, lg: 4 }}
-                gap={{ base: 12, lg: 0 }}
+                gap={{ base: 12, lg: 4 }}
                 className="justify-start lg:justify-between"
                 {...inspectorProps({
                   entryId: footer.sys.id,
@@ -202,7 +202,10 @@ export function Footer(props: FooterType) {
               </p>
               <Box direction={{ base: 'col', md: 'row' }} gap={8} className="order-1 lg:order-2">
                 {footer.legalPageListsCollection?.items?.[0]?.pagesCollection?.items
-                  ?.filter((legalPage) => 'slug' in legalPage)
+                  ?.filter(
+                    (legalPage): legalPage is typeof legalPage & { slug: string } =>
+                      'slug' in legalPage && typeof legalPage.slug === 'string'
+                  )
                   ?.map((legalPage) => (
                     <Link
                       key={legalPage.sys.id}

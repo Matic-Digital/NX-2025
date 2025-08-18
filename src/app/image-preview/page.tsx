@@ -93,7 +93,7 @@ function ImagePreviewContent() {
         <Box className="py-12">
           <h1 className="text-headline-xs font-bold text-red-600">Error</h1>
           <p>Error fetching Image: {error.message}</p>
-          <p className="text-sm text-gray-600 mt-2">ID: {imageId}</p>
+          <p className="mt-2 text-sm text-gray-600">ID: {imageId}</p>
         </Box>
       </Container>
     );
@@ -114,27 +114,23 @@ function ImagePreviewContent() {
       <Container>
         <Box className="py-12" direction="col" gap={6}>
           {/* Image Title */}
-          {image.title && (
-            <h1 className="text-headline-lg font-bold text-center">
-              {image.title}
-            </h1>
-          )}
-          
+          {image.title && <h1 className="text-headline-lg text-center font-bold">{image.title}</h1>}
+
           {/* Main Image */}
           <div className="flex justify-center">
-            <div className="max-w-4xl w-full">
+            <div className="w-full max-w-4xl">
               <AirImage
                 link={image.link}
                 altText={image.altText ?? image.title ?? 'Preview image'}
-                className="w-full h-auto rounded-lg shadow-lg"
+                className="h-auto w-full rounded-lg shadow-lg"
                 priority
               />
             </div>
           </div>
 
           {/* Image Metadata */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 max-w-2xl mx-auto">
-            <h3 className="text-lg font-semibold mb-4">Image Details</h3>
+          <div className="mx-auto max-w-2xl rounded-lg bg-gray-50 p-6 dark:bg-gray-800">
+            <h3 className="mb-4 text-lg font-semibold">Image Details</h3>
             <div className="space-y-2 text-sm">
               <div>
                 <span className="font-medium">Title:</span> {image.title ?? 'No title'}
@@ -143,12 +139,12 @@ function ImagePreviewContent() {
                 <span className="font-medium">Alt Text:</span> {image.altText ?? 'No alt text'}
               </div>
               <div>
-                <span className="font-medium">URL:</span> 
-                <a 
-                  href={image.link} 
-                  target="_blank" 
+                <span className="font-medium">URL:</span>
+                <a
+                  href={image.link}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-2 text-blue-600 hover:text-blue-800 break-all"
+                  className="ml-2 break-all text-blue-600 hover:text-blue-800"
                 >
                   {image.link}
                 </a>
@@ -159,7 +155,7 @@ function ImagePreviewContent() {
       </Container>
 
       {/* Small indicator that this is a preview */}
-      <div className="fixed right-4 bottom-4 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md z-20">
+      <div className="fixed right-4 bottom-4 z-20 rounded bg-blue-100 p-2 text-xs text-blue-800 shadow-md">
         <p>Image Preview</p>
         <p className="text-xs opacity-75">ID: {image.sys.id}</p>
         <p className="text-xs opacity-75">Title: {image.title || 'No title'}</p>

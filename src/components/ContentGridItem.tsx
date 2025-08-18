@@ -9,11 +9,18 @@ import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGrid';
+import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
+import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful-api/content-grid';
+import { useState, useEffect } from 'react';
 
 export function ContentGridItem(props: ContentGridItemType) {
-  const { icon, heading, description, link, image, sys } = props;
-  const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
+  const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
+  const [linkHref, setLinkHref] = useState<string>('#');
+  const [fullContentData, setFullContentData] = useState<ContentGridItemType | null>(null);
+
+  // Use full content data if available, otherwise fall back to props
+  const contentData = fullContentData ?? props;
+  const { sys, heading, description, icon, image } = contentData;
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -49,37 +56,53 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
+  // Fetch full content data and link details on component mount
+  useEffect(() => {
+    const fetchContentData = async () => {
+      if (!sys?.id) {
+        return;
+      }
+
+      try {
+        // Fetch full content data
+        const fullData = await getContentGridItemById(sys.id);
+        if (fullData) {
+          setFullContentData(fullData);
+        }
+
+        // Fetch link details
+        const linkData = await getContentGridItemLink(sys.id);
+        if (linkData?.link?.slug) {
+          setLinkHref(`/${linkData.link.slug}`);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void fetchContentData();
+  }, [sys?.id]);
+
+  const getHref = () => {
+    return linkHref;
+  };
+
   const LinkItem = () => {
     return (
-      <Link href={`/${link.slug}`} className="group block h-full w-full">
-        <Box
-          direction="col"
-          className="border-border bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col border p-6 transition-all"
-        >
-          <div>
-            <div className="mb-6">{renderIcon(false)}</div>
-
-            <Box gap={2} className="mb-4 flex items-start">
-              <h2
-                className="text-headline-sm line-clamp-2 flex-1 font-medium"
-                {...inspectorProps({ fieldId: 'heading' })}
-              >
-                {heading}
-              </h2>
-              <span className="text-muted-foreground group-hover:text-primary mt-1 transition-transform group-hover:translate-x-1">
-                <ArrowUpRight className="size-5" />
+      <Link href={getHref()} className="group flex flex-col">
+        <Box direction="col" gap={4}>
+          <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem]">
+            {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
+          </Box>
+          <Box direction="col" gap={2}>
+            <Box direction="row" gap={2} className="items-center">
+              <h3 className="text-headline-sm group-hover:text-primary">{heading}</h3>
+              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-transform group-hover:translate-x-1 group-hover:opacity-100">
+                <ArrowUpRight className="size-10 stroke-1" />
               </span>
             </Box>
-
-            {description && (
-              <p
-                className="text-muted-foreground group-hover:text-primary/80 line-clamp-3 text-sm"
-                {...inspectorProps({ fieldId: 'description' })}
-              >
-                {description}
-              </p>
-            )}
-          </div>
+            <p className="text-body-sm group-hover:text-primary">{description}</p>
+          </Box>
         </Box>
       </Link>
     );
@@ -124,7 +147,7 @@ export function ContentGridItem(props: ContentGridItemType) {
             </div>
 
             <div className="mt-auto">
-              <Link href={`/${link.slug}`} className="inline-block w-auto">
+              <Link href={getHref()} className="inline-block w-auto">
                 <Button
                   variant="outlineWhite"
                   className="transition-all hover:bg-white hover:text-black"

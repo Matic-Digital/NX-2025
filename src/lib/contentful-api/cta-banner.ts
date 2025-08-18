@@ -86,3 +86,40 @@ export async function getAllCtaBanners(preview = false): Promise<CtaBannerRespon
     throw new Error('Unknown error fetching CtaBanners');
   }
 }
+
+export async function getCtaBannerById(id: string, preview = false): Promise<CtaBanner | null> {
+  try {
+    const response = await fetchGraphQL<CtaBanner>(
+      `query GetCtaBannerById($id: String!, $preview: Boolean!) {
+        ctaBanner(id: $id, preview: $preview) {
+          ${CTABANNER_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { ctaBanner?: CtaBanner };
+
+    // Validate the data structure
+    if (!data.ctaBanner) {
+      throw new ContentfulError('Failed to fetch CtaBanner from Contentful');
+    }
+
+    return data.ctaBanner;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching CtaBanner: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching CtaBanner');
+  }
+}
