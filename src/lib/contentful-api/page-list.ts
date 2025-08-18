@@ -120,14 +120,18 @@ export async function checkPageBelongsToPageList(
 
     // Check each PageList to see if the page belongs to it
     for (const pageList of pageLists.items) {
-      console.log(`Checking PageList: ${pageList.title ?? 'Untitled'} (${pageList.slug ?? 'no-slug'})`);
+      console.log(
+        `Checking PageList: ${pageList.title ?? 'Untitled'} (${pageList.slug ?? 'no-slug'})`
+      );
 
       if (!pageList.pagesCollection?.items?.length) {
         console.log(`PageList ${pageList.title ?? 'Untitled'} has no pages`);
         continue;
       }
 
-      console.log(`PageList ${pageList.title ?? 'Untitled'} has ${pageList.pagesCollection.items.length} pages`);
+      console.log(
+        `PageList ${pageList.title ?? 'Untitled'} has ${pageList.pagesCollection.items.length} pages`
+      );
 
       // Log all page IDs in this PageList for debugging
       const pageIds = pageList.pagesCollection.items

@@ -10,13 +10,17 @@ import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
-import { getContentGridItemLink } from '@/lib/contentful-api/content-grid';
+import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful-api/content-grid';
 import { useState, useEffect } from 'react';
 
 export function ContentGridItem(props: ContentGridItemType) {
-  const { sys, heading, description, icon, image } = props;
-  const inspectorProps = useContentfulInspectorMode({ entryId: sys?.id });
+  const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
   const [linkHref, setLinkHref] = useState<string>('#');
+  const [fullContentData, setFullContentData] = useState<ContentGridItemType | null>(null);
+
+  // Use full content data if available, otherwise fall back to props
+  const contentData = fullContentData ?? props;
+  const { sys, heading, description, icon, image } = contentData;
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -52,33 +56,31 @@ export function ContentGridItem(props: ContentGridItemType) {
     );
   };
 
-  const _ContentItem = () => {
-    return (
-      <div>
-        <div>ContentItem</div>
-      </div>
-    );
-  };
-
-  // Fetch link details on component mount
+  // Fetch full content data and link details on component mount
   useEffect(() => {
-    const fetchLinkDetails = async () => {
+    const fetchContentData = async () => {
       if (!sys?.id) {
         return;
       }
 
       try {
+        // Fetch full content data
+        const fullData = await getContentGridItemById(sys.id);
+        if (fullData) {
+          setFullContentData(fullData);
+        }
+
+        // Fetch link details
         const linkData = await getContentGridItemLink(sys.id);
         if (linkData?.link?.slug) {
           setLinkHref(`/${linkData.link.slug}`);
         }
-      } catch {
-        // Silently handle the error - links will remain as '#' if they fail to resolve
-        // This prevents console spam while maintaining functionality
+      } catch (error) {
+        console.error(error);
       }
     };
 
-    void fetchLinkDetails();
+    void fetchContentData();
   }, [sys?.id]);
 
   const getHref = () => {
@@ -90,7 +92,7 @@ export function ContentGridItem(props: ContentGridItemType) {
       <Link href={getHref()} className="group block h-full w-full">
         <Box
           direction="col"
-          className="border-border bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col border p-6 transition-all"
+          className="bg-card hover:bg-accent/10 flex h-[500px] w-full flex-col p-6 transition-all"
         >
           <div>
             {icon && <div className="mb-6">{renderIcon(false)}</div>}

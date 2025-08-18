@@ -13,9 +13,6 @@ export const SectionHeadingSchema = z.object({
       items: z.array(ButtonSchema)
     })
     .optional(),
-  componentType: z.string().optional(),
-  isDarkMode: z.boolean().optional(),
-  isCenter: z.boolean().optional(),
   __typename: z.string().optional()
 });
 
