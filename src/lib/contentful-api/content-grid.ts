@@ -81,6 +81,49 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
 `;
 
 /**
+ * Fetches a single ContentGrid by ID from Contentful
+ * @param id - The ID of the ContentGrid to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to ContentGrid or null if not found
+ */
+export async function getContentGridById(id: string, preview = false): Promise<ContentGrid | null> {
+  try {
+    const response = await fetchGraphQL(
+      `query GetContentGridById($id: String!, $preview: Boolean!) {
+        contentGrid(id: $id, preview: $preview) {
+          ${CONTENTGRID_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { contentGrid?: ContentGrid };
+
+    // Return null if content grid not found
+    if (!data.contentGrid) {
+      return null;
+    }
+
+    return data.contentGrid;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching ContentGrid: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching ContentGrid');
+  }
+}
+
+/**
  * Fetches all ContentGrids from Contentful
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to ContentGrids response with pagination info

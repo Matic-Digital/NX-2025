@@ -16,6 +16,8 @@
  * - Support for various content types through the pageContentCollection
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client';
 
 import React from 'react';
@@ -23,15 +25,18 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import { Container, Box } from '@/components/global/matic-ds';
-import { Header } from './Header';
-import { Footer } from './Footer';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Image as ImageType } from '@/types/contentful/Image';
 
 // Import content components for dynamic rendering
-// Components are imported dynamically in the renderContentItem function
+import { BannerHero } from '../BannerHero';
+import { Content } from '../Content';
+import { ContentGrid } from '../ContentGrid';
+import { CtaBanner } from '../CtaBanner';
+import { CtaGrid } from '../CtaGrid';
+import { ImageBetween } from '../ImageBetween';
+import { Slider } from '../Slider';
 
 interface PageProps {
   sys: {
@@ -113,91 +118,74 @@ export function Page(props: PageProps) {
 
   return (
     <div className="page-component">
-      {/* Render the page-specific header if available */}
-      {page.header && (
-        <div
-          {...inspectorProps({ fieldId: 'header' })}
-          className="page-specific-header"
-          data-component-type="Page Header"
-        >
-          <Header {...page.header} />
-        </div>
-      )}
-
-      <Container className="py-16 md:py-24">
-        <Box className="flex-col items-start">
-          {page.title && (
-            <h1
-              className="text-headline-md sm:text-headline-lg mb-6 max-w-4xl font-bold tracking-tight"
-              {...inspectorProps({ fieldId: 'title' })}
-            >
-              {page.title}
-            </h1>
-          )}
-
-          {page.description && (
-            <p
-              className="text-muted-foreground mb-8 max-w-2xl text-lg md:text-xl"
-              {...inspectorProps({ fieldId: 'description' })}
-            >
-              {page.description}
-            </p>
-          )}
-
-          {page.slug && (
-            <div className="text-muted-foreground mb-8 text-sm">
-              <span className="font-medium">Slug: </span>
-              <span {...inspectorProps({ fieldId: 'slug' })}>
-                {page.parentPageList?.slug ? `${page.parentPageList.slug}/${page.slug}` : page.slug}
-              </span>
-            </div>
-          )}
-
-          {/* Add a link to the page */}
-          {page.slug && (
-            <div className="mt-4">
-              <a
-                href={
-                  page.parentPageList?.slug
-                    ? `/${page.parentPageList.slug}/${page.slug}`
-                    : `/${page.slug}`
-                }
-                className="inline-flex items-center rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-              >
-                View Page
-              </a>
-            </div>
-          )}
-        </Box>
-      </Container>
-
       {/* Render Page Content */}
       <div {...inspectorProps({ fieldId: 'pageContentCollection' })}>
         {page.pageContentCollection?.items && page.pageContentCollection.items.length > 0 && (
           <div className="page-content">
             {page.pageContentCollection.items.map((content, index) => {
-              // Default case if content type is not recognized
-              return (
-                <div key={content.sys.id || index} className="mb-12">
-                  <p className="text-sm text-gray-500">
-                    Unknown content type: {content.__typename}
-                  </p>
-                </div>
-              );
+              const key = content.sys?.id || index;
+
+              try {
+                switch (content.__typename) {
+                  case 'BannerHero':
+                    return <BannerHero key={key} {...(content as any)} />;
+
+                  case 'Content':
+                    return <Content key={key} {...(content as any)} />;
+
+                  case 'ContentGrid':
+                    return <ContentGrid key={key} {...(content as any)} />;
+
+                  case 'CtaBanner':
+                    return <CtaBanner key={key} {...(content as any)} />;
+
+                  case 'CtaGrid':
+                    return <CtaGrid key={key} {...(content as any)} />;
+
+                  case 'ImageBetween':
+                    return <ImageBetween key={key} {...(content as any)} />;
+
+                  case 'Slider':
+                    return <Slider key={key} {...(content as any)} />;
+
+                  default:
+                    return (
+                      <div key={key} className="mb-12">
+                        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                          <p className="text-sm text-yellow-800">
+                            <strong>Unsupported Content Type:</strong> {content.__typename}
+                          </p>
+                          <details className="mt-2">
+                            <summary className="cursor-pointer text-xs text-yellow-600">
+                              Debug Info
+                            </summary>
+                            <pre className="mt-1 text-xs text-yellow-600">
+                              {JSON.stringify(content, null, 2)}
+                            </pre>
+                          </details>
+                        </div>
+                      </div>
+                    );
+                }
+              } catch (error) {
+                console.error(`Error rendering content item ${index}:`, error, content);
+                return (
+                  <div key={key} className="mb-12">
+                    <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                      <p className="text-sm text-red-800">
+                        <strong>Render Error:</strong> {content.__typename}
+                      </p>
+                      <p className="mt-1 text-xs text-red-600">
+                        {error instanceof Error ? error.message : 'Unknown error'}
+                      </p>
+                    </div>
+                  </div>
+                );
+              }
             })}
           </div>
         )}
       </div>
-      {/* Render the page-specific footer if available */}
-      {page.footer && (
-        <div
-          {...inspectorProps({ fieldId: 'footer' })}
-          className="page-specific-footer"
-          data-component-type="Page Footer"
-        >
-          <Footer {...page.footer} />
-        </div>
-      )}
     </div>
   );
 }
