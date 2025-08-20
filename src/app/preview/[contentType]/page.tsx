@@ -42,6 +42,7 @@ import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getImageBetweenById } from '@/lib/contentful-api/image-between';
 import { getSliderById } from '@/lib/contentful-api/slider';
+import { getProductById } from '@/lib/contentful-api/product';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -109,6 +110,13 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     containerClass: 'min-h-screen',
     usePageLayout: true
   },
+  product: {
+    fetchFn: getProductById,
+    component: ProductAsPage,
+    entityName: 'Product',
+    containerClass: 'min-h-screen',
+    usePageLayout: true
+  },
   header: {
     fetchFn: getHeaderById,
     component: Header,
@@ -123,7 +131,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   }
 } as const;
 
-type ContentType = keyof typeof contentTypeConfig;
+type _ContentType = keyof typeof contentTypeConfig;
 
 interface PreviewContentProps {
   contentType: string;
@@ -136,6 +144,24 @@ interface ContentfulContent {
     footer?: unknown;
   };
   [key: string]: unknown;
+}
+
+// Lightweight wrapper to render a Product using the Page component API
+// Maps Product.itemsCollection -> Page.pageContentCollection
+interface ProductLikeForPreview {
+  itemsCollection?: unknown;
+  pageContentCollection?: unknown;
+  [key: string]: unknown;
+}
+
+function ProductAsPage(props: ProductLikeForPreview) {
+  const pageContentCollection = props.itemsCollection ?? props.pageContentCollection;
+  const mapped: ProductLikeForPreview = {
+    ...props,
+    pageContentCollection
+  };
+  // Page expects specific fields like sys; cast to any to avoid TS prop mismatch in preview adapter
+  return <Page {...(mapped as any)} />;
 }
 
 function PreviewContent({ contentType }: PreviewContentProps) {
