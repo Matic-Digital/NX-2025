@@ -87,7 +87,26 @@ export async function getProductById(id: string, preview = false): Promise<Produ
       return null;
     }
 
-    return data.product;
+    const product = data.product;
+
+    // Hydrate full content for each component in itemsCollection so components receive required fields
+    if (product.itemsCollection?.items) {
+      const hydratedItems = await Promise.all(
+        product.itemsCollection.items.map(async (item) => {
+          if (!item?.__typename || !item.sys?.id) {
+            return item;
+          }
+          const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
+          return fullComponent ?? item;
+        })
+      );
+
+      if (product.itemsCollection) {
+        product.itemsCollection.items = hydratedItems as typeof product.itemsCollection.items;
+      }
+    }
+
+    return product;
   } catch (error) {
     if (error instanceof ContentfulError) {
       throw error;
