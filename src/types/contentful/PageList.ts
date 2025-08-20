@@ -45,7 +45,14 @@ type PageListType = {
   title?: string;
   slug?: string;
   pageLayout?: unknown;
-  pageContentCollection?: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> };
+  pageContentCollection?: {
+    items: Array<{
+      sys: { id: string };
+      title?: string;
+      description?: string;
+      __typename?: string;
+    }>;
+  };
   pagesCollection?: { items: PageListPagesType[] };
   __typename?: string;
 };

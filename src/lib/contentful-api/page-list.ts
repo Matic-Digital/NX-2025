@@ -367,12 +367,30 @@ export async function getPageListBySlug(
     );
 
     // Safely extract page content with proper error checking
-    let pageContent: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } | undefined = undefined;
+    let pageContent:
+      | {
+          items: Array<{
+            sys: { id: string };
+            title?: string;
+            description?: string;
+            __typename?: string;
+          }>;
+        }
+      | undefined = undefined;
     try {
       const items = pageContentResponse.data?.pageListCollection?.items;
       if (items && items.length > 0 && items[0]) {
         // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as { pageContentCollection?: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } };
+        const pageListItem = items[0] as {
+          pageContentCollection?: {
+            items: Array<{
+              sys: { id: string };
+              title?: string;
+              description?: string;
+              __typename?: string;
+            }>;
+          };
+        };
         pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
@@ -500,12 +518,30 @@ export async function getPageListById(
     );
 
     // Safely extract page content with proper error checking
-    let pageContent: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } | undefined = undefined;
+    let pageContent:
+      | {
+          items: Array<{
+            sys: { id: string };
+            title?: string;
+            description?: string;
+            __typename?: string;
+          }>;
+        }
+      | undefined = undefined;
     try {
       const items = pageContentResponse.data?.pageListCollection?.items;
       if (items && items.length > 0 && items[0]) {
         // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as { pageContentCollection?: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } };
+        const pageListItem = items[0] as {
+          pageContentCollection?: {
+            items: Array<{
+              sys: { id: string };
+              title?: string;
+              description?: string;
+              __typename?: string;
+            }>;
+          };
+        };
         pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {

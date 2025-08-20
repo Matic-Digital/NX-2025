@@ -123,7 +123,6 @@ export async function getContentGridById(id: string, preview = false): Promise<C
   }
 }
 
-
 /**
  * Fetches all ContentGrids from Contentful
  * @param preview - Whether to fetch draft content
