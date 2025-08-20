@@ -32,6 +32,12 @@ import {
 import { Container, Box, Main } from '@/components/global/matic-ds';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful';
 
+interface SectionHeadingProps extends SectionHeadingType {
+  componentType?: string;
+  isDarkMode?: boolean;
+  isProductContext?: boolean;
+}
+
 /**
  * Section Heading Preview Page
  * This page is used for previewing Section Heading content from Contentful
@@ -53,7 +59,7 @@ function SectionHeadingPreviewLoading() {
 function SectionHeadingPreviewContent() {
   const searchParams = useSearchParams();
   const sectionHeadingId = searchParams?.get('id') ?? '';
-  const [sectionHeading, setSectionHeading] = useState<SectionHeadingType | null>(null);
+  const [sectionHeading, setSectionHeading] = useState<SectionHeadingProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 

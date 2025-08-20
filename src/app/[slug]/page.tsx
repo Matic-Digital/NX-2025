@@ -31,9 +31,9 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { CtaBanner as CtaBannerType } from '@/types/contentful/CtaBanner';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageListContent } from '@/types/contentful/PageList';
 import {
   extractOpenGraphImage,
   extractSEOTitle,
@@ -287,30 +287,46 @@ function renderPageList(pageList: PageListType) {
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
-  // Extract page content items if available
-  const pageContentItems = pageList.pageContentCollection?.items ?? [];
+  // Extract page content items if available and type them properly
+  const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
+    Boolean
+  ) as PageListContent[];
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      {/* Render components from pageContentCollection */}
-      {pageContentItems.map((item, index) => {
-        if (item?.__typename === 'CtaBanner') {
-          const CtaBannerComponent = componentMap.CtaBanner;
-          // Cast to CtaBanner type to ensure TypeScript knows this has the right properties
-          return (
-            <CtaBannerComponent
-              key={item.sys.id || `cta-banner-${index}`}
-              {...(item as CtaBannerType)}
-            />
-          );
+      <h1 className="sr-only">{pageList.title}</h1>
+      {/* Render components from pageContentCollection directly */}
+      {pageContentItems.map((component) => {
+        if (!component) return null;
+
+        // Type guard to check if component has __typename
+        if (!('__typename' in component)) {
+          console.warn('Component missing __typename:', component);
+          return null;
         }
+
+        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+
+        // Check if we have a component for this type
+        if (typeName && typeName in componentMap) {
+          const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return <ComponentType key={component.sys.id} {...(component as any)} />;
+        }
+
+        // Log a warning if we don't have a component for this type
+        console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
 
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Render the PageList component */}
-        <PageList {...pageList} />
-      </div>
+      {/* Render the PageList component for pages collection only */}
+      <PageList
+        sys={pageList.sys}
+        title={pageList.title}
+        slug={pageList.slug}
+        pagesCollection={pageList.pagesCollection}
+        pageContentCollection={undefined}
+      />
     </PageLayout>
   );
 }

@@ -1,10 +1,11 @@
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTIONHEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS } from './graphql-fields';
 import type { Slider, SliderItem } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { POST_SLIDER_GRAPHQL_FIELDS } from './post';
+import { FEATURE_SLIDERITEM_GRAPHQL_FIELDS } from './feature-slider-item';
 
 // Minimal slider item fields with inline fragments for union types
 const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
@@ -12,7 +13,7 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
     ${SYS_FIELDS}
     title
     heading {
-      ${SECTIONHEADING_GRAPHQL_FIELDS}
+      ${SECTION_HEADING_GRAPHQL_FIELDS}
     }
     image {
       ${IMAGE_GRAPHQL_FIELDS}
@@ -24,6 +25,9 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
   ... on Post {
     ${POST_SLIDER_GRAPHQL_FIELDS}
   }
+  ... on FeatureSliderItem {
+    ${FEATURE_SLIDERITEM_GRAPHQL_FIELDS}
+  }
 `;
 
 // Specific fields for individual SliderItem queries (no union types)
@@ -31,7 +35,7 @@ const SLIDERITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   heading {
-    ${SECTIONHEADING_GRAPHQL_FIELDS}
+    ${SECTION_HEADING_GRAPHQL_FIELDS}
   }
   image {
     ${IMAGE_GRAPHQL_FIELDS}

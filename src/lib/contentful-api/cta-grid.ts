@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaGrid } from '@/types/contentful';
-import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from './graphql-fields';
+import { SYS_FIELDS, INTERNAL_LINK_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from './content-grid';
 

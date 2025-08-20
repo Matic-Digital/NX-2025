@@ -139,7 +139,7 @@ function ServicePreviewContent() {
                 <div>
                   <h3 className="text-md mb-3 text-center font-medium">Active State</h3>
                   <ServiceCard
-                    {...liveServiceData}
+                    serviceId={liveServiceData.sys.id}
                     cardId={liveServiceData.sys.id}
                     isFirst={true}
                   />
@@ -152,7 +152,7 @@ function ServicePreviewContent() {
                 <div>
                   <h3 className="text-md mb-3 text-center font-medium">Inactive State</h3>
                   <ServiceCard
-                    {...liveServiceData}
+                    serviceId={liveServiceData.sys.id}
                     cardId={`${liveServiceData.sys.id}-inactive`}
                     isFirst={false}
                   />

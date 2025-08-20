@@ -24,6 +24,11 @@ export const INTERNAL_LINK_FIELDS = `
     sys { id }
     slug
   }
+  ... on Product {
+    sys { id }
+    slug
+    __typename
+  }
 `;
 
 // Define all fragments using lazy initialization pattern

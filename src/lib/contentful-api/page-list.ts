@@ -1,24 +1,23 @@
 import { fetchGraphQL } from '../api';
-
 import type { PageList, PageListResponse, PageListWithRefs } from '@/types/contentful/PageList';
 import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout } from '@/types/contentful/PageLayout';
 import { ContentfulError, NetworkError } from '../errors';
+import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
+import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
+import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import { SYS_FIELDS } from './graphql-fields';
+
+import { getHeaderById } from './header';
+import { getFooterById } from './footer';
+
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
   header: Header | null;
   footer: Footer | null;
 }
-
-import { getHeaderById } from './header';
-import { getFooterById } from './footer';
-
-import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
-import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
-import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import {
   getEXTERNAL_PAGE_FIELDS,
   getPAGE_BASIC_FIELDS,
@@ -53,6 +52,9 @@ export const PAGELIST_MINIMAL_FIELDS = `
       ... on Post {
         ${getPOST_BASIC_FIELDS()}
       }
+      ... on PageList {
+        ${getPAGELIST_BASIC_FIELDS()}
+      }
     }
   }
 `;
@@ -86,6 +88,9 @@ export const PAGELIST_SIMPLIFIED_FIELDS = `
       ... on Post {
         ${getPOST_BASIC_FIELDS()}
       }
+      ... on PageList {
+        ${getPAGELIST_BASIC_FIELDS()}
+      }
     }
   }
 `;
@@ -115,24 +120,30 @@ export async function checkPageBelongsToPageList(
 
     // Check each PageList to see if the page belongs to it
     for (const pageList of pageLists.items) {
-      console.log(`Checking PageList: ${pageList.title} (${pageList.slug})`);
+      console.log(
+        `Checking PageList: ${pageList.title ?? 'Untitled'} (${pageList.slug ?? 'no-slug'})`
+      );
 
-      if (!pageList.pagesCollection?.items.length) {
-        console.log(`PageList ${pageList.title} has no pages`);
+      if (!pageList.pagesCollection?.items?.length) {
+        console.log(`PageList ${pageList.title ?? 'Untitled'} has no pages`);
         continue;
       }
 
-      console.log(`PageList ${pageList.title} has ${pageList.pagesCollection.items.length} pages`);
+      console.log(
+        `PageList ${pageList.title ?? 'Untitled'} has ${pageList.pagesCollection.items.length} pages`
+      );
 
       // Log all page IDs in this PageList for debugging
-      const pageIds = pageList.pagesCollection.items.map((item) => item.sys.id);
-      console.log(`Page IDs in PageList ${pageList.title}:`, pageIds);
+      const pageIds = pageList.pagesCollection.items
+        .map((item) => item?.sys?.id)
+        .filter((id): id is string => Boolean(id));
+      console.log(`Page IDs in PageList ${pageList.title ?? 'Untitled'}:`, pageIds);
 
-      const pageInList = pageList.pagesCollection.items.some((item) => item.sys.id === pageId);
+      const pageInList = pageList.pagesCollection.items.some((item) => item?.sys?.id === pageId);
 
       if (pageInList) {
         console.log(
-          `Page with ID '${pageId}' belongs to PageList '${pageList.title}' (${pageList.slug})`
+          `Page with ID '${pageId}' belongs to PageList '${pageList.title ?? 'Untitled'}' (${pageList.slug ?? 'no-slug'})`
         );
         return pageList;
       }
@@ -260,6 +271,13 @@ export async function getPageListBySlug(
                   title
                   slug
                 }
+                ... on PageList {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
               }
             }
             pageLayout {
@@ -322,33 +340,22 @@ export async function getPageListBySlug(
       `query GetPageListContent($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
-            pageContentCollection {
+            pageContentCollection(limit: 10) {
               items {
-                __typename
                 ... on BannerHero {
-                  sys {
-                    id
-                  }
+                  ${BANNERHERO_GRAPHQL_FIELDS}
                 }
                 ... on Content {
-                  sys {
-                    id
-                  }
+                  ${SYS_FIELDS}
                 }
                 ... on ContentGrid {
-                  sys {
-                    id
-                  }
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
                 }
                 ... on CtaBanner {
-                  sys {
-                    id
-                  }
+                  ${CTABANNER_GRAPHQL_FIELDS}
                 }
                 ... on ImageBetween {
-                  sys {
-                    id
-                  }
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
                 }
               }
             }
@@ -360,26 +367,26 @@ export async function getPageListBySlug(
     );
 
     // Safely extract page content with proper error checking
-    let pageContent = null;
+    let pageContent: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } | undefined = undefined;
     try {
       const items = pageContentResponse.data?.pageListCollection?.items;
       if (items && items.length > 0 && items[0]) {
         // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
-        pageContent = pageListItem.pageContentCollection ?? null;
+        const pageListItem = items[0] as { pageContentCollection?: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } };
+        pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
       console.warn('Failed to extract page list content:', error);
-      pageContent = null;
+      pageContent = undefined;
     }
 
     // Combine all the data
-    const result = {
+    const result: PageListWithHeaderFooter = {
       ...pageListData,
       header,
       footer,
       pageContentCollection: pageContent
-    } as PageListWithHeaderFooter;
+    };
 
     // Debug the PageList structure
     console.log('PageList structure:', {
@@ -493,26 +500,26 @@ export async function getPageListById(
     );
 
     // Safely extract page content with proper error checking
-    let pageContent = null;
+    let pageContent: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } | undefined = undefined;
     try {
       const items = pageContentResponse.data?.pageListCollection?.items;
       if (items && items.length > 0 && items[0]) {
         // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
-        pageContent = pageListItem.pageContentCollection ?? null;
+        const pageListItem = items[0] as { pageContentCollection?: { items: Array<{ sys: { id: string }; title?: string; description?: string; __typename?: string }> } };
+        pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
       console.warn('Failed to extract page list content:', error);
-      pageContent = null;
+      pageContent = undefined;
     }
 
     // Combine all the data
-    const result = {
+    const result: PageListWithHeaderFooter = {
       ...pageListData,
       header,
       footer,
       pageContentCollection: pageContent
-    } as PageListWithHeaderFooter;
+    };
 
     // Debug the PageList structure
     console.log('PageList structure:', {

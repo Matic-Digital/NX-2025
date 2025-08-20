@@ -9,18 +9,29 @@ import { AirImage } from '@/components/media/AirImage';
 import { Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading';
 import type { BannerHero } from '@/types/contentful/BannerHero';
+import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
-export function BannerHero(props: BannerHero) {
+interface BannerHeroProps extends BannerHero {
+  productContext?: {
+    type: 'product';
+  };
+}
+
+export function BannerHero(props: BannerHeroProps) {
   const bannerHero = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: bannerHero?.sys?.id });
+  const pathname = usePathname();
 
-  console.log('BannerHero props:', props);
-  console.log('BannerHero bannerHero:', bannerHero);
-  console.log('BannerHero heading data:', bannerHero?.heading);
+  // const isProductContext = pathname?.includes('/products/');
+  const isProductContext = pathname?.includes('/trackers/');
 
   return (
     <ErrorBoundary>
-      <Section className="relative flex h-[789px] items-end" {...inspectorProps}>
+      <Section
+        className={cn('relative flex h-[789px]', isProductContext ? 'items-center' : 'items-end')}
+        {...inspectorProps}
+      >
         {/* Background Image */}
         <AirImage
           link={bannerHero.backgroundImage.link}
@@ -31,7 +42,11 @@ export function BannerHero(props: BannerHero) {
 
         {/* Content Overlay */}
         <div className="relative z-10 container mx-auto w-full px-6 lg:px-8">
-          <SectionHeading {...bannerHero.heading} componentType="banner-hero" />
+          <SectionHeading
+            {...bannerHero.heading}
+            componentType="banner-hero"
+            isProductContext={isProductContext}
+          />
         </div>
       </Section>
     </ErrorBoundary>

@@ -7,6 +7,7 @@ import {
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 import { getCtaGridById } from '@/lib/contentful-api/cta-grid';
+import { checkPageBelongsToPageList } from '@/lib/contentful-api/page-list';
 import type { CtaGrid } from '@/types/contentful/CtaGrid';
 import { ErrorBoundary } from './global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
@@ -16,8 +17,11 @@ import { Box, Container } from '@/components/global/matic-ds';
 export function CtaGrid(props: CtaGrid) {
   const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);
   const [loading, setLoading] = useState(true);
+  const [productUrls, setProductUrls] = useState<Record<string, string>>({});
   const liveCtaGrid = useContentfulLiveUpdates(ctaGrid);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveCtaGrid?.sys?.id });
+
+  console.log('🚀 CtaGrid props:', ctaGrid);
 
   useEffect(() => {
     const fetchCtaGrid = async () => {
@@ -36,6 +40,44 @@ export function CtaGrid(props: CtaGrid) {
 
     void fetchCtaGrid();
   }, [props.sys.id]);
+
+  // Generate correct URLs for Products by looking up their parent PageList
+  useEffect(() => {
+    const generateProductUrls = async () => {
+      if (!liveCtaGrid.ctaCollection?.items) return;
+
+      const urlMap: Record<string, string> = {};
+
+      for (const cta of liveCtaGrid.ctaCollection.items) {
+        if (cta.internalLink?.__typename === 'Product') {
+          try {
+            // Find the parent PageList for this Product
+            const parentPageList = await checkPageBelongsToPageList(cta.internalLink.sys.id, false);
+
+            if (parentPageList) {
+              // Use the PageList slug + Product slug format
+              urlMap[cta.internalLink.sys.id] = `/${parentPageList.slug}/${cta.internalLink.slug}`;
+            } else {
+              // Fallback to the old format if no parent PageList found
+              console.warn(`No parent PageList found for Product: ${cta.internalLink.slug}`);
+              urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
+            }
+          } catch (error) {
+            console.error(
+              `Error finding parent PageList for Product ${cta.internalLink.slug}:`,
+              error
+            );
+            // Fallback to the old format on error
+            urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
+          }
+        }
+      }
+
+      setProductUrls(urlMap);
+    };
+
+    void generateProductUrls();
+  }, [liveCtaGrid.ctaCollection?.items]);
 
   // Show loading state
   if (loading) {
@@ -90,24 +132,37 @@ export function CtaGrid(props: CtaGrid) {
             {/* CTA Button */}
             {liveCtaGrid.ctaCollection?.items?.length > 0 && (
               <div className="mt-auto">
-                {liveCtaGrid.ctaCollection.items.map((cta, index) => (
-                  <Button
-                    key={cta.sys?.id || index}
-                    variant="primary"
-                    {...inspectorProps({ fieldId: 'ctaCollection' })}
-                    asChild
-                  >
-                    {cta.internalLink ? (
-                      <Link href={`/${cta.internalLink.slug}`}>{cta.text || cta.internalText}</Link>
-                    ) : cta.externalLink ? (
-                      <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
-                        {cta.text || cta.internalText}
-                      </a>
-                    ) : (
-                      <span>{cta.text || cta.internalText}</span>
-                    )}
-                  </Button>
-                ))}
+                {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                  const isProduct = cta.internalLink?.__typename === 'Product';
+
+                  return (
+                    <Button
+                      key={cta.sys?.id || index}
+                      variant="primary"
+                      {...inspectorProps({ fieldId: 'ctaCollection' })}
+                      asChild
+                    >
+                      {cta.internalLink ? (
+                        <Link
+                          href={
+                            isProduct
+                              ? (productUrls[cta.internalLink.sys.id] ??
+                                `/products/${cta.internalLink.slug}`)
+                              : `/${cta.internalLink.slug}`
+                          }
+                        >
+                          {cta.text || cta.internalText}
+                        </Link>
+                      ) : cta.externalLink ? (
+                        <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
+                          {cta.text || cta.internalText}
+                        </a>
+                      ) : (
+                        <span>{cta.text || cta.internalText}</span>
+                      )}
+                    </Button>
+                  );
+                })}
               </div>
             )}
           </Box>
