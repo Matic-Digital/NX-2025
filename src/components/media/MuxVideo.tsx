@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import MuxVideoPlayer from '@mux/mux-video-react';
+import MuxVideo from '@mux/mux-video-react';
 import { getVideosByIds } from '@/lib/contentful-api/video';
 import type { Video, VideoSys } from '@/types/contentful';
 
-export function MuxVideo(props: VideoSys) {
+export function MuxVideoPlayer(props: VideoSys) {
   const [videoData, setVideoData] = useState<Video | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchVideoData = async () => {
       try {
+        setLoading(true);
         const videos = await getVideosByIds([props.sys.id]);
         if (videos.length > 0 && videos[0]) {
           setVideoData(videos[0]);
@@ -35,12 +36,15 @@ export function MuxVideo(props: VideoSys) {
   }
 
   return (
-    <MuxVideoPlayer
+    <MuxVideo
       playbackId={videoData.playbackId}
       metadata={{
         video_id: videoData.id,
         video_title: videoData.title
       }}
+      controls
+      muted
+      poster={videoData.posterImage?.link}
       className="h-full w-full"
     />
   );

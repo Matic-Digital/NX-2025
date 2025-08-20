@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { getSlidersByIds } from '@/lib/contentful-api/slider';
 import { cn } from '@/lib/utils';
 import {
@@ -11,15 +12,22 @@ import {
   CarouselPrevious,
   type CarouselApi
 } from '@/components/ui/carousel';
-import type { Slider, SliderSys, SliderItem, PostSliderItem, Image } from '@/types/contentful';
+import type {
+  Slider,
+  SliderSys,
+  SliderItem,
+  PostSliderItem,
+  Image as ImageType,
+  FeatureSliderItem
+} from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
-import { Box } from '@/components/global/matic-ds';
+import { Box, Container } from '@/components/global/matic-ds';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 
-type SliderItemType = SliderItem | PostSliderItem | Image;
+type SliderItemType = SliderItem | PostSliderItem | ImageType | FeatureSliderItem;
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -58,7 +66,7 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
 
   // Handle Image type
   if (updatedItem.__typename === 'Image') {
-    const imageItem = updatedItem as Image;
+    const imageItem = updatedItem as ImageType;
     return (
       <div className={baseCardClasses}>
         <AirImage
@@ -154,6 +162,38 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
     );
   }
 
+  // Handle FeatureSliderItem type
+  if (updatedItem.__typename === 'FeatureSliderItem') {
+    const featureSliderItem = updatedItem as FeatureSliderItem;
+    const isCurrentSlide = current === index + 1;
+
+    return (
+      <Box
+        direction="col"
+        gap={4}
+        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
+      >
+        <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
+          <Image
+            src={featureSliderItem.icon?.url ?? ''}
+            alt={featureSliderItem.title}
+            className={cn('filter', isCurrentSlide ? 'invert' : '')}
+            width={60}
+            height={60}
+          />
+        </div>
+        <Box direction="col" gap={2}>
+          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {featureSliderItem.title}
+          </h3>
+          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {featureSliderItem.description}
+          </p>
+        </Box>
+      </Box>
+    );
+  }
+
   // Fallback for unknown types
   return (
     <div className={baseCardClasses}>
@@ -170,7 +210,9 @@ interface GenericSliderProps {
   api: CarouselApi | undefined;
   setApi: (api: CarouselApi) => void;
   showIndicators?: boolean;
+  showAltIndicators?: boolean;
   showNavigation?: boolean;
+  showAltNavigation?: boolean;
   fullWidth?: boolean;
 }
 
@@ -180,7 +222,9 @@ const GenericSlider = ({
   api,
   setApi,
   showIndicators = false,
+  showAltIndicators = false,
   showNavigation = true,
+  showAltNavigation = false,
   fullWidth = true
 }: GenericSliderProps) => {
   return (
@@ -198,14 +242,23 @@ const GenericSlider = ({
         opts={{ loop: true }}
       >
         <CarouselContent>
-          {sliderData.itemsCollection.items.map((item, index) => (
-            <CarouselItem
-              key={`${item.sys.id}-${index}`}
-              className={cn(fullWidth ? 'basis-full sm:basis-4/5' : 'basis-full')}
-            >
-              <SliderCard index={index} current={current} item={item} />
-            </CarouselItem>
-          ))}
+          {sliderData.itemsCollection.items.map((item, index) => {
+            const isFeatureSlider = item.__typename === 'FeatureSliderItem';
+            return (
+              <CarouselItem
+                key={`${item.sys.id}-${index}`}
+                className={cn(
+                  isFeatureSlider
+                    ? 'basis-[411px]'
+                    : fullWidth
+                      ? 'basis-full sm:basis-4/5'
+                      : 'basis-full'
+                )}
+              >
+                <SliderCard index={index} current={current} item={item} />
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
         {showNavigation && (
           <>
@@ -218,6 +271,18 @@ const GenericSlider = ({
               variant="outline"
             />
           </>
+        )}
+        {showAltNavigation && (
+          <div className="absolute -top-12 right-29 hidden gap-4 md:flex">
+            <CarouselPrevious
+              className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              variant="outline"
+            />
+            <CarouselNext
+              className="relative right-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              variant="outline"
+            />
+          </div>
         )}
       </Carousel>
 
@@ -233,6 +298,22 @@ const GenericSlider = ({
             />
           ))}
         </div>
+      )}
+
+      {showAltIndicators && (
+        <Container>
+          <div className="mx-auto mt-12 flex h-1">
+            {sliderData.itemsCollection.items.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
+                  'bg-surface-invert': current === index + 1
+                })}
+              />
+            ))}
+          </div>
+        </Container>
       )}
     </div>
   );
@@ -301,6 +382,7 @@ export function Slider(props: SliderSys) {
   }
 
   const isImageSlider = firstItem.__typename === 'Image';
+  const isFeatureSliderItemSlider = firstItem.__typename === 'FeatureSliderItem';
 
   // Configure slider based on content type
   return (
@@ -310,7 +392,9 @@ export function Slider(props: SliderSys) {
       api={api}
       setApi={setApi}
       showIndicators={isImageSlider}
-      showNavigation={!isImageSlider}
+      showAltIndicators={isFeatureSliderItemSlider}
+      showNavigation={!isImageSlider && !isFeatureSliderItemSlider}
+      showAltNavigation={isFeatureSliderItemSlider}
       fullWidth={!isImageSlider}
     />
   );

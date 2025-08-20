@@ -1,10 +1,9 @@
 /**
  * PageList Component
  *
- * This component renders a collection of pages from Contentful. It displays
- * a list of pages with their titles, descriptions, and links, organized under
- * a common section heading. PageList is a key component for creating structured
- * content hierarchies like blogs, article collections, or product categories.
+ * This component renders a list of pages based on content from Contentful.
+ * It displays a page list title and dynamically renders nested page content
+ * components based on the content structure defined in Contentful.
  *
  * The component is integrated with Contentful's Live Preview functionality,
  * allowing content editors to see real-time updates in the preview environment.
@@ -12,11 +11,13 @@
  * in the UI for a seamless content editing experience.
  *
  * Features:
- * - Displays a collection of related pages from Contentful
- * - Renders each page with its title, description, and link
- * - Supports nested content structures through the pagesCollection
- * - Contentful Live Preview integration for real-time updates
+ * - Dynamic rendering of nested page content components
+ * - SEO-friendly page structure with semantic HTML
+ * - Contentful Live Preview integration
+ * - Support for various content types through nested page content collections
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 'use client';
 
@@ -24,8 +25,15 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import { Container, Box } from '@/components/global/matic-ds';
-import { Page } from './Page';
+
+// Import content components for dynamic rendering
+import { BannerHero } from '../BannerHero';
+import { Content } from '../Content';
+import { ContentGrid } from '../ContentGrid';
+import { CtaBanner } from '../CtaBanner';
+import { CtaGrid } from '../CtaGrid';
+import { ImageBetween } from '../ImageBetween';
+import { Slider } from '../Slider';
 
 interface PageListProps {
   sys: {
@@ -40,6 +48,16 @@ interface PageListProps {
       };
       title?: string;
       slug?: string;
+      description?: string;
+      __typename?: string;
+    }>;
+  };
+  pageContentCollection?: {
+    items: Array<{
+      sys: {
+        id: string;
+      };
+      title?: string;
       description?: string;
       __typename?: string;
     }>;
@@ -60,69 +78,79 @@ export function PageList(props: PageListProps) {
     entryId: pageList?.sys?.id || ''
   });
 
-  // Add a check to ensure props has the required structure
-  if (!pageList?.sys?.id) {
-    console.error('PageList component received invalid props:', props);
-    return null;
-  }
-
   console.log('PageList props:', props);
   console.log('Live updated pageList:', pageList);
 
   return (
-    <div className="page-list-component">
-      <Container className="py-16 md:py-24">
-        <Box className="flex-col items-start">
-          {pageList.title && (
-            <h1
-              className="text-headline-md sm:text-headline-lg mb-6 max-w-4xl font-bold tracking-tight"
-              {...inspectorProps({ fieldId: 'title' })}
-            >
-              {pageList.title}
-            </h1>
-          )}
+    <div className="page-component">
+      {/* Render Page Content */}
+      <div {...inspectorProps({ fieldId: 'pageContentCollection' })}>
+        {pageList.pageContentCollection?.items &&
+          pageList.pageContentCollection.items.length > 0 && (
+            <div className="page-content">
+              {pageList.pageContentCollection.items.map((content, index) => {
+                const key = content.sys?.id || index;
 
-          {pageList.slug && (
-            <div className="text-muted-foreground mb-8 text-sm">
-              <span className="font-medium">Slug: </span>
-              <span {...inspectorProps({ fieldId: 'slug' })}>{pageList.slug}</span>
+                try {
+                  switch (content.__typename) {
+                    case 'BannerHero':
+                      return <BannerHero key={key} {...(content as any)} />;
+
+                    case 'Content':
+                      return <Content key={key} {...(content as any)} />;
+
+                    case 'ContentGrid':
+                      return <ContentGrid key={key} {...(content as any)} />;
+
+                    case 'CtaBanner':
+                      return <CtaBanner key={key} {...(content as any)} />;
+
+                    case 'CtaGrid':
+                      return <CtaGrid key={key} {...(content as any)} />;
+
+                    case 'ImageBetween':
+                      return <ImageBetween key={key} {...(content as any)} />;
+
+                    case 'Slider':
+                      return <Slider key={key} {...(content as any)} />;
+
+                    default:
+                      return (
+                        <div key={key} className="mb-12">
+                          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                            <p className="text-sm text-yellow-800">
+                              <strong>Unsupported Content Type:</strong> {content.__typename}
+                            </p>
+                            <details className="mt-2">
+                              <summary className="cursor-pointer text-xs text-yellow-600">
+                                Debug Info
+                              </summary>
+                              <pre className="mt-1 text-xs text-yellow-600">
+                                {JSON.stringify(content, null, 2)}
+                              </pre>
+                            </details>
+                          </div>
+                        </div>
+                      );
+                  }
+                } catch (error) {
+                  console.error(`Error rendering content item ${index}:`, error, content);
+                  return (
+                    <div key={key} className="mb-12">
+                      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                        <p className="text-sm text-red-800">
+                          <strong>Render Error:</strong> {content.__typename}
+                        </p>
+                        <p className="mt-1 text-xs text-red-600">
+                          {error instanceof Error ? error.message : 'Unknown error'}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                }
+              })}
             </div>
           )}
-        </Box>
-      </Container>
-
-      {/* Render Pages */}
-      <div {...inspectorProps({ fieldId: 'pagesCollection' })}>
-        {pageList.pagesCollection?.items && pageList.pagesCollection.items.length > 0 && (
-          <div className="page-list-content">
-            {pageList.pagesCollection.items.map((content, index) => {
-              if (content.__typename === 'Page') {
-                // Pass the parent PageList slug to the Page component
-                return (
-                  <div key={content.sys.id || index} className="mb-12">
-                    <Page
-                      {...content}
-                      // Add a custom prop to indicate this page belongs to a PageList
-                      parentPageList={{
-                        slug: pageList.slug,
-                        title: pageList.title
-                      }}
-                    />
-                  </div>
-                );
-              }
-
-              // Default case if content type is not recognized
-              return (
-                <div key={content.sys.id || index} className="mb-12">
-                  <p className="text-sm text-gray-500">
-                    Unknown content type: {content.__typename}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );

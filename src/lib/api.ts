@@ -79,8 +79,19 @@ export async function fetchGraphQL<T>(
 
     // Check for GraphQL errors - ensure we're checking the array length
     if (json.errors && json.errors.length > 0) {
-      console.error('[fetchGraphQL] GraphQL errors:', json.errors);
-      throw new GraphQLError('GraphQL query execution error', json.errors);
+      // Filter out broken reference errors that shouldn't crash the app
+      const criticalErrors = json.errors.filter((error) => {
+        const message = error.message || '';
+        // Allow queries to continue if they only have broken reference errors
+        return !message.includes('Link from entry') || !message.includes('cannot be resolved');
+      });
+
+      // Only throw if there are critical errors (not just broken references)
+      if (criticalErrors.length > 0) {
+        console.error('[fetchGraphQL] GraphQL errors:', criticalErrors);
+        throw new GraphQLError('GraphQL query execution error', criticalErrors);
+      }
+      // Silently handle broken references - no logging to prevent console spam
     }
 
     return json;

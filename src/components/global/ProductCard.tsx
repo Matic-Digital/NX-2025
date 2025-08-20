@@ -6,12 +6,14 @@ import Image from 'next/image';
 import type { Product, ProductSys } from '@/types/contentful/Product';
 import Link from 'next/link';
 import { getProductsByIds } from '@/lib/contentful-api/product';
+import { checkPageBelongsToPageList } from '@/lib/contentful-api/page-list';
 import { useEffect, useState } from 'react';
 
 export const ProductCard = (props: ProductSys) => {
   const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
   const [productData, setProductData] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [productUrl, setProductUrl] = useState<string>('');
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -30,6 +32,33 @@ export const ProductCard = (props: ProductSys) => {
     void fetchProductData();
   }, [props.sys.id]);
 
+  // Generate correct URL for Product by looking up its parent PageList
+  useEffect(() => {
+    const generateProductUrl = async () => {
+      if (!productData) return;
+
+      try {
+        // Find the parent PageList for this Product
+        const parentPageList = await checkPageBelongsToPageList(productData.sys.id, false);
+
+        if (parentPageList) {
+          // Use the PageList slug + Product slug format
+          setProductUrl(`/${parentPageList.slug}/${productData.slug}`);
+        } else {
+          // Fallback to the old format if no parent PageList found
+          console.warn(`No parent PageList found for Product: ${productData.slug}`);
+          setProductUrl(`/products/${productData.slug}`);
+        }
+      } catch (error) {
+        console.error(`Error finding parent PageList for Product ${productData.slug}:`, error);
+        // Fallback to the old format on error
+        setProductUrl(`/products/${productData.slug}`);
+      }
+    };
+
+    void generateProductUrl();
+  }, [productData]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -39,7 +68,7 @@ export const ProductCard = (props: ProductSys) => {
   }
   return (
     <Link
-      href={`/${productData.slug}`}
+      href={productUrl || `/${productData.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex flex-col"
     >

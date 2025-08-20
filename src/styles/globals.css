@@ -316,7 +316,7 @@
   --card-foreground: var(--text-body);
   --popover: var(--body);
   --popover-foreground: var(--text-body);
-  --primary: var(--primary);
+  --primary: #fe5000;
   --primary-foreground: var(--text-on-primary);
   --secondary: var(--secondary);
   --secondary-foreground: var(--white);

@@ -1,8 +1,14 @@
 import { z } from 'zod';
 import { ModalSchema } from './Modal';
 
-// We don't use the union directly in the schema to avoid GraphQL issues
-// Instead, we'll use a simple reference object and handle the union in code
+// Simple schema for button internal links that matches GraphQL query response
+const ButtonInternalLinkSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  slug: z.string(),
+  __typename: z.string()
+});
 
 export const ButtonSchema = z.object({
   sys: z.object({
@@ -10,14 +16,7 @@ export const ButtonSchema = z.object({
   }),
   internalText: z.string(),
   text: z.string(),
-  internalLink: z.optional(
-    z.object({
-      sys: z.object({
-        id: z.string()
-      }),
-      slug: z.string()
-    })
-  ),
+  internalLink: ButtonInternalLinkSchema.optional(),
   externalLink: z.optional(z.string().url()),
   modal: z.optional(ModalSchema)
 });

@@ -10,11 +10,28 @@ import {
 import { Button } from '@/components/ui/button';
 import { Box } from '@/components/global/matic-ds';
 import type { SectionHeading } from '@/types/contentful/SectionHeading';
+import { cn } from '@/lib/utils';
 
-export function SectionHeading(props: SectionHeading) {
+interface SectionHeadingProps extends SectionHeading {
+  componentType?: string;
+  isDarkMode?: boolean;
+  isProductContext?: boolean;
+}
+
+export function SectionHeading(props: SectionHeadingProps) {
   const sectionHeading = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
+  // Preserve custom props that aren't part of Contentful data
+  const { componentType, isDarkMode, isProductContext } = props;
+
+  if (componentType === 'banner-hero') {
+    console.log('SectionHeading props:', { componentType, isDarkMode, isProductContext });
+    console.log('SectionHeading received props:', props);
+  }
+
+  const isBannerHeroComponent = componentType === 'banner-hero';
+  const isContentComponent = componentType === 'content';
   const hasCtaCollection = (props.ctaCollection?.items?.length ?? 0) > 0;
 
   const gap = hasCtaCollection ? 12 : 0;
@@ -49,7 +66,9 @@ export function SectionHeading(props: SectionHeading) {
       <Box
         gap={2}
         {...inspectorProps({ fieldId: 'heading' })}
-        className="col-span-1 items-end xl:ml-auto"
+        className={cn('col-span-1 items-end xl:ml-auto', {
+          'items-center': isContentComponent
+        })}
       >
         {hasCtaCollection &&
           sectionHeading.ctaCollection?.items?.map((cta, index) => (
@@ -61,7 +80,7 @@ export function SectionHeading(props: SectionHeading) {
               <Button
                 variant={
                   (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                    ? 'outline'
+                    ? 'primary'
                     : index === 0
                       ? 'primary'
                       : 'outline'
@@ -122,7 +141,68 @@ export function SectionHeading(props: SectionHeading) {
                 <Button
                   variant={
                     (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'white'
+                      ? 'primary'
+                      : index === 0
+                        ? 'white'
+                        : 'primary'
+                  }
+                >
+                  {cta.text}
+                </Button>
+              </Link>
+            ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  const CenteredSectionHeading = (
+    <Box
+      direction="col"
+      gap={6}
+      className="items-center text-center"
+      {...inspectorProps({ fieldId: 'heading' })}
+    >
+      {/* title */}
+      <h2
+        className="text-text-on-invert lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+        {...inspectorProps({ fieldId: 'heading.title' })}
+      >
+        {sectionHeading.title}
+      </h2>
+
+      {/* cta */}
+      <Box
+        direction="col"
+        gap={8}
+        {...inspectorProps({ fieldId: 'heading' })}
+        className="col-span-full w-full items-center"
+      >
+        {sectionHeading.description && (
+          <p
+            {...inspectorProps({ fieldId: 'heading.description' })}
+            className="text-body-md lg:text-body-lg text-text-on-invert w-full max-w-2xl text-center"
+          >
+            {sectionHeading.description}
+          </p>
+        )}
+
+        <Box
+          gap={3}
+          {...inspectorProps({ fieldId: 'heading' })}
+          className="items-center justify-center"
+        >
+          {hasCtaCollection &&
+            sectionHeading.ctaCollection?.items?.map((cta, index) => (
+              <Link
+                key={cta.sys?.id || index}
+                href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
+                {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                <Button
+                  variant={
+                    (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+                      ? 'primary'
                       : index === 0
                         ? 'white'
                         : 'primary'
@@ -138,10 +218,14 @@ export function SectionHeading(props: SectionHeading) {
   );
 
   return (
-    <div className={sectionHeading.isDarkMode ? 'dark' : undefined}>
-      {sectionHeading.componentType === 'banner-hero'
-        ? BannerHeroSectionHeading
-        : DefaultSectionHeading}
+    <div className={isDarkMode ? 'dark' : undefined}>
+      {isBannerHeroComponent && isProductContext
+        ? CenteredSectionHeading
+        : isBannerHeroComponent
+          ? BannerHeroSectionHeading
+          : isProductContext
+            ? CenteredSectionHeading
+            : DefaultSectionHeading}
     </div>
   );
 }

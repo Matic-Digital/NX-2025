@@ -39,7 +39,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
 
   // Import utility functions for safe metadata extraction
-  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import('@/lib/metadata-utils');
+  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import(
+    '@/lib/metadata-utils'
+  );
 
   // Safely extract the openGraphImage with proper typing
   const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
