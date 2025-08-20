@@ -14,6 +14,16 @@ export async function GET(request: NextRequest) {
   const serviceId = searchParams.get('serviceId');
   const solutionId = searchParams.get('solutionId');
   const productId = searchParams.get('productId');
+  const sliderItemId = searchParams.get('sliderItemId');
+  const sliderId = searchParams.get('sliderId');
+  const contentGridItemId = searchParams.get('contentGridItemId');
+  const contentGridId = searchParams.get('contentGridId');
+  const contentId = searchParams.get('contentId');
+  const headerId = searchParams.get('headerId');
+  const footerId = searchParams.get('footerId');
+  const pageId = searchParams.get('pageId');
+  const pageListId = searchParams.get('pageListId');
+  const imageBetweenId = searchParams.get('imageBetweenId');
 
   // Check the secret and validate it
   if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
@@ -40,6 +50,60 @@ export async function GET(request: NextRequest) {
   // Redirect to Image preview
   if (imageId) {
     return NextResponse.redirect(new URL(`/image-preview?id=${imageId}`, request.url));
+  }
+
+  // Redirect to Slider Item preview
+  if (sliderItemId) {
+    return NextResponse.redirect(new URL(`/slider-item-preview?id=${sliderItemId}`, request.url));
+  }
+
+  // Redirect to Slider preview
+  if (sliderId) {
+    return NextResponse.redirect(new URL(`/slider-preview?id=${sliderId}`, request.url));
+  }
+
+  // Redirect to ContentGridItem preview
+  if (contentGridItemId) {
+    return NextResponse.redirect(
+      new URL(`/content-grid-item-preview?id=${contentGridItemId}`, request.url)
+    );
+  }
+
+  // Redirect to ContentGrid preview
+  if (contentGridId) {
+    return NextResponse.redirect(new URL(`/content-grid-preview?id=${contentGridId}`, request.url));
+  }
+
+  // Redirect to Content preview
+  if (contentId) {
+    return NextResponse.redirect(new URL(`/content-preview?id=${contentId}`, request.url));
+  }
+
+  // Redirect to Header preview
+  if (headerId) {
+    return NextResponse.redirect(new URL(`/header-preview?id=${headerId}`, request.url));
+  }
+
+  // Redirect to Footer preview
+  if (footerId) {
+    return NextResponse.redirect(new URL(`/footer-preview?id=${footerId}`, request.url));
+  }
+
+  // Redirect to Page preview
+  if (pageId) {
+    return NextResponse.redirect(new URL(`/page-preview?id=${pageId}`, request.url));
+  }
+
+  // Redirect to PageList preview
+  if (pageListId) {
+    return NextResponse.redirect(new URL(`/page-list-preview?id=${pageListId}`, request.url));
+  }
+
+  // Redirect to ImageBetween preview
+  if (imageBetweenId) {
+    return NextResponse.redirect(
+      new URL(`/image-between-preview?id=${imageBetweenId}`, request.url)
+    );
   }
 
   // Redirect to CTA Banner preview

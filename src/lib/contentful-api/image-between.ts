@@ -2,6 +2,9 @@ import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
+import type { ImageBetween } from '@/types/contentful/ImageBetween';
+import { fetchGraphQL } from '../api';
+import { ContentfulError, NetworkError } from '../errors';
 
 // ImageBetween fields
 export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
@@ -29,3 +32,41 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
     ${CONTENTGRID_GRAPHQL_FIELDS}
   }
 `;
+
+export async function getImageBetweenById(
+  id: string,
+  preview = false
+): Promise<ImageBetween | null> {
+  try {
+    const response = await fetchGraphQL(
+      `query GetImageBetweenById($id: String!, $preview: Boolean!) {
+        imageBetweenCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Use type assertion to bypass the strict typing issue
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+    const data = response.data as any;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (!data?.imageBetweenCollection?.items?.length) {
+      return null;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return data.imageBetweenCollection.items[0] as ImageBetween;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching ImageBetween by ID: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching ImageBetween by ID');
+  }
+}

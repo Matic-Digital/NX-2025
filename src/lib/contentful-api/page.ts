@@ -175,3 +175,116 @@ export async function getPageBySlug(
     throw new Error('Unknown error fetching page by slug');
   }
 }
+
+/**
+ * Fetches a single page by ID
+ * @param id - The ID of the page to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to the page with header and footer or null if not found
+ */
+export async function getPageById(
+  id: string,
+  preview = false
+): Promise<PageWithHeaderFooter | null> {
+  try {
+    // First, fetch the basic page data with references
+    const response = await fetchGraphQL<PageWithRefs>(
+      `query GetPageById($id: String!, $preview: Boolean!) {
+        pageCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            ${getPAGE_WITH_REFS_FIELDS()}
+          }
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    if (!response.data?.pageCollection?.items?.length) {
+      return null;
+    }
+
+    const pageData = response.data.pageCollection.items[0]!;
+
+    // Type assertion for pageLayout to avoid 'any' type
+    const pageLayout = pageData.pageLayout as PageLayout | undefined;
+
+    // Fetch header data if referenced
+    let header = null;
+    if (pageLayout?.header) {
+      // Type assertion for header reference
+      const headerRef = pageLayout.header as { sys: { id: string } };
+      if (headerRef.sys?.id) {
+        header = await getHeaderById(headerRef.sys.id, preview);
+      }
+    }
+
+    // Fetch footer data if referenced
+    let footer = null;
+    if (pageLayout?.footer) {
+      // Type assertion for footer reference
+      const footerRef = pageLayout.footer as { sys: { id: string } };
+      if (footerRef.sys?.id) {
+        footer = await getFooterById(footerRef.sys.id, preview);
+      }
+    }
+
+    // Fetch page content separately
+    const pageContentResponse = await fetchGraphQL(
+      `query GetPageContentById($id: String!, $preview: Boolean!) {
+        pageCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            pageContentCollection(limit: 10) {
+              items {
+                ... on BannerHero {
+                  ${BANNERHERO_GRAPHQL_FIELDS}
+                }
+                ... on Content {
+                  ${SYS_FIELDS}
+                }
+                ... on ContentGrid {
+                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                }
+                ... on CtaBanner {
+                  ${CTABANNER_GRAPHQL_FIELDS}
+                }
+                ... on ImageBetween {
+                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Safely extract page content with proper error checking
+    let pageContent = null;
+    try {
+      const items = pageContentResponse.data?.pageCollection?.items;
+      if (items && items.length > 0 && items[0]) {
+        // Type assertion is safe here since we know the GraphQL query structure
+        const pageItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
+        pageContent = pageItem.pageContentCollection ?? null;
+      }
+    } catch (error) {
+      console.warn('Failed to extract page content:', error);
+      pageContent = null;
+    }
+
+    // Combine all the data
+    return {
+      ...pageData,
+      header,
+      footer,
+      pageContentCollection: pageContent
+    } as PageWithHeaderFooter;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching page by ID: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching page by ID');
+  }
+}
