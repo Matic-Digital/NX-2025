@@ -366,29 +366,44 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
     );
   }
 
-  // For other content types, render using the existing renderContentByType from the main component
+  // Handle other content types (Product, Page, Service, Solution, Post)
+  // These content types have different field names for their content collections
+  if (type === 'Product' || type === 'Page' || type === 'Service' || type === 'Solution' || type === 'Post') {
+    // Products use 'itemsCollection', while Pages use 'pageContentCollection'
+    const contentItem = content as { 
+      title?: string; 
+      pageContentCollection?: { items?: unknown[] };
+      itemsCollection?: { items?: unknown[] };
+    };
+    
+    // Use the appropriate collection based on content type
+    const contentItems = type === 'Product' 
+      ? contentItem.itemsCollection?.items ?? []
+      : contentItem.pageContentCollection?.items ?? [];
+
+    console.log(`Rendering ${type} content: ${contentItem.title}`);
+    console.log(`Content items count: ${contentItems.length}`);
+    console.log('Content items:', contentItems.map((item: any) => ({ 
+      id: item?.sys?.id, 
+      type: item?.__typename 
+    })));
+
+    return (
+      <>
+        <h1 className="sr-only">{contentItem.title}</h1>
+        {/* Render components from the appropriate collection */}
+        {contentItems.map((component: unknown, componentIndex: number) => {
+          return renderPageListContentByType(component, componentIndex);
+        })}
+      </>
+    );
+  }
+
+  // Fallback for unknown content types
   return (
     <div>
       <h1>{(content as { title?: string }).title}</h1>
-      {(
-        content as { pageContentCollection?: { items?: unknown[] } }
-      ).pageContentCollection?.items?.map((component: unknown, componentIndex: number) => {
-        const typedComponent = component as { __typename?: string; sys?: { id?: string } };
-        if (!typedComponent || !typedComponent.__typename) return null;
-
-        const typeName = typedComponent.__typename;
-
-        if (typeName && typeName in componentMap) {
-          const ComponentType = componentMap[typeName as keyof typeof componentMap];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return (
-            <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />
-          );
-        }
-
-        console.warn(`No component found for type: ${typedComponent.__typename}`);
-        return null;
-      })}
+      <p>Content type &quot;{type}&quot; is not supported for rendering.</p>
     </div>
   );
 }
