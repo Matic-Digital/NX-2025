@@ -14,17 +14,17 @@
  * - Breadcrumb navigation to reflect the hierarchical structure
  */
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getPageBySlug } from '@/lib/contentful-api/page';
-import { getPageListBySlug } from '@/lib/contentful-api/page-list';
+import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';
 import { getServiceBySlug } from '@/lib/contentful-api/service';
 import { getSolutionBySlug } from '@/lib/contentful-api/solution';
 import { getPostBySlug } from '@/lib/contentful-api/post';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
-import type { PageList } from '@/types/contentful/PageList';
+import type { PageList, PageListContent } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
@@ -59,6 +59,50 @@ interface NestedPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
+// Helper function to check if a partial path should be redirected to full nested path
+async function checkForPartialPathRedirect(
+  pageListSlug: string,
+  pageSlug: string
+): Promise<string | null> {
+  try {
+    const pageLists = await getAllPageLists(false);
+
+    // Build routing path by finding parent PageLists
+    const buildRoutingPath = (itemId: string, visited = new Set<string>()): string[] => {
+      if (visited.has(itemId)) return []; // Prevent infinite loops
+      visited.add(itemId);
+
+      for (const pageList of pageLists.items) {
+        if (!pageList.pagesCollection?.items?.length) continue;
+
+        const foundItem = pageList.pagesCollection.items.find((item) => item?.sys?.id === itemId);
+
+        if (foundItem && pageList.slug) {
+          const parentPath = buildRoutingPath(pageList.sys.id, visited);
+          return [...parentPath, pageList.slug];
+        }
+      }
+      return [];
+    };
+
+    // Find the PageList that matches pageListSlug
+    const targetPageList = pageLists.items.find((pl) => pl.slug === pageListSlug);
+    if (!targetPageList) return null;
+
+    // Check if this PageList has parents
+    const parentPath = buildRoutingPath(targetPageList.sys.id);
+    if (parentPath.length > 0) {
+      const fullPath = [...parentPath, pageListSlug, pageSlug].join('/');
+      return fullPath;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error checking for partial path redirect:', error);
+    return null;
+  }
+}
+
 // Generate static params for static site generation
 export async function generateStaticParams() {
   // This would typically fetch all pages and page lists to pre-render
@@ -73,6 +117,12 @@ export const revalidate = 3600; // Revalidate every hour
 // Generate dynamic metadata based on the content item
 export async function generateMetadata({ params }: NestedPageProps): Promise<Metadata> {
   const { slug: pageListSlug, pageSlug } = await params;
+
+  // Check if this partial path should be redirected to full nested path
+  const fullPath = await checkForPartialPathRedirect(pageListSlug, pageSlug);
+  if (fullPath && fullPath !== `${pageListSlug}/${pageSlug}`) {
+    redirect(`/${fullPath}`);
+  }
 
   // Try to fetch the content item as different content types
   let contentItem: Page | Product | Service | Solution | Post | null = null;
@@ -163,9 +213,47 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
 // Helper function to render content based on content type
 function renderContentByType(
-  contentItem: Page | Product | Service | Solution | Post,
+  contentItem: Page | Product | Service | Solution | Post | PageList,
   contentType: string | null
 ) {
+  // For PageList content type, render like a normal PageList
+  if (contentType === 'PageList') {
+    const pageList = contentItem as PageList;
+
+    // Extract page content items if available and type them properly
+    const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
+      Boolean
+    ) as PageListContent[];
+
+    return (
+      <>
+        {/* Render components from pageContentCollection */}
+        {pageContentItems.map((component) => {
+          if (!component) return null;
+
+          // Type guard to check if component has __typename
+          if (!('__typename' in component)) {
+            console.warn('Component missing __typename:', component);
+            return null;
+          }
+
+          const typeName = component.__typename!;
+
+          // Check if we have a component for this type
+          if (typeName && typeName in componentMap) {
+            const ComponentType = componentMap[typeName as keyof typeof componentMap];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return <ComponentType key={component.sys.id} {...(component as any)} />;
+          }
+
+          // Log a warning if we don't have a component for this type
+          console.warn(`No component found for type: ${typeName}`);
+          return null;
+        })}
+      </>
+    );
+  }
+
   // For Page content type, render the pageContentCollection
   if (contentType === 'Page') {
     const page = contentItem as Page;
@@ -333,13 +421,24 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   const pageSlug = resolvedParams?.pageSlug;
   const preview = false; // Set to true if you want to enable preview mode
 
-  let contentItem: Page | Product | Service | Solution | Post | null = null;
+  // Check if this partial path should be redirected to full nested path
+  console.log(
+    `Checking if ${pageListSlug}/${pageSlug} should be redirected to full nested path...`
+  );
+  const fullPath = await checkForPartialPathRedirect(pageListSlug, pageSlug);
+  if (fullPath && fullPath !== `${pageListSlug}/${pageSlug}`) {
+    console.log(`Redirecting ${pageListSlug}/${pageSlug} to nested path: /${fullPath}`);
+    redirect(`/${fullPath}`);
+  }
+
+  console.log(
+    `[slug]/[pageSlug] route: Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`
+  );
+  let contentItem: Page | Product | Service | Solution | Post | PageList | null = null;
   let pageList: PageList | null = null;
   let contentType: string | null = null;
 
   try {
-    console.log(`Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`);
-
     // First, fetch the PageList
     pageList = await getPageListBySlug(pageListSlug, preview);
 
@@ -348,31 +447,62 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       notFound();
     }
 
-    // Try to fetch the content item as different content types
-    // First try as a Page
-    contentItem = await getPageBySlug(pageSlug, preview);
-    if (contentItem) {
-      contentType = 'Page';
+    // Check if pageSlug is actually a nested PageList
+    const nestedPageList = await getPageListBySlug(pageSlug, preview);
+    if (nestedPageList) {
+      console.log(
+        `Found nested PageList "${nestedPageList.title}" - handling directly in [slug]/[pageSlug] route`
+      );
+
+      // Verify that the nested PageList is actually contained in the parent PageList
+      const isNested = pageList.pagesCollection?.items?.some(
+        (item) => item?.sys?.id === nestedPageList.sys.id
+      );
+
+      if (!isNested) {
+        console.log(`PageList "${nestedPageList.title}" is not nested in "${pageList.title}"`);
+        notFound();
+      }
+
+      console.log(`Confirmed: "${nestedPageList.title}" is nested in "${pageList.title}"`);
+
+      // Render the nested PageList directly
+      // Ensure slug is defined for type compatibility
+      if (!nestedPageList.slug) {
+        console.error(`Nested PageList "${nestedPageList.title}" has no slug`);
+        notFound();
+      }
+      contentItem = nestedPageList;
+      contentType = 'PageList';
     } else {
-      // Try as Product
-      contentItem = await getProductBySlug(pageSlug, preview);
+      console.log(`PageList lookup failed for "${pageSlug}", continuing with content item lookup`);
+
+      // Try to fetch the content item as different content types
+      // First try as a Page
+      contentItem = await getPageBySlug(pageSlug, preview);
       if (contentItem) {
-        contentType = 'Product';
+        contentType = 'Page';
       } else {
-        // Try as Service
-        contentItem = await getServiceBySlug(pageSlug, preview);
+        // Try as Product
+        contentItem = await getProductBySlug(pageSlug, preview);
         if (contentItem) {
-          contentType = 'Service';
+          contentType = 'Product';
         } else {
-          // Try as Solution
-          contentItem = await getSolutionBySlug(pageSlug, preview);
+          // Try as Service
+          contentItem = await getServiceBySlug(pageSlug, preview);
           if (contentItem) {
-            contentType = 'Solution';
+            contentType = 'Service';
           } else {
-            // Try as Post
-            contentItem = await getPostBySlug(pageSlug, preview);
+            // Try as Solution
+            contentItem = await getSolutionBySlug(pageSlug, preview);
             if (contentItem) {
-              contentType = 'Post';
+              contentType = 'Solution';
+            } else {
+              // Try as Post
+              contentItem = await getPostBySlug(pageSlug, preview);
+              if (contentItem) {
+                contentType = 'Post';
+              }
             }
           }
         }

@@ -13,7 +13,12 @@ import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/
 import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful-api/content-grid';
 import { useState, useEffect } from 'react';
 
-export function ContentGridItem(props: ContentGridItemType) {
+interface ContentGridItemProps extends ContentGridItemType {
+  parentPageListSlug?: string; // Optional parent PageList slug for nested routing
+  currentPath?: string; // Full current path for deeply nested structures
+}
+
+export function ContentGridItem(props: ContentGridItemProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
   const [linkHref, setLinkHref] = useState<string>('#');
   const [fullContentData, setFullContentData] = useState<ContentGridItemType | null>(null);
@@ -73,7 +78,50 @@ export function ContentGridItem(props: ContentGridItemType) {
         // Fetch link details
         const linkData = await getContentGridItemLink(sys.id);
         if (linkData?.link?.slug) {
-          setLinkHref(`/${linkData.link.slug}`);
+          // Default to flat URL structure
+          let href = `/${linkData.link.slug}`;
+
+          // PageList Nesting Integration: Check if the linked PageList has a parent
+          // This ensures URLs like /products/trackers instead of just /trackers
+          if (linkData.link.__typename === 'PageList') {
+            console.log(`Checking parent for PageList: ${linkData.link.slug}`);
+            try {
+              // Query the check-page-parent API to detect nesting relationships
+              const response = await fetch(`/api/check-page-parent?slug=${linkData.link.slug}`);
+              console.log(`API response status: ${response.status}`);
+
+              if (response.ok) {
+                const data = (await response.json()) as {
+                  parentPageList?: unknown;
+                  fullPath?: string;
+                };
+                console.log('API response data:', JSON.stringify(data, null, 2));
+
+                if (data.parentPageList) {
+                  // Construct proper nested URL: /parent-pagelist/child-pagelist
+                  href = `/${(data.parentPageList as { slug?: string }).slug}/${linkData.link.slug}`;
+                  console.log(
+                    `Found parent PageList "${(data.parentPageList as { slug?: string }).slug}" for "${linkData.link.slug}"`
+                  );
+                } else {
+                  console.log(`No parent PageList found for "${linkData.link.slug}"`);
+                }
+              } else {
+                console.warn(`API call failed with status: ${response.status}`);
+              }
+            } catch (error) {
+              console.warn('Failed to check parent PageList:', error);
+            }
+          } else if (props.parentPageListSlug) {
+            // For content items (Pages, Products, etc.) with known parent context
+            // Use the parent PageList slug to construct nested URLs
+            href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
+          }
+
+          console.log(
+            `ContentGridItem link constructed: ${href} (type: ${linkData.link.__typename})`
+          );
+          setLinkHref(href);
         }
       } catch (error) {
         console.error(error);
@@ -81,7 +129,7 @@ export function ContentGridItem(props: ContentGridItemType) {
     };
 
     void fetchContentData();
-  }, [sys?.id]);
+  }, [sys?.id, props.parentPageListSlug]);
 
   const getHref = () => {
     return linkHref;

@@ -32,7 +32,7 @@ import {
 // Minimal PageList fields for initial fetch
 export const PAGELIST_MINIMAL_FIELDS = `
   ${getPAGELIST_BASIC_FIELDS()}
-  pagesCollection(limit: 10) {
+  pagesCollection(limit: 100) {
     items {
       ... on Page {
         ${getPAGE_BASIC_FIELDS()}
@@ -68,7 +68,7 @@ export const PAGELIST_WITH_REFS_FIELDS = `
 // Simplified PageList fields for listing and reference checks
 export const PAGELIST_SIMPLIFIED_FIELDS = `
   ${getPAGELIST_BASIC_FIELDS()}
-  pagesCollection(limit: 20) {
+  pagesCollection(limit: 100) {
     items {
       ... on Page {
         ${getPAGE_BASIC_FIELDS()}
