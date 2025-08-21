@@ -48,8 +48,15 @@ const _isExternalPage = (
 function buildRoutingPath(
   itemId: string,
   pageLists: PageList[],
-  visited = new Set<string>()
+  visited = new Set<string>(),
+  depth = 0
 ): string[] {
+  // Prevent infinite recursion with depth limit
+  if (depth > 10) {
+    console.warn(`buildRoutingPath: Maximum depth reached for itemId: ${itemId}`);
+    return [];
+  }
+
   // Find the page list that contains this item
   // Search through all PageLists to find which one contains the target item
   for (const pageList of pageLists) {
@@ -60,18 +67,17 @@ function buildRoutingPath(
     // Check if this PageList contains the target item in its pagesCollection
     const containsItem = pageList.pagesCollection?.items?.some((item) => {
       const itemSlug = 'slug' in item ? item.slug : 'link' in item ? item.link : undefined;
-      if (itemSlug ?? item.sys?.id === itemId) {
-        return true;
-      }
+      return (itemSlug === itemId) || (item.sys?.id === itemId);
     });
 
     if (containsItem && pageList.slug) {
       // Mark this PageList as visited to prevent infinite recursion
-      visited.add(pageList.sys.id);
+      const newVisited = new Set(visited);
+      newVisited.add(pageList.sys.id);
 
       // Recursively find if this PageList is nested within another PageList
       // This builds the complete parent chain (e.g., products > trackers)
-      const parentPath = buildRoutingPath(pageList.sys.id, pageLists, visited);
+      const parentPath = buildRoutingPath(pageList.sys.id, pageLists, newVisited, depth + 1);
 
       // Return the full routing path: parent path + current PageList slug
       return [...parentPath, pageList.slug];
