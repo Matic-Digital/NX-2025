@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import type { CtaBanner } from '@/types/contentful/CtaBanner';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
 import { AirImage } from '@/components/media/AirImage';
 
@@ -21,6 +21,37 @@ export function CtaBanner(props: CtaBanner) {
 
   console.log('ctaBanner', ctaBanner);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
+
+  // Fetch nested URL for primary CTA if it has an internal link
+  useEffect(() => {
+    const fetchNestedUrl = async () => {
+      if (ctaBanner.primaryCta?.internalLink?.slug) {
+        try {
+          const response = await fetch(
+            `/api/check-page-parent?slug=${ctaBanner.primaryCta.internalLink.slug}`
+          );
+          if (response.ok) {
+            const data = (await response.json()) as { parentPageList?: unknown; fullPath?: string };
+            if (data.parentPageList && data.fullPath) {
+              setPrimaryCtaUrl(`/${data.fullPath}`);
+            } else {
+              setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+            }
+          } else {
+            setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+          }
+        } catch (error) {
+          console.error('Error fetching nested URL for CtaBanner:', error);
+          setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+        }
+      } else if (ctaBanner.primaryCta?.externalLink) {
+        setPrimaryCtaUrl(ctaBanner.primaryCta.externalLink);
+      }
+    };
+
+    void fetchNestedUrl();
+  }, [ctaBanner.primaryCta]);
 
   const handleModalTrigger = () => {
     console.log('handleModalTrigger called');
@@ -67,13 +98,7 @@ export function CtaBanner(props: CtaBanner) {
 
               <Box wrap={true} gap={3} className="max-md:items-center">
                 {ctaBanner.primaryCta && (
-                  <Link
-                    href={
-                      ctaBanner.primaryCta.internalLink?.slug ??
-                      ctaBanner.primaryCta.externalLink ??
-                      '#'
-                    }
-                  >
+                  <Link href={primaryCtaUrl}>
                     <Button variant="outlineWhite" {...inspectorProps({ fieldId: 'primaryCta' })}>
                       {ctaBanner.primaryCta.text}
                     </Button>

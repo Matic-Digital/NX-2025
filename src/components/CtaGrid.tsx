@@ -7,7 +7,6 @@ import {
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 import { getCtaGridById } from '@/lib/contentful-api/cta-grid';
-import { checkPageBelongsToPageList } from '@/lib/contentful-api/page-list';
 import type { CtaGrid } from '@/types/contentful/CtaGrid';
 import { ErrorBoundary } from './global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
@@ -51,24 +50,26 @@ export function CtaGrid(props: CtaGrid) {
       for (const cta of liveCtaGrid.ctaCollection.items) {
         if (cta.internalLink?.__typename === 'Product') {
           try {
-            // Find the parent PageList for this Product
-            const parentPageList = await checkPageBelongsToPageList(cta.internalLink.sys.id, false);
-
-            if (parentPageList) {
-              // Use the PageList slug + Product slug format
-              urlMap[cta.internalLink.sys.id] = `/${parentPageList.slug}/${cta.internalLink.slug}`;
+            // Use the check-page-parent API to get the full nested path
+            const response = await fetch(`/api/check-page-parent?slug=${cta.internalLink.slug}`);
+            if (response.ok) {
+              const data = (await response.json()) as {
+                parentPageList?: unknown;
+                fullPath?: string;
+              };
+              if (data.parentPageList && data.fullPath) {
+                urlMap[cta.internalLink.sys.id] = `/${data.fullPath}`;
+              } else {
+                urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
+              }
             } else {
-              // Fallback to the old format if no parent PageList found
-              console.warn(`No parent PageList found for Product: ${cta.internalLink.slug}`);
-              urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
+              // Fallback to flat slug if API fails
+              urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
             }
           } catch (error) {
-            console.error(
-              `Error finding parent PageList for Product ${cta.internalLink.slug}:`,
-              error
-            );
-            // Fallback to the old format on error
-            urlMap[cta.internalLink.sys.id] = `/products/${cta.internalLink.slug}`;
+            console.error(`Error finding nested path for Product ${cta.internalLink.slug}:`, error);
+            // Fallback to flat slug on error
+            urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
           }
         }
       }
