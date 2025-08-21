@@ -58,7 +58,7 @@ export function CtaBanner(props: CtaBanner) {
     };
 
     void fetchNestedUrl();
-  }, [ctaBanner.primaryCta?.internalLink?.slug]);
+  }, [ctaBanner.primaryCta?.internalLink?.slug, ctaBanner.primaryCta?.externalLink]);
 
   const handleModalTrigger = () => {
     console.log('handleModalTrigger called');
