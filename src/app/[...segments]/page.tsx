@@ -14,6 +14,13 @@
  * - Content item rendering within nested PageLists
  * - Breadcrumb navigation for nested structures
  * - Server-side rendering with proper error handling
+ *
+ * PageList Nesting Integration:
+ * - Validates parent-child relationships between PageLists
+ * - Ensures content items are properly nested within their parent PageLists
+ * - Supports multi-level nesting (e.g., products > trackers > specific-product)
+ * - Provides fallback handling for orphaned content
+ * - Generates proper metadata and breadcrumbs for nested structures
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain */
@@ -151,9 +158,21 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
 }
 
 // Helper function to resolve nested content
+/**
+ * Resolve nested content based on URL segments
+ * 
+ * This function implements the core PageList nesting logic:
+ * 1. For single segments: Try to find as PageList or content item
+ * 2. For multiple segments: Traverse the hierarchy to validate nesting
+ * 3. Ensures each PageList in the path is properly nested in its parent
+ * 4. Returns the final content item with its complete parent chain
+ * 
+ * @param segments - Array of URL segments (e.g., ['products', 'trackers', 'nx-horizon'])
+ * @returns Object containing the resolved content, its type, and parent PageList chain
+ */
 async function resolveNestedContent(segments: string[]): Promise<{
   content: ContentItem | PageListType;
-  type: 'Page' | 'PageList' | 'Product' | 'Service' | 'Solution' | 'Post';
+  type: 'Page' | 'Product' | 'Service' | 'Solution' | 'Post' | 'PageList';
   parentPageLists: PageListType[];
 } | null> {
   const preview = false;
@@ -178,10 +197,12 @@ async function resolveNestedContent(segments: string[]): Promise<{
   }
 
   // For multiple segments, traverse the hierarchy
+  // This implements the core nesting validation logic
   const parentPageLists: PageListType[] = [];
   let currentPageList: PageListType | null = null;
 
-  // Traverse through parent PageLists
+  // Traverse through parent PageLists to build and validate the nesting chain
+  // Each PageList must be nested within the previous one in the URL path
   for (let i = 0; i < segments.length - 1; i++) {
     const slug = segments[i]!;
     const pageList = await getPageListBySlug(slug, preview);
@@ -191,7 +212,8 @@ async function resolveNestedContent(segments: string[]): Promise<{
       return null;
     }
 
-    // If this is not the first PageList, verify it's nested in the previous one
+    // Critical nesting validation: If this is not the first PageList, 
+    // verify it's actually nested within the previous one in the hierarchy
     if (currentPageList) {
       console.log(
         `Checking if PageList "${pageList.title}" (${pageList.sys.id}) is nested in "${currentPageList.title}" (${currentPageList.sys.id})`
@@ -200,7 +222,7 @@ async function resolveNestedContent(segments: string[]): Promise<{
         `Current PageList has ${currentPageList.pagesCollection?.items?.length ?? 0} items in pagesCollection`
       );
 
-      // Log all items in the current PageList for debugging
+      // Debug logging: Show all items in the current PageList to verify nesting structure
       currentPageList.pagesCollection?.items?.forEach((item: unknown, index: number) => {
         const typedItem = item as { sys?: { id?: string }; title?: string; __typename?: string };
         console.log(
@@ -208,6 +230,8 @@ async function resolveNestedContent(segments: string[]): Promise<{
         );
       });
 
+      // Validate nesting: Check if the current PageList contains the next PageList in its pagesCollection
+      // This ensures URLs like /products/trackers are valid (trackers must be nested under products)
       const isNested = currentPageList.pagesCollection?.items?.some((item: unknown) => {
         const typedItem = item as { sys?: { id?: string } };
         return typedItem?.sys?.id === pageList.sys.id;
@@ -215,6 +239,8 @@ async function resolveNestedContent(segments: string[]): Promise<{
 
       console.log(`Is nested result: ${isNested}`);
 
+      // If nesting validation fails, return null to trigger 404
+      // This prevents access to invalid nested URLs
       if (!isNested) {
         console.log(`PageList "${pageList.title}" is not nested in "${currentPageList.title}"`);
         return null;
@@ -225,13 +251,15 @@ async function resolveNestedContent(segments: string[]): Promise<{
     currentPageList = pageList;
   }
 
-  // Now try to find the final item
+  // Final step: Try to resolve the last segment in the URL path
+  // This could be either a nested PageList or a content item (Page, Product, etc.)
   const finalSlug = segments[segments.length - 1]!;
 
-  // Try as PageList first
+  // First attempt: Try to find the final segment as a PageList
   const finalPageList = await getPageListBySlug(finalSlug, preview);
   console.log(`Final PageList lookup for "${finalSlug}": ${finalPageList ? 'Found' : 'Not found'}`);
 
+  // Case 1: Final segment is a PageList nested within the current parent PageList
   if (finalPageList && currentPageList) {
     console.log(
       `Checking if final PageList "${finalPageList.title}" (${finalPageList.sys.id}) is nested in "${currentPageList.title}" (${currentPageList.sys.id})`
@@ -240,7 +268,7 @@ async function resolveNestedContent(segments: string[]): Promise<{
       `Parent PageList has ${currentPageList.pagesCollection?.items?.length ?? 0} items in pagesCollection`
     );
 
-    // Log all items in the parent PageList for debugging
+    // Debug logging: Show all items in the parent PageList
     currentPageList.pagesCollection?.items?.forEach((item: unknown, index: number) => {
       const typedItem = item as { sys?: { id?: string }; title?: string; __typename?: string };
       console.log(
@@ -248,7 +276,7 @@ async function resolveNestedContent(segments: string[]): Promise<{
       );
     });
 
-    // Verify it's nested in the parent
+    // Final nesting validation: Ensure the final PageList is actually nested in its parent
     const isNested = currentPageList.pagesCollection?.items?.some((item: unknown) => {
       const typedItem = item as { sys?: { id?: string } };
       return typedItem?.sys?.id === finalPageList.sys.id;
@@ -260,15 +288,17 @@ async function resolveNestedContent(segments: string[]): Promise<{
       return { content: finalPageList, type: 'PageList', parentPageLists };
     }
   } else if (finalPageList && !currentPageList) {
-    // This is a standalone PageList (single slug)
+    // Case 2: This is a standalone PageList (single segment URL like /products)
     console.log(`Found standalone PageList: ${finalPageList.title}`);
     return { content: finalPageList, type: 'PageList', parentPageLists };
   }
 
-  // Try as content item
+  // Case 3: Final segment is a content item (Page, Product, Service, etc.)
+  // Try to fetch as different content types and validate it belongs to the parent PageList
   const contentItem = await tryFetchContentItem(finalSlug, preview);
   if (contentItem && currentPageList) {
-    // Verify it's in the parent PageList
+    // Critical validation: Ensure the content item is actually contained within the parent PageList
+    // This prevents access to content items via incorrect nested URLs
     const isInList = currentPageList.pagesCollection?.items?.some(
       (item: any) => item?.sys?.id === contentItem.item.sys.id
     );

@@ -24,25 +24,32 @@ export function CtaBanner(props: CtaBanner) {
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
 
   // Fetch nested URL for primary CTA if it has an internal link
+  // PageList Nesting Integration: Dynamically resolve CTA URLs to respect nesting hierarchy
+  // This ensures CTA buttons link to proper nested URLs (e.g., /products/trackers instead of /trackers)
   useEffect(() => {
     const fetchNestedUrl = async () => {
       if (ctaBanner.primaryCta?.internalLink?.slug) {
         try {
+          // Query the check-page-parent API to detect if the linked content has parent PageLists
           const response = await fetch(
             `/api/check-page-parent?slug=${ctaBanner.primaryCta.internalLink.slug}`
           );
           if (response.ok) {
             const data = (await response.json()) as { parentPageList?: unknown; fullPath?: string };
             if (data.parentPageList && data.fullPath) {
+              // Use the full nested path when parent PageLists are detected
               setPrimaryCtaUrl(`/${data.fullPath}`);
             } else {
+              // Fallback to flat URL structure when no nesting is detected
               setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
             }
           } else {
+            // Fallback to flat URL on API failure
             setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
           }
         } catch (error) {
-          console.error('Error fetching nested URL for CtaBanner:', error);
+          console.error('Error fetching nested URL for primary CTA:', error);
+          // Fallback to flat URL on error
           setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
         }
       } else if (ctaBanner.primaryCta?.externalLink) {
@@ -51,7 +58,7 @@ export function CtaBanner(props: CtaBanner) {
     };
 
     void fetchNestedUrl();
-  }, [ctaBanner.primaryCta]);
+  }, [ctaBanner.primaryCta?.internalLink?.slug]);
 
   const handleModalTrigger = () => {
     console.log('handleModalTrigger called');

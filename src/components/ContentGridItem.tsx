@@ -78,14 +78,15 @@ export function ContentGridItem(props: ContentGridItemProps) {
         // Fetch link details
         const linkData = await getContentGridItemLink(sys.id);
         if (linkData?.link?.slug) {
-          // Construct URL based on link type and parent context
+          // Default to flat URL structure
           let href = `/${linkData.link.slug}`;
 
-          // If linking to a PageList, check if it has a parent PageList
+          // PageList Nesting Integration: Check if the linked PageList has a parent
+          // This ensures URLs like /products/trackers instead of just /trackers
           if (linkData.link.__typename === 'PageList') {
             console.log(`Checking parent for PageList: ${linkData.link.slug}`);
             try {
-              // Use the check-page-parent API to find if this PageList has a parent
+              // Query the check-page-parent API to detect nesting relationships
               const response = await fetch(`/api/check-page-parent?slug=${linkData.link.slug}`);
               console.log(`API response status: ${response.status}`);
 
@@ -97,7 +98,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 console.log('API response data:', JSON.stringify(data, null, 2));
 
                 if (data.parentPageList) {
-                  // Construct nested URL: /parent-pagelist/child-pagelist
+                  // Construct proper nested URL: /parent-pagelist/child-pagelist
                   href = `/${(data.parentPageList as { slug?: string }).slug}/${linkData.link.slug}`;
                   console.log(
                     `Found parent PageList "${(data.parentPageList as { slug?: string }).slug}" for "${linkData.link.slug}"`
@@ -112,7 +113,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
               console.warn('Failed to check parent PageList:', error);
             }
           } else if (props.parentPageListSlug) {
-            // For content items with known parent context
+            // For content items (Pages, Products, etc.) with known parent context
+            // Use the parent PageList slug to construct nested URLs
             href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
           }
 

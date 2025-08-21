@@ -5,6 +5,7 @@ import type { PageList } from '@/types/contentful/PageList';
 
 /**
  * Type guard to check if an item has a slug property
+ * Used in PageList nesting validation to identify content items with slugs
  */
 function hasSlug(
   item: unknown
@@ -30,6 +31,15 @@ const _isExternalPage = (
 
 /**
  * Builds the full routing path for nested page lists
+ * 
+ * This function implements the core PageList nesting detection algorithm:
+ * 1. Searches through all PageLists to find which one contains the target item
+ * 2. Recursively builds the parent chain by finding PageLists that contain other PageLists
+ * 3. Returns the complete routing path from root to the target item
+ * 
+ * Example: For item "nx-horizon" nested as products > trackers > nx-horizon
+ * Returns: ["products", "trackers"]
+ * 
  * @param itemId - The ID of the item to find the path for
  * @param pageLists - All page lists to search through
  * @param visited - Set of visited page list IDs to prevent infinite loops
@@ -41,11 +51,13 @@ function buildRoutingPath(
   visited = new Set<string>()
 ): string[] {
   // Find the page list that contains this item
+  // Search through all PageLists to find which one contains the target item
   for (const pageList of pageLists) {
     if (visited.has(pageList.sys.id)) {
-      continue; // Skip already visited to prevent infinite loops
+      continue; // Skip already visited to prevent infinite loops in circular references
     }
 
+    // Check if this PageList contains the target item in its pagesCollection
     const containsItem = pageList.pagesCollection?.items?.some((item) => {
       const itemSlug = 'slug' in item ? item.slug : 'link' in item ? item.link : undefined;
       if (itemSlug ?? item.sys?.id === itemId) {
@@ -54,13 +66,14 @@ function buildRoutingPath(
     });
 
     if (containsItem && pageList.slug) {
-      // Mark this page list as visited
+      // Mark this PageList as visited to prevent infinite recursion
       visited.add(pageList.sys.id);
 
-      // Check if this page list is nested within another page list
+      // Recursively find if this PageList is nested within another PageList
+      // This builds the complete parent chain (e.g., products > trackers)
       const parentPath = buildRoutingPath(pageList.sys.id, pageLists, visited);
 
-      // Return the full path: parent path + current page list slug
+      // Return the full routing path: parent path + current PageList slug
       return [...parentPath, pageList.slug];
     }
   }
@@ -71,9 +84,19 @@ function buildRoutingPath(
 /**
  * API route to check if a page belongs to a PageList and return the full routing path
  *
- * This route takes a page slug as a query parameter and checks if the page
- * belongs to any PageList. For nested page lists, it returns the full path.
- * Example: products/trackers for a product in the trackers page list under products
+ * This endpoint is critical for the PageList nesting system. It's used by components 
+ * like ContentGridItem, CtaBanner, and CtaGrid to determine the correct nested URL 
+ * structure for internal links, ensuring all navigation respects the PageList hierarchy.
+ *
+ * Key functionality:
+ * - Detects if a content item or PageList has parent PageLists
+ * - Returns the complete routing path for proper nested URL construction
+ * - Prevents orphaned content from being accessible via incorrect URLs
+ * - Supports multi-level nesting (e.g., products > trackers > specific-product)
+ *
+ * Example usage:
+ * GET /api/check-page-parent?slug=nx-horizon
+ * Returns: { parentPath: ["products", "trackers"], fullPath: "products/trackers/nx-horizon" }
  *
  * @param request - The incoming request with query parameters
  * @returns JSON response with parentPath array and parentSlug string

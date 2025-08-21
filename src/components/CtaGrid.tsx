@@ -41,16 +41,17 @@ export function CtaGrid(props: CtaGrid) {
   }, [props.sys.id]);
 
   // Generate correct URLs for Products by looking up their parent PageList
+  // PageList Nesting Integration: Dynamically resolve all CTA URLs to respect nesting hierarchy
+  // This ensures all CTA grid items link to proper nested URLs when parent PageLists exist
   useEffect(() => {
-    const generateProductUrls = async () => {
-      if (!liveCtaGrid.ctaCollection?.items) return;
-
+    const fetchNestedUrls = async () => {
       const urlMap: Record<string, string> = {};
 
-      for (const cta of liveCtaGrid.ctaCollection.items) {
-        if (cta.internalLink?.__typename === 'Product') {
+      // Process each CTA to determine its correct nested URL structure
+      for (const cta of liveCtaGrid.ctaCollection?.items || []) {
+        if (cta.internalLink?.slug) {
           try {
-            // Use the check-page-parent API to get the full nested path
+            // Query the check-page-parent API to detect nesting relationships
             const response = await fetch(`/api/check-page-parent?slug=${cta.internalLink.slug}`);
             if (response.ok) {
               const data = (await response.json()) as {
@@ -58,12 +59,15 @@ export function CtaGrid(props: CtaGrid) {
                 fullPath?: string;
               };
               if (data.parentPageList && data.fullPath) {
+                // Use full nested path when parent PageLists are detected
+                // e.g., /products/trackers/nx-horizon instead of /nx-horizon
                 urlMap[cta.internalLink.sys.id] = `/${data.fullPath}`;
               } else {
+                // Fallback to flat URL structure when no nesting is detected
                 urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
               }
             } else {
-              // Fallback to flat slug if API fails
+              // Fallback to flat slug on API failure
               urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
             }
           } catch (error) {
@@ -71,13 +75,16 @@ export function CtaGrid(props: CtaGrid) {
             // Fallback to flat slug on error
             urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
           }
+        } else if (cta.externalLink) {
+          // External links remain unchanged
+          urlMap[cta.sys.id] = cta.externalLink;
         }
       }
 
       setProductUrls(urlMap);
     };
 
-    void generateProductUrls();
+    void fetchNestedUrls();
   }, [liveCtaGrid.ctaCollection?.items]);
 
   // Show loading state
