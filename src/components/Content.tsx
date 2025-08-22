@@ -180,7 +180,7 @@ export function Content(props: Content) {
         <AirImage
           link={imageAsset.link}
           altText={imageAsset.altText ?? imageAsset.title}
-          className="absolute h-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover p-9"
         />
         <div className="relative flex h-full items-center justify-center p-10">
           <SectionHeading

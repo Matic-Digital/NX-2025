@@ -80,16 +80,21 @@ export function Accordion({ sys }: AccordionProps) {
             <AccordionItem
               key={`accordion-${accordionData.sys.id}-item-${item.sys.id}`}
               value={`item-${index}`}
-              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out hover:shadow-lg"
+              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out lg:hover:shadow-lg"
             >
               <AccordionTrigger
                 chevron={false}
                 onMouseOver={() => handleHover(`item-${index}`)}
-                className="h-60 p-0 group-hover:h-auto hover:no-underline"
+                className="h-auto p-0 hover:no-underline lg:h-60 lg:group-hover:h-auto"
               >
-                <Box direction="row" gap={0} cols={{ base: 1, lg: 12 }} className="min-h-20">
+                <Box
+                  direction="col"
+                  gap={0}
+                  cols={{ base: 1, lg: 12 }}
+                  className="min-h-20 lg:flex-row"
+                >
                   {item.image?.sys?.id && (
-                    <div className="col-span-7 h-60 overflow-hidden transition-all duration-300 ease-out group-hover:h-120">
+                    <div className="h-60 overflow-hidden transition-all duration-300 ease-out lg:col-span-7 lg:h-60 lg:group-hover:h-120">
                       <AirImage
                         sys={{ id: item.image.sys.id }}
                         className="h-full w-full object-cover"
@@ -99,19 +104,19 @@ export function Accordion({ sys }: AccordionProps) {
                   <Box
                     direction="col"
                     gap={6}
-                    className="relative col-span-5 p-12 transition-all duration-300 ease-out group-hover:p-12"
+                    className="relative p-6 transition-all duration-300 ease-out lg:col-span-5 lg:p-12 lg:group-hover:p-12"
                   >
                     <Image
                       src="https://air-prod.imgix.net/15bada56-2831-4406-98af-2330b3782171.jpg?w=1160&h=986&fm=webp&fit=crop&auto=auto"
                       fill
-                      className="z-10 hidden group-hover:block"
+                      className="z-10 lg:hidden lg:group-hover:block"
                       alt="background gradient image"
                     />
 
-                    <h3 className="text-headline-sm text-background relative z-20 line-clamp-2 max-w-[300px] group-hover:line-clamp-none">
+                    <h3 className="text-headline-sm text-background relative z-20 lg:line-clamp-2 lg:max-w-[300px] lg:group-hover:line-clamp-none">
                       {item.heading}
                     </h3>
-                    <div className="relative z-20 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+                    <div className="relative z-20 lg:opacity-0 lg:transition-opacity lg:duration-300 lg:ease-out lg:group-hover:opacity-100">
                       {item.description && <p className="text-background">{item.description}</p>}
                     </div>
                   </Box>

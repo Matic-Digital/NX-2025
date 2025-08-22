@@ -134,7 +134,13 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
 
   const cols = {
     base: 1,
-    md: analysis.allItemsAreSolutions ? 1 : analysis.hasCtaGrids ? 1 : 2,
+    md: analysis.allItemsAreSolutions
+      ? 1
+      : analysis.hasCtaGrids
+        ? 1
+        : analysis.hasAccordions
+          ? 1
+          : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasAccordions
