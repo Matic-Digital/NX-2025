@@ -14,6 +14,7 @@ import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful
 import { useState, useEffect } from 'react';
 
 interface ContentGridItemProps extends ContentGridItemType {
+  variant?: string;
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
 }
@@ -210,5 +211,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
-  return image ? <BackgroundImageItem /> : <LinkItem />;
+  switch (props.variant) {
+    case 'link':
+      return <LinkItem />;
+    case 'backgroundImage':
+      return <BackgroundImageItem />;
+    case 'image':
+      return <LinkItem />;
+    default:
+      return <LinkItem />;
+  }
 }

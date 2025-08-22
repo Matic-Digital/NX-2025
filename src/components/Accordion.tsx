@@ -75,26 +75,29 @@ export function Accordion({ sys }: AccordionProps) {
   return (
     <div onMouseLeave={handleMouseLeave}>
       <AccordionPrimitive type="single" value={openItem} onValueChange={setOpenItem}>
-        <Box direction="col" gap={6}>
+        <div className="flex flex-col gap-6 lg:h-[800px]">
           {accordionData.itemsCollection.items.map((item, index) => (
-            <AccordionItem
-              key={`accordion-${accordionData.sys.id}-item-${item.sys.id}`}
-              value={`item-${index}`}
-              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out lg:hover:shadow-lg"
+            <div 
+              key={`accordion-${accordionData.sys.id}-item-${item.sys.id}`} 
+              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out lg:min-h-[120px] lg:flex-1 lg:hover:flex-[4] lg:hover:shadow-lg"
+              onMouseOver={() => handleHover(`item-${index}`)}
             >
+              <AccordionItem
+                value={`item-${index}`}
+                className="h-full"
+              >
               <AccordionTrigger
                 chevron={false}
-                onMouseOver={() => handleHover(`item-${index}`)}
-                className="h-auto p-0 hover:no-underline lg:h-60 lg:group-hover:h-auto"
+                className="h-full p-0 hover:no-underline"
               >
                 <Box
                   direction="col"
                   gap={0}
                   cols={{ base: 1, lg: 12 }}
-                  className="min-h-20 lg:flex-row"
+                  className="h-full lg:flex-row"
                 >
                   {item.image?.sys?.id && (
-                    <div className="h-60 overflow-hidden transition-all duration-300 ease-out lg:col-span-7 lg:h-60 lg:group-hover:h-120">
+                    <div className="h-60 overflow-hidden lg:col-span-7 lg:h-full">
                       <AirImage
                         sys={{ id: item.image.sys.id }}
                         className="h-full w-full object-cover"
@@ -122,9 +125,10 @@ export function Accordion({ sys }: AccordionProps) {
                   </Box>
                 </Box>
               </AccordionTrigger>
-            </AccordionItem>
+              </AccordionItem>
+            </div>
           ))}
-        </Box>
+        </div>
       </AccordionPrimitive>
     </div>
   );
