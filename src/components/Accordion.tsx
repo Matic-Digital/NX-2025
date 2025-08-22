@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import {
   Accordion as AccordionPrimitive,
-  AccordionContent,
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion';
@@ -80,27 +80,38 @@ export function Accordion({ sys }: AccordionProps) {
             <AccordionItem
               key={`accordion-${accordionData.sys.id}-item-${item.sys.id}`}
               value={`item-${index}`}
-              className="bg-foreground overflow-hidden transition-all duration-300 ease-out group hover:shadow-lg"
+              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out hover:shadow-lg"
             >
               <AccordionTrigger
                 chevron={false}
                 onMouseOver={() => handleHover(`item-${index}`)}
-                className="p-0 hover:no-underline h-20 group-hover:h-auto"
+                className="h-60 p-0 group-hover:h-auto hover:no-underline"
               >
-                <Box direction="row" gap={0} cols={{ base: 1, lg: 6 }} className="min-h-20">
+                <Box direction="row" gap={0} cols={{ base: 1, lg: 12 }} className="min-h-20">
                   {item.image?.sys?.id && (
-                    <div className="col-span-4 h-20 group-hover:h-64 transition-all duration-300 ease-out overflow-hidden">
-                      <AirImage 
-                        sys={{ id: item.image.sys.id }} 
-                        className="w-full h-full object-cover" 
+                    <div className="col-span-7 h-60 overflow-hidden transition-all duration-300 ease-out group-hover:h-120">
+                      <AirImage
+                        sys={{ id: item.image.sys.id }}
+                        className="h-full w-full object-cover"
                       />
                     </div>
                   )}
-                  <Box direction="col" gap={6} className="col-span-2 p-4 group-hover:p-12 transition-all duration-300 ease-out">
-                    <h3 className="text-headline-sm text-background max-w-[300px] line-clamp-2 group-hover:line-clamp-none">
+                  <Box
+                    direction="col"
+                    gap={6}
+                    className="relative col-span-5 p-12 transition-all duration-300 ease-out group-hover:p-12"
+                  >
+                    <Image
+                      src="https://air-prod.imgix.net/15bada56-2831-4406-98af-2330b3782171.jpg?w=1160&h=986&fm=webp&fit=crop&auto=auto"
+                      fill
+                      className="z-10 hidden group-hover:block"
+                      alt="background gradient image"
+                    />
+
+                    <h3 className="text-headline-sm text-background relative z-20 line-clamp-2 max-w-[300px] group-hover:line-clamp-none">
                       {item.heading}
                     </h3>
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out">
+                    <div className="relative z-20 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
                       {item.description && <p className="text-background">{item.description}</p>}
                     </div>
                   </Box>
