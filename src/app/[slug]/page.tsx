@@ -18,9 +18,9 @@
  * and PageList can reference multiple Pages.
  */
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
+import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
@@ -56,6 +56,67 @@ interface ContentPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
+// Helper function to check if a slug should be redirected to nested path
+async function checkForNestedRedirect(slug: string): Promise<string | null> {
+  try {
+    const pageLists = await getAllPageLists(false);
+
+    // Type guard to check if an item has a slug property
+    const hasSlug = (item: unknown): item is { slug: string; sys: { id: string } } => {
+      return Boolean(item && typeof (item as { slug?: string }).slug === 'string');
+    };
+
+    // Build routing path by finding parent PageLists
+    const buildRoutingPath = (itemId: string, visited = new Set<string>()): string[] => {
+      if (visited.has(itemId)) return []; // Prevent infinite loops
+      visited.add(itemId);
+
+      for (const pageList of pageLists.items) {
+        if (!pageList.pagesCollection?.items?.length) continue;
+
+        const foundItem = pageList.pagesCollection.items.find((item) => item?.sys?.id === itemId);
+
+        if (foundItem && pageList.slug) {
+          const parentPath = buildRoutingPath(pageList.sys.id, visited);
+          return [...parentPath, pageList.slug];
+        }
+      }
+      return [];
+    };
+
+    // First, check if the slug itself is a PageList
+    const targetPageList = pageLists.items.find((pageList) => pageList.slug === slug);
+    if (targetPageList) {
+      const parentPath = buildRoutingPath(targetPageList.sys.id);
+      if (parentPath.length > 0) {
+        const fullPath = [...parentPath, slug].join('/');
+        return fullPath;
+      }
+    }
+
+    // If not a PageList, search for the slug in all PageList items (Pages, Products, etc.)
+    for (const pageList of pageLists.items) {
+      if (!pageList.pagesCollection?.items?.length) continue;
+
+      const foundItem = pageList.pagesCollection.items.find(
+        (item) => hasSlug(item) && item.slug === slug
+      );
+
+      if (foundItem) {
+        // Build the full path including this item's parents
+        const parentPath = buildRoutingPath(pageList.sys.id);
+        const fullPath = [...parentPath, pageList.slug, slug].join('/');
+        return fullPath;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error checking for nested redirect:', error);
+    return null;
+  }
+}
+
 // Generate static params for static site generation
 export async function generateStaticParams() {
   // This would typically fetch all pages and page lists to pre-render
@@ -79,6 +140,12 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
 
   try {
+    // First, check if this slug should be redirected to a nested path
+    const nestedPath = await checkForNestedRedirect(slug);
+    if (nestedPath && nestedPath !== slug) {
+      redirect(`/${nestedPath}`);
+    }
+
     // Try to fetch as a Page first
     const page = await getPageBySlug(slug, false);
 
@@ -182,6 +249,14 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
   const preview = false; // Set to true if you want to enable preview mode
 
   try {
+    // First, check if this slug should be redirected to a nested path
+    console.log(`Checking if ${slug} should be redirected to nested path...`);
+    const nestedPath = await checkForNestedRedirect(slug);
+    if (nestedPath && nestedPath !== slug) {
+      console.log(`Redirecting ${slug} to nested path: /${nestedPath}`);
+      redirect(`/${nestedPath}`);
+    }
+
     // Try to fetch the content as a Page first
     console.log(`Attempting to fetch page with slug: ${slug}`);
     let page;

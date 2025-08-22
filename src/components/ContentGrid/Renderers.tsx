@@ -40,7 +40,12 @@ export const contentRenderers = {
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
   renderContentGridItem: (item: ContentGridItemType, context: RenderContext) => (
-    <ContentGridItem key={item.sys?.id ?? context.index} {...item} />
+    <ContentGridItem
+      key={item.sys?.id ?? context.index}
+      {...item}
+      parentPageListSlug={context.parentPageListSlug}
+      currentPath={context.currentPath}
+    />
   ),
 
   renderPost: (item: PostType, context: RenderContext) => (
@@ -147,9 +152,13 @@ export const contentRenderers = {
                   {'slug' in nestedItem && nestedItem.slug && (
                     <Link
                       href={
-                        context.currentPath
-                          ? `${context.currentPath}/${pageList.slug}/${nestedItem.slug}`
-                          : context.parentPageListSlug
+                        nestedItem.__typename === 'PageList'
+                          ? // For nested PageLists, construct the full path
+                            context.parentPageListSlug
+                            ? `/${context.parentPageListSlug}/${nestedItem.slug}`
+                            : `/${pageList.slug}/${nestedItem.slug}`
+                          : // For content items within PageLists, use the standard pattern
+                            context.parentPageListSlug
                             ? `/${context.parentPageListSlug}/${pageList.slug}/${nestedItem.slug}`
                             : `/${pageList.slug}/${nestedItem.slug}`
                       }

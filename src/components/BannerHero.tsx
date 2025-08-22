@@ -26,6 +26,10 @@ export function BannerHero(props: BannerHeroProps) {
   // const isProductContext = pathname?.includes('/products/');
   const isProductContext = pathname?.includes('/trackers/');
 
+  console.log('BannerHero props:', props);
+  console.log('BannerHero bannerHero:', bannerHero);
+  console.log('BannerHero heading data:', bannerHero?.heading);
+
   return (
     <ErrorBoundary>
       <Section
