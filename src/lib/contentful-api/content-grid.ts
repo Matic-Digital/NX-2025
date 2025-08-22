@@ -7,18 +7,6 @@ import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
-// Simplified Post fields for ContentGrid (to avoid circular dependency)
-const POST_GRAPHQL_FIELDS_SIMPLE = `
-  ${SYS_FIELDS}
-  title
-  slug
-  datePublished
-  mainImage {
-    ${IMAGE_GRAPHQL_FIELDS}
-  }
-  categories
-`;
-
 // ContentGridItem fields - minimal for initial load (no link field)
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -44,6 +32,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
   }
   itemsCollection(limit: 20) {
     items {
+      ... on Accordion {
+        ${SYS_FIELDS}
+      }
       ... on ContentGridItem {
         ${SYS_FIELDS}
         image {
@@ -53,7 +44,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
         }
       }
       ... on Post {
-        ${POST_GRAPHQL_FIELDS_SIMPLE}
+        ${SYS_FIELDS}
       }
       ... on Product {
         ${SYS_FIELDS}

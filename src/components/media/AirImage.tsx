@@ -44,16 +44,8 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
   // Use full image data if available, otherwise fall back to props
   const imageData = fullImageData ?? props;
-  const {
-    sys,
-    link,
-    altText,
-    className = '',
-    width,
-    height,
-    priority = false,
-    __typename = 'Image'
-  } = imageData;
+  const { sys, link, altText, width, height, priority = false } = imageData;
+  const { className } = props;
 
   // Fetch full image data if we only have sys fields (no link)
   useEffect(() => {

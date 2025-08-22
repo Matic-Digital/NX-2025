@@ -1,4 +1,5 @@
 import type {
+  Accordion as AccordionType,
   ContentGridItem as ContentGridItemType,
   Post as PostType,
   Video as VideoType,
@@ -11,6 +12,7 @@ import type {
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
+  | AccordionType
   | ContentGridItemType
   | PostType
   | VideoType
@@ -25,6 +27,9 @@ export type ContentGridItemUnion =
  * Content type detection utilities
  */
 export const contentTypeDetectors = {
+  isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
+    item.__typename === 'Accordion',
+
   isContentGridItem: (item: ContentGridItemUnion): item is ContentGridItemType =>
     item.__typename === 'ContentGridItem',
 
@@ -51,6 +56,9 @@ export const contentTypeDetectors = {
  * Collection type analysis utilities
  */
 export const collectionAnalyzers = {
+  hasAccordions: (items: ContentGridItemUnion[]): boolean =>
+    items.some(contentTypeDetectors.isAccordion),
+
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),
 
@@ -80,6 +88,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
   const analysis = {
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
+    hasAccordions: collectionAnalyzers.hasAccordions(items),
     hasImages: collectionAnalyzers.hasImages(items),
     hasVideos: collectionAnalyzers.hasVideos(items),
     hasSliders: collectionAnalyzers.hasSliders(items),
@@ -128,19 +137,21 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     md: analysis.allItemsAreSolutions ? 1 : analysis.hasCtaGrids ? 1 : 2,
     lg: analysis.hasVideos
       ? 1
-      : analysis.hasSliders
+      : analysis.hasAccordions
         ? 1
-        : analysis.hasCtaGrids
+        : analysis.hasSliders
           ? 1
-          : analysis.allItemsArePosts
-            ? 4
-            : analysis.hasFullWidthItems
-              ? 1
-              : analysis.allItemsAreSolutions
-                ? 3
-                : analysis.hasImages
-                  ? 1
-                  : 3
+          : analysis.hasCtaGrids
+            ? 1
+            : analysis.allItemsArePosts
+              ? 4
+              : analysis.hasFullWidthItems
+                ? 1
+                : analysis.allItemsAreSolutions
+                  ? 3
+                  : analysis.hasImages
+                    ? 1
+                    : 3
   };
 
   const gap = analysis.allItemsArePosts

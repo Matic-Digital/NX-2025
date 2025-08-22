@@ -14,6 +14,10 @@ interface ContentItemRendererProps {
  */
 const contentTypeRegistry = [
   {
+    detector: contentTypeDetectors.isAccordion,
+    renderer: contentRenderers.renderAccordion
+  },
+  {
     detector: contentTypeDetectors.isContentGridItem,
     renderer: contentRenderers.renderContentGridItem
   },
