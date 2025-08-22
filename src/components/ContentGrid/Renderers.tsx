@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Box } from '@/components/global/matic-ds';
 import { ContentGridItem } from '../ContentGridItem';
+import { Accordion } from '@/components/Accordion';
 import { AirImage } from '@/components/media/AirImage';
 import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
@@ -12,6 +13,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 
 import type {
+  Accordion as AccordionType,
   ContentGridItem as ContentGridItemType,
   Post as PostType,
   Video as VideoType,
@@ -34,6 +36,9 @@ interface RenderContext {
 }
 
 export const contentRenderers = {
+  renderAccordion: (item: AccordionType, context: RenderContext) => (
+    <Accordion key={item.sys?.id ?? context.index} {...item} />
+  ),
   renderContentGridItem: (item: ContentGridItemType, context: RenderContext) => (
     <ContentGridItem key={item.sys?.id ?? context.index} {...item} />
   ),
