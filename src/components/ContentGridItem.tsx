@@ -217,8 +217,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
     case 'backgroundImage':
       return <BackgroundImageItem />;
     case 'image':
-      return <LinkItem />;
+      return <BackgroundImageItem />;
     default:
-      return <LinkItem />;
+      return image ? <BackgroundImageItem /> : <LinkItem />;
   }
 }

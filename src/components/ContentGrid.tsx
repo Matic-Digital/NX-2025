@@ -19,6 +19,7 @@ import type { ContentGrid as ContentGridType } from '@/types/contentful';
 interface ContentGridProps extends ContentGridType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
+  variant?: string; // Optional variant for rendering style
 }
 
 export function ContentGrid(props: ContentGridProps) {
@@ -66,6 +67,7 @@ export function ContentGrid(props: ContentGridProps) {
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
+                        variant={props.variant}
                       />
                     ))}
                   </Box>

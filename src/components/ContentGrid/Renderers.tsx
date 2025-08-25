@@ -31,6 +31,7 @@ import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/compo
 interface RenderContext {
   index: number;
   validItems: ContentGridItemUnion[];
+  variant?: string;
   parentPageListSlug?: string;
   currentPath?: string;
 }
@@ -45,6 +46,7 @@ export const contentRenderers = {
       {...item}
       parentPageListSlug={context.parentPageListSlug}
       currentPath={context.currentPath}
+      variant={context.variant}
     />
   ),
 
