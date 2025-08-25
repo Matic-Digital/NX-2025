@@ -7,7 +7,6 @@ interface ContentItemRendererProps {
   validItems: ContentGridItemUnion[];
   parentPageListSlug?: string;
   currentPath?: string;
-  variant?: string;
 }
 
 /**
@@ -68,8 +67,7 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   index,
   validItems,
   parentPageListSlug,
-  currentPath,
-  variant
+  currentPath
 }) => {
   // Debug logging
   console.log(`ContentGrid item ${index}:`, {
@@ -85,8 +83,7 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
     index,
     validItems,
     parentPageListSlug,
-    currentPath,
-    variant
+    currentPath
   };
 
   // Find the appropriate renderer for this content type

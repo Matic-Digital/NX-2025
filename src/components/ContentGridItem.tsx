@@ -8,13 +8,13 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
+import { SvgIcon } from '@/components/ui/svg-icon';
 import { cn } from '@/lib/utils';
 import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
 import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful-api/content-grid';
 import { useState, useEffect } from 'react';
 
 interface ContentGridItemProps extends ContentGridItemType {
-  variant?: string;
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
 }
@@ -26,7 +26,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, heading, description, icon, image } = contentData;
+  const { sys, heading, description, variant, icon, image } = contentData;
+  console.log('ContentGridItem variant', { variant, heading });
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -35,7 +36,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return (
         <div
           className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
-            'group-hover:bg-primary': !isBackgroundImage
+            'group-hover:bg-primary transition-colors': !isBackgroundImage
           })}
         >
           {/* Placeholder for when no icon is available */}
@@ -47,7 +48,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     return (
       <div
         className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
-          'group-hover:bg-primary': !isBackgroundImage
+          'group-hover:bg-primary transition-colors': !isBackgroundImage
         })}
       >
         <Image
@@ -140,17 +141,19 @@ export function ContentGridItem(props: ContentGridItemProps) {
     return (
       <Link href={getHref()} className="group flex flex-col">
         <Box direction="col" gap={4}>
-          <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem]">
+          <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
             {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
           </Box>
           <Box direction="col" gap={2}>
             <Box direction="row" gap={2} className="items-center">
-              <h3 className="text-headline-sm group-hover:text-primary">{heading}</h3>
-              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-transform group-hover:translate-x-1 group-hover:opacity-100">
+              <h3 className="text-headline-sm group-hover:text-primary transition-colors">
+                {heading}
+              </h3>
+              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
                 <ArrowUpRight className="size-10 stroke-1" />
               </span>
             </Box>
-            <p className="text-body-sm group-hover:text-primary">{description}</p>
+            <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
           </Box>
         </Box>
       </Link>
@@ -171,7 +174,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <Box
           direction="col"
           gap={6}
-          className="flex h-full w-full max-w-[531px] flex-col bg-black/30 p-6 text-white shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
+          className="text-background flex h-full w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
         >
           <div className="flex h-full flex-col">
             <div>
@@ -186,7 +189,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 </h3>
                 {description && (
                   <p
-                    className="line-clamp-3 text-white/90"
+                    className="text-background/90 line-clamp-3"
                     {...inspectorProps({ fieldId: 'description' })}
                   >
                     {description}
@@ -199,7 +202,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               <Link href={getHref()} className="inline-block w-auto">
                 <Button
                   variant="outlineWhite"
-                  className="transition-all hover:bg-white hover:text-black"
+                  className="hover:bg-background hover:text-foreground transition-colors"
                 >
                   Learn More
                 </Button>
@@ -211,14 +214,66 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
-  switch (props.variant) {
-    case 'link':
+  const BackgroundGradientHoverItem = () => (
+    <div className="group rounded-xxs bg-subtle relative overflow-hidden">
+      {/* Card Image */}
+      {image && (
+        <div className="absolute z-10 h-full w-full opacity-0 transition-opacity group-hover:opacity-100">
+          <AirImage
+            link={image.link ?? ''}
+            altText={image.altText ?? ''}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Card Content */}
+      <Box direction="col" gap={4} className="relative z-20 h-full p-6">
+        {/* Icon */}
+        {icon?.url && (
+          <div className="w-fit">
+            <div className="group-hover:bg-background bg-foreground p-2 transition-colors">
+              <SvgIcon
+                src={icon.url}
+                alt={heading}
+                width={40}
+                height={40}
+                className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Text Content */}
+        <Box direction="col" gap={2} className="mt-auto">
+          <h3
+            className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+            {...inspectorProps({ fieldId: 'heading' })}
+          >
+            {heading}
+          </h3>
+          {description && (
+            <p
+              className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 transition-colors"
+              {...inspectorProps({ fieldId: 'description' })}
+            >
+              {description}
+            </p>
+          )}
+        </Box>
+      </Box>
+    </div>
+  );
+
+  // Determine rendering style based on variant field from Contentful
+  switch (variant) {
+    case 'BackgroundImage':
+      return <BackgroundImageItem />;
+    case 'BackgroundGradientHover':
+      return <BackgroundGradientHoverItem />;
+    case 'Link':
       return <LinkItem />;
-    case 'backgroundImage':
-      return <BackgroundImageItem />;
-    case 'image':
-      return <BackgroundImageItem />;
     default:
-      return image ? <BackgroundImageItem /> : <LinkItem />;
+      return <span>Loading...</span>;
   }
 }
