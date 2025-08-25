@@ -77,8 +77,11 @@ export const collectionAnalyzers = {
   hasCtaGrids: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isCtaGrid),
 
+  // hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
+  //   items.some((item) => 'image' in item && item.image)
+
   hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
-    items.some((item) => 'image' in item && item.image)
+    items.some((item) => 'variant' in item && item.variant === 'BackgroundImage')
 };
 
 /**
@@ -96,45 +99,15 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     hasFullWidthItems: collectionAnalyzers.hasFullWidthItems(items)
   };
 
-  // Debug logging for grid analysis
-  console.log('Grid: Grid analysis:', analysis);
-  console.log('Grid: hasImages detailed check:', {
-    standaloneImages: items.some(contentTypeDetectors.isImage),
-    contentGridItemsWithImages: items.some(
-      (item) =>
-        contentTypeDetectors.isContentGridItem(item) &&
-        (('image' in item && item.image && typeof item.image === 'object') ??
-          ('icon' in item && item.icon && typeof item.icon === 'object'))
-    ),
-    finalHasImages: analysis.hasImages,
-    contentGridItems: items.filter(contentTypeDetectors.isContentGridItem).map((item) => ({
-      hasImageProp: 'image' in item,
-      imageValue: 'image' in item ? item.image : null,
-      imageType: 'image' in item ? typeof item.image : 'none',
-      hasIconProp: 'icon' in item,
-      iconValue: 'icon' in item ? item.icon : null,
-      iconType: 'icon' in item ? typeof item.icon : 'none'
-    }))
-  });
-  console.log(
-    'Grid: Items detailed analysis:',
-    items.map((item, index) => ({
-      index,
-      typename: item.__typename,
-      isContentGridItem: contentTypeDetectors.isContentGridItem(item),
-      hasImage: 'image' in item,
-      imageValue: 'image' in item ? item.image : 'NO IMAGE PROP',
-      imageExists: 'image' in item && !!item.image,
-      hasIcon: 'icon' in item,
-      iconValue: 'icon' in item ? item.icon : 'NO ICON PROP',
-      allKeys: Object.keys(item),
-      fullItem: item
-    }))
-  );
-
   const cols = {
     base: 1,
-    md: analysis.allItemsAreSolutions ? 1 : analysis.hasCtaGrids ? 1 : 2,
+    md: analysis.allItemsAreSolutions
+      ? 1
+      : analysis.hasCtaGrids
+        ? 1
+        : analysis.hasAccordions
+          ? 1
+          : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasAccordions
@@ -143,10 +116,10 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
           ? 1
           : analysis.hasCtaGrids
             ? 1
-            : analysis.allItemsArePosts
-              ? 4
-              : analysis.hasFullWidthItems
-                ? 1
+            : analysis.hasFullWidthItems
+              ? 1
+              : analysis.allItemsArePosts
+                ? 4
                 : analysis.allItemsAreSolutions
                   ? 3
                   : analysis.hasImages
@@ -169,6 +142,25 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     : analysis.hasCtaGrids
       ? 12
       : 12;
+
+  // Special case for 4-item asymmetric layout
+  if (
+    items.length === 4 &&
+    !analysis.hasAccordions &&
+    !analysis.allItemsArePosts &&
+    !analysis.hasSliders &&
+    !analysis.hasVideos
+  ) {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 2 }, // This will be overridden by custom grid
+      gap: 12,
+      direction: 'col' as const,
+      sectionGap: 12,
+      useCustomLayout: true, // Flag to indicate custom layout
+      layoutType: 'fourItemAsymmetric'
+    };
+  }
 
   return {
     analysis,

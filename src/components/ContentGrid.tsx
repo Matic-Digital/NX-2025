@@ -33,7 +33,7 @@ export function ContentGrid(props: ContentGridProps) {
     [];
 
   // Calculate grid configuration using utilities
-  const { cols, direction, gap } = calculateGridConfig(validItems);
+  const { cols, direction, gap, useCustomLayout, layoutType } = calculateGridConfig(validItems);
 
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
@@ -56,20 +56,64 @@ export function ContentGrid(props: ContentGridProps) {
 
               {/* items */}
               {(() => {
-                const gridContent = (
-                  <Box cols={cols} gap={gap} wrap={true}>
-                    {validItems.map((item, index) => (
+                const gridContent =
+                  useCustomLayout && layoutType === 'fourItemAsymmetric' ? (
+                    // Custom 4-item staggered grid (3 columns)
+                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
+                      {/* Top row - items in columns 1 and 2 */}
                       <ContentItemRenderer
-                        key={item.sys?.id ?? index}
-                        item={item}
-                        index={index}
+                        key={validItems[0]?.sys?.id ?? 0}
+                        item={validItems[0]!}
+                        index={0}
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
                       />
-                    ))}
-                  </Box>
-                );
+                      <ContentItemRenderer
+                        key={validItems[1]?.sys?.id ?? 1}
+                        item={validItems[1]!}
+                        index={1}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                      {/* Empty space in column 3 for top row */}
+                      <div className="hidden md:block"></div>
+
+                      {/* Bottom row - empty column 1, items in columns 2 and 3 */}
+                      <div className="hidden md:block"></div>
+                      <ContentItemRenderer
+                        key={validItems[2]?.sys?.id ?? 2}
+                        item={validItems[2]!}
+                        index={2}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                      <ContentItemRenderer
+                        key={validItems[3]?.sys?.id ?? 3}
+                        item={validItems[3]!}
+                        index={3}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    </div>
+                  ) : (
+                    // Existing uniform grid layout
+                    <Box cols={cols} gap={gap} wrap={true}>
+                      {validItems.map((item, index) => (
+                        <ContentItemRenderer
+                          key={item.sys?.id ?? index}
+                          item={item}
+                          index={index}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                        />
+                      ))}
+                    </Box>
+                  );
 
                 // Return content wrapped with ServiceCardProvider if service cards are present
                 return hasServiceCards ? (

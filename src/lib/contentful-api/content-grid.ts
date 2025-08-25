@@ -13,6 +13,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   title
   heading
   description
+  variant
   icon {
     ${ASSET_FIELDS}
   }
@@ -37,6 +38,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
       ... on ContentGridItem {
         ${SYS_FIELDS}
+        variant
         image {
           sys {
             id
