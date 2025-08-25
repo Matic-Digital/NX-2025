@@ -1,3 +1,4 @@
+export * from './Accordion';
 export * from './Asset';
 export * from './BannerHero';
 export * from './Button';

@@ -1,11 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/media/AirImage';
+import { getPostById } from '@/lib/contentful-api/post';
 import type { Post } from '@/types/contentful/Post';
 import Link from 'next/link';
 
@@ -46,11 +48,52 @@ const categoryColorMap = (category: string) => {
   }
 };
 
-export function PostCard(props: Post) {
-  const post = useContentfulLiveUpdates(props);
+interface PostCardProps {
+  sys: {
+    id: string;
+  };
+}
+
+export function PostCard({ sys }: PostCardProps) {
+  const [postData, setPostData] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPostData() {
+      try {
+        setLoading(true);
+        const data = await getPostById(sys.id);
+        if (data) {
+          setPostData(data);
+        }
+      } catch (error) {
+        console.error('Error fetching post data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void fetchPostData();
+  }, [sys.id]);
+
+  const post = useContentfulLiveUpdates(postData);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
-  console.log('post props', props);
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center p-4">
+        <div className="text-lg">Loading post...</div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="flex h-full items-center justify-center p-4">
+        <div className="text-lg">Post not found</div>
+      </div>
+    );
+  }
 
   return (
     <Link

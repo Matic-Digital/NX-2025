@@ -9,9 +9,11 @@ import { VideoSchema } from './Video';
 import { SliderSchema } from './Slider';
 import { SolutionSchema } from './Solution';
 import { ProductSchema } from './Product';
+import { AccordionSchema } from './Accordion';
 
 // Union type for items
 const ContentGridItemUnion = z.union([
+  AccordionSchema,
   ContentGridItemSchema,
   PostSchema,
   ServiceSchema,
