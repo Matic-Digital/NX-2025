@@ -137,6 +137,20 @@ export function ContentGridItem(props: ContentGridItemProps) {
     return linkHref;
   };
 
+  const DefaultItem = () => {
+    return (
+      <Box direction="col" gap={4}>
+        <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
+          {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
+        </Box>
+        <Box direction="col" gap={2}>
+          <h3 className="text-headline-sm">{heading}</h3>
+          <p className="text-body-sm">{description}</p>
+        </Box>
+      </Box>
+    );
+  };
+
   const LinkItem = () => {
     return (
       <Link href={getHref()} className="group flex flex-col">
@@ -274,6 +288,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
     case 'Link':
       return <LinkItem />;
     default:
-      return <span>Loading...</span>;
+      return <DefaultItem />;
   }
 }

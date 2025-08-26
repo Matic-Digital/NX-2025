@@ -18,6 +18,7 @@ export const PRODUCT_GRAPHQL_FIELDS = `
   title
   slug
   description
+  tags
   icon {
     ${ASSET_FIELDS}
   }
