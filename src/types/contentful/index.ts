@@ -23,4 +23,5 @@ export * from './Service';
 export * from './Slider';
 export * from './Social';
 export * from './Solution';
+export * from './TimelineSliderItem';
 export * from './Video';

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { getContentById } from '@/lib/contentful-api/content';
 import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
+import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
 import type { Image } from '@/types/contentful/Image';
@@ -25,7 +26,7 @@ type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' 
 
 type SectionHeadingCardData = Pick<
   SectionHeadingType,
-  'title' | 'description' | 'ctaCollection'
+  'overline' | 'title' | 'description' | 'ctaCollection'
 > & {
   image: {
     link?: string;
@@ -37,7 +38,7 @@ type SectionHeadingCardData = Pick<
 interface ContentCardProps {
   data: ProductCardData | SectionHeadingCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
-  variant: 'ContentLeft' | 'FullWidth';
+  variant: ContentVariant;
 }
 
 interface ContentContainerProps {
@@ -129,7 +130,7 @@ export function Content(props: Content) {
           <AirImage
             link={data.image?.link}
             altText={data.image?.altText ?? data.image?.title}
-            className="absolute h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover px-6 md:px-9"
           />
           <ContentOverlay>
             <Box
@@ -201,6 +202,89 @@ export function Content(props: Content) {
       );
     }
 
+    if (variant === 'ContentCenter') {
+      return (
+        <ContentContainer>
+          <AirImage
+            link={data.image?.link}
+            altText={data.image?.altText ?? data.image?.title}
+            className="absolute inset-0 h-full w-full object-cover px-6 md:px-9"
+          />
+          <Box
+            direction="col"
+            gap={12}
+            className="relative h-full w-full items-center justify-center text-center"
+          >
+            <Box direction="col" gap={5}>
+              <Box direction="col" gap={1.5}>
+                {isProductData(data) && data.tags && (
+                  <p
+                    className="text-body-sm text-text-on-invert uppercase"
+                    {...inspectorProps({ fieldId: 'categories' })}
+                  >
+                    {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                  </p>
+                )}
+                {!isProductData(data) && data.overline && (
+                  <p
+                    className="text-white uppercase"
+                    {...inspectorProps({ fieldId: 'heading.overline' })}
+                  >
+                    {data.overline}
+                  </p>
+                )}
+                <h2
+                  className="text-headline-lg text-text-on-invert leading-tight"
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {data.title}
+                </h2>
+              </Box>
+              {data.description && (
+                <p
+                  className="text-body-xs letter-spacing-[0.14px] text-text-on-invert mx-auto max-w-lg leading-normal"
+                  {...inspectorProps({ fieldId: 'excerpt' })}
+                >
+                  {data.description}
+                </p>
+              )}
+              {/* Render button for Product or CTA collection for SectionHeading */}
+              {isProductData(data) ? (
+                <Button
+                  variant="white"
+                  {...inspectorProps({ fieldId: 'button' })}
+                  className="w-fit"
+                  asChild
+                >
+                  <Link href={data.slug}>Explore {data.title}</Link>
+                </Button>
+              ) : (
+                data.ctaCollection?.items?.map((cta, index) => (
+                  <Link
+                    key={cta.sys?.id || index}
+                    href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
+                    {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  >
+                    <Button
+                      variant={
+                        (data.ctaCollection?.items?.length ?? 0) === 1
+                          ? 'white'
+                          : index === 0
+                            ? 'primary'
+                            : 'white'
+                      }
+                    >
+                      {cta.text}
+                    </Button>
+                  </Link>
+                ))
+              )}
+            </Box>
+          </Box>
+        </ContentContainer>
+      );
+    }
+
     return (
       <ContentContainer>
         <AirImage
@@ -223,7 +307,7 @@ export function Content(props: Content) {
   };
 
   // Get variant from content
-  const getVariant = (): 'FullWidth' | 'ContentLeft' | null => {
+  const getVariant = (): ContentVariant | null => {
     return liveContent.variant ?? null;
   };
 
@@ -271,6 +355,7 @@ export function Content(props: Content) {
         const imageAsset = liveContent.asset as Image;
 
         const sectionHeadingData: SectionHeadingCardData = {
+          overline: sectionHeading.overline,
           title: sectionHeading.title,
           description: sectionHeading.description,
           ctaCollection: sectionHeading.ctaCollection,

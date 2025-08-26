@@ -3,6 +3,9 @@ import { ImageSchema } from './Image';
 import { ButtonSchema } from './Button';
 import { ContentGridItemSchema } from './ContentGridItem';
 
+export const CtaGridVariantEnum = z.enum(['ContentLeft', 'ContentCenter', 'ContentRight']);
+export type CtaGridVariant = z.infer<typeof CtaGridVariantEnum>;
+
 export const CtaGridSchema = z.object({
   sys: z.object({
     id: z.string()
@@ -15,6 +18,7 @@ export const CtaGridSchema = z.object({
   ctaCollection: z.object({
     items: z.array(ButtonSchema)
   }),
+  variant: CtaGridVariantEnum,
   __typename: z.string().optional()
 });
 

@@ -18,7 +18,8 @@ import type {
   SliderItem,
   PostSliderItem,
   Image as ImageType,
-  FeatureSliderItem
+  FeatureSliderItem,
+  TimelineSliderItem
 } from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
@@ -27,7 +28,12 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 
-type SliderItemType = SliderItem | PostSliderItem | ImageType | FeatureSliderItem;
+type SliderItemType =
+  | SliderItem
+  | PostSliderItem
+  | ImageType
+  | FeatureSliderItem
+  | TimelineSliderItem;
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -191,6 +197,87 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
           </p>
         </Box>
       </Box>
+    );
+  }
+
+  if (updatedItem.__typename === 'TimelineSliderItem') {
+    const timelineItem = updatedItem as TimelineSliderItem;
+    const isCurrentSlide = current === index + 1;
+
+    return (
+      <div className="relative h-[669px]">
+        {/* Main Image/Video Section */}
+        <div className="relative h-[400px] w-full">
+          {timelineItem.asset.__typename === 'Video'
+            ? (() => {
+                const videoAsset = timelineItem.asset as {
+                  __typename: 'Video';
+                  posterImage: { link?: string; altText?: string };
+                };
+                return (
+                  <div className="relative h-full w-full">
+                    <AirImage
+                      link={videoAsset.posterImage.link ?? ''}
+                      altText={videoAsset.posterImage.altText ?? 'Video thumbnail'}
+                      className="absolute h-full w-full object-cover"
+                    />
+                    {/* Video Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                        <svg
+                          className="ml-1 h-6 w-6 text-gray-800"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            : timelineItem.asset.__typename === 'Image'
+              ? (() => {
+                  const imageAsset = timelineItem.asset as {
+                    __typename: 'Image';
+                    link?: string;
+                    altText?: string;
+                  };
+                  return (
+                    <AirImage
+                      link={imageAsset.link ?? ''}
+                      altText={imageAsset.altText ?? ''}
+                      className="h-full w-full object-cover"
+                    />
+                  );
+                })()
+              : null}
+        </div>
+
+        {/* Timeline Content Section - Individual slide content */}
+        <div className="flex h-[269px] flex-col justify-center bg-white px-6 py-8">
+          <div className="mx-auto max-w-4xl">
+            {/* Timeline Year - Only show current slide prominently */}
+            <div className="mb-4">
+              <h3
+                className={cn(
+                  'text-4xl font-light transition-colors duration-300',
+                  isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
+                )}
+              >
+                {timelineItem.date}
+              </h3>
+            </div>
+
+            {/* Timeline Description - Only show for current slide */}
+            {isCurrentSlide && (
+              <div className="max-w-md text-gray-600">
+                <p className="text-sm leading-relaxed">{timelineItem.description}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -383,6 +470,7 @@ export function Slider(props: SliderSys) {
 
   const isImageSlider = firstItem.__typename === 'Image';
   const isFeatureSliderItemSlider = firstItem.__typename === 'FeatureSliderItem';
+  const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
 
   // Configure slider based on content type
   return (
@@ -393,8 +481,8 @@ export function Slider(props: SliderSys) {
       setApi={setApi}
       showIndicators={isImageSlider}
       showAltIndicators={isFeatureSliderItemSlider}
-      showNavigation={!isImageSlider && !isFeatureSliderItemSlider}
-      showAltNavigation={isFeatureSliderItemSlider}
+      showNavigation={!isImageSlider && !isFeatureSliderItemSlider && !isTimelineSliderItemSlider}
+      showAltNavigation={isFeatureSliderItemSlider || isTimelineSliderItemSlider}
       fullWidth={!isImageSlider}
     />
   );

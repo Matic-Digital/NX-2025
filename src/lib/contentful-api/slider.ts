@@ -6,6 +6,7 @@ import type { Slider, SliderItem } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { POST_SLIDER_GRAPHQL_FIELDS } from './post';
 import { FEATURE_SLIDERITEM_GRAPHQL_FIELDS } from './feature-slider-item';
+import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from './timeline-slider-item';
 
 // Minimal slider item fields with inline fragments for union types
 const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
@@ -27,6 +28,9 @@ const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
   }
   ... on FeatureSliderItem {
     ${FEATURE_SLIDERITEM_GRAPHQL_FIELDS}
+  }
+  ... on TimelineSliderItem {
+    ${TIMELINE_SLIDERITEM_GRAPHQL_FIELDS}
   }
 `;
 
