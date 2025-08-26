@@ -93,20 +93,22 @@ export function ServiceCard(props: ServiceCardProps) {
         <Box direction="col" className="relative z-10 h-full justify-end">
           <Box
             direction="col"
-            className={`group-hover:bg-primary relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 ${
-              isActive ? 'bg-primary translate-y-0' : 'translate-y-[5.25rem] bg-transparent'
+            className={`relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 before:absolute before:inset-0 before:bg-gradient-to-b before:from-[#E54800] before:to-primary before:opacity-0 before:transition-opacity before:duration-700 before:ease-in-out before:delay-300 ${
+              isActive 
+                ? 'bg-primary translate-y-0 before:opacity-100' 
+                : 'translate-y-[5.25rem] bg-transparent before:opacity-0'
             }`}
           >
-            <h3 className="text-headline-md mb-[1rem] text-white">{service.cardTitle}</h3>
+            <h3 className="relative z-10 text-headline-md mb-[1rem] text-white">{service.cardTitle}</h3>
             {service.cardTags?.map((tag, index) => (
               <Fragment key={index}>
-                <p className="text-white">{tag}</p>
+                <p className="relative z-10 text-white">{tag}</p>
                 {index < (service.cardTags?.length ?? 0) - 1 && (
-                  <hr className="my-2 border-t border-gray-300" />
+                  <hr className="relative z-10 my-2 border-t border-gray-300" />
                 )}
               </Fragment>
             ))}
-            <Box direction="col" className="z-10 mt-6 pb-[2rem]">
+            <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
               <Link href={`/services/${service.slug}`}>
                 <Button variant="outlineWhite">{service.cardButtonText}</Button>
               </Link>
