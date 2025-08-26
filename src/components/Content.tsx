@@ -9,12 +9,9 @@ import Link from 'next/link';
 import { getContentById } from '@/lib/contentful-api/content';
 import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
-import type { PostSliderItem } from '@/types/contentful/Post';
 import type { Product } from '@/types/contentful/Product';
-import type { PageList } from '@/types/contentful/PageList';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
 import type { Image } from '@/types/contentful/Image';
-import { ProductCard } from '@/components/global/ProductCard';
 import { Box, Container } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
 import { SectionHeading } from './SectionHeading';
@@ -24,17 +21,23 @@ interface ContentOverlayProps {
   children: React.ReactNode;
 }
 
-interface ContentCardProps {
+type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
+
+type SectionHeadingCardData = Pick<
+  SectionHeadingType,
+  'title' | 'description' | 'ctaCollection'
+> & {
   image: {
     link?: string;
     altText?: string;
     title?: string;
   };
-  category?: string;
-  title: string;
-  description?: string;
-  slug: string;
+};
+
+interface ContentCardProps {
+  data: ProductCardData | SectionHeadingCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
+  variant: 'ContentLeft' | 'FullWidth';
 }
 
 interface ContentContainerProps {
@@ -112,82 +115,105 @@ export function Content(props: Content) {
     </div>
   );
 
-  const ContentCard = ({
-    image,
-    category,
-    title,
-    description,
-    slug,
-    inspectorProps
-  }: ContentCardProps) => (
-    <ContentContainer>
-      <AirImage
-        link={image.link}
-        altText={image.altText ?? image.title}
-        className="absolute h-full object-cover"
-      />
-      <ContentOverlay>
-        <Box direction="col" gap={12} className="w-full items-center justify-center text-center">
-          <Box direction="col" gap={5}>
-            <Box direction="col" gap={1.5}>
-              {category && (
-                <p
-                  className="text-body-sm text-text-on-invert uppercase"
-                  {...inspectorProps({ fieldId: 'categories' })}
+  const ContentCard = ({ data, inspectorProps, variant }: ContentCardProps) => {
+    // Type guard to check if data is ProductCardData
+    const isProductData = (
+      data: ProductCardData | SectionHeadingCardData
+    ): data is ProductCardData => {
+      return 'slug' in data;
+    };
+
+    if (variant === 'ContentLeft') {
+      return (
+        <ContentContainer>
+          <AirImage
+            link={data.image?.link}
+            altText={data.image?.altText ?? data.image?.title}
+            className="absolute h-full object-cover"
+          />
+          <ContentOverlay>
+            <Box
+              direction="col"
+              gap={12}
+              className="w-full items-center justify-center text-center"
+            >
+              <Box direction="col" gap={5}>
+                <Box direction="col" gap={1.5}>
+                  {isProductData(data) && data.tags && (
+                    <p
+                      className="text-body-sm text-text-on-invert uppercase"
+                      {...inspectorProps({ fieldId: 'categories' })}
+                    >
+                      {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                    </p>
+                  )}
+                  <h2
+                    className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
+                    {...inspectorProps({ fieldId: 'title' })}
+                  >
+                    {data.title}
+                  </h2>
+                </Box>
+                {data.description && (
+                  <p
+                    className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                    {...inspectorProps({ fieldId: 'excerpt' })}
+                  >
+                    {data.description}
+                  </p>
+                )}
+              </Box>
+
+              {/* Render button for Product or CTA collection for SectionHeading */}
+              {isProductData(data) ? (
+                <Button
+                  variant="white"
+                  {...inspectorProps({ fieldId: 'button' })}
+                  className="w-fit"
+                  asChild
                 >
-                  {category}
-                </p>
+                  <Link href={data.slug}>Explore {data.title}</Link>
+                </Button>
+              ) : (
+                data.ctaCollection?.items?.map((cta, index) => (
+                  <Link
+                    key={cta.sys?.id || index}
+                    href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
+                    {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  >
+                    <Button
+                      variant={
+                        (data.ctaCollection?.items?.length ?? 0) === 1
+                          ? 'white'
+                          : index === 0
+                            ? 'primary'
+                            : 'white'
+                      }
+                    >
+                      {cta.text}
+                    </Button>
+                  </Link>
+                ))
               )}
-              <h2
-                className="text-headline-lg text-text-on-invert leading-tight"
-                {...inspectorProps({ fieldId: 'title' })}
-              >
-                {title}
-              </h2>
             </Box>
-            {description && (
-              <p
-                className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                {...inspectorProps({ fieldId: 'excerpt' })}
-              >
-                {description}
-              </p>
-            )}
-          </Box>
+          </ContentOverlay>
+        </ContentContainer>
+      );
+    }
 
-          <Button
-            variant="white"
-            {...inspectorProps({ fieldId: 'button' })}
-            className="w-fit"
-            asChild
-          >
-            <Link href={slug}>Explore {title}</Link>
-          </Button>
-        </Box>
-      </ContentOverlay>
-    </ContentContainer>
-  );
-
-  const SectionHeadingCard = ({
-    imageAsset,
-    sectionHeading
-  }: {
-    imageAsset: Image;
-    sectionHeading: SectionHeadingType;
-  }) => {
     return (
       <ContentContainer>
         <AirImage
-          link={imageAsset.link}
-          altText={imageAsset.altText ?? imageAsset.title}
-          className="absolute h-full object-cover"
+          link={data.image?.link}
+          altText={data.image?.altText ?? data.image?.title}
+          className="absolute inset-0 h-full w-full object-cover p-9"
         />
         <div className="relative flex h-full items-center justify-center p-10">
           <SectionHeading
-            sys={{ id: sectionHeading.sys.id }}
-            title={sectionHeading.title}
-            description={sectionHeading.description}
-            ctaCollection={sectionHeading.ctaCollection}
+            sys={{ id: '' }}
+            title={data.title}
+            description={data.description}
+            ctaCollection={!isProductData(data) ? data.ctaCollection : undefined}
             componentType={'content'}
             isDarkMode={true}
           />
@@ -196,114 +222,72 @@ export function Content(props: Content) {
     );
   };
 
+  // Get variant from content
+  const getVariant = (): 'FullWidth' | 'ContentLeft' | null => {
+    return liveContent.variant ?? null;
+  };
+
   if (liveContent && 'item' in liveContent && liveContent.item) {
     const item = liveContent.item;
+    const variant = getVariant();
 
-    // Post Content
-    if ('__typename' in item && item.__typename === 'Post') {
-      const postItem = item as unknown as PostSliderItem;
-
+    // Only render if variant is specified
+    if (!variant) {
       return (
-        <ContentCard
-          image={{
-            link: postItem.mainImage?.link,
-            altText: postItem.mainImage?.altText
-          }}
-          category={
-            Array.isArray(postItem.categories)
-              ? postItem.categories.join(', ')
-              : postItem.categories
-          }
-          title={postItem.title}
-          description={postItem.excerpt}
-          slug={postItem.slug}
-          inspectorProps={inspectorProps}
-        />
+        <article className="prose max-w-none">
+          <h2 {...inspectorProps({ fieldId: 'title' })}>{liveContent.title}</h2>
+          <p className="text-sm text-gray-500">
+            No variant specified for content type: {liveContent.__typename}
+          </p>
+        </article>
       );
     }
 
-    // Product Content
+    // Handle Product content
     if ('__typename' in item && item.__typename === 'Product') {
       const product = item as unknown as Product;
 
-      return (
-        <ContentCard
-          image={{
-            link: product.image?.link ?? '',
-            altText: product.image?.title ?? ''
-          }}
-          category={Array.isArray(product.tags) ? product.tags.join(', ') : product.tags}
-          title={product.title}
-          description={product.description}
-          slug={product.slug}
-          inspectorProps={inspectorProps}
-        />
-      );
+      // Select image: Content asset first, then Product image as fallback
+      const selectedImage =
+        liveContent.asset?.__typename === 'Image' ? (liveContent.asset as Image) : product.image;
+
+      const productData: ProductCardData = {
+        title: product.title,
+        description: product.description,
+        slug: product.slug,
+        image: selectedImage,
+        tags: product.tags
+      };
+
+      return <ContentCard data={productData} inspectorProps={inspectorProps} variant={variant} />;
     }
 
-    // PageList Content
-    if ('__typename' in item && item.__typename === 'PageList') {
-      const pageList = item as unknown as PageList;
-
-      // Check if the PageList contains only Products
-      const allItemsAreProducts = pageList.pagesCollection?.items?.every(
-        (pageItem) => pageItem.__typename === 'Product'
-      );
-
-      if (allItemsAreProducts && pageList.pagesCollection?.items?.length) {
-        // Render as a grid of ProductCards
-        return (
-          <Container className="py-16">
-            <Box direction="col" gap={8}>
-              {/* PageList title and description */}
-              <Box direction="col" gap={4} className="text-center">
-                <h2 className="text-headline-lg" {...inspectorProps({ fieldId: 'title' })}>
-                  {pageList.title}
-                </h2>
-              </Box>
-
-              {/* Product grid */}
-              <Box
-                direction="row"
-                gap={6}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              >
-                {pageList.pagesCollection.items.map((productItem, index) => (
-                  <ProductCard
-                    key={productItem.sys?.id || index}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    {...(productItem as unknown as any)}
-                  />
-                ))}
-              </Box>
-            </Box>
-          </Container>
-        );
-      } else {
-        // Fallback: render as a regular ContentCard if not all Products
-        return (
-          <ContentCard
-            image={{
-              link: '',
-              altText: pageList.title ?? 'PageList'
-            }}
-            category="Page List"
-            title={pageList.title ?? 'Untitled PageList'}
-            description=""
-            slug={pageList.slug ?? '#'}
-            inspectorProps={inspectorProps}
-          />
-        );
-      }
-    }
-
+    // Handle SectionHeading content
     if ('__typename' in item && item.__typename === 'SectionHeading') {
       const sectionHeading = item as unknown as SectionHeadingType;
 
-      // If Content has a background image, render with ContentCard layout
+      // If Content has a background image, use ContentCard
       if (liveContent.asset?.__typename === 'Image') {
         const imageAsset = liveContent.asset as Image;
-        return <SectionHeadingCard imageAsset={imageAsset} sectionHeading={sectionHeading} />;
+
+        const sectionHeadingData: SectionHeadingCardData = {
+          title: sectionHeading.title,
+          description: sectionHeading.description,
+          ctaCollection: sectionHeading.ctaCollection,
+          image: {
+            link: imageAsset.link ?? '',
+            altText: imageAsset.altText ?? imageAsset.title,
+            title: imageAsset.title ?? ''
+          }
+        };
+
+        return (
+          <ContentCard
+            data={sectionHeadingData}
+            inspectorProps={inspectorProps}
+            variant={variant}
+          />
+        );
       }
 
       // Fallback to regular SectionHeading component if no background image
