@@ -13,6 +13,11 @@ const nextConfig = {
   // Enable React strict mode for development
   reactStrictMode: true,
   devIndicators: false,
+  
+  // Source map configuration
+  productionBrowserSourceMaps: false, // Disable in production for better performance
+  
+  // Development source maps are handled automatically by Next.js
   // Learn more here - https://nextjs.org/docs/advanced-features/compiler#module-transpilation
   // Required for UI css to be transpiled correctly 👇
   transpilePackages: ['jotai-devtools'],
