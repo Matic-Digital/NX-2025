@@ -1,6 +1,5 @@
 import { fetchGraphQL } from '../api';
 import { SYS_FIELDS } from './graphql-fields';
-import { POST_SLIDER_GRAPHQL_FIELDS } from './post';
 import { PRODUCT_GRAPHQL_FIELDS } from './product';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import type { Content } from '@/types/contentful/Content';
@@ -19,6 +18,7 @@ export const CONTENT_MINIMAL_FIELDS = `
 export const CONTENT_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
+  variant
   asset {
     ... on Image {
       ${IMAGE_GRAPHQL_FIELDS}
@@ -28,9 +28,6 @@ export const CONTENT_GRAPHQL_FIELDS = `
     }
   }
   item {
-    ... on Post {
-      ${POST_SLIDER_GRAPHQL_FIELDS}
-    }
     ... on Product {
       ${PRODUCT_GRAPHQL_FIELDS}
     }
