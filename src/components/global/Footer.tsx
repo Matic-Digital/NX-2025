@@ -70,7 +70,7 @@ export function Footer(props: FooterType) {
                         height={footer.logo.height ?? 50}
                         className="h-8 w-auto rounded-full border-none"
                       />
-                      <p className="text-white text-headline-sm">NextPower</p>
+                      <p className="text-headline-sm text-white">NextPower</p>
                     </Box>
                   </Link>
                 ) : (
@@ -114,7 +114,7 @@ export function Footer(props: FooterType) {
                 {footer.pageListsCollection?.items.map((pageList) => (
                   <Box direction="col" gap={4} key={pageList.sys.id}>
                     <h3
-                      className="text-body-sm text-[#A3A3A3] leading-[160%] tracking-wide uppercase"
+                      className="text-body-sm leading-[160%] tracking-wide text-[#A3A3A3] uppercase"
                       {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'title' })}
                     >
                       {pageList.slug && pageList.pageLayout ? (
@@ -210,7 +210,7 @@ export function Footer(props: FooterType) {
                     <Link
                       key={legalPage.sys.id}
                       href={`/${legalPage.slug}`}
-                      className="text-[#A3A3A3] text-body-xs w-max border-b-[.5px] hover:border-white hover:text-white"
+                      className="text-body-xs w-max border-b-[.5px] text-[#A3A3A3] hover:border-white hover:text-white"
                     >
                       {legalPage.title}
                     </Link>

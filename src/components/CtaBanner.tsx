@@ -74,7 +74,6 @@ export function CtaBanner(props: CtaBanner) {
           link={ctaBanner.backgroundMedia.link}
           altText={ctaBanner.backgroundMedia.altText}
           className="absolute inset-0 h-full w-full object-cover"
-          priority
         />
 
         {/* Background image with fade effect */}
@@ -84,7 +83,7 @@ export function CtaBanner(props: CtaBanner) {
             alt={ctaBanner.backgroundImage.description}
             fill
             className="object-cover"
-            priority
+            loading="lazy"
           />
         </div>
 

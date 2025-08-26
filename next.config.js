@@ -13,10 +13,10 @@ const nextConfig = {
   // Enable React strict mode for development
   reactStrictMode: true,
   devIndicators: false,
-  
+
   // Source map configuration
   productionBrowserSourceMaps: false, // Disable in production for better performance
-  
+
   // Development source maps are handled automatically by Next.js
   // Learn more here - https://nextjs.org/docs/advanced-features/compiler#module-transpilation
   // Required for UI css to be transpiled correctly 👇
@@ -53,7 +53,52 @@ const nextConfig = {
     // Enable server actions
     serverActions: {
       bodySizeLimit: '2mb'
+    },
+    // Optimize bundle splitting
+    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react']
+  },
+
+  // Webpack optimizations for bundle splitting and CSS optimization
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Bundle splitting optimizations
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Split vendor libraries into separate chunks
+          contentful: {
+            name: 'contentful',
+            test: /[\\/]node_modules[\\/](@contentful)[\\/]/,
+            chunks: 'all',
+            priority: 30
+          },
+          gsap: {
+            name: 'gsap',
+            test: /[\\/]node_modules[\\/](gsap)[\\/]/,
+            chunks: 'all',
+            priority: 30
+          },
+          ui: {
+            name: 'ui',
+            test: /[\\/]node_modules[\\/](lucide-react|@radix-ui)[\\/]/,
+            chunks: 'all',
+            priority: 20
+          },
+          // Separate CSS into its own chunk for better caching
+          styles: {
+            name: 'styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'all',
+            priority: 10,
+            enforce: true
+          }
+        }
+      };
+
+      // CSS optimization is handled by PostCSS plugins and Next.js built-in optimization
     }
+    return config;
   },
 
   // Skip static generation of error pages in Docker to avoid HTML conflicts

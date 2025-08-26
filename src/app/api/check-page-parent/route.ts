@@ -31,15 +31,15 @@ const _isExternalPage = (
 
 /**
  * Builds the full routing path for nested page lists
- * 
+ *
  * This function implements the core PageList nesting detection algorithm:
  * 1. Searches through all PageLists to find which one contains the target item
  * 2. Recursively builds the parent chain by finding PageLists that contain other PageLists
  * 3. Returns the complete routing path from root to the target item
- * 
+ *
  * Example: For item "nx-horizon" nested as products > trackers > nx-horizon
  * Returns: ["products", "trackers"]
- * 
+ *
  * @param itemId - The ID of the item to find the path for
  * @param pageLists - All page lists to search through
  * @param visited - Set of visited page list IDs to prevent infinite loops
@@ -67,7 +67,7 @@ function buildRoutingPath(
     // Check if this PageList contains the target item in its pagesCollection
     const containsItem = pageList.pagesCollection?.items?.some((item) => {
       const itemSlug = 'slug' in item ? item.slug : 'link' in item ? item.link : undefined;
-      return (itemSlug === itemId) || (item.sys?.id === itemId);
+      return itemSlug === itemId || item.sys?.id === itemId;
     });
 
     if (containsItem && pageList.slug) {
@@ -90,8 +90,8 @@ function buildRoutingPath(
 /**
  * API route to check if a page belongs to a PageList and return the full routing path
  *
- * This endpoint is critical for the PageList nesting system. It's used by components 
- * like ContentGridItem, CtaBanner, and CtaGrid to determine the correct nested URL 
+ * This endpoint is critical for the PageList nesting system. It's used by components
+ * like ContentGridItem, CtaBanner, and CtaGrid to determine the correct nested URL
  * structure for internal links, ensuring all navigation respects the PageList hierarchy.
  *
  * Key functionality:

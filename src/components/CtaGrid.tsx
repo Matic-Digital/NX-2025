@@ -120,7 +120,6 @@ export function CtaGrid(props: CtaGrid) {
               link={liveCtaGrid.asset?.link}
               altText={liveCtaGrid.asset?.altText}
               className="h-full w-full object-cover"
-              priority
             />
           </div>
 
