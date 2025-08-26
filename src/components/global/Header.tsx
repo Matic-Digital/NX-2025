@@ -120,7 +120,7 @@ export function Header(props: HeaderProps) {
                   <div {...inspectorProps({ fieldId: 'logo' })}>
                     <Image
                       src={header.logo.url}
-                      alt={header.logo.title ?? 'Site Logo'}
+                      alt={header.logo.description ?? header.logo.title ?? 'Logo'}
                       width={header.logo.width ?? 40}
                       height={header.logo.height ?? 40}
                       className="h-10 w-auto rounded-full object-contain"

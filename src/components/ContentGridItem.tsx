@@ -141,7 +141,9 @@ export function ContentGridItem(props: ContentGridItemProps) {
     return (
       <Box direction="col" gap={4}>
         <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
-          {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
+          {icon?.url && (
+            <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+          )}
         </Box>
         <Box direction="col" gap={2}>
           <h3 className="text-headline-sm">{heading}</h3>
@@ -156,7 +158,9 @@ export function ContentGridItem(props: ContentGridItemProps) {
       <Link href={getHref()} className="group flex flex-col">
         <Box direction="col" gap={4}>
           <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
-            {icon?.url && <Image src={icon.url} alt={heading} width={60} height={60} />}
+            {icon?.url && (
+              <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+            )}
           </Box>
           <Box direction="col" gap={2}>
             <Box direction="row" gap={2} className="items-center">

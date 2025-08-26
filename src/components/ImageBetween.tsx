@@ -30,7 +30,6 @@ export function ImageBetween(props: ImageBetween) {
               width={imageBetween.backgroundMedia.width}
               height={imageBetween.backgroundMedia.height}
               className="absolute inset-0 h-full w-full object-cover"
-              priority
             />
           )}
         </div>

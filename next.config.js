@@ -4,8 +4,15 @@
  */
 import './src/env.js';
 
+import bundleAnalyzer from '@next/bundle-analyzer';
+
 // Check if we're in a Docker environment
 const isDocker = process.env.HOSTNAME === '0.0.0.0' || process.env.DOCKER === 'true';
+
+// Bundle analyzer configuration
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true'
+});
 
 /** @type {import('next').NextConfig} */
 
@@ -13,6 +20,17 @@ const nextConfig = {
   // Enable React strict mode for development
   reactStrictMode: true,
   devIndicators: false,
+
+  // Source map configuration
+  productionBrowserSourceMaps: false, // Disable in production for better performance
+  
+  // Enable compression
+  compress: true,
+  
+  // Optimize output
+  output: 'standalone',
+
+  // Development source maps are handled automatically by Next.js
   // Learn more here - https://nextjs.org/docs/advanced-features/compiler#module-transpilation
   // Required for UI css to be transpiled correctly 👇
   transpilePackages: ['jotai-devtools'],
@@ -48,7 +66,72 @@ const nextConfig = {
     // Enable server actions
     serverActions: {
       bodySizeLimit: '2mb'
+    },
+    // Optimize bundle splitting
+    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react'],
+    // Enable modern bundling optimizations
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js'
+        }
+      }
     }
+  },
+
+  // Webpack optimizations for bundle splitting and CSS optimization
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Bundle splitting optimizations
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Split vendor libraries into separate chunks
+          contentful: {
+            name: 'contentful',
+            test: /[\\/]node_modules[\\/](@contentful)[\\/]/,
+            chunks: 'all',
+            priority: 30,
+            reuseExistingChunk: true
+          },
+          gsap: {
+            name: 'gsap',
+            test: /[\\/]node_modules[\\/](gsap)[\\/]/,
+            chunks: 'all',
+            priority: 30,
+            reuseExistingChunk: true
+          },
+          ui: {
+            name: 'ui',
+            test: /[\\/]node_modules[\\/](lucide-react|@radix-ui)[\\/]/,
+            chunks: 'all',
+            priority: 20,
+            reuseExistingChunk: true
+          },
+          react: {
+            name: 'react',
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            chunks: 'all',
+            priority: 40,
+            reuseExistingChunk: true
+          },
+          // Separate CSS into its own chunk for better caching
+          styles: {
+            name: 'styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'all',
+            priority: 10,
+            enforce: true,
+            reuseExistingChunk: true
+          }
+        }
+      };
+
+      // CSS optimization is handled by PostCSS plugins and Next.js built-in optimization
+    }
+    return config;
   },
 
   // Skip static generation of error pages in Docker to avoid HTML conflicts
@@ -92,4 +175,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

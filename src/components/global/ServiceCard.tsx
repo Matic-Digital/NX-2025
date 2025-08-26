@@ -93,7 +93,7 @@ export function ServiceCard(props: ServiceCardProps) {
         <Box direction="col" className="relative z-10 h-full justify-end">
           <Box
             direction="col"
-            className={`before:to-primary relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 before:absolute before:inset-0 before:bg-gradient-to-b before:from-[#E54800] before:opacity-0 before:transition-opacity before:delay-300 before:duration-700 before:ease-in-out ${
+            className={`relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 before:absolute before:inset-0 before:bg-gradient-to-b before:from-[#D84500] before:to-[#CC4000] before:opacity-0 before:transition-opacity before:duration-500 ${
               isActive
                 ? 'bg-primary translate-y-0 before:opacity-100'
                 : 'translate-y-[5.25rem] bg-transparent before:opacity-0'

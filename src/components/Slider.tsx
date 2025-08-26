@@ -265,10 +265,12 @@ const GenericSlider = ({
             <CarouselPrevious
               className="left-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:left-10 sm:size-12"
               variant="outline"
+              aria-label="Previous slide"
             />
             <CarouselNext
               className="right-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:right-10 sm:size-12"
               variant="outline"
+              aria-label="Next slide"
             />
           </>
         )}
@@ -277,10 +279,12 @@ const GenericSlider = ({
             <CarouselPrevious
               className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
               variant="outline"
+              aria-label="Previous slide"
             />
             <CarouselNext
               className="relative right-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
               variant="outline"
+              aria-label="Next slide"
             />
           </div>
         )}
@@ -295,6 +299,7 @@ const GenericSlider = ({
               className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
                 'bg-[#F5B12D] opacity-100': current === index + 1
               })}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
@@ -310,6 +315,7 @@ const GenericSlider = ({
                 className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
                   'bg-surface-invert': current === index + 1
                 })}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>

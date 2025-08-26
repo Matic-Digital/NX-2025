@@ -101,6 +101,8 @@ export const AirImage: React.FC<AirImageType> = (props) => {
       width={defaultWidth}
       height={defaultHeight}
       priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       style={{ objectFit: 'cover' }}
     />
   );
