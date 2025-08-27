@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
+import { TeamMemberSchema } from './TeamMember';
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([
@@ -13,17 +14,6 @@ const PostCategorySchema = z.enum([
   'Shug Speaks',
   'Video'
 ]);
-
-// Team member schema (referenced by authors)
-const TeamMemberSchema = z.object({
-  sys: z.object({
-    id: z.string()
-  }),
-  name: z.string().optional(),
-  title: z.string().optional(),
-  bio: z.string().optional(),
-  __typename: z.string().optional()
-});
 
 // Rich text content schema (simplified for the content field)
 const RichTextSchema = z.object({
@@ -72,5 +62,4 @@ export interface PostResponse {
 
 export type Post = z.infer<typeof PostSchema>;
 export type PostCategory = z.infer<typeof PostCategorySchema>;
-export type TeamMember = z.infer<typeof TeamMemberSchema>;
 export type PostSliderItem = z.infer<typeof PostSliderItemSchema>;

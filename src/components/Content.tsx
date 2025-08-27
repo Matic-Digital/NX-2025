@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { getContentById } from '@/lib/contentful-api/content';
 import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
+import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
 import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
@@ -26,7 +27,7 @@ type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' 
 
 type SectionHeadingCardData = Pick<
   SectionHeadingType,
-  'title' | 'description' | 'ctaCollection'
+  'overline' | 'title' | 'description' | 'ctaCollection'
 > & {
   image: {
     link?: string;
@@ -49,7 +50,7 @@ type ContentGridItemCardData = Pick<
 interface ContentCardProps {
   data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
-  variant: 'ContentLeft' | 'FullWidth';
+  variant: ContentVariant;
 }
 
 interface ContentContainerProps {
@@ -112,14 +113,18 @@ export function Content(props: Content) {
 
   // Shared Components
   const ContentContainer = ({ children }: ContentContainerProps) => (
-    <div className={cn('container mx-auto px-6 sm:px-6 md:px-9 relative mb-20 h-[502px] overflow-hidden')}>
+    <div
+      className={cn(
+        'relative container mx-auto mb-20 h-[502px] overflow-hidden px-6 sm:px-6 md:px-9'
+      )}
+    >
       {children}
     </div>
   );
 
   const ContentOverlay = ({ children }: ContentOverlayProps) => (
     <div
-      className="flex h-full w-full max-w-[558px] p-6 sm:p-8 md:p-10 backdrop-blur-[14px]"
+      className="flex h-full w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:p-10"
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -147,7 +152,7 @@ export function Content(props: Content) {
     if (variant === 'ContentLeft') {
       return (
         <ContentContainer>
-          <div className="relative h-full px-6 sm:px-6 md:px-9 overflow-hidden">
+          <div className="relative h-full overflow-hidden px-6 sm:px-6 md:px-9">
             <AirImage
               link={data.image?.link}
               altText={data.image?.altText ?? data.image?.title}
@@ -163,40 +168,134 @@ export function Content(props: Content) {
               >
                 <Box direction="col" gap={5}>
                   <Box direction="col" gap={1.5}>
-                  {isProductData(data) && data.tags && (
-                    <p
-                      className="text-body-sm text-text-on-invert uppercase"
-                      {...inspectorProps({ fieldId: 'categories' })}
+                    {isProductData(data) && data.tags && (
+                      <p
+                        className="text-body-sm text-text-on-invert uppercase"
+                        {...inspectorProps({ fieldId: 'categories' })}
+                      >
+                        {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                      </p>
+                    )}
+                    {isContentGridItemData(data) && data.heading && (
+                      <p
+                        className="text-body-sm text-text-on-invert uppercase"
+                        {...inspectorProps({ fieldId: 'heading' })}
+                      >
+                        {data.heading}
+                      </p>
+                    )}
+                    <h2
+                      className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
+                      {...inspectorProps({ fieldId: 'title' })}
                     >
-                      {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                      {data.title}
+                    </h2>
+                  </Box>
+                  {data.description && (
+                    <p
+                      className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                      {...inspectorProps({ fieldId: 'excerpt' })}
+                    >
+                      {data.description}
                     </p>
                   )}
-                  {isContentGridItemData(data) && data.heading && (
-                    <p
-                      className="text-body-sm text-text-on-invert uppercase"
-                      {...inspectorProps({ fieldId: 'heading' })}
-                    >
-                      {data.heading}
-                    </p>
-                  )}
-                  <h2
-                    className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
-                    {...inspectorProps({ fieldId: 'title' })}
-                  >
-                    {data.title}
-                  </h2>
                 </Box>
-                {data.description && (
-                  <p
-                    className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                    {...inspectorProps({ fieldId: 'excerpt' })}
+
+                {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+                {isProductData(data) ? (
+                  <Button
+                    variant="white"
+                    {...inspectorProps({ fieldId: 'button' })}
+                    className="w-fit"
+                    asChild
                   >
-                    {data.description}
-                  </p>
+                    <Link href={data.slug}>Explore {data.title}</Link>
+                  </Button>
+                ) : isContentGridItemData(data) ? (
+                  <Button
+                    variant="white"
+                    {...inspectorProps({ fieldId: 'button' })}
+                    className="w-fit"
+                  >
+                    Learn More
+                  </Button>
+                ) : (
+                  data.ctaCollection?.items?.map((cta, index) => (
+                    <Link
+                      key={cta.sys?.id || index}
+                      href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
+                      {...(cta.externalLink
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
+                    >
+                      <Button
+                        variant={
+                          (data.ctaCollection?.items?.length ?? 0) === 1
+                            ? 'white'
+                            : index === 0
+                              ? 'primary'
+                              : 'white'
+                        }
+                      >
+                        {cta.text}
+                      </Button>
+                    </Link>
+                  ))
                 )}
               </Box>
+            </ContentOverlay>
+          </div>
+        </ContentContainer>
+      );
+    }
 
-              {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+    if (variant === 'ContentCenter') {
+      return (
+        <ContentContainer>
+          <AirImage
+            link={data.image?.link}
+            altText={data.image?.altText ?? data.image?.title}
+            className="absolute inset-0 h-full w-full object-cover px-6 md:px-9"
+          />
+          <Box
+            direction="col"
+            gap={12}
+            className="relative h-full w-full items-center justify-center text-center"
+          >
+            <Box direction="col" gap={5}>
+              <Box direction="col" gap={1.5}>
+                {isProductData(data) && data.tags && (
+                  <p
+                    className="text-body-sm text-text-on-invert uppercase"
+                    {...inspectorProps({ fieldId: 'categories' })}
+                  >
+                    {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                  </p>
+                )}
+                {!isProductData(data) && 'overline' in data && data.overline && (
+                  <p
+                    className="text-white uppercase"
+                    {...inspectorProps({ fieldId: 'heading.overline' })}
+                  >
+                    {data.overline}
+                  </p>
+                )}
+                <h2
+                  className="text-headline-lg text-text-on-invert leading-tight"
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {data.title}
+                </h2>
+              </Box>
+              {data.description && (
+                <p
+                  className="text-body-xs letter-spacing-[0.14px] text-text-on-invert mx-auto max-w-lg leading-normal"
+                  {...inspectorProps({ fieldId: 'excerpt' })}
+                >
+                  {data.description}
+                </p>
+              )}
+              {/* Render button for Product or CTA collection for SectionHeading */}
               {isProductData(data) ? (
                 <Button
                   variant="white"
@@ -206,15 +305,8 @@ export function Content(props: Content) {
                 >
                   <Link href={data.slug}>Explore {data.title}</Link>
                 </Button>
-              ) : isContentGridItemData(data) ? (
-                <Button
-                  variant="white"
-                  {...inspectorProps({ fieldId: 'button' })}
-                  className="w-fit"
-                >
-                  Learn More
-                </Button>
               ) : (
+                'ctaCollection' in data &&
                 data.ctaCollection?.items?.map((cta, index) => (
                   <Link
                     key={cta.sys?.id || index}
@@ -236,8 +328,7 @@ export function Content(props: Content) {
                 ))
               )}
             </Box>
-          </ContentOverlay>
-          </div>
+          </Box>
         </ContentContainer>
       );
     }
@@ -254,7 +345,9 @@ export function Content(props: Content) {
             sys={{ id: '' }}
             title={data.title}
             description={data.description}
-            ctaCollection={!isProductData(data) && !isContentGridItemData(data) ? data.ctaCollection : undefined}
+            ctaCollection={
+              !isProductData(data) && !isContentGridItemData(data) ? data.ctaCollection : undefined
+            }
             componentType={'content'}
             isDarkMode={true}
           />
@@ -264,7 +357,7 @@ export function Content(props: Content) {
   };
 
   // Get variant from content
-  const getVariant = (): 'FullWidth' | 'ContentLeft' | null => {
+  const getVariant = (): ContentVariant | null => {
     return liveContent.variant ?? null;
   };
 
@@ -309,7 +402,9 @@ export function Content(props: Content) {
 
       // Select image: Content asset first, then ContentGridItem image as fallback
       const selectedImage =
-        liveContent.asset?.__typename === 'Image' ? (liveContent.asset as Image) : contentGridItem.image;
+        liveContent.asset?.__typename === 'Image'
+          ? (liveContent.asset as Image)
+          : contentGridItem.image;
 
       const contentGridItemData: ContentGridItemCardData = {
         title: contentGridItem.title,
@@ -317,18 +412,22 @@ export function Content(props: Content) {
         description: contentGridItem.description,
         variant: contentGridItem.variant,
         icon: contentGridItem.icon,
-        image: selectedImage ? {
-          link: selectedImage.link ?? '',
-          altText: selectedImage.altText ?? selectedImage.title,
-          title: selectedImage.title ?? ''
-        } : {
-          link: '',
-          altText: '',
-          title: ''
-        }
+        image: selectedImage
+          ? {
+              link: selectedImage.link ?? '',
+              altText: selectedImage.altText ?? selectedImage.title,
+              title: selectedImage.title ?? ''
+            }
+          : {
+              link: '',
+              altText: '',
+              title: ''
+            }
       };
 
-      return <ContentCard data={contentGridItemData} inspectorProps={inspectorProps} variant={variant} />;
+      return (
+        <ContentCard data={contentGridItemData} inspectorProps={inspectorProps} variant={variant} />
+      );
     }
 
     // Handle SectionHeading content
@@ -340,6 +439,7 @@ export function Content(props: Content) {
         const imageAsset = liveContent.asset as Image;
 
         const sectionHeadingData: SectionHeadingCardData = {
+          overline: sectionHeading.overline,
           title: sectionHeading.title,
           description: sectionHeading.description,
           ctaCollection: sectionHeading.ctaCollection,

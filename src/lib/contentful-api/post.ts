@@ -4,6 +4,7 @@ import type { Post, PostResponse } from '@/types/contentful/Post';
 import { SYS_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
+import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from './team-member';
 
 // Simplified Post fields for ContentGrid (to avoid complexity limits)
 export const POST_GRAPHQL_FIELDS_SIMPLE = `
@@ -72,14 +73,7 @@ export const POST_GRAPHQL_FIELDS = `
   }
   authorsCollection(limit: 5) {
     items {
-      sys {
-        id
-      }
-      name
-      jobTitle
-      bio {
-        json
-      }
+      ${TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS}
     }
   }
   categories

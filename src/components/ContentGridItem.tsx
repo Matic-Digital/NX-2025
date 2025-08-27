@@ -29,40 +29,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
   const { sys, heading, description, variant, icon, image } = contentData;
   console.log('ContentGridItem variant', { variant, heading });
 
-  // Render the appropriate icon based on the icon name
-  const renderIcon = (isBackgroundImage = false) => {
-    // Only render icon if it exists and has a valid URL
-    if (!icon?.url) {
-      return (
-        <div
-          className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
-            'group-hover:bg-primary transition-colors': !isBackgroundImage
-          })}
-        >
-          {/* Placeholder for when no icon is available */}
-          <div className="h-8 w-8 rounded bg-white/20" />
-        </div>
-      );
-    }
-
-    return (
-      <div
-        className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
-          'group-hover:bg-primary transition-colors': !isBackgroundImage
-        })}
-      >
-        <Image
-          src={icon.url}
-          alt={`${icon.title ?? 'Icon'}`}
-          className="h-full w-full"
-          width={icon.width}
-          height={icon.height}
-          {...inspectorProps({ fieldId: 'icon' })}
-        />
-      </div>
-    );
-  };
-
   // Fetch full content data and link details on component mount
   useEffect(() => {
     const fetchContentData = async () => {
@@ -133,21 +99,55 @@ export function ContentGridItem(props: ContentGridItemProps) {
     void fetchContentData();
   }, [sys?.id, props.parentPageListSlug]);
 
+  // Render the appropriate icon based on the icon name
+  const renderIcon = (isBackgroundImage = false) => {
+    // Only render icon if it exists and has a valid URL
+    if (!icon?.url) {
+      return (
+        <div
+          className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+            'group-hover:bg-primary transition-colors': !isBackgroundImage
+          })}
+        >
+          {/* Placeholder for when no icon is available */}
+          <div className="h-8 w-8 rounded bg-white/20" />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+          'group-hover:bg-primary transition-colors': !isBackgroundImage
+        })}
+      >
+        <Image
+          src={icon.url}
+          alt={`${icon.title ?? 'Icon'}`}
+          className="h-full w-full"
+          width={icon.width}
+          height={icon.height}
+          {...inspectorProps({ fieldId: 'icon' })}
+        />
+      </div>
+    );
+  };
+
   const getHref = () => {
     return linkHref;
   };
 
   const DefaultItem = () => {
     return (
-      <Box direction="col" gap={4}>
+      <Box direction="col" gap={4} className="group">
         <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
           {icon?.url && (
             <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
           )}
         </Box>
         <Box direction="col" gap={2}>
-          <h3 className="text-headline-sm">{heading}</h3>
-          <p className="text-body-sm">{description}</p>
+          <h3 className="text-headline-sm group-hover:text-primary transition-colors">{heading}</h3>
+          <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
         </Box>
       </Box>
     );

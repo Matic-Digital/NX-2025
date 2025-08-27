@@ -18,7 +18,9 @@ import type {
   SliderItem,
   PostSliderItem,
   Image as ImageType,
-  FeatureSliderItem
+  FeatureSliderItem,
+  TimelineSliderItem,
+  TeamMember
 } from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
@@ -26,8 +28,7 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-
-type SliderItemType = SliderItem | PostSliderItem | ImageType | FeatureSliderItem;
+import type { SliderItemType } from '@/types/contentful/Slider';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -194,6 +195,114 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
     );
   }
 
+  if (updatedItem.__typename === 'TimelineSliderItem') {
+    const timelineItem = updatedItem as TimelineSliderItem;
+    const isCurrentSlide = current === index + 1;
+
+    return (
+      <div className="relative h-[669px]">
+        {/* Main Image/Video Section */}
+        <div className="relative h-[400px] w-full">
+          {timelineItem.asset.__typename === 'Video'
+            ? (() => {
+                const videoAsset = timelineItem.asset as {
+                  __typename: 'Video';
+                  posterImage: { link?: string; altText?: string };
+                };
+                return (
+                  <div className="relative h-full w-full">
+                    <AirImage
+                      link={videoAsset.posterImage.link ?? ''}
+                      altText={videoAsset.posterImage.altText ?? 'Video thumbnail'}
+                      className="absolute h-full w-full object-cover"
+                    />
+                    {/* Video Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                        <svg
+                          className="ml-1 h-6 w-6 text-gray-800"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            : timelineItem.asset.__typename === 'Image'
+              ? (() => {
+                  const imageAsset = timelineItem.asset as {
+                    __typename: 'Image';
+                    link?: string;
+                    altText?: string;
+                  };
+                  return (
+                    <AirImage
+                      link={imageAsset.link ?? ''}
+                      altText={imageAsset.altText ?? ''}
+                      className="h-full w-full object-cover"
+                    />
+                  );
+                })()
+              : null}
+        </div>
+
+        {/* Timeline Content Section - Individual slide content */}
+        <div className="flex h-[269px] flex-col justify-center bg-white px-6 py-8">
+          <div className="mx-auto max-w-4xl">
+            {/* Timeline Year - Only show current slide prominently */}
+            <div className="mb-4">
+              <h3
+                className={cn(
+                  'text-4xl font-light transition-colors duration-300',
+                  isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
+                )}
+              >
+                {timelineItem.year}
+              </h3>
+            </div>
+
+            {/* Timeline Description - Only show for current slide */}
+            {isCurrentSlide && (
+              <div className="max-w-md text-gray-600">
+                <p className="text-sm leading-relaxed">{timelineItem.description}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (updatedItem.__typename === 'TeamMember') {
+    const teamMember = updatedItem as TeamMember;
+
+    return (
+      <Box direction="col" gap={6}>
+        <div className="aspect-square w-full overflow-hidden">
+          <AirImage
+            link={teamMember.image?.link}
+            altText={teamMember.image?.altText}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="mt-4">
+          <h3
+            className="text-lg font-semibold text-gray-900"
+            {...inspectorProps({ fieldId: 'name' })}
+          >
+            {teamMember.name}
+          </h3>
+          <p className="text-sm text-gray-600" {...inspectorProps({ fieldId: 'jobTitle' })}>
+            {teamMember.jobTitle}
+          </p>
+        </div>
+      </Box>
+    );
+  }
+
   // Fallback for unknown types
   return (
     <div className={baseCardClasses}>
@@ -213,7 +322,7 @@ interface GenericSliderProps {
   showAltIndicators?: boolean;
   showNavigation?: boolean;
   showAltNavigation?: boolean;
-  fullWidth?: boolean;
+  isFullWidth?: boolean;
 }
 
 const GenericSlider = ({
@@ -225,34 +334,48 @@ const GenericSlider = ({
   showAltIndicators = false,
   showNavigation = true,
   showAltNavigation = false,
-  fullWidth = true
+  isFullWidth = true
 }: GenericSliderProps) => {
+  const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
+  const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
+
+  console.log('isFullWidth', isFullWidth);
+
   return (
     <div
-      className={cn(fullWidth ? 'relative w-screen' : 'relative')}
-      style={fullWidth ? { marginLeft: 'calc(-50vw + 50%)' } : {}}
+      className={cn(isFullWidth ? 'relative w-screen' : 'relative')}
+      style={{ marginLeft: isFullWidth ? 'calc(-50vw + 50%)' : '' }}
     >
       <Carousel
         setApi={setApi}
         className={cn(
-          fullWidth
+          isFullWidth
             ? 'relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen md:-ml-[25vw] lg:-ml-[50vw]'
-            : 'w-full'
+            : isTeamMemberSlider
+              ? 'w-full max-w-none'
+              : 'w-full'
         )}
-        opts={{ loop: true }}
+        opts={{
+          loop: true,
+          align: 'center',
+          ...(isTeamMemberSlider && {
+            align: 'start'
+          })
+        }}
       >
-        <CarouselContent>
+        <CarouselContent className={cn(isTeamMemberSlider && 'overflow-visible')}>
           {sliderData.itemsCollection.items.map((item, index) => {
-            const isFeatureSlider = item.__typename === 'FeatureSliderItem';
             return (
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
                 className={cn(
                   isFeatureSlider
                     ? 'basis-[411px]'
-                    : fullWidth
-                      ? 'basis-full sm:basis-4/5'
-                      : 'basis-full'
+                    : isTeamMemberSlider
+                      ? 'basis-[300px]'
+                      : isFullWidth
+                        ? 'basis-full sm:basis-4/5'
+                        : 'basis-full'
                 )}
               >
                 <SliderCard index={index} current={current} item={item} />
@@ -275,7 +398,12 @@ const GenericSlider = ({
           </>
         )}
         {showAltNavigation && (
-          <div className="absolute -top-12 right-29 hidden gap-4 md:flex">
+          <div
+            className={cn(
+              'absolute -top-12 right-29 hidden gap-4 lg:flex',
+              isTeamMemberSlider && 'right-0'
+            )}
+          >
             <CarouselPrevious
               className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
               variant="outline"
@@ -389,6 +517,8 @@ export function Slider(props: SliderSys) {
 
   const isImageSlider = firstItem.__typename === 'Image';
   const isFeatureSliderItemSlider = firstItem.__typename === 'FeatureSliderItem';
+  const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
+  const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
 
   // Configure slider based on content type
   return (
@@ -398,10 +528,17 @@ export function Slider(props: SliderSys) {
       api={api}
       setApi={setApi}
       showIndicators={isImageSlider}
-      showAltIndicators={isFeatureSliderItemSlider}
-      showNavigation={!isImageSlider && !isFeatureSliderItemSlider}
-      showAltNavigation={isFeatureSliderItemSlider}
-      fullWidth={!isImageSlider}
+      showAltIndicators={isFeatureSliderItemSlider || isTeamMemberSlider}
+      showNavigation={
+        !isImageSlider &&
+        !isFeatureSliderItemSlider &&
+        !isTimelineSliderItemSlider &&
+        !isTeamMemberSlider
+      }
+      showAltNavigation={
+        isFeatureSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider
+      }
+      isFullWidth={!isImageSlider && !isTeamMemberSlider}
     />
   );
 }
