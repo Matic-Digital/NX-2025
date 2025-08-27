@@ -14,18 +14,19 @@ export function Testimonials(props: TestimonialsProps) {
   return (
     <ErrorBoundary>
       <Section>
-        <Container>
-          <Box direction="row" className="">
+        <Container className='md:px-0'>
+          <Box direction="row" gap={8} className="">
             {testimonials.itemsCollection?.items?.map((item) => (
-              <Box key={item.sys?.id} direction="row" className="">
-                <Box className="relative">
-                  <AirImage {...item.headshot} altText={item.headshot?.altText ?? undefined} />
+              <Box key={item.sys?.id} direction="row" className="w-full">
+                <Box className="relative overflow-hidden bg-blue">
+                  <AirImage {...item.headshot} altText={item.headshot?.altText ?? undefined} className='' />
                 </Box>
-                <Box direction="col">
-                  <h2>{item.title}</h2>
-                  <p>{item.quote}</p>
-                  <p>{item.authorName}</p>
-                  <p>{item.authorTitle}</p>
+                <Box direction="col" className='p-[1.5rem] h-full justify-between bg-subtle'>
+                  <blockquote className='text-body-sm'>{item.quote}</blockquote>
+                  <Box direction="col">
+                    <p className='text-body-sm text-black'>{item.authorName}</p>
+                    <p className='text-body-xs text-black opacity-80'>{item.authorTitle}</p>
+                  </Box>
                 </Box>
               </Box>
             ))}
