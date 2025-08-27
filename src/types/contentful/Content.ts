@@ -3,8 +3,9 @@ import { ProductSchema } from './Product';
 import { SectionHeadingSchema } from './SectionHeading';
 import { ImageSchema } from './Image';
 import { VideoSchema } from './Video';
+import { ContentGridItemSchema } from './ContentGridItem';
 
-const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema]);
+const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema, ContentGridItemSchema]);
 export type ContentItem = z.infer<typeof ContentItemUnion>;
 
 const ContentAssetUnion = z.union([ImageSchema, VideoSchema]);

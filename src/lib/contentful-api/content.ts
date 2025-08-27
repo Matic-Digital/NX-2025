@@ -6,6 +6,7 @@ import type { Content } from '@/types/contentful/Content';
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
+import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from './content-grid';
 
 // Define minimal content fields for references
 export const CONTENT_MINIMAL_FIELDS = `
@@ -33,6 +34,9 @@ export const CONTENT_GRAPHQL_FIELDS = `
     }
     ... on SectionHeading {
       ${SECTION_HEADING_GRAPHQL_FIELDS}
+    }
+    ... on ContentGridItem {
+      ${CONTENTGRIDITEM_GRAPHQL_FIELDS}
     }
   }
 `;
