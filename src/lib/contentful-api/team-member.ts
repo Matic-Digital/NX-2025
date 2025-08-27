@@ -26,7 +26,7 @@ export const TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS = `
   bio {
     json
   }
-w`;
+  `;
 
 export async function getAllTeamMembers(preview = false): Promise<TeamMemberResponse> {
   try {
