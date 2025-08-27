@@ -25,3 +25,4 @@ export * from './Social';
 export * from './Solution';
 export * from './TimelineSliderItem';
 export * from './Video';
+export * from './Testimonials';

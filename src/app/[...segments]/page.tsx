@@ -160,13 +160,13 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
 // Helper function to resolve nested content
 /**
  * Resolve nested content based on URL segments
- * 
+ *
  * This function implements the core PageList nesting logic:
  * 1. For single segments: Try to find as PageList or content item
  * 2. For multiple segments: Traverse the hierarchy to validate nesting
  * 3. Ensures each PageList in the path is properly nested in its parent
  * 4. Returns the final content item with its complete parent chain
- * 
+ *
  * @param segments - Array of URL segments (e.g., ['products', 'trackers', 'nx-horizon'])
  * @returns Object containing the resolved content, its type, and parent PageList chain
  */
@@ -212,7 +212,7 @@ async function resolveNestedContent(segments: string[]): Promise<{
       return null;
     }
 
-    // Critical nesting validation: If this is not the first PageList, 
+    // Critical nesting validation: If this is not the first PageList,
     // verify it's actually nested within the previous one in the hierarchy
     if (currentPageList) {
       console.log(
@@ -368,25 +368,35 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
 
   // Handle other content types (Product, Page, Service, Solution, Post)
   // These content types have different field names for their content collections
-  if (type === 'Product' || type === 'Page' || type === 'Service' || type === 'Solution' || type === 'Post') {
+  if (
+    type === 'Product' ||
+    type === 'Page' ||
+    type === 'Service' ||
+    type === 'Solution' ||
+    type === 'Post'
+  ) {
     // Products use 'itemsCollection', while Pages use 'pageContentCollection'
-    const contentItem = content as { 
-      title?: string; 
+    const contentItem = content as {
+      title?: string;
       pageContentCollection?: { items?: unknown[] };
       itemsCollection?: { items?: unknown[] };
     };
-    
+
     // Use the appropriate collection based on content type
-    const contentItems = type === 'Product' 
-      ? contentItem.itemsCollection?.items ?? []
-      : contentItem.pageContentCollection?.items ?? [];
+    const contentItems =
+      type === 'Product'
+        ? (contentItem.itemsCollection?.items ?? [])
+        : (contentItem.pageContentCollection?.items ?? []);
 
     console.log(`Rendering ${type} content: ${contentItem.title}`);
     console.log(`Content items count: ${contentItems.length}`);
-    console.log('Content items:', contentItems.map((item: any) => ({ 
-      id: item?.sys?.id, 
-      type: item?.__typename 
-    })));
+    console.log(
+      'Content items:',
+      contentItems.map((item: any) => ({
+        id: item?.sys?.id,
+        type: item?.__typename
+      }))
+    );
 
     return (
       <>

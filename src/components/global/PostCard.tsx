@@ -129,7 +129,7 @@ export function PostCard({ sys }: PostCardProps) {
           </Box>
           <Box direction="row" gap={2} className="items-center justify-between pl-[1.5rem]">
             <p
-              className="text-body-xs text-[#9A9A9A]"
+              className="text-body-xs text-[#525252]"
               {...inspectorProps({ fieldId: 'datePublished' })}
             >
               {formatDate(post.datePublished)}

@@ -11,6 +11,8 @@ import { SolutionCard } from '@/components/SolutionCard';
 import { PostCard } from '@/components/global/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
+import { Testimonials } from '@/components/global/Testimonials';
+import { LazyTestimonials } from '@/components/LazyTestimonials';
 
 import type {
   Accordion as AccordionType,
@@ -23,7 +25,8 @@ import type {
   Slider as SliderType,
   CtaGrid as CtaGridType,
   PageList as PageListType,
-  PageListPages as PageListPagesType
+  PageListPages as PageListPagesType,
+  Testimonials as TestimonialsType
 } from '@/types/contentful';
 
 import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
@@ -92,6 +95,15 @@ export const contentRenderers = {
   renderCtaGrid: (item: CtaGridType, context: RenderContext) => (
     <CtaGrid key={item.sys?.id ?? context.index} {...item} />
   ),
+
+  renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
+    // If we only have sys.id (lazy loading case), create a LazyTestimonials component
+    if (item.sys?.id && !item.itemsCollection) {
+      return <LazyTestimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
+    }
+    // If we have full data, render normally
+    return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;
+  },
 
   renderPageList: (item: PageListType, context: RenderContext) => {
     const pageList = item;

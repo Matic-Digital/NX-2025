@@ -15,3 +15,4 @@ export * from './service';
 export * from './slider';
 export * from './solution';
 export * from './video';
+export * from './testimonials';

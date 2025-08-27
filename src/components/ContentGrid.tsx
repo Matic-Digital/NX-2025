@@ -23,14 +23,29 @@ interface ContentGridProps extends ContentGridType {
 
 export function ContentGrid(props: ContentGridProps) {
   const contentGrid = useContentfulLiveUpdates(props);
+  const renderKey = React.useId(); // Unique identifier for this render
 
-  console.log('content grid props', props);
-  console.log('content grid items:', contentGrid.itemsCollection?.items);
+  console.log(`ContentGrid render ${renderKey} - ID:`, contentGrid.sys?.id);
+  console.log(
+    `ContentGrid render ${renderKey} - items:`,
+    contentGrid.itemsCollection?.items?.map((item) => ({
+      id: item?.sys?.id,
+      typename: item?.__typename
+    }))
+  );
 
   // Filter out empty/incomplete items and cast to our union type
   const validItems: ContentGridItemUnion[] =
     contentGrid.itemsCollection?.items?.filter((item) => item && (item.title || item.__typename)) ||
     [];
+
+  // Check for duplicate items
+  const itemIds =
+    contentGrid.itemsCollection?.items?.map((item) => item?.sys?.id).filter(Boolean) || [];
+  const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
+  if (duplicateIds.length > 0) {
+    console.warn(`ContentGrid render ${renderKey} - Duplicate items found:`, duplicateIds);
+  }
 
   // Calculate grid configuration using utilities
   const { cols, direction, gap, useCustomLayout, layoutType } = calculateGridConfig(validItems);
@@ -62,7 +77,7 @@ export function ContentGrid(props: ContentGridProps) {
                     <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
                       {/* Top row - items in columns 1 and 2 */}
                       <ContentItemRenderer
-                        key={validItems[0]?.sys?.id ?? 0}
+                        key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
                         item={validItems[0]!}
                         index={0}
                         validItems={validItems}
@@ -70,7 +85,7 @@ export function ContentGrid(props: ContentGridProps) {
                         currentPath={props.currentPath}
                       />
                       <ContentItemRenderer
-                        key={validItems[1]?.sys?.id ?? 1}
+                        key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
                         item={validItems[1]!}
                         index={1}
                         validItems={validItems}
@@ -83,7 +98,7 @@ export function ContentGrid(props: ContentGridProps) {
                       {/* Bottom row - empty column 1, items in columns 2 and 3 */}
                       <div className="hidden md:block"></div>
                       <ContentItemRenderer
-                        key={validItems[2]?.sys?.id ?? 2}
+                        key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
                         item={validItems[2]!}
                         index={2}
                         validItems={validItems}
@@ -91,7 +106,7 @@ export function ContentGrid(props: ContentGridProps) {
                         currentPath={props.currentPath}
                       />
                       <ContentItemRenderer
-                        key={validItems[3]?.sys?.id ?? 3}
+                        key={`${contentGrid.sys?.id}-3-${validItems[3]?.sys?.id ?? 3}`}
                         item={validItems[3]!}
                         index={3}
                         validItems={validItems}
@@ -104,7 +119,7 @@ export function ContentGrid(props: ContentGridProps) {
                     <Box cols={cols} gap={gap} wrap={true}>
                       {validItems.map((item, index) => (
                         <ContentItemRenderer
-                          key={item.sys?.id ?? index}
+                          key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
                           item={item}
                           index={index}
                           validItems={validItems}

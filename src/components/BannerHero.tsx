@@ -41,7 +41,6 @@ export function BannerHero(props: BannerHeroProps) {
           link={bannerHero.backgroundImage.link}
           altText={bannerHero.backgroundImage.altText}
           className="absolute inset-0 h-[789px] w-full object-cover"
-          priority
         />
 
         {/* Content Overlay */}
