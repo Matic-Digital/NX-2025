@@ -8,7 +8,7 @@ import { IMAGE_GRAPHQL_FIELDS } from './image';
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 export const TIMELINE_SLIDERITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
-  date
+  year
   description
   asset {
     ... on Image {

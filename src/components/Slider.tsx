@@ -19,7 +19,8 @@ import type {
   PostSliderItem,
   Image as ImageType,
   FeatureSliderItem,
-  TimelineSliderItem
+  TimelineSliderItem,
+  TeamMember
 } from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
@@ -27,13 +28,7 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-
-type SliderItemType =
-  | SliderItem
-  | PostSliderItem
-  | ImageType
-  | FeatureSliderItem
-  | TimelineSliderItem;
+import type { SliderItemType } from '@/types/contentful/Slider';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -265,7 +260,7 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
                   isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
                 )}
               >
-                {timelineItem.date}
+                {timelineItem.year}
               </h3>
             </div>
 
@@ -278,6 +273,33 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (updatedItem.__typename === 'TeamMember') {
+    const teamMember = updatedItem as TeamMember;
+
+    return (
+      <Box direction="col" gap={6}>
+        <div className="aspect-square w-full overflow-hidden">
+          <AirImage
+            link={teamMember.image?.link}
+            altText={teamMember.image?.altText}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        <div className="mt-4">
+          <h3
+            className="text-lg font-semibold text-gray-900"
+            {...inspectorProps({ fieldId: 'name' })}
+          >
+            {teamMember.name}
+          </h3>
+          <p className="text-sm text-gray-600" {...inspectorProps({ fieldId: 'jobTitle' })}>
+            {teamMember.jobTitle}
+          </p>
+        </div>
+      </Box>
     );
   }
 
@@ -300,7 +322,7 @@ interface GenericSliderProps {
   showAltIndicators?: boolean;
   showNavigation?: boolean;
   showAltNavigation?: boolean;
-  fullWidth?: boolean;
+  isFullWidth?: boolean;
 }
 
 const GenericSlider = ({
@@ -312,34 +334,48 @@ const GenericSlider = ({
   showAltIndicators = false,
   showNavigation = true,
   showAltNavigation = false,
-  fullWidth = true
+  isFullWidth = true
 }: GenericSliderProps) => {
+  const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
+  const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
+
+  console.log('isFullWidth', isFullWidth);
+
   return (
     <div
-      className={cn(fullWidth ? 'relative w-screen' : 'relative')}
-      style={fullWidth ? { marginLeft: 'calc(-50vw + 50%)' } : {}}
+      className={cn(isFullWidth ? 'relative w-screen' : 'relative')}
+      style={{ marginLeft: isFullWidth ? 'calc(-50vw + 50%)' : '' }}
     >
       <Carousel
         setApi={setApi}
         className={cn(
-          fullWidth
+          isFullWidth
             ? 'relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen md:-ml-[25vw] lg:-ml-[50vw]'
-            : 'w-full'
+            : isTeamMemberSlider
+              ? 'w-full max-w-none'
+              : 'w-full'
         )}
-        opts={{ loop: true }}
+        opts={{
+          loop: true,
+          align: 'center',
+          ...(isTeamMemberSlider && {
+            align: 'start'
+          })
+        }}
       >
-        <CarouselContent>
+        <CarouselContent className={cn(isTeamMemberSlider && 'overflow-visible')}>
           {sliderData.itemsCollection.items.map((item, index) => {
-            const isFeatureSlider = item.__typename === 'FeatureSliderItem';
             return (
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
                 className={cn(
                   isFeatureSlider
                     ? 'basis-[411px]'
-                    : fullWidth
-                      ? 'basis-full sm:basis-4/5'
-                      : 'basis-full'
+                    : isTeamMemberSlider
+                      ? 'basis-[300px]'
+                      : isFullWidth
+                        ? 'basis-full sm:basis-4/5'
+                        : 'basis-full'
                 )}
               >
                 <SliderCard index={index} current={current} item={item} />
@@ -362,7 +398,12 @@ const GenericSlider = ({
           </>
         )}
         {showAltNavigation && (
-          <div className="absolute -top-12 right-29 hidden gap-4 md:flex">
+          <div
+            className={cn(
+              'absolute -top-12 right-29 hidden gap-4 lg:flex',
+              isTeamMemberSlider && 'right-0'
+            )}
+          >
             <CarouselPrevious
               className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
               variant="outline"
@@ -477,6 +518,7 @@ export function Slider(props: SliderSys) {
   const isImageSlider = firstItem.__typename === 'Image';
   const isFeatureSliderItemSlider = firstItem.__typename === 'FeatureSliderItem';
   const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
+  const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
 
   // Configure slider based on content type
   return (
@@ -486,10 +528,17 @@ export function Slider(props: SliderSys) {
       api={api}
       setApi={setApi}
       showIndicators={isImageSlider}
-      showAltIndicators={isFeatureSliderItemSlider}
-      showNavigation={!isImageSlider && !isFeatureSliderItemSlider && !isTimelineSliderItemSlider}
-      showAltNavigation={isFeatureSliderItemSlider || isTimelineSliderItemSlider}
-      fullWidth={!isImageSlider}
+      showAltIndicators={isFeatureSliderItemSlider || isTeamMemberSlider}
+      showNavigation={
+        !isImageSlider &&
+        !isFeatureSliderItemSlider &&
+        !isTimelineSliderItemSlider &&
+        !isTeamMemberSlider
+      }
+      showAltNavigation={
+        isFeatureSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider
+      }
+      isFullWidth={!isImageSlider && !isTeamMemberSlider}
     />
   );
 }
