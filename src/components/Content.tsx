@@ -11,6 +11,7 @@ import { AirImage } from '@/components/media/AirImage';
 import type { Content } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
+import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
 import type { Image } from '@/types/contentful/Image';
 import { Box, Container } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
@@ -34,8 +35,19 @@ type SectionHeadingCardData = Pick<
   };
 };
 
+type ContentGridItemCardData = Pick<
+  ContentGridItem,
+  'title' | 'heading' | 'description' | 'variant' | 'icon'
+> & {
+  image: {
+    link?: string;
+    altText?: string;
+    title?: string;
+  };
+};
+
 interface ContentCardProps {
-  data: ProductCardData | SectionHeadingCardData;
+  data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
   variant: 'ContentLeft' | 'FullWidth';
 }
@@ -100,12 +112,14 @@ export function Content(props: Content) {
 
   // Shared Components
   const ContentContainer = ({ children }: ContentContainerProps) => (
-    <Container className={cn('relative mt-10 mb-20 h-[502px]')}>{children}</Container>
+    <div className={cn('container mx-auto px-6 sm:px-6 md:px-9 relative mb-20 h-[502px] overflow-hidden')}>
+      {children}
+    </div>
   );
 
   const ContentOverlay = ({ children }: ContentOverlayProps) => (
     <div
-      className="flex h-full w-full max-w-[558px] p-10 backdrop-blur-[14px]"
+      className="flex h-full w-full max-w-[558px] p-6 sm:p-8 md:p-10 backdrop-blur-[14px]"
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -118,33 +132,51 @@ export function Content(props: Content) {
   const ContentCard = ({ data, inspectorProps, variant }: ContentCardProps) => {
     // Type guard to check if data is ProductCardData
     const isProductData = (
-      data: ProductCardData | SectionHeadingCardData
+      data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
     ): data is ProductCardData => {
       return 'slug' in data;
+    };
+
+    // Type guard to check if data is ContentGridItemCardData
+    const isContentGridItemData = (
+      data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    ): data is ContentGridItemCardData => {
+      return 'heading' in data && 'variant' in data;
     };
 
     if (variant === 'ContentLeft') {
       return (
         <ContentContainer>
-          <AirImage
-            link={data.image?.link}
-            altText={data.image?.altText ?? data.image?.title}
-            className="absolute h-full object-cover"
-          />
-          <ContentOverlay>
-            <Box
-              direction="col"
-              gap={12}
-              className="w-full items-center justify-center text-center"
-            >
-              <Box direction="col" gap={5}>
-                <Box direction="col" gap={1.5}>
+          <div className="relative h-full px-6 sm:px-6 md:px-9 overflow-hidden">
+            <AirImage
+              link={data.image?.link}
+              altText={data.image?.altText ?? data.image?.title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 flex items-center px-6 sm:px-6 md:px-9">
+            <ContentOverlay>
+              <Box
+                direction="col"
+                gap={12}
+                className="w-full items-center justify-center text-center"
+              >
+                <Box direction="col" gap={5}>
+                  <Box direction="col" gap={1.5}>
                   {isProductData(data) && data.tags && (
                     <p
                       className="text-body-sm text-text-on-invert uppercase"
                       {...inspectorProps({ fieldId: 'categories' })}
                     >
                       {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                    </p>
+                  )}
+                  {isContentGridItemData(data) && data.heading && (
+                    <p
+                      className="text-body-sm text-text-on-invert uppercase"
+                      {...inspectorProps({ fieldId: 'heading' })}
+                    >
+                      {data.heading}
                     </p>
                   )}
                   <h2
@@ -164,7 +196,7 @@ export function Content(props: Content) {
                 )}
               </Box>
 
-              {/* Render button for Product or CTA collection for SectionHeading */}
+              {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
               {isProductData(data) ? (
                 <Button
                   variant="white"
@@ -173,6 +205,14 @@ export function Content(props: Content) {
                   asChild
                 >
                   <Link href={data.slug}>Explore {data.title}</Link>
+                </Button>
+              ) : isContentGridItemData(data) ? (
+                <Button
+                  variant="white"
+                  {...inspectorProps({ fieldId: 'button' })}
+                  className="w-fit"
+                >
+                  Learn More
                 </Button>
               ) : (
                 data.ctaCollection?.items?.map((cta, index) => (
@@ -197,6 +237,7 @@ export function Content(props: Content) {
               )}
             </Box>
           </ContentOverlay>
+          </div>
         </ContentContainer>
       );
     }
@@ -206,14 +247,14 @@ export function Content(props: Content) {
         <AirImage
           link={data.image?.link}
           altText={data.image?.altText ?? data.image?.title}
-          className="absolute inset-0 h-full w-full object-cover p-9"
+          className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="relative flex h-full items-center justify-center p-10">
           <SectionHeading
             sys={{ id: '' }}
             title={data.title}
             description={data.description}
-            ctaCollection={!isProductData(data) ? data.ctaCollection : undefined}
+            ctaCollection={!isProductData(data) && !isContentGridItemData(data) ? data.ctaCollection : undefined}
             componentType={'content'}
             isDarkMode={true}
           />
@@ -260,6 +301,34 @@ export function Content(props: Content) {
       };
 
       return <ContentCard data={productData} inspectorProps={inspectorProps} variant={variant} />;
+    }
+
+    // Handle ContentGridItem content
+    if ('__typename' in item && item.__typename === 'ContentGridItem') {
+      const contentGridItem = item as unknown as ContentGridItem;
+
+      // Select image: Content asset first, then ContentGridItem image as fallback
+      const selectedImage =
+        liveContent.asset?.__typename === 'Image' ? (liveContent.asset as Image) : contentGridItem.image;
+
+      const contentGridItemData: ContentGridItemCardData = {
+        title: contentGridItem.title,
+        heading: contentGridItem.heading,
+        description: contentGridItem.description,
+        variant: contentGridItem.variant,
+        icon: contentGridItem.icon,
+        image: selectedImage ? {
+          link: selectedImage.link ?? '',
+          altText: selectedImage.altText ?? selectedImage.title,
+          title: selectedImage.title ?? ''
+        } : {
+          link: '',
+          altText: '',
+          title: ''
+        }
+      };
+
+      return <ContentCard data={contentGridItemData} inspectorProps={inspectorProps} variant={variant} />;
     }
 
     // Handle SectionHeading content
