@@ -8,7 +8,8 @@ import type {
   AirImage as AirImageType,
   Slider as SliderType,
   CtaGrid as CtaGridType,
-  PageList as PageListType
+  PageList as PageListType,
+  Testimonials as TestimonialsType
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
@@ -21,7 +22,8 @@ export type ContentGridItemUnion =
   | AirImageType
   | SliderType
   | CtaGridType
-  | PageListType;
+  | PageListType
+  | TestimonialsType;
 
 /**
  * Content type detection utilities
@@ -49,7 +51,10 @@ export const contentTypeDetectors = {
 
   isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item.__typename === 'CtaGrid',
 
-  isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList'
+  isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
+
+  isTestimonials: (item: ContentGridItemUnion): item is TestimonialsType =>
+    item.__typename === 'Testimonials'
 };
 
 /**

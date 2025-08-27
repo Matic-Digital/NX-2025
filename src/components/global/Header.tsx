@@ -127,7 +127,7 @@ export function Header(props: HeaderProps) {
                       priority
                     />
                   </div>
-                  <span className="text-headline-xs text-text-on-invert">{header.name}</span>
+                  <span className="text-headline-xs text-white">{header.name}</span>
                 </Box>
               </Link>
             )}
@@ -215,14 +215,14 @@ export function Header(props: HeaderProps) {
                 </NavigationMenuList>
               </NavigationMenu>
 
-              <Search className="text-text-on-invert" />
+              <Search className="text-white" />
             </div>
 
             {/* Mobile Navigation */}
             <Box direction="row" gap={2} className="items-center lg:hidden">
               <Button
                 variant="ghost"
-                className={`text-text-on-invert rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 backdrop-blur-2xl`}
+                className={`rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
                 aria-label="Open menu"
               >
                 <Search className="size-5" />
@@ -233,7 +233,7 @@ export function Header(props: HeaderProps) {
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
-                    className={`text-text-on-invert rounded-xxs ml-2 flex items-center justify-center bg-black/40 p-2 backdrop-blur-2xl`}
+                    className={`rounded-xxs ml-2 flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
                     aria-label="Open menu"
                   >
                     <Menu className="size-5" />

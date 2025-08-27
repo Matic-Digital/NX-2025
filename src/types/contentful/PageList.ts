@@ -30,6 +30,9 @@ const BasePageListSchema = z.object({
   }),
   title: z.string().optional(),
   slug: z.string().optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
   pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   pageContentCollection: z
     .object({
@@ -44,6 +47,9 @@ type PageListType = {
   sys: { id: string };
   title?: string;
   slug?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  openGraphImage?: unknown;
   pageLayout?: unknown;
   pageContentCollection?: {
     items: Array<{
@@ -95,6 +101,9 @@ export const PageListWithRefsSchema = z.object({
   }),
   title: z.string().optional(),
   slug: z.string().optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
   pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
   pagesCollection: z
     .object({

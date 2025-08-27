@@ -56,6 +56,10 @@ const contentTypeRegistry = [
   {
     detector: contentTypeDetectors.isPageList,
     renderer: contentRenderers.renderPageList
+  },
+  {
+    detector: contentTypeDetectors.isTestimonials,
+    renderer: contentRenderers.renderTestimonials
   }
 ];
 

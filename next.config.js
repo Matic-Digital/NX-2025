@@ -23,10 +23,10 @@ const nextConfig = {
 
   // Source map configuration
   productionBrowserSourceMaps: false, // Disable in production for better performance
-  
+
   // Enable compression
   compress: true,
-  
+
   // Optimize output
   output: 'standalone',
 

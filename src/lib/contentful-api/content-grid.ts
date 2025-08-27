@@ -69,6 +69,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on CtaGrid {
         ${SYS_FIELDS}
       }
+      ... on Testimonials {
+        ${SYS_FIELDS}
+      }
     }
   }
 `;

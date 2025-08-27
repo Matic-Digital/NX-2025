@@ -232,6 +232,26 @@ const fragments = {
   PAGE_WITH_REFS_FIELDS: () => `
     ${fragments.PAGE_BASIC_FIELDS()}
     ${fragments.PAGE_LAYOUT_GRAPHQL_FIELDS()}
+  `,
+
+  TESTIMONIALS_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    itemsCollection(limit: 3) {
+      items {
+        ${SYS_FIELDS}
+        title
+        quote
+        authorName
+        authorTitle
+        headshot {
+          ${SYS_FIELDS}
+          title
+          link
+          altText
+        }
+      }
+    }
   `
 };
 
@@ -252,3 +272,4 @@ export const getPRODUCT_BASIC_FIELDS = () => fragments.PRODUCT_BASIC_FIELDS();
 export const getSERVICE_BASIC_FIELDS = () => fragments.SERVICE_BASIC_FIELDS();
 export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
 export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();
+export const getTESTIMONIALS_BASIC_FIELDS = () => fragments.TESTIMONIALS_BASIC_FIELDS();

@@ -195,9 +195,23 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     const pageList = await getPageListBySlug(slug, false);
 
     if (pageList) {
-      // Extract SEO data from PageList component (PageList doesn't have SEO fields, so use basic fields)
-      const title = pageList.title ?? 'Nextracker';
-      const description = 'Nextracker Website';
+      // Extract SEO data from PageList component using utility functions
+      const title = extractSEOTitle(pageList, 'Nextracker');
+      const description = extractSEODescription(pageList, 'Nextracker Website');
+
+      // Handle OG image from PageList component
+      const openGraphImage = extractOpenGraphImage(pageList, baseUrl, title);
+
+      const ogImages = openGraphImage
+        ? [
+            {
+              url: openGraphImage.url,
+              width: openGraphImage.width,
+              height: openGraphImage.height,
+              alt: openGraphImage.title ?? title
+            }
+          ]
+        : [];
 
       return {
         title,
@@ -205,6 +219,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
         openGraph: {
           title,
           description,
+          images: ogImages,
           siteName: 'Nextracker',
           type: 'website',
           url: `${baseUrl}/${slug}`
@@ -212,7 +227,8 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
         twitter: {
           card: 'summary_large_image',
           title,
-          description
+          description,
+          images: openGraphImage ? [openGraphImage.url] : []
         },
         alternates: {
           canonical: `${baseUrl}/${slug}`
