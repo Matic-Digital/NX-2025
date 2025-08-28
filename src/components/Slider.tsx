@@ -348,7 +348,7 @@ const GenericSlider = ({
         setApi={setApi}
         className={cn(
           isFullWidth
-            ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[25vw] lg:-ml-[50vw]'
+            ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
             : isTeamMemberSlider
               ? 'w-full max-w-none'
               : 'w-full'

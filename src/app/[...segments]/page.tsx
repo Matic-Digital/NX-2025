@@ -9,10 +9,8 @@
  * - /products/trackers/nx-horizon (deeply nested content)
  *
  * Features:
- * - Automatic breadcrumb generation
  * - Recursive PageList nesting support
  * - Content item rendering within nested PageLists
- * - Breadcrumb navigation for nested structures
  * - Server-side rendering with proper error handling
  *
  * PageList Nesting Integration:
@@ -20,7 +18,7 @@
  * - Ensures content items are properly nested within their parent PageLists
  * - Supports multi-level nesting (e.g., products > trackers > specific-product)
  * - Provides fallback handling for orphaned content
- * - Generates proper metadata and breadcrumbs for nested structures
+ * - Generates proper metadata for nested structures
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain */
@@ -432,82 +430,6 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
   return null;
 };
 
-// Helper function to render breadcrumbs
-function renderBreadcrumbs(
-  segments: string[],
-  parentPageLists: PageListType[],
-  currentTitle: string
-) {
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-4">
-      <nav className="flex" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-3">
-          <li className="inline-flex items-center">
-            <Link
-              href="/"
-              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
-            >
-              Home
-            </Link>
-          </li>
-
-          {/* Render parent PageList breadcrumbs */}
-          {parentPageLists.map((pageList, index) => (
-            <li key={pageList.sys.id}>
-              <div className="flex items-center">
-                <svg
-                  className="mx-1 h-3 w-3 text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                <Link
-                  href={`/${segments.slice(0, index + 1).join('/')}`}
-                  className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
-                >
-                  {pageList.title}
-                </Link>
-              </div>
-            </li>
-          ))}
-
-          {/* Current page */}
-          <li aria-current="page">
-            <div className="flex items-center">
-              <svg
-                className="mx-1 h-3 w-3 text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 6 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 9 4-4-4-4"
-                />
-              </svg>
-              <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">{currentTitle}</span>
-            </div>
-          </li>
-        </ol>
-      </nav>
-    </div>
-  );
-}
-
-// Main component
 export default async function NestedSegmentsPage({ params, searchParams }: NestedSegmentsProps) {
   const resolvedParams = await params;
   await searchParams;
@@ -557,9 +479,6 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
 
     return (
       <PageLayout header={pageHeader} footer={pageFooter}>
-        {/* Breadcrumb navigation */}
-        {renderBreadcrumbs(segments, parentPageLists, content.title ?? 'Untitled')}
-
         {/* Render content */}
         <div key={0}>{renderContentByType({ type, content }, 0)}</div>
       </PageLayout>
