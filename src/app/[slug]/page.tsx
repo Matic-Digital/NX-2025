@@ -26,6 +26,7 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
+import { RegionsMap } from '@/components/RegionsMap';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/layout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
@@ -46,7 +47,8 @@ const componentMap = {
   Content: Content,
   ContentGrid: ContentGrid,
   CtaBanner: CtaBanner,
-  ImageBetween: ImageBetween
+  ImageBetween: ImageBetween,
+  RegionsMap: RegionsMap
   // Add other component types here as they are created
 };
 
@@ -365,7 +367,7 @@ function renderPage(page: Page) {
         }
 
         // Log a warning if we don't have a component for this type
-        console.warn(`No component found for type: ${typeName}`);
+        console.warn(`❌ No component found for type: ${typeName}`);
         return null;
       })}
     </PageLayout>

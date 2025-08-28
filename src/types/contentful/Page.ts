@@ -6,6 +6,7 @@ import { BannerHeroSchema } from './BannerHero';
 import { ImageBetweenSchema } from './ImageBetween';
 import { ImageSchema } from './Image';
 import { ContentSchema } from './Content';
+import { RegionsMapSchema } from './Region';
 
 const PageContentUnion = z.union([
   BannerHeroSchema,
@@ -13,7 +14,8 @@ const PageContentUnion = z.union([
   ContentGridSchema,
   CtaBannerSchema,
   ImageSchema,
-  ImageBetweenSchema
+  ImageBetweenSchema,
+  RegionsMapSchema
 ]);
 export type PageContent = z.infer<typeof PageContentUnion>;
 

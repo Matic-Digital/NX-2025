@@ -1,61 +1,101 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import type { GlobalLocation } from '@/types/contentful/GlobalLocation';
+import { getRegionsMapById } from '@/lib/contentful-api/region';
+import type { RegionsMap } from '@/types/contentful/Region';
+import type { Region } from '@/types/contentful/Region';
 
-interface InteractiveWorldMapProps {
-  title?: string;
-  overline?: string;
-  locations: GlobalLocation[];
-}
+export function RegionsMap(props: RegionsMap) {
+  const [content, setContent] = useState<RegionsMap | null>(props);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
 
-type RegionKey = 'northAmerica' | 'europe' | 'latinAmerica' | 'australiaPacific' | 'middleEastIndiaAfrica';
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        setLoading(true);
+        const response = await getRegionsMapById(props.sys.id);
 
-const regionDisplayNames: Record<RegionKey, string> = {
-  northAmerica: 'North America',
-  europe: 'Europe',
-  latinAmerica: 'Latin America',
-  australiaPacific: 'Australia Pacific',
-  middleEastIndiaAfrica: 'Middle East, India, & North Africa'
-};
+        if (!response) {
+          console.error('No regions map data returned');
+          setError('No region data found');
+          return;
+        }
 
-export function InteractiveWorldMap({ title, overline, locations }: InteractiveWorldMapProps) {
-  const [hoveredRegion, setHoveredRegion] = useState<RegionKey | null>(null);
+        setContent(response);
+      } catch (err) {
+        console.error('Error fetching region data:', err);
+        setError('Failed to load region data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Group locations by region
-  const locationsByRegion = locations.reduce((acc, location) => {
-    if (!acc[location.region]) {
-      acc[location.region] = [];
-    }
-    acc[location.region].push(location);
+    void fetchContent();
+  }, [props.sys.id]);
+
+  // Provide default values to prevent destructuring errors
+  const { title = '', overline = '', regionsCollection = { items: [] } } = content ?? {};
+
+  const regions = regionsCollection?.items ?? [];
+
+  // Map region names to their corresponding SVG IDs
+  const regionToSvgId: Record<string, string> = {
+    'North America': 'northAmerica',
+    Europe: 'europe',
+    'Latin America': 'latinAmerica',
+    'Australia & Pacific': 'australiaPacific',
+    'Middle East, India & North Africa': 'middleEastIndiaAfrica'
+  };
+
+  // Group regions by their name
+  const regionsByRegion = regions.reduce<Record<string, Region[]>>((acc, region) => {
+    const regionName = region.region;
+    acc[regionName] = [...(acc[regionName] ?? []), region];
     return acc;
-  }, {} as Record<RegionKey, GlobalLocation[]>);
+  }, {});
+
+  // Get region names, sorted to match the desired order
+  const regionNames = Object.keys(regionsByRegion).sort((a, b) => {
+    const order = Object.keys(regionToSvgId);
+    return order.indexOf(a) - order.indexOf(b);
+  });
+
+  // Handle loading and error states
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="text-lg">Loading regions...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-16 text-center text-red-500">
+        <p>Error loading regions: {error}</p>
+      </div>
+    );
+  }
+
+  if (regions.length === 0) {
+    return <div className="py-16 text-center text-gray-500">No regions available</div>;
+  }
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 py-16">
+    <div className="bg-subtle mx-auto w-full max-w-6xl px-6 py-16">
       {/* Header */}
-      <div className="text-center mb-16">
-        {overline && (
-          <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
-            {overline}
-          </p>
-        )}
-        {title && (
-          <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-8">
-            {title}
-          </h2>
-        )}
+      <div className="mb-16 text-center">
+        <p className="mb-4 text-sm tracking-wider text-gray-500 uppercase">{overline}</p>
+        <h2 className="mb-8 text-4xl font-light text-gray-900 md:text-5xl">{title}</h2>
       </div>
 
       {/* World Map SVG */}
       <div className="relative mb-16">
-        <svg
-          viewBox="0 0 1000 500"
-          className="w-full h-auto"
-          style={{ maxHeight: '400px' }}
-        >
+        <svg viewBox="0 0 1000 500" className="h-auto w-full" style={{ maxHeight: '400px' }}>
           {/* Dotted World Map Pattern */}
           <defs>
             <pattern id="dots" patternUnits="userSpaceOnUse" width="4" height="4">
@@ -79,7 +119,7 @@ export function InteractiveWorldMap({ title, overline, locations }: InteractiveW
               strokeWidth="1"
               opacity={hoveredRegion === 'northAmerica' ? 0.8 : 0.4}
             />
-            {/* Location Pin */}
+            {/* Region Pin */}
             <circle cx="200" cy="150" r="4" fill="currentColor" />
           </g>
 
@@ -99,7 +139,7 @@ export function InteractiveWorldMap({ title, overline, locations }: InteractiveW
               strokeWidth="1"
               opacity={hoveredRegion === 'europe' ? 0.8 : 0.4}
             />
-            {/* Location Pin */}
+            {/* Region Pin */}
             <circle cx="420" cy="120" r="4" fill="currentColor" />
           </g>
 
@@ -119,7 +159,7 @@ export function InteractiveWorldMap({ title, overline, locations }: InteractiveW
               strokeWidth="1"
               opacity={hoveredRegion === 'latinAmerica' ? 0.8 : 0.4}
             />
-            {/* Location Pin */}
+            {/* Region Pin */}
             <circle cx="240" cy="310" r="4" fill="currentColor" />
           </g>
 
@@ -139,7 +179,7 @@ export function InteractiveWorldMap({ title, overline, locations }: InteractiveW
               strokeWidth="1"
               opacity={hoveredRegion === 'australiaPacific' ? 0.8 : 0.4}
             />
-            {/* Location Pin */}
+            {/* Region Pin */}
             <circle cx="830" cy="330" r="4" fill="currentColor" />
           </g>
 
@@ -159,45 +199,55 @@ export function InteractiveWorldMap({ title, overline, locations }: InteractiveW
               strokeWidth="1"
               opacity={hoveredRegion === 'middleEastIndiaAfrica' ? 0.8 : 0.4}
             />
-            {/* Location Pin */}
+            {/* Region Pin */}
             <circle cx="580" cy="210" r="4" fill="currentColor" />
           </g>
         </svg>
       </div>
 
       {/* Region List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-        {Object.entries(regionDisplayNames).map(([regionKey, displayName]) => {
-          const regionLocations = locationsByRegion[regionKey as RegionKey] || [];
-          
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+        {regionNames.map((regionName) => {
+          const regionLocations = regionsByRegion?.[regionName] ?? [];
+
+          console.log('RegionsMap: regionLocations', regionLocations);
+
           return (
             <div
-              key={regionKey}
+              key={regionName}
               className={cn(
-                'transition-all duration-200',
-                hoveredRegion === regionKey ? 'transform scale-105' : ''
+                'group transition-all duration-200',
+                hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                  ? 'scale-105 transform'
+                  : ''
               )}
-              onMouseEnter={() => setHoveredRegion(regionKey as RegionKey)}
+              onMouseEnter={() => setHoveredRegion(regionToSvgId[regionName] ?? regionName)}
               onMouseLeave={() => setHoveredRegion(null)}
             >
-              <h3
-                className={cn(
-                  'text-lg font-medium mb-2 transition-colors duration-200',
-                  hoveredRegion === regionKey ? 'text-orange-500' : 'text-gray-900'
-                )}
-              >
-                {displayName}
-              </h3>
-              
               {regionLocations.length > 0 ? (
                 <div className="space-y-1">
-                  {regionLocations.map((location) => (
+                  {regionLocations.map((region) => (
                     <Link
-                      key={location.sys.id}
-                      href={`/locations/${location.slug}`}
-                      className="block text-sm text-gray-600 hover:text-orange-500 transition-colors"
+                      key={region.sys.id}
+                      href={`/${region.slug}`}
+                      className={cn(
+                        'block text-sm text-gray-600 transition-colors group-hover:text-orange-500',
+                        hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                          ? 'text-orange-500'
+                          : 'text-gray-900'
+                      )}
                     >
-                      {location.address}
+                      <h3
+                        className={cn(
+                          'mb-2 text-lg font-medium transition-colors duration-200',
+                          hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                            ? 'text-orange-500'
+                            : 'text-gray-900'
+                        )}
+                      >
+                        {regionName}
+                      </h3>
+                      {region.street}, {region.city}, {region.country}
                     </Link>
                   ))}
                 </div>

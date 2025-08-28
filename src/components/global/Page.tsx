@@ -37,6 +37,7 @@ import { CtaBanner } from '../CtaBanner';
 import { CtaGrid } from '../CtaGrid';
 import { ImageBetween } from '../ImageBetween';
 import { Slider } from '../Slider';
+import { RegionsMap } from '../RegionsMap';
 
 interface PageProps {
   sys: {
@@ -125,6 +126,12 @@ export function Page(props: PageProps) {
             {page.pageContentCollection.items.map((content, index) => {
               const key = content.sys?.id || index;
 
+              console.log(
+                'RegionsMap Content type:',
+                content.__typename,
+                'RegionsMap Content:',
+                content
+              );
               try {
                 switch (content.__typename) {
                   case 'BannerHero':
@@ -147,6 +154,9 @@ export function Page(props: PageProps) {
 
                   case 'Slider':
                     return <Slider key={key} {...(content as any)} />;
+
+                  case 'RegionsMap':
+                    return <RegionsMap key={key} {...(content as any)} />;
 
                   default:
                     return (
