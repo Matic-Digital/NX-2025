@@ -84,7 +84,6 @@ export const collectionAnalyzers = {
 
   // hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
   //   items.some((item) => 'image' in item && item.image)
-
   hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
     items.some((item) => 'variant' in item && item.variant === 'BackgroundImage')
 };
@@ -110,24 +109,28 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
       ? 1
       : analysis.hasCtaGrids
         ? 1
-        : analysis.hasAccordions
-          ? 1
-          : 2,
-    lg: analysis.hasVideos
-      ? 1
-      : analysis.hasAccordions
-        ? 1
         : analysis.hasSliders
           ? 1
-          : analysis.hasCtaGrids
+          : analysis.hasAccordions
             ? 1
-            : analysis.hasFullWidthItems
-              ? 1
-              : analysis.allItemsArePosts
+            : 2,
+    lg: analysis.hasVideos
+      ? 1
+      : analysis.hasSliders
+        ? 1
+        : analysis.hasCtaGrids
+          ? 1
+          : analysis.hasFullWidthItems
+            ? 1
+            : analysis.allItemsArePosts
+              ? items.length === 4
                 ? 4
-                : analysis.allItemsAreSolutions
-                  ? 3
-                  : analysis.hasImages
+                : 3
+              : analysis.allItemsAreSolutions
+                ? 3
+                : analysis.hasImages
+                  ? 1
+                  : analysis.hasAccordions
                     ? 1
                     : 3
   };

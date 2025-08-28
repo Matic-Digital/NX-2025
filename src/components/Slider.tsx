@@ -339,8 +339,6 @@ const GenericSlider = ({
   const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
 
-  console.log('isFullWidth', isFullWidth);
-
   return (
     <div
       className={cn(isFullWidth ? 'relative w-screen' : 'relative')}
@@ -350,7 +348,7 @@ const GenericSlider = ({
         setApi={setApi}
         className={cn(
           isFullWidth
-            ? 'relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen md:-ml-[25vw] lg:-ml-[50vw]'
+            ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
             : isTeamMemberSlider
               ? 'w-full max-w-none'
               : 'w-full'
@@ -363,7 +361,7 @@ const GenericSlider = ({
           })
         }}
       >
-        <CarouselContent className={cn(isTeamMemberSlider && 'overflow-visible')}>
+        <CarouselContent className={cn(isTeamMemberSlider && 'lg:overflow-visible')}>
           {sliderData.itemsCollection.items.map((item, index) => {
             return (
               <CarouselItem

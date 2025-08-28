@@ -13,6 +13,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
+import { categoryColorMap } from '@/constants/post';
 
 import type {
   Accordion as AccordionType,
@@ -36,6 +37,7 @@ interface RenderContext {
   validItems: ContentGridItemUnion[];
   parentPageListSlug?: string;
   currentPath?: string;
+  variant?: string;
 }
 
 export const contentRenderers = {
@@ -51,9 +53,10 @@ export const contentRenderers = {
     />
   ),
 
-  renderPost: (item: PostType, context: RenderContext) => (
-    <PostCard key={item.sys?.id ?? context.index} {...item} />
-  ),
+  renderPost: (item: PostType, context: RenderContext) => {
+    // spread in context to use the variant prop in PostCard
+    return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
+  },
 
   renderVideo: (item: VideoType, context: RenderContext) => (
     <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />

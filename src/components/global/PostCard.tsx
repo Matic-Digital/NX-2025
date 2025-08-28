@@ -10,6 +10,7 @@ import AirImage from '@/components/media/AirImage';
 import { getPostById } from '@/lib/contentful-api/post';
 import type { Post } from '@/types/contentful/Post';
 import Link from 'next/link';
+import { categoryColorMap } from '@/constants/post';
 
 // Helper function to format date as "Month Day, Year"
 const formatDate = (dateString?: string): string => {
@@ -23,35 +24,11 @@ const formatDate = (dateString?: string): string => {
   });
 };
 
-const categoryColorMap = (category: string) => {
-  switch (category) {
-    case 'Press Release':
-      return 'text-[#6236FF]';
-    case 'Blog':
-      return 'text-[#BBDEFB]';
-    case 'Case Study':
-      return 'text-[#C8E6C9]';
-    case 'Data Sheet':
-      return 'text-[#D1C4E9]';
-    case 'Featured':
-      return 'text-[#FFF9C4]';
-    case 'In The News':
-      return 'text-[#1975FF]';
-    case 'Resources':
-      return 'text-[#FFE0B2]';
-    case 'Shug Speaks':
-      return 'text-[#F8BBD0]';
-    case 'Video':
-      return 'text-[#D7CCC8]';
-    default:
-      return 'text-gray-400';
-  }
-};
-
 interface PostCardProps {
   sys: {
     id: string;
   };
+  
 }
 
 export function PostCard({ sys }: PostCardProps) {
@@ -99,13 +76,13 @@ export function PostCard({ sys }: PostCardProps) {
     <Link
       href={`/resources/${post.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
-      className="group flex h-full"
+      className="group flex h-full flex-col"
     >
       <Box direction="col" gap={0} className="">
         <AirImage
           link={post.mainImage?.link}
           altText={post.mainImage?.altText}
-          className="min-h-[11.8rem] object-cover"
+          className="min-h-[11.8rem] w-full object-cover"
         />
         <Box direction="col" gap={0} className="h-full justify-between bg-[#f6f6f6]">
           <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem]">

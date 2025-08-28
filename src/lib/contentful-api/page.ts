@@ -8,6 +8,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { REGIONS_MAP_GRAPHQL_FIELDS } from './region';
 import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';
@@ -138,6 +139,9 @@ export async function getPageBySlug(
                 ... on ImageBetween {
                   ${IMAGEBETWEEN_GRAPHQL_FIELDS}
                 }
+                ... on RegionsMap {
+                  ${SYS_FIELDS}
+                }
               }
             }
           }
@@ -250,6 +254,9 @@ export async function getPageById(
                 }
                 ... on ImageBetween {
                   ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+                ... on RegionsMap {
+                  ${REGIONS_MAP_GRAPHQL_FIELDS}
                 }
               }
             }

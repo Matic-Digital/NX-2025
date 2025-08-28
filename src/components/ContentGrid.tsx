@@ -50,6 +50,10 @@ export function ContentGrid(props: ContentGridProps) {
   // Calculate grid configuration using utilities
   const { cols, direction, gap, useCustomLayout, layoutType } = calculateGridConfig(validItems);
 
+  // Check if this is a 3-item post layout that needs special handling
+  const isThreeItemPostLayout =
+    validItems.length === 3 && validItems.every((item) => item.__typename === 'Post');
+
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
@@ -71,11 +75,11 @@ export function ContentGrid(props: ContentGridProps) {
 
               {/* items */}
               {(() => {
-                const gridContent =
-                  useCustomLayout && layoutType === 'fourItemAsymmetric' ? (
-                    // Custom 4-item staggered grid (3 columns)
-                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
-                      {/* Top row - items in columns 1 and 2 */}
+                const gridContent = isThreeItemPostLayout ? (
+                  // Custom 3-item layout with first item on left, next two stacked on right
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+                    {/* First item takes full left column */}
+                    <div className="lg:row-span-2">
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
                         item={validItems[0]!}
@@ -83,52 +87,87 @@ export function ContentGrid(props: ContentGridProps) {
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
-                      />
-                      <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
-                        item={validItems[1]!}
-                        index={1}
-                        validItems={validItems}
-                        parentPageListSlug={props.parentPageListSlug}
-                        currentPath={props.currentPath}
-                      />
-                      {/* Empty space in column 3 for top row */}
-                      <div className="hidden md:block"></div>
-
-                      {/* Bottom row - empty column 1, items in columns 2 and 3 */}
-                      <div className="hidden md:block"></div>
-                      <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
-                        item={validItems[2]!}
-                        index={2}
-                        validItems={validItems}
-                        parentPageListSlug={props.parentPageListSlug}
-                        currentPath={props.currentPath}
-                      />
-                      <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-3-${validItems[3]?.sys?.id ?? 3}`}
-                        item={validItems[3]!}
-                        index={3}
-                        validItems={validItems}
-                        parentPageListSlug={props.parentPageListSlug}
-                        currentPath={props.currentPath}
+                        variant="default"
                       />
                     </div>
-                  ) : (
-                    // Existing uniform grid layout
-                    <Box cols={cols} gap={gap} wrap={true}>
-                      {validItems.map((item, index) => (
-                        <ContentItemRenderer
-                          key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
-                          item={item}
-                          index={index}
-                          validItems={validItems}
-                          parentPageListSlug={props.parentPageListSlug}
-                          currentPath={props.currentPath}
-                        />
-                      ))}
-                    </Box>
-                  );
+                    {/* Next two items stacked on the right */}
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
+                      item={validItems[1]!}
+                      index={1}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                      variant="row"
+                    />
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
+                      item={validItems[2]!}
+                      index={2}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                      variant="row"
+                    />
+                  </div>
+                ) : useCustomLayout && layoutType === 'fourItemAsymmetric' ? (
+                  // Custom 4-item staggered grid (3 columns)
+                  <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
+                    {/* Top row - items in columns 1 and 2 */}
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
+                      item={validItems[0]!}
+                      index={0}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                    />
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
+                      item={validItems[1]!}
+                      index={1}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                    />
+                    {/* Empty space in column 3 for top row */}
+                    <div className="hidden lg:block"></div>
+
+                    {/* Bottom row - empty column 1, items in columns 2 and 3 */}
+                    <div className="hidden lg:block"></div>
+
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
+                      item={validItems[2]!}
+                      index={2}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                    />
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-3-${validItems[3]?.sys?.id ?? 3}`}
+                      item={validItems[3]!}
+                      index={3}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                    />
+                  </div>
+                ) : (
+                  // Existing uniform grid layout
+                  <Box cols={cols} gap={gap} wrap={true}>
+                    {validItems.map((item, index) => (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
+                        item={item}
+                        index={index}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    ))}
+                  </Box>
+                );
 
                 // Return content wrapped with ServiceCardProvider if service cards are present
                 return hasServiceCards ? (
