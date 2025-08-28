@@ -64,6 +64,14 @@ export const collectionAnalyzers = {
   hasAccordions: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isAccordion),
 
+  allItemsAreAccordions: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 && items.every(item => 
+      contentTypeDetectors.isAccordion(item) || 
+      (contentTypeDetectors.isContentGridItem(item) && 'link' in item && 
+        item.link && typeof item.link === 'object' && '__typename' in item.link && 
+        item.link.__typename === 'Accordion')
+    ),
+
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),
 
@@ -93,6 +101,7 @@ export const collectionAnalyzers = {
  */
 export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
   const analysis = {
+    allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
     hasAccordions: collectionAnalyzers.hasAccordions(items),
@@ -145,36 +154,36 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     ? { base: 'col' as const, xl: 'row' as const }
     : ('col' as const);
 
-  const sectionGap = analysis.allItemsAreSolutions
+  const _sectionGap = analysis.allItemsAreSolutions
     ? { base: 12, xl: 2 }
     : analysis.hasCtaGrids
       ? 12
       : 12;
 
   // Special case for 4-item asymmetric layout
-  if (
-    items.length === 4 &&
+  const useCustomLayout = items.length === 4 &&
     !analysis.hasAccordions &&
     !analysis.allItemsArePosts &&
     !analysis.hasSliders &&
-    !analysis.hasVideos
-  ) {
+    !analysis.hasVideos;
+
+  if (useCustomLayout) {
     return {
       analysis,
       cols: { base: 1, md: 2, lg: 2 }, // This will be overridden by custom grid
       gap: 12,
       direction: 'col' as const,
-      sectionGap: 12,
-      useCustomLayout: true, // Flag to indicate custom layout
+      useCustomLayout: true,
       layoutType: 'fourItemAsymmetric'
     };
   }
 
   return {
-    analysis,
     cols,
-    gap,
     direction,
-    sectionGap
+    gap,
+    useCustomLayout: false,
+    layoutType: 'default',
+    analysis
   };
 };

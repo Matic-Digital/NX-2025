@@ -48,7 +48,7 @@ export function ContentGrid(props: ContentGridProps) {
   }
 
   // Calculate grid configuration using utilities
-  const { cols, direction, gap, useCustomLayout, layoutType } = calculateGridConfig(validItems);
+  const { cols, direction, gap, useCustomLayout, layoutType, analysis } = calculateGridConfig(validItems);
 
   // Check if this is a 3-item post layout that needs special handling
   const isThreeItemPostLayout =
@@ -57,10 +57,21 @@ export function ContentGrid(props: ContentGridProps) {
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
+  // Auto-enable dark mode if all items are accordions
+  const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
+  
+  console.log('ContentGrid debug:', {
+    validItemsCount: validItems.length,
+    itemTypes: validItems.map(item => item.__typename),
+    allItemsAreAccordions: analysis.allItemsAreAccordions,
+    propsDarkMode: props.isDarkMode,
+    shouldUseDarkMode
+  });
+
   return (
     <ErrorBoundary>
-      <div data-theme={props.isDarkMode && 'dark'}>
-        <Section className="relative dark:bg-black">
+      <div className={shouldUseDarkMode ? 'dark' : ''}>
+        <Section className={`relative ${shouldUseDarkMode ? 'bg-[#111]' : ''}`}>
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage
               link={contentGrid.backgroundImage?.link}
@@ -71,7 +82,7 @@ export function ContentGrid(props: ContentGridProps) {
           <Container>
             <Box direction={direction} gap={gap} className="relative z-20">
               {/* section heading */}
-              <SectionHeading {...contentGrid.heading} isDarkMode={props.isDarkMode} />
+              <SectionHeading {...contentGrid.heading} isDarkMode={shouldUseDarkMode} />
 
               {/* items */}
               {(() => {

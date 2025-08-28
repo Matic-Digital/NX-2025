@@ -13,7 +13,6 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
-import { categoryColorMap } from '@/constants/post';
 
 import type {
   Accordion as AccordionType,
