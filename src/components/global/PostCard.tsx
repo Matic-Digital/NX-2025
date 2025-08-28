@@ -105,7 +105,7 @@ export function PostCard({ sys }: PostCardProps) {
         <AirImage
           link={post.mainImage?.link}
           altText={post.mainImage?.altText}
-          className="min-h-[11.8rem] w-full object-cover"
+          className="min-h-[11.8rem] object-cover"
         />
         <Box direction="col" gap={0} className="h-full justify-between bg-[#f6f6f6]">
           <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem]">

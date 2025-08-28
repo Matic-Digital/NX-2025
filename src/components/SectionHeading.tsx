@@ -40,7 +40,11 @@ export function SectionHeading(props: SectionHeadingProps) {
   const DefaultSectionHeading = (
     <Box cols={cols} gap={gap} {...inspectorProps({ fieldId: 'heading' })}>
       {/* overline and title */}
-      <Box direction="col" gap={{ base: 2, md: 4 }} className="col-span-2 max-w-[600px]">
+      <Box
+        direction="col"
+        gap={{ base: 2, md: 4 }}
+        className={cn('col-span-2 max-w-[600px]', !hasCtaCollection && 'max-w-5xl')}
+      >
         {sectionHeading.overline && (
           <p
             className="text-foreground uppercase"

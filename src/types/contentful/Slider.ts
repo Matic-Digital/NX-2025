@@ -2,6 +2,9 @@ import { z } from 'zod';
 import { SectionHeadingSchema } from './SectionHeading';
 import { ImageSchema } from './Image';
 import { FeatureSliderItemSchema } from './FeatureSliderItem';
+import { TimelineSliderItemSchema } from './TimelineSliderItem';
+import { TeamMemberSchema } from './TeamMember';
+import { PostSliderItemSchema } from './Post';
 
 const SliderItemSchema = z.object({
   sys: z.object({
@@ -16,9 +19,16 @@ const SliderItemSchema = z.object({
 export type SliderItem = z.infer<typeof SliderItemSchema>;
 
 // Union type for slider items
-const SliderItemUnion = z.union([SliderItemSchema, ImageSchema, FeatureSliderItemSchema]);
+const SliderItemUnion = z.union([
+  SliderItemSchema,
+  PostSliderItemSchema,
+  ImageSchema,
+  FeatureSliderItemSchema,
+  TimelineSliderItemSchema,
+  TeamMemberSchema
+]);
 
-export type SliderItemOrImage = z.infer<typeof SliderItemUnion>;
+export type SliderItemType = z.infer<typeof SliderItemUnion>;
 
 export const SliderSysSchema = z.object({
   sys: z.object({

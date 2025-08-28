@@ -8,6 +8,7 @@ export interface ContentfulImage {
   link?: string;
   title?: string;
   altText?: string;
+  sys?: { id: string };
 }
 
 export interface ContentfulPageSEO {

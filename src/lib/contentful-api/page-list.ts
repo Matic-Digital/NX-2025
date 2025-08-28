@@ -20,7 +20,6 @@ interface PageListWithHeaderFooter extends PageList {
 }
 import {
   getEXTERNAL_PAGE_FIELDS,
-  getPAGE_BASIC_FIELDS,
   getPRODUCT_BASIC_FIELDS,
   getSERVICE_BASIC_FIELDS,
   getSOLUTION_BASIC_FIELDS,
@@ -32,10 +31,12 @@ import {
 // Minimal PageList fields for initial fetch
 export const PAGELIST_MINIMAL_FIELDS = `
   ${getPAGELIST_BASIC_FIELDS()}
-  pagesCollection(limit: 100) {
+  pagesCollection(limit: 50) {
     items {
       ... on Page {
-        ${getPAGE_BASIC_FIELDS()}
+        ${SYS_FIELDS}
+        title
+        slug
       }
       ... on ExternalPage {
         ${getEXTERNAL_PAGE_FIELDS()}
@@ -53,7 +54,9 @@ export const PAGELIST_MINIMAL_FIELDS = `
         ${getPOST_BASIC_FIELDS()}
       }
       ... on PageList {
-        ${getPAGELIST_BASIC_FIELDS()}
+        ${SYS_FIELDS}
+        title
+        slug
       }
     }
   }
@@ -67,11 +70,15 @@ export const PAGELIST_WITH_REFS_FIELDS = `
 
 // Simplified PageList fields for listing and reference checks
 export const PAGELIST_SIMPLIFIED_FIELDS = `
-  ${getPAGELIST_BASIC_FIELDS()}
-  pagesCollection(limit: 100) {
+  ${SYS_FIELDS}
+  title
+  slug
+  pagesCollection(limit: 50) {
     items {
       ... on Page {
-        ${getPAGE_BASIC_FIELDS()}
+        ${SYS_FIELDS}
+        title
+        slug
       }
       ... on ExternalPage {
         ${getEXTERNAL_PAGE_FIELDS()}
@@ -89,7 +96,9 @@ export const PAGELIST_SIMPLIFIED_FIELDS = `
         ${getPOST_BASIC_FIELDS()}
       }
       ... on PageList {
-        ${getPAGELIST_BASIC_FIELDS()}
+        ${SYS_FIELDS}
+        title
+        slug
       }
     }
   }

@@ -31,6 +31,7 @@ export const CTAGRID_GRAPHQL_FIELDS = `
       }
     }
   }
+  variant 
 `;
 
 export const getCtaGridById = async (

@@ -86,7 +86,11 @@ export function Footer(props: FooterType) {
                 )}
                 <Box direction="row" gap={8}>
                   {footer.socialNetworksCollection?.items?.map((social) => (
-                    <Link key={social.sys.id} href={social.link}>
+                    <Link
+                      key={social.sys.id}
+                      href={social.link}
+                      aria-label={`Visit our ${social.title} page`}
+                    >
                       <SvgIcon
                         src={social.icon.url}
                         alt={social.title}
@@ -94,6 +98,7 @@ export function Footer(props: FooterType) {
                         height={24}
                         className="text-foreground hover:text-text-primary transition-colors duration-200"
                       />
+                      <span className="sr-only">{social.title}</span>
                     </Link>
                   ))}
                 </Box>
