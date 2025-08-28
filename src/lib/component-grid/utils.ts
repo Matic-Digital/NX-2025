@@ -110,12 +110,14 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
       ? 1
       : analysis.hasCtaGrids
         ? 1
-        : analysis.hasAccordions
+        : analysis.hasSliders
           ? 1
-          : 2,
+          : analysis.hasAccordions
+            ? 1
+            : 2,
     lg: analysis.hasVideos
       ? 1
-      : analysis.hasAccordions
+      : analysis.hasSliders
         ? 1
         : analysis.hasSliders
           ? 1

@@ -9,6 +9,7 @@ import { Main } from '@/components/global/matic-ds';
 import '@/styles/layout.css';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getFooterById } from '@/lib/contentful-api/footer';
+import { Box } from '@/components/global/matic-ds';
 
 interface PageLayoutProps {
   header?: HeaderType | null;
@@ -67,7 +68,11 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
   return (
     <>
       {fullHeader && <Header {...fullHeader} />}
-      <Main className="-mt-25">{children}</Main>
+      <Main className="-mt-25">
+        <Box direction="col" gap={12}>
+          {children}
+        </Box>
+      </Main>
       {fullFooter && <Footer {...fullFooter} />}
     </>
   );
