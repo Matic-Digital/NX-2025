@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { getRegionsMapById } from '@/lib/contentful-api/region';
 import type { RegionsMap } from '@/types/contentful/Region';
 import type { Region } from '@/types/contentful/Region';
 import { Box } from '@/components/global/matic-ds';
 import { ArrowUpRight } from 'lucide-react';
+import { RegionsMapImage } from '@/components/RegionsMapImage';
 
 export function RegionsMap(props: RegionsMap) {
   const [content, setContent] = useState<RegionsMap | null>(props);
@@ -98,114 +100,10 @@ export function RegionsMap(props: RegionsMap) {
 
         {/* World Map SVG */}
         <div className="relative">
-          <svg viewBox="0 0 1000 500" className="h-auto w-full" style={{ maxHeight: '400px' }}>
-            {/* Dotted World Map Pattern */}
-            <defs>
-              <pattern id="dots" patternUnits="userSpaceOnUse" width="4" height="4">
-                <circle cx="2" cy="2" r="0.8" fill="currentColor" opacity="0.3" />
-              </pattern>
-            </defs>
-
-            {/* North America */}
-            <g
-              className={cn(
-                'cursor-pointer transition-colors duration-200',
-                hoveredRegion === 'northAmerica' ? 'text-primary' : 'text-text-subtle'
-              )}
-              onMouseEnter={() => setHoveredRegion('northAmerica')}
-              onMouseLeave={() => setHoveredRegion(null)}
-            >
-              <path
-                d="M50 100 L280 80 L300 180 L250 220 L180 200 L120 180 L80 150 Z"
-                fill="url(#dots)"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity={hoveredRegion === 'northAmerica' ? 0.8 : 0.4}
-              />
-              {/* Region Pin */}
-              <circle cx="200" cy="150" r="4" fill="currentColor" />
-            </g>
-
-            {/* Europe */}
-            <g
-              className={cn(
-                'cursor-pointer transition-colors duration-200',
-                hoveredRegion === 'europe' ? 'text-orange-500' : 'text-gray-400'
-              )}
-              onMouseEnter={() => setHoveredRegion('europe')}
-              onMouseLeave={() => setHoveredRegion(null)}
-            >
-              <path
-                d="M350 80 L480 70 L500 140 L450 160 L380 150 L360 120 Z"
-                fill="url(#dots)"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity={hoveredRegion === 'europe' ? 0.8 : 0.4}
-              />
-              {/* Region Pin */}
-              <circle cx="420" cy="120" r="4" fill="currentColor" />
-            </g>
-
-            {/* Latin America */}
-            <g
-              className={cn(
-                'cursor-pointer transition-colors duration-200',
-                hoveredRegion === 'latinAmerica' ? 'text-primary' : 'text-text-subtle'
-              )}
-              onMouseEnter={() => setHoveredRegion('latinAmerica')}
-              onMouseLeave={() => setHoveredRegion(null)}
-            >
-              <path
-                d="M200 250 L280 240 L300 350 L250 380 L180 360 L160 300 Z"
-                fill="url(#dots)"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity={hoveredRegion === 'latinAmerica' ? 0.8 : 0.4}
-              />
-              {/* Region Pin */}
-              <circle cx="240" cy="310" r="4" fill="currentColor" />
-            </g>
-
-            {/* Australia Pacific */}
-            <g
-              className={cn(
-                'cursor-pointer transition-colors duration-200',
-                hoveredRegion === 'australiaPacific' ? 'text-primary' : 'text-text-subtle'
-              )}
-              onMouseEnter={() => setHoveredRegion('australiaPacific')}
-              onMouseLeave={() => setHoveredRegion(null)}
-            >
-              <path
-                d="M750 300 L900 290 L920 360 L880 380 L780 370 L760 340 Z"
-                fill="url(#dots)"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity={hoveredRegion === 'australiaPacific' ? 0.8 : 0.4}
-              />
-              {/* Region Pin */}
-              <circle cx="830" cy="330" r="4" fill="currentColor" />
-            </g>
-
-            {/* Middle East, India, & North Africa */}
-            <g
-              className={cn(
-                'cursor-pointer transition-colors duration-200',
-                hoveredRegion === 'middleEastIndiaAfrica' ? 'text-primary' : 'text-text-subtle'
-              )}
-              onMouseEnter={() => setHoveredRegion('middleEastIndiaAfrica')}
-              onMouseLeave={() => setHoveredRegion(null)}
-            >
-              <path
-                d="M480 150 L650 140 L680 250 L620 280 L520 270 L500 200 Z"
-                fill="url(#dots)"
-                stroke="currentColor"
-                strokeWidth="1"
-                opacity={hoveredRegion === 'middleEastIndiaAfrica' ? 0.8 : 0.4}
-              />
-              {/* Region Pin */}
-              <circle cx="580" cy="210" r="4" fill="currentColor" />
-            </g>
-          </svg>
+          <div className="absolute inset-0 z-20 size-full"></div>
+          <div className="relative z-10 w-full">
+            <RegionsMapImage />
+          </div>
         </div>
 
         {/* Region List */}

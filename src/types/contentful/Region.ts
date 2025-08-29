@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AssetSchema } from './Asset';
 
 export const RegionSchema = z.object({
   sys: z.object({
@@ -27,7 +28,8 @@ export const RegionsMapSchema = z.object({
   overline: z.string(),
   regionsCollection: z.object({
     items: z.array(RegionSchema)
-  })
+  }),
+  mapImage: AssetSchema
 });
 
 export type RegionsMap = z.infer<typeof RegionsMapSchema>;
