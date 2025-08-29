@@ -213,76 +213,109 @@ const SliderCard = ({ item, index, current, allItemsAreImages }: SliderCardProps
     const isCurrentSlide = current === index + 1;
 
     return (
-      <div className="relative h-[669px]">
-        {/* Main Image/Video Section */}
-        <div className="relative h-[400px] w-full">
-          {timelineItem.asset.__typename === 'Video'
-            ? (() => {
-                const videoAsset = timelineItem.asset as {
-                  __typename: 'Video';
-                  posterImage: { link?: string; altText?: string };
-                };
-                return (
-                  <div className="relative h-full w-full">
-                    <AirImage
-                      link={videoAsset.posterImage.link ?? ''}
-                      altText={videoAsset.posterImage.altText ?? 'Video thumbnail'}
-                      className="absolute h-full w-full object-cover"
-                    />
-                    {/* Video Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                        <svg
-                          className="ml-1 h-6 w-6 text-gray-800"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()
-            : timelineItem.asset.__typename === 'Image'
-              ? (() => {
-                  const imageAsset = timelineItem.asset as {
-                    __typename: 'Image';
-                    link?: string;
-                    altText?: string;
-                  };
-                  return (
-                    <AirImage
-                      link={imageAsset.link ?? ''}
-                      altText={imageAsset.altText ?? ''}
-                      className="h-full w-full object-cover"
-                    />
-                  );
-                })()
-              : null}
-        </div>
-
-        {/* Timeline Content Section - Individual slide content */}
-        <div className="flex h-[269px] flex-col justify-center bg-white px-6 py-8">
-          <div className="mx-auto max-w-4xl">
-            {/* Timeline Year - Only show current slide prominently */}
-            <div className="mb-4">
-              <h3
-                className={cn(
-                  'text-4xl font-light transition-colors duration-300',
-                  isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
-                )}
-              >
-                {timelineItem.year}
-              </h3>
+      <div className="relative h-[669px] bg-white">
+        {/* Two Column Layout */}
+        <div className="flex h-full">
+          {/* Left Column - Timeline Navigation */}
+          <div className="flex w-1/2 flex-col justify-center px-8">
+            {/* Timeline Bar */}
+            <div className="mb-8">
+              <div className="h-0.5 w-full bg-gray-200"></div>
             </div>
 
-            {/* Timeline Description - Only show for current slide */}
-            {isCurrentSlide && (
-              <div className="max-w-md text-gray-600">
-                <p className="text-sm leading-relaxed">{timelineItem.description}</p>
+            {/* Timeline Years */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                <div
+                  className={cn(
+                    'h-3 w-3 rounded-full transition-colors duration-300',
+                    isCurrentSlide ? 'bg-gray-400' : 'bg-gray-200'
+                  )}
+                ></div>
+                <span
+                  className={cn(
+                    'text-2xl font-light transition-colors duration-300',
+                    isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
+                  )}
+                >
+                  {timelineItem.year}
+                </span>
               </div>
-            )}
+
+              {/* Placeholder years for demonstration - you can make these dynamic */}
+              <div className="flex items-center gap-4">
+                <div className="h-3 w-3 rounded-full bg-gray-200"></div>
+                <span className="text-lg font-light text-gray-400">2020</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="h-3 w-3 rounded-full bg-gray-200"></div>
+                <span className="text-lg font-light text-gray-400">2021</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Content */}
+          <div className="flex w-1/2 flex-col">
+            {/* Video/Image Section */}
+            <div className="relative h-[400px] w-full">
+              {timelineItem.asset.__typename === 'Video'
+                ? (() => {
+                    const videoAsset = timelineItem.asset as {
+                      __typename: 'Video';
+                      posterImage: { link?: string; altText?: string };
+                    };
+                    return (
+                      <div className="relative h-full w-full">
+                        <AirImage
+                          link={videoAsset.posterImage.link ?? ''}
+                          altText={videoAsset.posterImage.altText ?? 'Video thumbnail'}
+                          className="absolute h-full w-full object-cover"
+                        />
+                        {/* Video Play Button Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                            <svg
+                              className="ml-1 h-6 w-6 text-gray-800"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
+                : timelineItem.asset.__typename === 'Image'
+                  ? (() => {
+                      const imageAsset = timelineItem.asset as {
+                        __typename: 'Image';
+                        link?: string;
+                        altText?: string;
+                      };
+                      return (
+                        <AirImage
+                          link={imageAsset.link ?? ''}
+                          altText={imageAsset.altText ?? ''}
+                          className="h-full w-full object-cover"
+                        />
+                      );
+                    })()
+                  : null}
+            </div>
+
+            {/* Timeline Content Section */}
+            <div className="flex flex-1 flex-col justify-center px-6 py-8">
+              <div className="max-w-md">
+                {/* Timeline Description - Only show for current slide */}
+                {isCurrentSlide && (
+                  <div className="text-gray-600">
+                    <p className="text-sm leading-relaxed">{timelineItem.description}</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -421,20 +454,9 @@ const GenericSlider = ({
             );
           })}
         </CarouselContent>
-        {showNavigation && (
-          <>
-            <CarouselPrevious
-              className="left-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:left-10 sm:size-12"
-              variant="outline"
-              aria-label="Previous slide"
-            />
-            <CarouselNext
-              className="right-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:right-10 sm:size-12"
-              variant="outline"
-              aria-label="Next slide"
-            />
-          </>
-        )}
+
+        {/* Timeline Slider Navigation - Left Side */}
+        {/* Alt Navigation - Top Right or Left Side for Timeline */}
         {showAltNavigation && (
           <div
             className={cn(
