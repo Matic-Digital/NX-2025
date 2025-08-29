@@ -15,7 +15,6 @@ import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
 import { LazyCollection } from '@/components/LazyCollection';
 import Collection from '@/components/Collection';
-import { categoryColorMap } from '@/constants/post';
 
 import type {
   Accordion as AccordionType,

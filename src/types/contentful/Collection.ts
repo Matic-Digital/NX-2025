@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 // Content type options as defined in the content model
 const ContentTypeSchema = z.enum([
-  'Post'
+  'Post',
+  'Page'
 ]);
 
 // Pagination options as defined in the content model
@@ -19,6 +20,12 @@ export const CollectionSchema = z.object({
   itemsPerPage: z.number().optional(),
   searchBar: z.boolean().optional(),
   pagination: z.array(PaginationSchema).optional(),
+  contentfulMetadata: z.object({
+    tags: z.array(z.object({
+      id: z.string(),
+      name: z.string()
+    }))
+  }).optional(),
   __typename: z.string().optional()
 });
 

@@ -239,9 +239,16 @@ export async function getAllPostsMinimal(preview = false): Promise<PostResponse>
             ${SYS_FIELDS}
             title
             slug
+            categories
             mainImage {
               link
               altText
+            }
+            contentfulMetadata {
+              tags {
+                id
+                name
+              }
             }
           }
         }

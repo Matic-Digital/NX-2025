@@ -12,6 +12,12 @@ export const COLLECTION_GRAPHQL_FIELDS = `
   itemsPerPage
   searchBar
   pagination
+  contentfulMetadata {
+    tags {
+      id
+      name
+    }
+  }
 `;
 
 /**
