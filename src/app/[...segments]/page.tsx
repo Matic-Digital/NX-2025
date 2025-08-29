@@ -24,7 +24,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain */
 
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getPageListBySlug } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';

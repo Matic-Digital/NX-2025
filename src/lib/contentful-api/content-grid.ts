@@ -167,6 +167,62 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
   }
 }
 
+
+/**
+ * Fetches Collection IDs from a ContentGrid by checking for empty objects
+ * @param contentGridId - The ID of the ContentGrid
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to array of Collection IDs
+ */
+export async function getCollectionIdsFromContentGrid(
+  contentGridId: string,
+  preview = false
+): Promise<string[]> {
+  try {
+    const response = await fetchGraphQL(
+      `query GetContentGridCollectionIds($id: String!, $preview: Boolean!) {
+        contentGrid(id: $id, preview: $preview) {
+          itemsCollection {
+            items {
+              ... on Collection {
+                sys {
+                  id
+                }
+              }
+            }
+          }
+        }
+      }`,
+      { id: contentGridId, preview },
+      preview
+    );
+
+    const data = response?.data as {
+      contentGrid?: {
+        itemsCollection?: {
+          items?: Array<{ sys?: { id?: string } } | null>;
+        };
+      };
+    };
+
+    if (!data?.contentGrid?.itemsCollection?.items) {
+      return [];
+    }
+
+    const collectionIds: string[] = [];
+    for (const item of data.contentGrid.itemsCollection.items) {
+      if (item?.sys?.id) {
+        collectionIds.push(item.sys.id);
+      }
+    }
+
+    return collectionIds;
+  } catch (error) {
+    console.warn('Failed to fetch Collection IDs:', error);
+    return [];
+  }
+}
+
 export async function getContentGridItemById(
   id: string,
   preview = false

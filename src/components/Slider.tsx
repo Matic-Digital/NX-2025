@@ -34,6 +34,7 @@ interface SliderCardProps {
   item: SliderItemType;
   index: number;
   current: number;
+  allItemsAreImages?: boolean;
 }
 
 interface ContentOverlayProps {
@@ -54,14 +55,21 @@ const ContentOverlay = ({ children }: ContentOverlayProps) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current }: SliderCardProps) => {
+const SliderCard = ({ item, index, current, allItemsAreImages }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
+  const isActive = index === current - 1;
+  const isPostOrSliderItem =
+    updatedItem.__typename === 'Post' || updatedItem.__typename === 'SliderItem';
+
   const baseCardClasses = cn(
     'text-primary-foreground relative h-[669px] transition-all duration-500',
+    // Apply container max-width constraint to all Post or SliderItem slides
+    isPostOrSliderItem && 'container mx-auto',
     {
-      'opacity-80': index !== current - 1
+      // Don't apply opacity to inactive slides if all items are Images
+      'opacity-80': !isActive && !allItemsAreImages
     }
   );
 
@@ -172,7 +180,12 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn(
+          'bg-subtle w-full p-8',
+          isCurrentSlide && 'bg-primary',
+          // Apply container max-width constraint to all FeatureSliderItem slides
+          'container mx-auto'
+        )}
       >
         <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
           <Image
@@ -338,6 +351,10 @@ const GenericSlider = ({
 }: GenericSliderProps) => {
   const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
+  const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
+  const allItemsAreImages = sliderData.itemsCollection.items.every(
+    (item) => item.__typename === 'Image'
+  );
 
   return (
     <div
@@ -351,32 +368,55 @@ const GenericSlider = ({
             ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
             : isTeamMemberSlider
               ? 'w-full max-w-none'
-              : 'w-full'
+              : isFeatureSlider
+                ? 'w-full overflow-hidden'
+                : 'w-full'
         )}
         opts={{
           loop: true,
           align: 'center',
           ...(isTeamMemberSlider && {
             align: 'start'
+          }),
+          ...(isTimelineSlider && {
+            align: 'start'
+          }),
+          ...(isFeatureSlider && {
+            slidesToScroll: 1,
+            containScroll: false,
+            skipSnaps: false,
+            dragFree: false
           })
         }}
       >
-        <CarouselContent className={cn(isTeamMemberSlider && 'lg:overflow-visible')}>
+        <CarouselContent
+          className={cn(
+            isTeamMemberSlider && 'lg:overflow-visible',
+            isTimelineSlider && 'lg:overflow-visible'
+          )}
+        >
           {sliderData.itemsCollection.items.map((item, index) => {
             return (
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
                 className={cn(
                   isFeatureSlider
-                    ? 'basis-[411px]'
+                    ? 'min-w-[411px] flex-shrink-0 basis-[411px]'
                     : isTeamMemberSlider
                       ? 'basis-[300px]'
-                      : isFullWidth
-                        ? 'basis-full sm:basis-4/5'
-                        : 'basis-full'
+                      : isTimelineSlider
+                        ? 'basis-full'
+                        : isFullWidth
+                          ? 'basis-full sm:basis-4/5 md:basis-3/4 lg:basis-4/5 xl:basis-3/4 2xl:basis-3/5'
+                          : 'basis-full'
                 )}
               >
-                <SliderCard index={index} current={current} item={item} />
+                <SliderCard
+                  index={index}
+                  current={current}
+                  item={item}
+                  allItemsAreImages={allItemsAreImages}
+                />
               </CarouselItem>
             );
           })}
@@ -398,17 +438,27 @@ const GenericSlider = ({
         {showAltNavigation && (
           <div
             className={cn(
-              'absolute -top-12 right-29 hidden gap-4 lg:flex',
-              isTeamMemberSlider && 'right-0'
+              'absolute hidden gap-4 lg:flex',
+              isTimelineSlider
+                ? 'top-1/2 left-8 z-10 -translate-y-1/2 flex-col'
+                : '-top-12 right-29',
+              isTeamMemberSlider && 'right-0',
+              isTimelineSlider && 'right-0'
             )}
           >
             <CarouselPrevious
-              className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              className={cn(
+                'relative left-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
+                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
+              )}
               variant="outline"
               aria-label="Previous slide"
             />
             <CarouselNext
-              className="relative right-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              className={cn(
+                'relative right-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
+                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
+              )}
               variant="outline"
               aria-label="Next slide"
             />

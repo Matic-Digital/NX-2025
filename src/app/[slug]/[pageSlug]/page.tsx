@@ -14,7 +14,6 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
 import { getPageBySlug } from '@/lib/contentful-api/page';
 import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';

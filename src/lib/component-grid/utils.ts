@@ -9,7 +9,8 @@ import type {
   Slider as SliderType,
   CtaGrid as CtaGridType,
   PageList as PageListType,
-  Testimonials as TestimonialsType
+  Testimonials as TestimonialsType,
+  Collection as CollectionType
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
@@ -23,7 +24,8 @@ export type ContentGridItemUnion =
   | SliderType
   | CtaGridType
   | PageListType
-  | TestimonialsType;
+  | TestimonialsType
+  | CollectionType;
 
 /**
  * Content type detection utilities
@@ -54,7 +56,10 @@ export const contentTypeDetectors = {
   isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
 
   isTestimonials: (item: ContentGridItemUnion): item is TestimonialsType =>
-    item.__typename === 'Testimonials'
+    item.__typename === 'Testimonials',
+
+  isCollection: (item: ContentGridItemUnion): item is CollectionType =>
+    item.__typename === 'Collection'
 };
 
 /**
@@ -64,11 +69,27 @@ export const collectionAnalyzers = {
   hasAccordions: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isAccordion),
 
+  allItemsAreAccordions: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 &&
+    items.every(
+      (item) =>
+        contentTypeDetectors.isAccordion(item) ||
+        (contentTypeDetectors.isContentGridItem(item) &&
+          'link' in item &&
+          item.link &&
+          typeof item.link === 'object' &&
+          '__typename' in item.link &&
+          item.link.__typename === 'Accordion')
+    ),
+
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),
 
   allItemsArePosts: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isPost),
+
+  allItemsAreServices: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 && items.every(contentTypeDetectors.isService),
 
   hasServiceCards: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isService),
@@ -82,6 +103,9 @@ export const collectionAnalyzers = {
   hasCtaGrids: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isCtaGrid),
 
+  hasCollections: (items: ContentGridItemUnion[]): boolean =>
+    items.some(contentTypeDetectors.isCollection),
+
   // hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
   //   items.some((item) => 'image' in item && item.image)
   hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
@@ -93,13 +117,16 @@ export const collectionAnalyzers = {
  */
 export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
   const analysis = {
+    allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
+    allItemsAreServices: collectionAnalyzers.allItemsAreServices(items),
     hasAccordions: collectionAnalyzers.hasAccordions(items),
     hasImages: collectionAnalyzers.hasImages(items),
     hasVideos: collectionAnalyzers.hasVideos(items),
     hasSliders: collectionAnalyzers.hasSliders(items),
     hasCtaGrids: collectionAnalyzers.hasCtaGrids(items),
+    hasCollections: collectionAnalyzers.hasCollections(items),
     hasFullWidthItems: collectionAnalyzers.hasFullWidthItems(items)
   };
 
@@ -113,7 +140,9 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
           ? 1
           : analysis.hasAccordions
             ? 1
-            : 2,
+            : analysis.hasCollections
+              ? 1
+              : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasSliders
@@ -122,59 +151,64 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
           ? 1
           : analysis.hasFullWidthItems
             ? 1
-            : analysis.allItemsArePosts
-              ? items.length === 4
-                ? 4
-                : 3
-              : analysis.allItemsAreSolutions
-                ? 3
-                : analysis.hasImages
-                  ? 1
-                  : analysis.hasAccordions
+            : analysis.hasCollections
+              ? 1
+              : analysis.allItemsArePosts
+                ? items.length === 4
+                  ? 4
+                  : 3
+                : analysis.allItemsAreSolutions
+                  ? 3
+                  : analysis.hasImages
                     ? 1
-                    : 3
+                    : analysis.hasAccordions
+                      ? 1
+                      : 3
   };
 
   const gap = analysis.allItemsArePosts
     ? 12
     : analysis.allItemsAreSolutions
       ? { base: 5, xl: 4 }
-      : 12;
+      : analysis.allItemsAreServices
+        ? 5
+        : 8;
 
   const direction = analysis.allItemsAreSolutions
     ? { base: 'col' as const, xl: 'row' as const }
     : ('col' as const);
 
-  const sectionGap = analysis.allItemsAreSolutions
+  const _sectionGap = analysis.allItemsAreSolutions
     ? { base: 12, xl: 2 }
     : analysis.hasCtaGrids
       ? 12
       : 12;
 
   // Special case for 4-item asymmetric layout
-  if (
+  const useCustomLayout =
     items.length === 4 &&
     !analysis.hasAccordions &&
     !analysis.allItemsArePosts &&
     !analysis.hasSliders &&
-    !analysis.hasVideos
-  ) {
+    !analysis.hasVideos;
+
+  if (useCustomLayout) {
     return {
       analysis,
       cols: { base: 1, md: 2, lg: 2 }, // This will be overridden by custom grid
       gap: 12,
       direction: 'col' as const,
-      sectionGap: 12,
-      useCustomLayout: true, // Flag to indicate custom layout
+      useCustomLayout: true,
       layoutType: 'fourItemAsymmetric'
     };
   }
 
   return {
-    analysis,
     cols,
-    gap,
     direction,
-    sectionGap
+    gap,
+    useCustomLayout: false,
+    layoutType: 'default',
+    analysis
   };
 };
