@@ -2,6 +2,7 @@ export * from './Accordion';
 export * from './Asset';
 export * from './BannerHero';
 export * from './Button';
+export * from './Collection';
 export * from './Content';
 export * from './ContentGrid';
 export * from './ContentGridItem';

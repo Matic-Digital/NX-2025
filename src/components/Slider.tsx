@@ -34,6 +34,7 @@ interface SliderCardProps {
   item: SliderItemType;
   index: number;
   current: number;
+  allItemsAreImages?: boolean;
 }
 
 interface ContentOverlayProps {
@@ -54,14 +55,20 @@ const ContentOverlay = ({ children }: ContentOverlayProps) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current }: SliderCardProps) => {
+const SliderCard = ({ item, index, current, allItemsAreImages }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
+  const isActive = index === current - 1;
+  const isPostOrSliderItem = updatedItem.__typename === 'Post' || updatedItem.__typename === 'SliderItem';
+
   const baseCardClasses = cn(
     'text-primary-foreground relative h-[669px] transition-all duration-500',
+    // Apply container max-width constraint to all Post or SliderItem slides
+    isPostOrSliderItem && 'container mx-auto',
     {
-      'opacity-80': index !== current - 1
+      // Don't apply opacity to inactive slides if all items are Images
+      'opacity-80': !isActive && !allItemsAreImages
     }
   );
 
@@ -172,7 +179,12 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn(
+          'bg-subtle w-full p-8', 
+          isCurrentSlide && 'bg-primary',
+          // Apply container max-width constraint to all FeatureSliderItem slides
+          'container mx-auto'
+        )}
       >
         <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
           <Image
@@ -338,6 +350,7 @@ const GenericSlider = ({
 }: GenericSliderProps) => {
   const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
+  const allItemsAreImages = sliderData.itemsCollection.items.every(item => item.__typename === 'Image');
 
   return (
     <div
@@ -351,13 +364,21 @@ const GenericSlider = ({
             ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
             : isTeamMemberSlider
               ? 'w-full max-w-none'
-              : 'w-full'
+              : isFeatureSlider
+                ? 'w-full overflow-hidden'
+                : 'w-full'
         )}
         opts={{
           loop: true,
           align: 'center',
           ...(isTeamMemberSlider && {
             align: 'start'
+          }),
+          ...(isFeatureSlider && {
+            slidesToScroll: 1,
+            containScroll: false,
+            skipSnaps: false,
+            dragFree: false
           })
         }}
       >
@@ -368,15 +389,15 @@ const GenericSlider = ({
                 key={`${item.sys.id}-${index}`}
                 className={cn(
                   isFeatureSlider
-                    ? 'basis-[411px]'
+                    ? 'basis-[411px] flex-shrink-0 min-w-[411px]'
                     : isTeamMemberSlider
                       ? 'basis-[300px]'
                       : isFullWidth
-                        ? 'basis-full sm:basis-4/5'
+                        ? 'basis-full sm:basis-4/5 md:basis-3/4 lg:basis-4/5 xl:basis-3/4 2xl:basis-3/5'
                         : 'basis-full'
                 )}
               >
-                <SliderCard index={index} current={current} item={item} />
+                <SliderCard index={index} current={current} item={item} allItemsAreImages={allItemsAreImages} />
               </CarouselItem>
             );
           })}

@@ -61,6 +61,10 @@ const contentTypeRegistry = [
   {
     detector: contentTypeDetectors.isTestimonials,
     renderer: contentRenderers.renderTestimonials
+  },
+  {
+    detector: contentTypeDetectors.isCollection,
+    renderer: contentRenderers.renderCollection
   }
 ];
 
@@ -83,9 +87,16 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
     variant
   };
 
+  console.log('ContentItemRenderer processing item:', { 
+    typename: item.__typename, 
+    sysId: item.sys?.id,
+    hasTitle: !!item.title 
+  });
+
   // Find the appropriate renderer for this content type
   for (const { detector, renderer } of contentTypeRegistry) {
     if (detector(item)) {
+      console.log(`Found renderer for ${item.__typename}`);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
       return renderer(item as any, context);
     }

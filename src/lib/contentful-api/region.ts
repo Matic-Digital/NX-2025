@@ -1,6 +1,7 @@
 import { fetchGraphQL } from '../api';
 import { ContentfulError, NetworkError } from '../errors';
 import type { Region, RegionResponse, RegionsMap } from '@/types/contentful/Region';
+import { ASSET_FIELDS } from './graphql-fields';
 
 const REGION_GRAPHQL_FIELDS = `
   sys {
@@ -29,6 +30,9 @@ export const REGIONS_MAP_GRAPHQL_FIELDS = `
     items {
       ${REGION_GRAPHQL_FIELDS}
     }
+  }
+  mapImage {
+    ${ASSET_FIELDS}
   }
 `;
 

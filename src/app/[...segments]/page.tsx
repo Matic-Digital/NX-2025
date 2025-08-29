@@ -25,7 +25,6 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getPageListBySlug } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';
 import { getServiceBySlug } from '@/lib/contentful-api/service';

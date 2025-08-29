@@ -9,7 +9,8 @@ import type {
   Slider as SliderType,
   CtaGrid as CtaGridType,
   PageList as PageListType,
-  Testimonials as TestimonialsType
+  Testimonials as TestimonialsType,
+  Collection as CollectionType
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
@@ -23,7 +24,8 @@ export type ContentGridItemUnion =
   | SliderType
   | CtaGridType
   | PageListType
-  | TestimonialsType;
+  | TestimonialsType
+  | CollectionType;
 
 /**
  * Content type detection utilities
@@ -54,7 +56,10 @@ export const contentTypeDetectors = {
   isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
 
   isTestimonials: (item: ContentGridItemUnion): item is TestimonialsType =>
-    item.__typename === 'Testimonials'
+    item.__typename === 'Testimonials',
+
+  isCollection: (item: ContentGridItemUnion): item is CollectionType =>
+    item.__typename === 'Collection'
 };
 
 /**
@@ -78,6 +83,9 @@ export const collectionAnalyzers = {
   allItemsArePosts: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isPost),
 
+  allItemsAreServices: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 && items.every(contentTypeDetectors.isService),
+
   hasServiceCards: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isService),
 
@@ -89,6 +97,9 @@ export const collectionAnalyzers = {
 
   hasCtaGrids: (items: ContentGridItemUnion[]): boolean =>
     items.some(contentTypeDetectors.isCtaGrid),
+
+  hasCollections: (items: ContentGridItemUnion[]): boolean =>
+    items.some(contentTypeDetectors.isCollection),
 
   // hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
   //   items.some((item) => 'image' in item && item.image)
@@ -104,11 +115,13 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
+    allItemsAreServices: collectionAnalyzers.allItemsAreServices(items),
     hasAccordions: collectionAnalyzers.hasAccordions(items),
     hasImages: collectionAnalyzers.hasImages(items),
     hasVideos: collectionAnalyzers.hasVideos(items),
     hasSliders: collectionAnalyzers.hasSliders(items),
     hasCtaGrids: collectionAnalyzers.hasCtaGrids(items),
+    hasCollections: collectionAnalyzers.hasCollections(items),
     hasFullWidthItems: collectionAnalyzers.hasFullWidthItems(items)
   };
 
@@ -122,7 +135,9 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
           ? 1
           : analysis.hasAccordions
             ? 1
-            : 2,
+            : analysis.hasCollections
+              ? 1
+              : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasSliders
@@ -131,24 +146,28 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
           ? 1
           : analysis.hasFullWidthItems
             ? 1
-            : analysis.allItemsArePosts
-              ? items.length === 4
-                ? 4
-                : 3
-              : analysis.allItemsAreSolutions
-                ? 3
-                : analysis.hasImages
-                  ? 1
-                  : analysis.hasAccordions
+            : analysis.hasCollections
+              ? 1
+              : analysis.allItemsArePosts
+                ? items.length === 4
+                  ? 4
+                  : 3
+                : analysis.allItemsAreSolutions
+                  ? 3
+                  : analysis.hasImages
                     ? 1
-                    : 3
+                    : analysis.hasAccordions
+                      ? 1
+                      : 3
   };
 
   const gap = analysis.allItemsArePosts
-    ? 5
+    ? 12
     : analysis.allItemsAreSolutions
       ? { base: 5, xl: 4 }
-      : 12;
+      : analysis.allItemsAreServices
+        ? 5
+        : 8;
 
   const direction = analysis.allItemsAreSolutions
     ? { base: 'col' as const, xl: 'row' as const }
