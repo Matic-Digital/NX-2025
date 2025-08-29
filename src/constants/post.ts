@@ -1,7 +1,7 @@
 export const categoryColorMap = (category: string) => {
   switch (category) {
     case 'Press Release':
-      return 'text-[#6236FF]';
+      return 'text-[#1975FF]';
     case 'Blog':
       return 'text-[#BBDEFB]';
     case 'Case Study':
