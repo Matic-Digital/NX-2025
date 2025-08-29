@@ -226,6 +226,58 @@ export async function getPostBySlug(slug: string, preview = false): Promise<Post
 }
 
 /**
+ * Fetches all Posts with minimal fields (for Collection display)
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to Posts response with minimal data
+ */
+export async function getAllPostsMinimal(preview = false): Promise<PostResponse> {
+  try {
+    const response = await fetchGraphQL<Post>(
+      `query GetAllPostsMinimal($preview: Boolean!) {
+        postCollection(preview: $preview, order: datePublished_DESC) {
+          items {
+            ${SYS_FIELDS}
+            title
+            slug
+            mainImage {
+              link
+              altText
+            }
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+
+    // Return empty array if no posts found
+    if (!data.postCollection?.items) {
+      return { items: [] };
+    }
+
+    return {
+      items: data.postCollection.items
+    };
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Posts minimal: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Posts minimal');
+  }
+}
+
+/**
  * Fetches Posts by category from Contentful
  * @param category - The category to filter by
  * @param preview - Whether to fetch draft content

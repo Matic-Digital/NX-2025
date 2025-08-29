@@ -13,6 +13,8 @@ import {
   collectionAnalyzers,
   type ContentGridItemUnion
 } from '../lib/component-grid/utils';
+import { getCollectionIdsFromContentGrid } from '@/lib/contentful-api/content-grid';
+import { cn } from '@/lib/utils';
 
 import type { ContentGrid as ContentGridType } from '@/types/contentful';
 
@@ -24,20 +26,85 @@ interface ContentGridProps extends ContentGridType {
 export function ContentGrid(props: ContentGridProps) {
   const contentGrid = useContentfulLiveUpdates(props);
   const renderKey = React.useId(); // Unique identifier for this render
+  const [enhancedItems, setEnhancedItems] = React.useState<ContentGridItemUnion[]>([]);
+  const [_isLoadingCollections, setIsLoadingCollections] = React.useState(false);
 
-  console.log(`ContentGrid render ${renderKey} - ID:`, contentGrid.sys?.id);
-  console.log(
-    `ContentGrid render ${renderKey} - items:`,
-    contentGrid.itemsCollection?.items?.map((item) => ({
-      id: item?.sys?.id,
-      typename: item?.__typename
-    }))
-  );
+  const id = contentGrid.sys?.id;
+  const rawItems = contentGrid.itemsCollection?.items;
 
-  // Filter out empty/incomplete items and cast to our union type
-  const validItems: ContentGridItemUnion[] =
-    contentGrid.itemsCollection?.items?.filter((item) => item && (item.title || item.__typename)) ||
-    [];
+  // Enhanced items processing with Collection detection and fetching
+  React.useEffect(() => {
+    const processItems = async () => {
+      if (!rawItems?.length) {
+        setEnhancedItems([]);
+        return;
+      }
+
+      setIsLoadingCollections(true);
+      const processedItems = [];
+
+      // First, check if we have any empty objects (potential Collections)
+      const hasEmptyObjects = rawItems.some(item => 
+        item && typeof item === 'object' && Object.keys(item).length === 0
+      );
+
+      let collectionIds: string[] = [];
+      if (hasEmptyObjects && contentGrid.sys?.id) {
+        console.log('Detected empty objects, fetching Collection IDs...');
+        try {
+          collectionIds = await getCollectionIdsFromContentGrid(contentGrid.sys.id);
+          console.log('Found Collection IDs:', collectionIds);
+        } catch (error) {
+          console.warn('Failed to fetch Collection IDs:', error);
+        }
+      }
+
+      let collectionIndex = 0;
+      for (const item of rawItems) {
+        console.log('Processing item:', item, 'Keys:', Object.keys(item || {}), 'Has sys:', !!item?.sys);
+        
+        // Check if item might be a Collection (completely empty object)
+        if (item && typeof item === 'object' && Object.keys(item).length === 0) {
+          console.log('Detected empty object - likely a Collection');
+          if (collectionIds[collectionIndex]) {
+            // Create a minimal Collection object with just sys.id for lazy loading
+            processedItems.push({
+              sys: { id: collectionIds[collectionIndex] },
+              __typename: 'Collection' as const
+            } as ContentGridItemUnion);
+            collectionIndex++;
+          } else {
+            // Fallback placeholder
+            processedItems.push({
+              sys: { id: 'unknown-collection' },
+              __typename: 'Collection' as const,
+              title: 'Collection (No ID Found)',
+              isEmpty: true
+            } as ContentGridItemUnion);
+          }
+        } else {
+          processedItems.push(item);
+        }
+      }
+
+      setEnhancedItems(processedItems);
+      setIsLoadingCollections(false);
+    };
+
+    void processItems();
+  }, [rawItems, contentGrid.sys?.id]);
+
+  console.log('ContentGrid render', id, '- raw items:', rawItems);
+  console.log('ContentGrid render', id, '- enhanced items:', enhancedItems);
+  console.log('ContentGrid render', id, '- first enhanced item:', enhancedItems[0]);
+
+  // Filter out items that don't have a valid typename or sys.id
+  const validItems = enhancedItems?.filter((item) => {
+    const hasValidId = item?.sys?.id;
+    const hasValidTypename = item?.__typename;
+    
+    return hasValidId && hasValidTypename;
+  }) || [];
 
   // Check for duplicate items
   const itemIds =
@@ -48,7 +115,8 @@ export function ContentGrid(props: ContentGridProps) {
   }
 
   // Calculate grid configuration using utilities
-  const { cols, direction, gap, useCustomLayout, layoutType, analysis } = calculateGridConfig(validItems);
+  const gridConfig = calculateGridConfig(validItems);
+  const { direction, gap, analysis } = gridConfig;
 
   // Check if this is a 3-item post layout that needs special handling
   const isThreeItemPostLayout =
@@ -63,6 +131,7 @@ export function ContentGrid(props: ContentGridProps) {
   console.log('ContentGrid debug:', {
     validItemsCount: validItems.length,
     itemTypes: validItems.map(item => item.__typename),
+    validItems: validItems,
     allItemsAreAccordions: analysis.allItemsAreAccordions,
     propsDarkMode: props.isDarkMode,
     shouldUseDarkMode
@@ -80,9 +149,20 @@ export function ContentGrid(props: ContentGridProps) {
             />
           </Box>
           <Container>
-            <Box direction={direction} gap={gap} className="relative z-20">
+            <Box 
+              direction={direction} 
+              gap={gap} 
+              className={cn(
+                "relative z-20",
+                analysis.allItemsAreSolutions && "justify-between"
+              )}
+            >
               {/* section heading */}
-              <SectionHeading {...contentGrid.heading} isDarkMode={shouldUseDarkMode} />
+              <SectionHeading 
+                {...contentGrid.heading} 
+                isDarkMode={shouldUseDarkMode} 
+                hasSolutionItems={analysis.allItemsAreSolutions}
+              />
 
               {/* items */}
               {(() => {
@@ -121,7 +201,7 @@ export function ContentGrid(props: ContentGridProps) {
                       variant="row"
                     />
                   </div>
-                ) : useCustomLayout && layoutType === 'fourItemAsymmetric' ? (
+                ) : gridConfig.useCustomLayout && gridConfig.layoutType === 'fourItemAsymmetric' ? (
                   // Custom 4-item staggered grid (3 columns)
                   <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
                     {/* Top row - items in columns 1 and 2 */}
@@ -166,7 +246,7 @@ export function ContentGrid(props: ContentGridProps) {
                   </div>
                 ) : (
                   // Existing uniform grid layout
-                  <Box cols={cols} gap={gap} wrap={true}>
+                  <Box cols={gridConfig.cols} gap={gridConfig.gap} wrap={true}>
                     {validItems.map((item, index) => (
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}

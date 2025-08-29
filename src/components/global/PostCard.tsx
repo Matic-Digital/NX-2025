@@ -24,36 +24,39 @@ const formatDate = (dateString?: string): string => {
   });
 };
 
-interface PostCardProps {
+interface PostCardProps extends Partial<Post> {
   sys: {
     id: string;
   };
-  
 }
 
-export function PostCard({ sys }: PostCardProps) {
+export function PostCard(props: PostCardProps) {
   const [postData, setPostData] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!props.title); // Only load if we don't have title data
 
   useEffect(() => {
-    async function fetchPostData() {
-      try {
-        setLoading(true);
-        const data = await getPostById(sys.id);
-        if (data) {
-          setPostData(data);
+    // Only fetch if we don't have the required data
+    if (!props.title) {
+      async function fetchPostData() {
+        try {
+          setLoading(true);
+          const data = await getPostById(props.sys.id);
+          if (data) {
+            setPostData(data);
+          }
+        } catch (error) {
+          console.error('Error fetching post data:', error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error fetching post data:', error);
-      } finally {
-        setLoading(false);
       }
+
+      void fetchPostData();
     }
+  }, [props.sys.id, props.title]);
 
-    void fetchPostData();
-  }, [sys.id]);
-
-  const post = useContentfulLiveUpdates(postData);
+  // Use provided props data if available, otherwise use fetched data
+  const post = useContentfulLiveUpdates(postData ?? (props as Post));
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
   if (loading) {
@@ -78,24 +81,26 @@ export function PostCard({ sys }: PostCardProps) {
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex h-full flex-col"
     >
-      <Box direction="col" gap={0} className="">
+      <Box direction="col" gap={0} className="h-full">
         <AirImage
           link={post.mainImage?.link}
           altText={post.mainImage?.altText}
           className="min-h-[11.8rem] w-full object-cover"
         />
-        <Box direction="col" gap={0} className="h-full justify-between bg-[#f6f6f6]">
-          <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem]">
-            <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
-              {post.categories.map((category, index) => (
-                <span key={index}>
-                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                    {category}
+        <Box direction="col" gap={0} className="h-full bg-[#f6f6f6] flex flex-col flex-1">
+          <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem] flex-grow">
+            {post.categories && post.categories.length > 0 && (
+              <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
+                {post.categories.map((category, index) => (
+                  <span key={index}>
+                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
+                      {category}
+                    </span>
+                    {index < post.categories.length - 1 ? ', ' : ''}
                   </span>
-                  {index < post.categories.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-            </p>
+                ))}
+              </p>
+            )}
             <h2
               className="text-headline-xs group-hover:text-primary leading-[120%]"
               {...inspectorProps({ fieldId: 'title' })}
@@ -104,7 +109,7 @@ export function PostCard({ sys }: PostCardProps) {
               {post.title}
             </h2>
           </Box>
-          <Box direction="row" gap={2} className="items-center justify-between pl-[1.5rem]">
+          <Box direction="row" gap={2} className="items-center justify-between pl-[1.5rem] mt-auto">
             <p
               className="text-body-xs text-[#525252]"
               {...inspectorProps({ fieldId: 'datePublished' })}
