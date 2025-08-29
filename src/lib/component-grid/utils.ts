@@ -162,7 +162,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
   };
 
   const gap = analysis.allItemsArePosts
-    ? 5
+    ? 12
     : analysis.allItemsAreSolutions
       ? { base: 5, xl: 4 }
       : analysis.allItemsAreServices

@@ -11,6 +11,8 @@ import { getPostById } from '@/lib/contentful-api/post';
 import type { Post } from '@/types/contentful/Post';
 import Link from 'next/link';
 import { categoryColorMap } from '@/constants/post';
+import { cn } from '@/lib/utils';
+import { ArrowUpRight } from 'lucide-react';
 
 // Helper function to format date as "Month Day, Year"
 const formatDate = (dateString?: string): string => {
@@ -24,39 +26,38 @@ const formatDate = (dateString?: string): string => {
   });
 };
 
-interface PostCardProps extends Partial<Post> {
+interface PostCardProps {
   sys: {
     id: string;
   };
+  variant?: string;
 }
 
-export function PostCard(props: PostCardProps) {
+export function PostCard({ sys, variant }: PostCardProps) {
   const [postData, setPostData] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(!props.title); // Only load if we don't have title data
+  const [loading, setLoading] = useState(true);
+  const isRowVariant = variant === 'row';
+  const isFeaturedVariant = variant === 'featured';
 
   useEffect(() => {
-    // Only fetch if we don't have the required data
-    if (!props.title) {
-      async function fetchPostData() {
-        try {
-          setLoading(true);
-          const data = await getPostById(props.sys.id);
-          if (data) {
-            setPostData(data);
-          }
-        } catch (error) {
-          console.error('Error fetching post data:', error);
-        } finally {
-          setLoading(false);
+    async function fetchPostData() {
+      try {
+        setLoading(true);
+        const data = await getPostById(sys.id);
+        if (data) {
+          setPostData(data);
         }
+      } catch (error) {
+        console.error('Error fetching post data:', error);
+      } finally {
+        setLoading(false);
       }
-
-      void fetchPostData();
     }
-  }, [props.sys.id, props.title]);
 
-  // Use provided props data if available, otherwise use fetched data
-  const post = useContentfulLiveUpdates(postData ?? (props as Post));
+    void fetchPostData();
+  }, [sys.id]);
+
+  const post = useContentfulLiveUpdates(postData);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
   if (loading) {
@@ -81,64 +82,84 @@ export function PostCard(props: PostCardProps) {
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex h-full flex-col"
     >
-      <Box direction="col" gap={0} className="h-full">
+      <Box
+        direction="col"
+        gap={0}
+        className={cn(
+          // Mobile: always column layout, Large: row layout only for row variant
+          'flex-col',
+          isRowVariant && '2xl:max-h-64 2xl:flex-row',
+          isFeaturedVariant && 'h-full'
+        )}
+      >
         <AirImage
           link={post.mainImage?.link}
           altText={post.mainImage?.altText}
-          className="min-h-[11.8rem] w-full object-cover"
+          className={cn(
+            // Mobile: consistent height for all cards, Large: different heights for variants
+            'min-h-[16rem] w-full object-cover',
+            isRowVariant && '2xl:max-h-64',
+            isFeaturedVariant && 'lg:min-h-[24rem] xl:min-h-[32rem]'
+          )}
         />
-        <Box direction="col" gap={0} className="h-full bg-[#f6f6f6] flex flex-col flex-1">
-          <Box direction="col" gap={0} className="gap-[0.5rem] p-[1.5rem] flex-grow">
-            {post.categories && post.categories.length > 0 && (
-              <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
-                {post.categories.map((category, index) => (
-                  <span key={index}>
-                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                      {category}
-                    </span>
-                    {index < post.categories.length - 1 ? ', ' : ''}
-                  </span>
-                ))}
-              </p>
+        <Box direction="col" gap={0} className={cn('bg-subtle h-full justify-between')}>
+          <Box
+            direction="col"
+            gap={0}
+            className={cn(
+              // Mobile: consistent padding for all cards, Large: different padding for variants
+              'gap-[0.75rem] p-[1.5rem]',
+              isRowVariant && '2xl:gap-[0.25rem] 2xl:p-[1rem]',
+              isFeaturedVariant && 'lg:gap-[1rem] lg:p-[2rem]'
             )}
+          >
+            <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
+              {post.categories.map((category, index) => (
+                <span key={index}>
+                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
+                    {category}
+                  </span>
+                  {index < post.categories.length - 1 ? ', ' : ''}
+                </span>
+              ))}
+            </p>
             <h2
-              className="text-headline-xs group-hover:text-primary leading-[120%]"
+              className={cn(
+                // Mobile: consistent sizing for all cards, Large: different sizes for variants
+                'text-headline-xs group-hover:text-primary leading-[120%]',
+                isFeaturedVariant && 'lg:text-headline-lg xl:text-headline-xl',
+                isRowVariant && '2xl:text-headline-xs 2xl:leading-[110%]'
+              )}
               {...inspectorProps({ fieldId: 'title' })}
             >
-              {' '}
               {post.title}
             </h2>
           </Box>
-          <Box direction="row" gap={2} className="items-center justify-between pl-[1.5rem] mt-auto">
+          <Box
+            direction="row"
+            gap={2}
+            className={cn(
+              // Mobile: consistent padding, Large: different padding for variants
+              'items-center justify-between pl-[1.5rem]',
+              isRowVariant && '2xl:pl-[1rem]'
+            )}
+          >
             <p
               className="text-body-xs text-[#525252]"
               {...inspectorProps({ fieldId: 'datePublished' })}
             >
               {formatDate(post.datePublished)}
             </p>
-            <Box direction="col" gap={0} className="bg-white p-[1.25rem]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                className="group-hover:stroke-primary stroke-[#5B5B5B]"
-              >
-                <g clipPath="url(#clip0_7391_79602)">
-                  <path
-                    d="M1 1H19M19 1V19M19 1L1 19"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_7391_79602">
-                    <rect width="20" height="20" fill="white" />
-                  </clipPath>
-                </defs>
-              </svg>
+            <Box
+              direction="col"
+              gap={0}
+              className={cn(
+                // Mobile: consistent padding, Large: different padding for variants
+                'bg-background group-hover:bg-primary p-[1.25rem] group-hover:text-white',
+                isRowVariant && '2xl:p-[1rem]'
+              )}
+            >
+              <ArrowUpRight className="size-12 stroke-1 group-hover:stroke-white" />
             </Box>
           </Box>
         </Box>

@@ -168,9 +168,17 @@ export function ContentGrid(props: ContentGridProps) {
               {(() => {
                 const gridContent = isThreeItemPostLayout ? (
                   // Custom 3-item layout with first item on left, next two stacked on right
-                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-                    {/* First item takes full left column */}
-                    <div className="lg:row-span-2">
+                  <div
+                    className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-5 lg:gap-5"
+                    style={
+                      {
+                        '--left-column-width': '3fr',
+                        '--right-column-width': '2fr'
+                      } as React.CSSProperties
+                    }
+                  >
+                    {/* First item takes left 3 columns and spans 2 rows */}
+                    <div className="lg:col-span-3 lg:row-span-2">
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
                         item={validItems[0]!}
@@ -178,28 +186,32 @@ export function ContentGrid(props: ContentGridProps) {
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
-                        variant="default"
+                        variant="featured"
                       />
                     </div>
-                    {/* Next two items stacked on the right */}
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
-                      item={validItems[1]!}
-                      index={1}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                      variant="row"
-                    />
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
-                      item={validItems[2]!}
-                      index={2}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                      variant="row"
-                    />
+                    {/* Next two items stacked on the right 2 columns */}
+                    <div className="lg:col-span-2">
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
+                        item={validItems[1]!}
+                        index={1}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="row"
+                      />
+                    </div>
+                    <div className="lg:col-span-2">
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
+                        item={validItems[2]!}
+                        index={2}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="row"
+                      />
+                    </div>
                   </div>
                 ) : gridConfig.useCustomLayout && gridConfig.layoutType === 'fourItemAsymmetric' ? (
                   // Custom 4-item staggered grid (3 columns)
