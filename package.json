@@ -124,7 +124,7 @@
     "husky": "^9.1.7",
     "jsdom": "^26.0.0",
     "pa11y": "^8.0.0",
-    "pa11y-ci": "^3.1.0",
+    "pa11y-ci": "^4.0.1",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.11",

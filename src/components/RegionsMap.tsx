@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { getRegionsMapById } from '@/lib/contentful-api/region';
@@ -93,7 +93,7 @@ export function RegionsMap(props: RegionsMap) {
       <Box direction="col" gap={12} className="bg-subtle p-4 md:p-16">
         {/* Header */}
         <Box direction="col" gap={2} className="text-center">
-          <p className="text-text-input text-body-sm uppercase">{overline}</p>
+          <p className="text-gray-700 text-body-sm uppercase">{overline}</p>
           <h2 className="text-headline-md lg:text-headline-lg leading-14">{title}</h2>
         </Box>
 
@@ -123,9 +123,8 @@ export function RegionsMap(props: RegionsMap) {
             const regionLocations = regionsByRegion?.[regionName] ?? [];
 
             return (
-              <>
+              <React.Fragment key={regionName}>
                 <div
-                  key={regionName}
                   className={cn(
                     'group transition-all duration-200',
                     hoveredRegion === (regionToSvgId[regionName] ?? regionName)
@@ -175,11 +174,11 @@ export function RegionsMap(props: RegionsMap) {
                       ))}
                     </>
                   ) : (
-                    <p className="text-sm text-gray-400">No locations</p>
+                    <p className="text-sm text-gray-600">No locations</p>
                   )}
                 </div>
                 <div className="border-border border-b last-of-type:hidden md:hidden"></div>
-              </>
+              </React.Fragment>
             );
           })}
         </Box>

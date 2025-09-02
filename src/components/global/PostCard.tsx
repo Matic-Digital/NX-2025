@@ -80,14 +80,14 @@ export function PostCard({ sys, variant }: PostCardProps) {
     <Link
       href={`/post/${post.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
-      className="group flex h-full flex-col"
+      className="group flex h-full bg-blue-500 flex-col"
     >
       <Box
         direction="col"
         gap={0}
         className={cn(
           // Mobile: always column layout, Large: row layout only for row variant
-          'flex-col',
+          'flex-col h-full',
           isRowVariant && '2xl:max-h-64 2xl:flex-row',
           isFeaturedVariant && 'h-full'
         )}
