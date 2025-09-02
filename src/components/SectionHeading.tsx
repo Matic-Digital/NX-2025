@@ -16,6 +16,7 @@ interface SectionHeadingProps extends SectionHeading {
   componentType?: string;
   isDarkMode?: boolean;
   isProductContext?: boolean;
+  hasSolutionItems?: boolean;
 }
 
 export function SectionHeading(props: SectionHeadingProps) {
@@ -23,7 +24,7 @@ export function SectionHeading(props: SectionHeadingProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
   // Preserve custom props that aren't part of Contentful data
-  const { componentType, isDarkMode, isProductContext } = props;
+  const { componentType, isDarkMode, isProductContext, hasSolutionItems } = props;
 
   if (componentType === 'banner-hero') {
     console.log('SectionHeading props:', { componentType, isDarkMode, isProductContext });
@@ -43,7 +44,11 @@ export function SectionHeading(props: SectionHeadingProps) {
       <Box
         direction="col"
         gap={{ base: 2, md: 4 }}
-        className={cn('col-span-2 max-w-[600px]', !hasCtaCollection && 'max-w-5xl')}
+        className={cn(
+          'col-span-2 max-w-[600px]', 
+          !hasCtaCollection && 'max-w-5xl',
+          hasSolutionItems && 'max-w-[32.3rem]'
+        )}
       >
         {sectionHeading.overline && (
           <p

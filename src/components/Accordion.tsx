@@ -22,14 +22,15 @@ export function Accordion({ sys }: AccordionProps) {
   const [accordionData, setAccordionData] = useState<AccordionType | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [openItem, setOpenItem] = useState(''); // "" means nothing is open
+  const [openItem, setOpenItem] = useState('item-0'); // First item is always open
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const handleHover = (value: string) => {
-    setOpenItem(value);
+    setHoveredItem(value);
   };
 
   const handleMouseLeave = () => {
-    setOpenItem(''); // Close the accordion when the mouse leaves the entire component
+    setHoveredItem(null);
   };
 
   console.log('Accordion: data', accordionData);
@@ -76,49 +77,68 @@ export function Accordion({ sys }: AccordionProps) {
     <div onMouseLeave={handleMouseLeave}>
       <AccordionPrimitive type="single" value={openItem} onValueChange={setOpenItem}>
         <Box direction="col" gap={6}>
-          {accordionData.itemsCollection.items.map((item, index) => (
-            <AccordionItem
-              key={`accordion-${accordionData.sys.id}-item-${item.sys.id}`}
-              value={`item-${index}`}
-              className="bg-foreground group overflow-hidden transition-all duration-300 ease-out hover:shadow-lg"
-            >
-              <AccordionTrigger
-                chevron={false}
-                onMouseOver={() => handleHover(`item-${index}`)}
-                className="h-60 p-0 group-hover:h-auto hover:no-underline"
+          {accordionData.itemsCollection.items.map((item, index) => {
+            const itemValue = `item-${index}`;
+            const isHovered = hoveredItem === itemValue;
+            const isFirstItem = index === 0;
+            const shouldShowExpanded = isFirstItem && !hoveredItem;
+            
+            return (
+              <AccordionItem
+                key={`accordion-${index}-item-${item.sys.id}`}
+                value={itemValue}
+                className={`bg-[#1D1E1F] text-white border-none overflow-hidden transition-all duration-500 ease-out shadow-lg lg:${
+                  isHovered || shouldShowExpanded ? 'shadow-lg' : 'shadow-none'
+                }`}
               >
-                <Box direction="row" gap={0} cols={{ base: 1, lg: 12 }} className="min-h-20">
+                <AccordionTrigger
+                  chevron={false}
+                  onMouseOver={() => handleHover(itemValue)}
+                  className={`p-0 hover:no-underline transition-all duration-500 ease-out h-auto ${
+                    isHovered || shouldShowExpanded ? 'lg:h-auto' : 'lg:h-60'
+                  }`}
+                >
+                <Box direction="col" gap={0} cols={{ base: 1, lg: 12 }} className="min-h-20 lg:flex-row">
                   {item.image?.sys?.id && (
-                    <div className="col-span-7 h-60 overflow-hidden transition-all duration-300 ease-out group-hover:h-120">
+                    <div className="col-span-7 h-full overflow-hidden">
                       <AirImage
                         sys={{ id: item.image.sys.id }}
-                        className="h-full w-full object-cover"
+                        className={`w-full object-cover h-full ${
+                          isHovered || shouldShowExpanded ? 'lg:h-full' : 'lg:h-60'
+                        }`}
                       />
                     </div>
                   )}
                   <Box
                     direction="col"
                     gap={6}
-                    className="relative col-span-5 p-12 transition-all duration-300 ease-out group-hover:p-12"
+                    className="relative col-span-5 p-12 transition-all duration-500 ease-out"
                   >
                     <Image
                       src="https://air-prod.imgix.net/15bada56-2831-4406-98af-2330b3782171.jpg?w=1160&h=986&fm=webp&fit=crop&auto=auto"
                       fill
-                      className="z-10 hidden group-hover:block"
+                      className={`z-10 transition-all duration-500 ease-out opacity-100 ${
+                        isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
+                      }`}
                       alt="background gradient image"
                     />
 
-                    <h3 className="text-headline-sm text-background relative z-20 line-clamp-2 max-w-[300px] group-hover:line-clamp-none">
+                    <h3 className={`text-headline-sm text-white relative z-20 max-w-[300px] transition-all duration-500 ease-out line-clamp-none ${
+                      isHovered || shouldShowExpanded ? 'lg:line-clamp-none' : 'lg:line-clamp-2'
+                    }`}>
                       {item.heading}
                     </h3>
-                    <div className="relative z-20 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
-                      {item.description && <p className="text-background">{item.description}</p>}
+                    <div className={`relative z-20 transition-all duration-500 ease-out opacity-100 ${
+                      isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
+                    }`}>
+                      {item.description && <p className="text-white">{item.description}</p>}
                     </div>
                   </Box>
                 </Box>
               </AccordionTrigger>
             </AccordionItem>
-          ))}
+            )
+          })}
         </Box>
       </AccordionPrimitive>
     </div>

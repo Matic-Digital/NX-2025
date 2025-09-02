@@ -7,6 +7,7 @@ interface ContentItemRendererProps {
   validItems: ContentGridItemUnion[];
   parentPageListSlug?: string;
   currentPath?: string;
+  variant?: string;
 }
 
 /**
@@ -60,6 +61,10 @@ const contentTypeRegistry = [
   {
     detector: contentTypeDetectors.isTestimonials,
     renderer: contentRenderers.renderTestimonials
+  },
+  {
+    detector: contentTypeDetectors.isCollection,
+    renderer: contentRenderers.renderCollection
   }
 ];
 
@@ -71,28 +76,27 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   index,
   validItems,
   parentPageListSlug,
-  currentPath
+  currentPath,
+  variant
 }) => {
-  // Debug logging
-  console.log(`ContentGrid item ${index}:`, {
-    typename: item.__typename,
-    hasSlug: 'slug' in item,
-    hasContent: 'content' in item,
-    hasLink: 'link' in item,
-    hasDescription: 'description' in item,
-    item: item
-  });
-
   const context = {
     index,
     validItems,
     parentPageListSlug,
-    currentPath
+    currentPath,
+    variant
   };
+
+  console.log('ContentItemRenderer processing item:', { 
+    typename: item.__typename, 
+    sysId: item.sys?.id,
+    hasTitle: !!item.title 
+  });
 
   // Find the appropriate renderer for this content type
   for (const { detector, renderer } of contentTypeRegistry) {
     if (detector(item)) {
+      console.log(`Found renderer for ${item.__typename}`);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
       return renderer(item as any, context);
     }

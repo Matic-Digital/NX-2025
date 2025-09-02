@@ -14,7 +14,7 @@ import type { Product } from '@/types/contentful/Product';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
 import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
 import type { Image } from '@/types/contentful/Image';
-import { Box, Container } from '@/components/global/matic-ds';
+import { Box } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
 import { SectionHeading } from './SectionHeading';
 import { cn } from '@/lib/utils';
@@ -115,7 +115,7 @@ export function Content(props: Content) {
   const ContentContainer = ({ children }: ContentContainerProps) => (
     <div
       className={cn(
-        'relative container mx-auto mb-20 h-[502px] overflow-hidden px-6 sm:px-6 md:px-9'
+        'relative container mx-auto mb-20 mt-12 h-[502px] overflow-hidden px-6 sm:px-6 md:px-9'
       )}
     >
       {children}

@@ -13,6 +13,8 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
+import { LazyCollection } from '@/components/LazyCollection';
+import Collection from '@/components/Collection';
 
 import type {
   Accordion as AccordionType,
@@ -26,7 +28,8 @@ import type {
   CtaGrid as CtaGridType,
   PageList as PageListType,
   PageListPages as PageListPagesType,
-  Testimonials as TestimonialsType
+  Testimonials as TestimonialsType,
+  Collection as CollectionType
 } from '@/types/contentful';
 
 import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
@@ -36,6 +39,7 @@ interface RenderContext {
   validItems: ContentGridItemUnion[];
   parentPageListSlug?: string;
   currentPath?: string;
+  variant?: string;
 }
 
 export const contentRenderers = {
@@ -51,9 +55,10 @@ export const contentRenderers = {
     />
   ),
 
-  renderPost: (item: PostType, context: RenderContext) => (
-    <PostCard key={item.sys?.id ?? context.index} {...item} />
-  ),
+  renderPost: (item: PostType, context: RenderContext) => {
+    // spread in context to use the variant prop in PostCard
+    return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
+  },
 
   renderVideo: (item: VideoType, context: RenderContext) => (
     <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />
@@ -103,6 +108,15 @@ export const contentRenderers = {
     }
     // If we have full data, render normally
     return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;
+  },
+
+  renderCollection: (item: CollectionType, context: RenderContext) => {
+    // If we only have sys.id (lazy loading case), create a LazyCollection component
+    if (item.sys?.id && !item.title && !item.itemsPerPage) {
+      return <LazyCollection key={`lazy-${item.sys.id}`} collectionId={item.sys.id} />;
+    }
+    // If we have full data, render normally
+    return <Collection key={`full-${item.sys?.id ?? context.index}`} {...item} />;
   },
 
   renderPageList: (item: PageListType, context: RenderContext) => {

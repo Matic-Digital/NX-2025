@@ -179,6 +179,7 @@ const fragments = {
     slug
   `,
 
+
   PAGELIST_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title
@@ -252,6 +253,10 @@ const fragments = {
         }
       }
     }
+  `,
+
+  COLLECTION_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
   `
 };
 
@@ -273,3 +278,4 @@ export const getSERVICE_BASIC_FIELDS = () => fragments.SERVICE_BASIC_FIELDS();
 export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
 export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();
 export const getTESTIMONIALS_BASIC_FIELDS = () => fragments.TESTIMONIALS_BASIC_FIELDS();
+export const getCOLLECTION_BASIC_FIELDS = () => fragments.COLLECTION_BASIC_FIELDS();

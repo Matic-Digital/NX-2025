@@ -7,78 +7,69 @@ import {
 } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/media/AirImage';
-import { getPostById } from '@/lib/contentful-api/post';
-import type { Post } from '@/types/contentful/Post';
+import { getPageById } from '@/lib/contentful-api/page';
+import type { Page } from '@/types/contentful/Page';
 import Link from 'next/link';
-import { categoryColorMap } from '@/constants/post';
 import { cn } from '@/lib/utils';
 import { ArrowUpRight } from 'lucide-react';
 
-// Helper function to format date as "Month Day, Year"
-const formatDate = (dateString?: string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
-
-interface PostCardProps {
+interface PageCardProps extends Partial<Page> {
   sys: {
     id: string;
   };
   variant?: string;
 }
 
-export function PostCard({ sys, variant }: PostCardProps) {
-  const [postData, setPostData] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const isRowVariant = variant === 'row';
-  const isFeaturedVariant = variant === 'featured';
+export function PageCard(props: PageCardProps) {
+  const [pageData, setPageData] = useState<Page | null>(null);
+  const [loading, setLoading] = useState(!props.title); // Only load if we don't have title data
+  const isRowVariant = props.variant === 'row';
+  const isFeaturedVariant = props.variant === 'featured';
 
   useEffect(() => {
-    async function fetchPostData() {
-      try {
-        setLoading(true);
-        const data = await getPostById(sys.id);
-        if (data) {
-          setPostData(data);
+    // Only fetch if we don't have the required data
+    if (!props.title) {
+      async function fetchPageData() {
+        try {
+          setLoading(true);
+          const data = await getPageById(props.sys.id);
+          if (data) {
+            setPageData(data);
+          }
+        } catch (error) {
+          console.error('Error fetching page data:', error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error fetching post data:', error);
-      } finally {
-        setLoading(false);
       }
+
+      void fetchPageData();
     }
+  }, [props.sys.id, props.title]);
 
-    void fetchPostData();
-  }, [sys.id]);
-
-  const post = useContentfulLiveUpdates(postData);
-  const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
+  // Use provided props data if available, otherwise use fetched data
+  const page = useContentfulLiveUpdates(pageData ?? (props as Page));
+  const inspectorProps = useContentfulInspectorMode({ entryId: page?.sys?.id });
 
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Loading post...</div>
+        <div className="text-lg">Loading page...</div>
       </div>
     );
   }
 
-  if (!post) {
+  if (!page) {
     return (
       <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Post not found</div>
+        <div className="text-lg">Page not found</div>
       </div>
     );
   }
 
   return (
     <Link
-      href={`/post/${post.slug}`}
+      href={`/${page?.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex h-full flex-col"
     >
@@ -93,8 +84,10 @@ export function PostCard({ sys, variant }: PostCardProps) {
         )}
       >
         <AirImage
-          link={post.mainImage?.link}
-          altText={post.mainImage?.altText}
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+          link={(page?.openGraphImage as any)?.link}
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+          altText={(page?.openGraphImage as any)?.altText ?? page?.title}
           className={cn(
             // Mobile: consistent height for all cards, Large: different heights for variants
             'min-h-[16rem] w-full object-cover',
@@ -113,15 +106,8 @@ export function PostCard({ sys, variant }: PostCardProps) {
               isFeaturedVariant && 'lg:gap-[1rem] lg:p-[2rem]'
             )}
           >
-            <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
-              {post.categories.map((category, index) => (
-                <span key={index}>
-                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                    {category}
-                  </span>
-                  {index < post.categories.length - 1 ? ', ' : ''}
-                </span>
-              ))}
+            <p className="text-body-xs uppercase text-primary" {...inspectorProps({ fieldId: '__typename' })}>
+              Page
             </p>
             <h2
               className={cn(
@@ -132,8 +118,20 @@ export function PostCard({ sys, variant }: PostCardProps) {
               )}
               {...inspectorProps({ fieldId: 'title' })}
             >
-              {post.title}
+              {page?.title}
             </h2>
+            {page?.description && (
+              <p
+                className={cn(
+                  'text-body-sm text-text-subtle line-clamp-3',
+                  isRowVariant && '2xl:text-body-xs 2xl:line-clamp-2',
+                  isFeaturedVariant && 'lg:text-body-md'
+                )}
+                {...inspectorProps({ fieldId: 'description' })}
+              >
+                {page.description}
+              </p>
+            )}
           </Box>
           <Box
             direction="row"
@@ -144,11 +142,8 @@ export function PostCard({ sys, variant }: PostCardProps) {
               isRowVariant && '2xl:pl-[1rem]'
             )}
           >
-            <p
-              className="text-body-xs text-[#525252]"
-              {...inspectorProps({ fieldId: 'datePublished' })}
-            >
-              {formatDate(post.datePublished)}
+            <p className="text-body-xs text-[#525252]">
+              View Page
             </p>
             <Box
               direction="col"

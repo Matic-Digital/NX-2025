@@ -34,6 +34,8 @@ interface SliderCardProps {
   item: SliderItemType;
   index: number;
   current: number;
+  sliderData?: Slider;
+  api?: CarouselApi;
 }
 
 interface ContentOverlayProps {
@@ -197,79 +199,62 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
 
   if (updatedItem.__typename === 'TimelineSliderItem') {
     const timelineItem = updatedItem as TimelineSliderItem;
-    const isCurrentSlide = current === index + 1;
 
     return (
-      <div className="relative h-[669px]">
-        {/* Main Image/Video Section */}
-        <div className="relative h-[400px] w-full">
-          {timelineItem.asset.__typename === 'Video'
-            ? (() => {
-                const videoAsset = timelineItem.asset as {
-                  __typename: 'Video';
-                  posterImage: { link?: string; altText?: string };
-                };
-                return (
-                  <div className="relative h-full w-full">
-                    <AirImage
-                      link={videoAsset.posterImage.link ?? ''}
-                      altText={videoAsset.posterImage.altText ?? 'Video thumbnail'}
-                      className="absolute h-full w-full object-cover"
-                    />
-                    {/* Video Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                        <svg
-                          className="ml-1 h-6 w-6 text-gray-800"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
+      <div className="relative h-[669px] bg-white">
+        <div className="flex h-full">
+          {/* Left Column - Timeline Navigation */}
+          <div className="hidden w-1/4 flex-col justify-center px-8 lg:flex"></div>
+
+          {/* Right Column - Content */}
+          <div className="flex w-full flex-col lg:w-3/4">
+            {/* Video/Image Section */}
+            <div className="relative h-[400px] w-full">
+              {timelineItem.asset?.__typename === 'Video'
+                ? (() => {
+                    const videoAsset = timelineItem.asset as {
+                      __typename: 'Video';
+                      posterImage: { link?: string; altText?: string };
+                    };
+                    return (
+                      <div className="relative h-full w-full">
+                        <AirImage
+                          link={videoAsset?.posterImage?.link ?? ''}
+                          altText={videoAsset?.posterImage?.altText ?? 'Video thumbnail'}
+                          className="absolute h-full w-full object-cover"
+                        />
+                        {/* Video Play Button Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                            <svg
+                              className="ml-1 h-6 w-6 text-gray-800"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })()
-            : timelineItem.asset.__typename === 'Image'
-              ? (() => {
-                  const imageAsset = timelineItem.asset as {
-                    __typename: 'Image';
-                    link?: string;
-                    altText?: string;
-                  };
-                  return (
-                    <AirImage
-                      link={imageAsset.link ?? ''}
-                      altText={imageAsset.altText ?? ''}
-                      className="h-full w-full object-cover"
-                    />
-                  );
-                })()
-              : null}
-        </div>
-
-        {/* Timeline Content Section - Individual slide content */}
-        <div className="flex h-[269px] flex-col justify-center bg-white px-6 py-8">
-          <div className="mx-auto max-w-4xl">
-            {/* Timeline Year - Only show current slide prominently */}
-            <div className="mb-4">
-              <h3
-                className={cn(
-                  'text-4xl font-light transition-colors duration-300',
-                  isCurrentSlide ? 'text-gray-900' : 'text-gray-400'
-                )}
-              >
-                {timelineItem.year}
-              </h3>
+                    );
+                  })()
+                : timelineItem.asset?.__typename === 'Image'
+                  ? (() => {
+                      const imageAsset = timelineItem.asset as {
+                        __typename: 'Image';
+                        link?: string;
+                        altText?: string;
+                      };
+                      return (
+                        <AirImage
+                          link={imageAsset?.link ?? ''}
+                          altText={imageAsset?.altText ?? ''}
+                          className="h-full w-full object-cover"
+                        />
+                      );
+                    })()
+                  : null}
             </div>
-
-            {/* Timeline Description - Only show for current slide */}
-            {isCurrentSlide && (
-              <div className="max-w-md text-gray-600">
-                <p className="text-sm leading-relaxed">{timelineItem.description}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -332,14 +317,12 @@ const GenericSlider = ({
   setApi,
   showIndicators = false,
   showAltIndicators = false,
-  showNavigation = true,
   showAltNavigation = false,
   isFullWidth = true
 }: GenericSliderProps) => {
   const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
-
-  console.log('isFullWidth', isFullWidth);
+  const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
 
   return (
     <div
@@ -350,7 +333,7 @@ const GenericSlider = ({
         setApi={setApi}
         className={cn(
           isFullWidth
-            ? 'relative right-1/2 left-1/2 -mr-[50vw] -ml-[50vw] w-screen md:-ml-[25vw] lg:-ml-[50vw]'
+            ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
             : isTeamMemberSlider
               ? 'w-full max-w-none'
               : 'w-full'
@@ -360,10 +343,19 @@ const GenericSlider = ({
           align: 'center',
           ...(isTeamMemberSlider && {
             align: 'start'
+          }),
+          ...(isTimelineSlider && {
+            align: 'start',
+            containScroll: 'trimSnaps'
           })
         }}
       >
-        <CarouselContent className={cn(isTeamMemberSlider && 'overflow-visible')}>
+        <CarouselContent
+          className={cn(
+            isTeamMemberSlider && 'lg:overflow-visible',
+            isTimelineSlider && 'overflow-hidden'
+          )}
+        >
           {sliderData.itemsCollection.items.map((item, index) => {
             return (
               <CarouselItem
@@ -373,50 +365,170 @@ const GenericSlider = ({
                     ? 'basis-[411px]'
                     : isTeamMemberSlider
                       ? 'basis-[300px]'
-                      : isFullWidth
-                        ? 'basis-full sm:basis-4/5'
-                        : 'basis-full'
+                      : isTimelineSlider
+                        ? 'basis-full'
+                        : isFullWidth
+                          ? 'basis-full sm:basis-4/5'
+                          : 'basis-full'
                 )}
               >
-                <SliderCard index={index} current={current} item={item} />
+                <SliderCard
+                  index={index}
+                  current={current}
+                  item={item}
+                  sliderData={isTimelineSlider ? sliderData : undefined}
+                  api={isTimelineSlider ? api : undefined}
+                />
               </CarouselItem>
             );
           })}
         </CarouselContent>
-        {showNavigation && (
-          <>
-            <CarouselPrevious
-              className="left-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:left-10 sm:size-12"
-              variant="outline"
-              aria-label="Previous slide"
-            />
-            <CarouselNext
-              className="right-2 size-10 rounded-none border-1 border-white bg-black/20 text-white backdrop-blur-sm hover:bg-black/40 sm:right-10 sm:size-12"
-              variant="outline"
-              aria-label="Next slide"
-            />
-          </>
-        )}
+
+        {/* Combined Navigation - Handles TimelineSlider (left side) and other sliders (top right) */}
         {showAltNavigation && (
           <div
             className={cn(
-              'absolute -top-12 right-29 hidden gap-4 lg:flex',
-              isTeamMemberSlider && 'right-0'
+              'absolute hidden gap-4 lg:flex',
+              isTimelineSlider
+                ? 'top-3/4 left-8 z-10 -translate-y-2/3 flex-row'
+                : '-top-12 right-29',
+              isTeamMemberSlider && 'right-0',
+              isTimelineSlider && 'right-0'
             )}
           >
             <CarouselPrevious
-              className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              className={cn(
+                'relative left-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
+                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
+              )}
               variant="outline"
               aria-label="Previous slide"
             />
             <CarouselNext
-              className="relative right-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
+              className={cn(
+                'relative right-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
+                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
+              )}
               variant="outline"
               aria-label="Next slide"
             />
           </div>
         )}
       </Carousel>
+
+      {/* Separate Timeline Component - Only for Timeline Sliders */}
+      {isTimelineSlider && (
+        <div className="absolute bottom-0 z-20 bg-white px-6 py-8 lg:right-0 lg:left-1/4">
+          <div className="w-full">
+            {/* Timeline Bar */}
+            <div className="mb-8">
+              <div className="relative h-0.5 w-full bg-gray-200">
+                {/* Individual Timeline Segments */}
+                {sliderData.itemsCollection.items
+                  .filter((item) => item.__typename === 'TimelineSliderItem')
+                  .map((item, timelineIndex) => {
+                    const totalItems = sliderData.itemsCollection.items.filter(
+                      (i) => i.__typename === 'TimelineSliderItem'
+                    ).length;
+                    const segmentWidth = 100 / Math.max(1, totalItems - 1);
+                    const isActive = current === timelineIndex + 1;
+
+                    // Don't render segment for the last item
+                    if (timelineIndex === totalItems - 1) return null;
+
+                    return (
+                      <div
+                        key={item.sys.id}
+                        className={cn(
+                          'absolute top-0 h-full transition-all duration-500 ease-in-out',
+                          isActive ? 'bg-gray-400' : 'bg-gray-200'
+                        )}
+                        style={{
+                          left: `${(timelineIndex / Math.max(1, totalItems - 1)) * 100}%`,
+                          width: `${segmentWidth}%`
+                        }}
+                      />
+                    );
+                  })}
+                {/* Timeline Bullets - Show all timeline items */}
+                {sliderData.itemsCollection.items
+                  .filter((item) => item.__typename === 'TimelineSliderItem')
+                  .map((item, timelineIndex) => {
+                    const timelineItemData = item as TimelineSliderItem;
+                    return (
+                      <button
+                        key={item.sys.id}
+                        onClick={() => api?.scrollTo(timelineIndex)}
+                        className={cn(
+                          'absolute top-1/2 z-10 h-3 w-3 -translate-y-1/2 rounded-full transition-colors duration-300',
+                          current === timelineIndex + 1
+                            ? 'bg-gray-400'
+                            : 'bg-gray-200 hover:bg-gray-300'
+                        )}
+                        style={{
+                          left: `${(timelineIndex / (sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1)) * 100}%`
+                        }}
+                        aria-label={`Go to ${timelineItemData.year}`}
+                      />
+                    );
+                  })}
+              </div>
+            </div>
+
+            {/* Sliding Timeline - Shows 3 items, slides to reveal more */}
+            <div className="overflow-hidden">
+              <div
+                className="flex gap-8 transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: `translateX(-${Math.max(0, current - 2) * (100 / 7)}%)`,
+                  width: `${(sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length / 2.5) * 100}%`
+                }}
+              >
+                {sliderData.itemsCollection.items
+                  .filter((item) => item.__typename === 'TimelineSliderItem')
+                  .map((item, timelineIndex) => {
+                    const timelineItemData = item as TimelineSliderItem;
+                    const totalItems = sliderData.itemsCollection.items.filter(
+                      (i) => i.__typename === 'TimelineSliderItem'
+                    ).length;
+                    const isActive = (current - 1) % totalItems === timelineIndex;
+                    return (
+                      <div key={item.sys.id} className="flex min-w-0 flex-1 flex-col">
+                        {/* Year */}
+                        <div className="mb-4 flex h-[60px] items-start">
+                          <span
+                            className={cn(
+                              'text-headline-lg transition-all duration-300',
+                              isActive
+                                ? '!text-text-body scale-100'
+                                : '!text-text-body/30 origin-left scale-55'
+                            )}
+                          >
+                            {timelineItemData.year}
+                          </span>
+                        </div>
+
+                        {/* Description */}
+                        <div className="min-h-[80px]">
+                          <p
+                            className={cn(
+                              'text-sm leading-relaxed transition-all duration-300',
+                              isActive
+                                ? 'scale-100 text-gray-600'
+                                : 'origin-left scale-90 text-gray-400'
+                            )}
+                          >
+                            {timelineItemData.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showIndicators && (
         <div className="relative z-50 mx-auto -mt-4 flex h-1 w-[532px] flex-shrink-0 items-center gap-4">
@@ -538,7 +650,7 @@ export function Slider(props: SliderSys) {
       showAltNavigation={
         isFeatureSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider
       }
-      isFullWidth={!isImageSlider && !isTeamMemberSlider}
+      isFullWidth={!isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider}
     />
   );
 }

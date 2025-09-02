@@ -11,11 +11,9 @@
  * - Component mapping to render different content types
  * - Error handling for content that doesn't exist (404 Not Found)
  * - Support for both static site generation and dynamic rendering
- * - Breadcrumb navigation to reflect the hierarchical structure
  */
 
 import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
 import { getPageBySlug } from '@/lib/contentful-api/page';
 import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';
@@ -544,69 +542,6 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
-      {/* Breadcrumb navigation */}
-      <div className="mx-auto max-w-7xl px-4 py-4">
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="inline-flex items-center space-x-1 md:space-x-3">
-            <li className="inline-flex items-center">
-              <Link
-                href="/"
-                className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <div className="flex items-center">
-                <svg
-                  className="mx-1 h-3 w-3 text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                <a
-                  href={`/${pageList.slug}`}
-                  className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
-                >
-                  {pageList.title}
-                </a>
-              </div>
-            </li>
-            <li aria-current="page">
-              <div className="flex items-center">
-                <svg
-                  className="mx-1 h-3 w-3 text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
-                  {contentItem.title}
-                </span>
-              </div>
-            </li>
-          </ol>
-        </nav>
-      </div>
-
       <h1 className="sr-only">{contentItem.title}</h1>
 
       {/* Render content based on content type */}

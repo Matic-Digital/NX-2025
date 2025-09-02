@@ -8,6 +8,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { REGIONS_MAP_GRAPHQL_FIELDS } from './region';
 import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';
@@ -19,6 +20,58 @@ import { getPAGE_WITH_REFS_FIELDS } from './graphql-fields';
 interface PageWithHeaderFooter extends Page {
   header: Header | null;
   footer: Footer | null;
+}
+
+/**
+ * Fetches all pages from Contentful with minimal data (for collections/listings)
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to pages response with minimal data
+ */
+export async function getAllPagesMinimal(preview = false): Promise<PageResponse> {
+  try {
+    const response = await fetchGraphQL<Page>(
+      `query GetAllPagesMinimal($preview: Boolean!) {
+        pageCollection(preview: $preview) {
+          items {
+            ${SYS_FIELDS}
+            title
+            slug
+            description
+            openGraphImage {
+              link
+              altText
+            }
+            contentfulMetadata {
+              tags {
+                id
+                name
+              }
+            }
+          }
+          total
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    if (!response.data?.pageCollection) {
+      throw new ContentfulError('Failed to fetch pages from Contentful');
+    }
+
+    return {
+      items: response.data.pageCollection.items,
+      total: response.data.pageCollection.total
+    };
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching pages: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching pages');
+  }
 }
 
 /**
@@ -138,6 +191,9 @@ export async function getPageBySlug(
                 ... on ImageBetween {
                   ${IMAGEBETWEEN_GRAPHQL_FIELDS}
                 }
+                ... on RegionsMap {
+                  ${SYS_FIELDS}
+                }
               }
             }
           }
@@ -250,6 +306,9 @@ export async function getPageById(
                 }
                 ... on ImageBetween {
                   ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                }
+                ... on RegionsMap {
+                  ${REGIONS_MAP_GRAPHQL_FIELDS}
                 }
               }
             }
