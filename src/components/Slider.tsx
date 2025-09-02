@@ -501,7 +501,7 @@ const GenericSlider = ({
                               'text-headline-lg transition-all duration-300',
                               isActive
                                 ? '!text-text-body scale-100'
-                                : '!text-text-body/30 origin-left scale-55'
+                                : '!text-gray-600 origin-left scale-55'
                             )}
                           >
                             {timelineItemData.year}
@@ -515,7 +515,7 @@ const GenericSlider = ({
                               'text-sm leading-relaxed transition-all duration-300',
                               isActive
                                 ? 'scale-100 text-gray-600'
-                                : 'origin-left scale-90 text-gray-400'
+                                : 'origin-left scale-90 text-gray-600'
                             )}
                           >
                             {timelineItemData.description}
