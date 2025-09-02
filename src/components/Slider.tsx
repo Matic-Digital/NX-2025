@@ -56,7 +56,7 @@ const ContentOverlay = ({ children }: ContentOverlayProps) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current, sliderData, api }: SliderCardProps) => {
+const SliderCard = ({ item, index, current }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
@@ -317,7 +317,6 @@ const GenericSlider = ({
   setApi,
   showIndicators = false,
   showAltIndicators = false,
-  showNavigation = true,
   showAltNavigation = false,
   isFullWidth = true
 }: GenericSliderProps) => {
