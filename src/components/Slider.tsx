@@ -418,7 +418,7 @@ const GenericSlider = ({
 
       {/* Separate Timeline Component - Only for Timeline Sliders */}
       {isTimelineSlider && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 bg-white px-6 py-8 lg:left-1/4">
+        <div className="absolute bottom-0 z-20 bg-white px-6 py-8 lg:right-0 lg:left-1/4">
           <div className="w-full">
             {/* Timeline Bar */}
             <div className="mb-8">
