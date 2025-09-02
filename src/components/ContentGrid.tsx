@@ -44,8 +44,8 @@ export function ContentGrid(props: ContentGridProps) {
       const processedItems = [];
 
       // First, check if we have any empty objects (potential Collections)
-      const hasEmptyObjects = rawItems.some(item => 
-        item && typeof item === 'object' && Object.keys(item).length === 0
+      const hasEmptyObjects = rawItems.some(
+        (item) => item && typeof item === 'object' && Object.keys(item).length === 0
       );
 
       let collectionIds: string[] = [];
@@ -61,8 +61,15 @@ export function ContentGrid(props: ContentGridProps) {
 
       let collectionIndex = 0;
       for (const item of rawItems) {
-        console.log('Processing item:', item, 'Keys:', Object.keys(item || {}), 'Has sys:', !!item?.sys);
-        
+        console.log(
+          'Processing item:',
+          item,
+          'Keys:',
+          Object.keys(item || {}),
+          'Has sys:',
+          !!item?.sys
+        );
+
         // Check if item might be a Collection (completely empty object)
         if (item && typeof item === 'object' && Object.keys(item).length === 0) {
           console.log('Detected empty object - likely a Collection');
@@ -99,12 +106,13 @@ export function ContentGrid(props: ContentGridProps) {
   console.log('ContentGrid render', id, '- first enhanced item:', enhancedItems[0]);
 
   // Filter out items that don't have a valid typename or sys.id
-  const validItems = enhancedItems?.filter((item) => {
-    const hasValidId = item?.sys?.id;
-    const hasValidTypename = item?.__typename;
-    
-    return hasValidId && hasValidTypename;
-  }) || [];
+  const validItems =
+    enhancedItems?.filter((item) => {
+      const hasValidId = item?.sys?.id;
+      const hasValidTypename = item?.__typename;
+
+      return hasValidId && hasValidTypename;
+    }) || [];
 
   // Check for duplicate items
   const itemIds =
@@ -127,10 +135,10 @@ export function ContentGrid(props: ContentGridProps) {
 
   // Auto-enable dark mode if all items are accordions
   const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
-  
+
   console.log('ContentGrid debug:', {
     validItemsCount: validItems.length,
-    itemTypes: validItems.map(item => item.__typename),
+    itemTypes: validItems.map((item) => item.__typename),
     validItems: validItems,
     allItemsAreAccordions: analysis.allItemsAreAccordions,
     propsDarkMode: props.isDarkMode,
@@ -149,18 +157,15 @@ export function ContentGrid(props: ContentGridProps) {
             />
           </Box>
           <Container>
-            <Box 
-              direction={direction} 
-              gap={gap} 
-              className={cn(
-                "relative z-20",
-                analysis.allItemsAreSolutions && "justify-between"
-              )}
+            <Box
+              direction={direction}
+              gap={gap}
+              className={cn('relative z-20', analysis.allItemsAreSolutions && 'justify-between')}
             >
               {/* section heading */}
-              <SectionHeading 
-                {...contentGrid.heading} 
-                isDarkMode={shouldUseDarkMode} 
+              <SectionHeading
+                {...contentGrid.heading}
+                isDarkMode={shouldUseDarkMode}
                 hasSolutionItems={analysis.allItemsAreSolutions}
               />
 
