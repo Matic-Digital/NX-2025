@@ -90,7 +90,7 @@ export function RegionsMap(props: RegionsMap) {
 
   return (
     <div className="container mx-auto px-6 sm:px-6 md:px-9">
-      <Box direction="col" gap={6} className="bg-subtle p-16">
+      <Box direction="col" gap={12} className="bg-subtle p-4 md:p-16">
         {/* Header */}
         <Box direction="col" gap={2} className="text-center">
           <p className="text-text-input text-body-sm uppercase">{overline}</p>
@@ -111,66 +111,75 @@ export function RegionsMap(props: RegionsMap) {
         {/* Region List */}
         <Box
           direction="row"
-          gap={4}
+          gap={{ base: 12, lg: 12, xl: 6 }}
           cols={{
             base: 1,
             md: 2,
-            lg: 5
+            lg: 3,
+            xl: 5
           }}
         >
           {regionNames.map((regionName) => {
             const regionLocations = regionsByRegion?.[regionName] ?? [];
 
             return (
-              <div
-                key={regionName}
-                className={cn(
-                  'group transition-all duration-200',
-                  hoveredRegion === (regionToSvgId[regionName] ?? regionName)
-                    ? 'scale-105 transform'
-                    : ''
-                )}
-                onMouseEnter={() => setHoveredRegion(regionToSvgId[regionName] ?? regionName)}
-                onMouseLeave={() => setHoveredRegion(null)}
-              >
-                {regionLocations.length > 0 ? (
-                  <>
-                    {regionLocations.map((region) => (
-                      <Link
-                        key={region.sys.id}
-                        href={`/${region.slug}`}
-                        className={cn(
-                          'transition-colors',
-                          hoveredRegion === (regionToSvgId[regionName] ?? regionName)
-                            ? 'text-primary'
-                            : 'text-surface-invert'
-                        )}
-                      >
-                        <Box direction="col" gap={0}>
-                          <Box direction="row" gap={2}>
-                            <h3 className={cn('text-title-lg')}>{regionName}</h3>
-                            <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
+              <>
+                <div
+                  key={regionName}
+                  className={cn(
+                    'group transition-all duration-200',
+                    hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                      ? 'scale-105 transform'
+                      : ''
+                  )}
+                  onMouseEnter={() => setHoveredRegion(regionToSvgId[regionName] ?? regionName)}
+                  onMouseLeave={() => setHoveredRegion(null)}
+                >
+                  {regionLocations.length > 0 ? (
+                    <>
+                      {regionLocations.map((region) => (
+                        <Link
+                          key={region.sys.id}
+                          href={`/${region.slug}`}
+                          className={cn(
+                            'transition-colors',
+                            hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                              ? 'text-primary'
+                              : 'text-surface-invert'
+                          )}
+                        >
+                          <Box
+                            direction="row"
+                            gap={2}
+                            className="items-center justify-between lg:items-start"
+                          >
+                            <Box direction="col" gap={0}>
+                              <h3 className={cn('text-title-lg')}>{regionName}</h3>
+
+                              <p
+                                className={cn(
+                                  '!text-body-xxs',
+                                  hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                                    ? 'text-primary transition-colors'
+                                    : 'text-surface-invert'
+                                )}
+                              >
+                                {region.street}, {region.city}, {region.country}
+                              </p>
+                            </Box>
+                            <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-100 transition-all group-hover:translate-x-1 group-hover:opacity-100 xl:opacity-0">
                               <ArrowUpRight className="size-8 stroke-1" />
                             </span>
                           </Box>
-                          <p
-                            className={cn(
-                              '!text-body-xxs',
-                              hoveredRegion === (regionToSvgId[regionName] ?? regionName)
-                                ? 'text-primary transition-colors'
-                                : 'text-surface-invert'
-                            )}
-                          >
-                            {region.street}, {region.city}, {region.country}
-                          </p>
-                        </Box>
-                      </Link>
-                    ))}
-                  </>
-                ) : (
-                  <p className="text-sm text-gray-400">No locations</p>
-                )}
-              </div>
+                        </Link>
+                      ))}
+                    </>
+                  ) : (
+                    <p className="text-sm text-gray-400">No locations</p>
+                  )}
+                </div>
+                <div className="border-border border-b last-of-type:hidden md:hidden"></div>
+              </>
             );
           })}
         </Box>

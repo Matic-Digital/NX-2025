@@ -10,12 +10,12 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
     <div className="relative">
       <svg
         width="100%"
-        height="626"
+        height="auto"
         viewBox="0 0 1252 626"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        className="regions-map"
+        className="regions-map max-h-80 md:max-h-none"
       >
         <mask id="mask0_1310_9223" maskUnits="userSpaceOnUse" x="0" y="0" width="1252" height="626">
           <rect width="1252" height="626" fill="url(#pattern0_1310_9223)" />
@@ -25,8 +25,8 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <rect width="1252" height="626" fill="#A1A1AA" />
         </g>
 
-        {/* Region-specific orange overlays with radial gradients that appear on hover */}
-        <g mask="url(#mask0_1310_9223)">
+        {/* Region-specific orange overlays with radial gradients that appear on hover - hidden on mobile */}
+        <g mask="url(#mask0_1310_9223)" className="hidden md:block">
           {hoveredRegion === 'northAmerica' && (
             <rect x="0" y="130" width="520" height="250" fill="url(#northAmericaGradient)" />
           )}
@@ -56,11 +56,9 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="200" y="145" width="46" height="46">
             <MapPin
               size={46}
-              className={
-                hoveredRegion === 'northAmerica'
-                  ? 'fill-primary stroke-white'
-                  : 'fill-black text-white'
-              }
+              className={`fill-black text-white ${
+                hoveredRegion === 'northAmerica' ? 'md:fill-primary md:stroke-white' : ''
+              }`}
             />
           </foreignObject>
 
@@ -68,9 +66,9 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="635" y="135" width="46" height="46">
             <MapPin
               size={46}
-              className={
-                hoveredRegion === 'europe' ? 'fill-primary stroke-white' : 'fill-black text-white'
-              }
+              className={`fill-black text-white ${
+                hoveredRegion === 'europe' ? 'md:fill-primary md:stroke-white' : ''
+              }`}
             />
           </foreignObject>
 
@@ -78,11 +76,9 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="380" y="430" width="46" height="46">
             <MapPin
               size={46}
-              className={
-                hoveredRegion === 'latinAmerica'
-                  ? 'fill-primary stroke-white'
-                  : 'fill-black text-white'
-              }
+              className={`fill-black text-white ${
+                hoveredRegion === 'latinAmerica' ? 'md:fill-primary md:stroke-white' : ''
+              }`}
             />
           </foreignObject>
 
@@ -90,11 +86,9 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="1030" y="450" width="46" height="46">
             <MapPin
               size={46}
-              className={
-                hoveredRegion === 'australiaPacific'
-                  ? 'fill-primary stroke-white'
-                  : 'fill-black text-white'
-              }
+              className={`fill-black text-white ${
+                hoveredRegion === 'australiaPacific' ? 'md:fill-primary md:stroke-white' : ''
+              }`}
             />
           </foreignObject>
 
@@ -102,11 +96,9 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="770" y="260" width="46" height="46">
             <MapPin
               size={46}
-              className={
-                hoveredRegion === 'middleEastIndiaAfrica'
-                  ? 'fill-primary stroke-white'
-                  : 'fill-black text-white'
-              }
+              className={`fill-black text-white ${
+                hoveredRegion === 'middleEastIndiaAfrica' ? 'md:fill-primary md:stroke-white' : ''
+              }`}
             />
           </foreignObject>
         </g>
