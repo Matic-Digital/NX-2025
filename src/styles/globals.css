@@ -744,3 +744,17 @@
     @apply bg-linear-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent;
   }
 }
+
+/* Interactive SVG Map Styles */
+
+.regions-map .map-dots circle {
+  transition: fill 0.3s ease;
+}
+
+.regions-map:has(#northAmerica:hover) #northAmerica-dots circle,
+.regions-map:has(#europe:hover) #europe-dots circle,
+.regions-map:has(#latinAmerica:hover) #latinAmerica-dots circle,
+.regions-map:has(#australiaPacific:hover) #australiaPacific-dots circle,
+.regions-map:has(#middleEastIndiaAfrica:hover) #middleEastIndiaAfrica-dots circle {
+  fill: #f97316;
+}

@@ -8,7 +8,7 @@ import type { RegionsMap } from '@/types/contentful/Region';
 import type { Region } from '@/types/contentful/Region';
 import { Box } from '@/components/global/matic-ds';
 import { ArrowUpRight } from 'lucide-react';
-import { RegionsMapImage } from '@/components/RegionsMapImage';
+import { RegionsMapImageInteractive } from '@/components/RegionsMapImageInteractive';
 
 export function RegionsMap(props: RegionsMap) {
   const [content, setContent] = useState<RegionsMap | null>(props);
@@ -101,7 +101,10 @@ export function RegionsMap(props: RegionsMap) {
         <div className="relative">
           <div className="absolute inset-0 z-20 size-full"></div>
           <div className="relative z-10 w-full">
-            <RegionsMapImage />
+            <RegionsMapImageInteractive
+              hoveredRegion={hoveredRegion}
+              onRegionHover={setHoveredRegion}
+            />
           </div>
         </div>
 
