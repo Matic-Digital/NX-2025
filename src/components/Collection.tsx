@@ -32,6 +32,7 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
   const [loadingPages, setLoadingPages] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Contentful Live Preview integration
   const updatedCollection = useContentfulLiveUpdates(collection);
@@ -122,10 +123,10 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
     }
   }, [collection, collectionData]);
 
-  // Reset to page 1 when filter changes
+  // Reset to page 1 when filter or search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilter]);
+  }, [activeFilter, searchQuery]);
 
   const finalCollection = updatedCollection ?? collection;
 
@@ -156,12 +157,19 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
         )
         ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
 
-    // Filter posts by active filter, or show all posts by default
-    const filteredPosts = activeFilter
-      ? posts.filter((post) =>
-          post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase())
-        )
-      : posts;
+    // Filter posts by search query and active filter
+    const filteredPosts = posts.filter((post) => {
+      // Search filter: check if title contains search query
+      const matchesSearch =
+        !searchQuery || post.title?.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Category filter: check if post has matching category
+      const matchesCategory =
+        !activeFilter ||
+        post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase());
+
+      return matchesSearch && matchesCategory;
+    });
 
     // Calculate pagination
     const itemsPerPage = finalCollection.itemsPerPage ?? 6; // Default to 6 if not set
@@ -172,6 +180,19 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
 
     return (
       <div {...inspectorProps}>
+        {/* Search bar - only show if searchBar is enabled */}
+        {finalCollection.searchBar && (
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Search posts by title..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="focus:ring-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
+            />
+          </div>
+        )}
+
         {/* Display clickable tag filters above the list */}
         {postTagCategories.length > 0 && (
           <div className="mb-6">
