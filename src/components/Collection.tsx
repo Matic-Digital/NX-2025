@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useContentfulLiveUpdates, useContentfulInspectorMode } from '@contentful/live-preview/react';
+import {
+  useContentfulLiveUpdates,
+  useContentfulInspectorMode
+} from '@contentful/live-preview/react';
 import { getAllPostsMinimal } from '@/lib/contentful-api/post';
 import { getAllPagesMinimal } from '@/lib/contentful-api/page';
 import { getCollectionById } from '@/lib/contentful-api/collection';
@@ -30,7 +32,6 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
   const [loadingPages, setLoadingPages] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const router = useRouter();
 
   // Contentful Live Preview integration
   const updatedCollection = useContentfulLiveUpdates(collection);
@@ -51,7 +52,7 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
   // Function to update URL hash and filter
   const handleFilterChange = (filterValue: string | null) => {
     setActiveFilter(filterValue);
-    
+
     if (typeof window !== 'undefined') {
       if (filterValue) {
         window.location.hash = encodeURIComponent(filterValue);
@@ -128,7 +129,6 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
 
   const finalCollection = updatedCollection ?? collection;
 
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -148,16 +148,18 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
     }
 
     // Extract category names from Collection tags with group "Post"
-    const postTagCategories = finalCollection?.contentfulMetadata?.tags
-      ?.filter(tag => tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post'))
-      ?.map(tag => tag.name.replace(/^post:/i, '').trim()) ?? [];
+    const postTagCategories =
+      finalCollection?.contentfulMetadata?.tags
+        ?.filter(
+          (tag) =>
+            tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
+        )
+        ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
 
     // Filter posts by active filter, or show all posts by default
-    const filteredPosts = activeFilter 
-      ? posts.filter(post => 
-          post.categories?.some(category => 
-            category.toLowerCase() === activeFilter.toLowerCase()
-          )
+    const filteredPosts = activeFilter
+      ? posts.filter((post) =>
+          post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase())
         )
       : posts;
 
@@ -177,23 +179,23 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
               {/* "All" button */}
               <button
                 onClick={() => handleFilterChange(null)}
-                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
                   activeFilter === null
-                    ? 'bg-primary text-white border-primary'
+                    ? 'bg-primary border-primary text-white'
                     : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
                 }`}
               >
                 All
               </button>
-              
+
               {/* Category filter buttons */}
               {postTagCategories.map((category) => (
                 <button
                   key={category}
                   onClick={() => handleFilterChange(category)}
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                  className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
                     activeFilter === category
-                      ? 'bg-primary text-white border-primary'
+                      ? 'bg-primary border-primary text-white'
                       : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
                   }`}
                 >
@@ -203,33 +205,33 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
             </div>
           </div>
         )}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 items-stretch">
+
+        <div className="mb-8 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {currentPosts.map((post) => (
             <div key={post.sys.id} className="flex">
               <PostCard sys={post.sys} />
             </div>
           ))}
         </div>
-        
+
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4">
+          <div className="flex items-center justify-center gap-4">
             <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Previous
             </button>
-            
+
             <span className="text-sm text-gray-600">
               Page {currentPage} of {totalPages}
             </span>
-            
+
             <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>
@@ -258,32 +260,32 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
 
     return (
       <div {...inspectorProps}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 items-stretch">
+        <div className="mb-8 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
           {currentPages.map((page) => (
             <div key={page.sys.id} className="flex">
               <PageCard {...page} />
             </div>
           ))}
         </div>
-        
+
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4">
+          <div className="flex items-center justify-center gap-4">
             <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Previous
             </button>
-            
+
             <span className="text-sm text-gray-600">
               Page {currentPage} of {totalPages}
             </span>
-            
+
             <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>
