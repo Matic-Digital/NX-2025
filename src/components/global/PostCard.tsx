@@ -33,6 +33,7 @@ interface PostCardProps {
   variant?: string;
 }
 
+// TODO: need to use variant here to display row on 
 export function PostCard({ sys, variant }: PostCardProps) {
   const [postData, setPostData] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);

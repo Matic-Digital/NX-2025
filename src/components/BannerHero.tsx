@@ -7,7 +7,7 @@ import {
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Section } from '@/components/global/matic-ds';
-import { SectionHeading } from '@/components/SectionHeading';
+import { LazySectionHeading } from '@/components/SectionHeading/LazySectionHeading';
 import type { BannerHero } from '@/types/contentful/BannerHero';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
@@ -45,8 +45,8 @@ export function BannerHero(props: BannerHeroProps) {
 
         {/* Content Overlay */}
         <div className="relative z-10 container mx-auto w-full px-6 lg:px-8">
-          <SectionHeading
-            {...bannerHero.heading}
+          <LazySectionHeading
+            sectionHeadingId={bannerHero.heading.sys.id}
             componentType="banner-hero"
             isProductContext={isProductContext}
           />

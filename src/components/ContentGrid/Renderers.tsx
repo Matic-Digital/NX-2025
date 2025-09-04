@@ -15,21 +15,23 @@ import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
 import { LazyCollection } from '@/components/LazyCollection';
 import Collection from '@/components/Collection';
+import { Location } from '@/components/OfficeLocation';
 
 import type {
   Accordion as AccordionType,
-  ContentGridItem as ContentGridItemType,
-  Post as PostType,
-  Video as VideoType,
-  Product as ProductType,
-  Solution as SolutionType,
   AirImage as AirImageType,
-  Slider as SliderType,
+  Collection as CollectionType,
+  ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
+  OfficeLocation as LocationType,
   PageList as PageListType,
   PageListPages as PageListPagesType,
+  Post as PostType,
+  Product as ProductType,
+  Slider as SliderType,
+  Solution as SolutionType,
   Testimonials as TestimonialsType,
-  Collection as CollectionType
+  Video as VideoType
 } from '@/types/contentful';
 
 import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
@@ -46,6 +48,16 @@ export const contentRenderers = {
   renderAccordion: (item: AccordionType, context: RenderContext) => (
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
+
+  renderCollection: (item: CollectionType, context: RenderContext) => {
+    // If we only have sys.id (lazy loading case), create a LazyCollection component
+    if (item.sys?.id && !item.title && !item.itemsPerPage) {
+      return <LazyCollection key={`lazy-${item.sys.id}`} collectionId={item.sys.id} />;
+    }
+    // If we have full data, render normally
+    return <Collection key={`full-${item.sys?.id ?? context.index}`} {...item} />;
+  },
+
   renderContentGridItem: (item: ContentGridItemType, context: RenderContext) => (
     <ContentGridItem
       key={item.sys?.id ?? context.index}
@@ -55,25 +67,25 @@ export const contentRenderers = {
     />
   ),
 
-  renderPost: (item: PostType, context: RenderContext) => {
-    // spread in context to use the variant prop in PostCard
-    return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
-  },
-
-  renderVideo: (item: VideoType, context: RenderContext) => (
-    <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />
+  renderCtaGrid: (item: CtaGridType, context: RenderContext) => (
+    <CtaGrid key={item.sys?.id ?? context.index} {...item} />
   ),
 
   renderImage: (item: AirImageType, context: RenderContext) => (
     <AirImage key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderProduct: (item: ProductType, context: RenderContext) => (
-    <ProductCard key={item.sys?.id ?? context.index} {...item} />
+  renderLocation: (item: LocationType, context: RenderContext) => (
+    <Location key={item.sys?.id ?? context.index} {...item} {...context} />
   ),
 
-  renderSolution: (item: SolutionType, context: RenderContext) => (
-    <SolutionCard key={item.sys?.id ?? context.index} index={context.index} {...item} />
+  renderPost: (item: PostType, context: RenderContext) => {
+    // spread in context to use the variant prop in PostCard
+    return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
+  },
+
+  renderProduct: (item: ProductType, context: RenderContext) => (
+    <ProductCard key={item.sys?.id ?? context.index} {...item} />
   ),
 
   renderService: (item: ContentGridItemUnion, context: RenderContext) => {
@@ -97,8 +109,8 @@ export const contentRenderers = {
     <Slider key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderCtaGrid: (item: CtaGridType, context: RenderContext) => (
-    <CtaGrid key={item.sys?.id ?? context.index} {...item} />
+  renderSolution: (item: SolutionType, context: RenderContext) => (
+    <SolutionCard key={item.sys?.id ?? context.index} index={context.index} {...item} />
   ),
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
@@ -110,14 +122,9 @@ export const contentRenderers = {
     return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;
   },
 
-  renderCollection: (item: CollectionType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), create a LazyCollection component
-    if (item.sys?.id && !item.title && !item.itemsPerPage) {
-      return <LazyCollection key={`lazy-${item.sys.id}`} collectionId={item.sys.id} />;
-    }
-    // If we have full data, render normally
-    return <Collection key={`full-${item.sys?.id ?? context.index}`} {...item} />;
-  },
+  renderVideo: (item: VideoType, context: RenderContext) => (
+    <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />
+  ),
 
   renderPageList: (item: PageListType, context: RenderContext) => {
     const pageList = item;

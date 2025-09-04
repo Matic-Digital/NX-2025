@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { SectionHeading } from '@/components/SectionHeading';
+import { LazySectionHeading } from '@/components/SectionHeading/LazySectionHeading';
 import { AirImage } from '@/components/media/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import { ContentItemRenderer } from './ContentGrid/ContentItemRenderer';
@@ -130,6 +130,10 @@ export function ContentGrid(props: ContentGridProps) {
   const isThreeItemPostLayout =
     validItems.length === 3 && validItems.every((item) => item.__typename === 'Post');
 
+  // Check if this is a location layout that needs featured grid handling
+  const isLocationLayout =
+    validItems.length > 1 && validItems.every((item) => item.__typename === 'OfficeLocation');
+
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
@@ -163,15 +167,47 @@ export function ContentGrid(props: ContentGridProps) {
               className={cn('relative z-20', analysis.allItemsAreSolutions && 'justify-between')}
             >
               {/* section heading */}
-              <SectionHeading
+              <LazySectionHeading
                 {...contentGrid.heading}
+                sectionHeadingId={contentGrid.heading.sys.id}
                 isDarkMode={shouldUseDarkMode}
                 hasSolutionItems={analysis.allItemsAreSolutions}
               />
 
               {/* items */}
               {(() => {
-                const gridContent = isThreeItemPostLayout ? (
+                const gridContent = isLocationLayout ? (
+                  // Location featured grid layout - first item featured, rest in grid
+                  <Box direction="col" gap={8} className="w-full">
+                    {/* Featured location - spans full width */}
+                    <ContentItemRenderer
+                      key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
+                      item={validItems[0]!}
+                      index={0}
+                      validItems={validItems}
+                      parentPageListSlug={props.parentPageListSlug}
+                      currentPath={props.currentPath}
+                      variant="featured"
+                    />
+
+                    {/* Remaining locations in responsive grid */}
+                    {validItems.length > 1 && (
+                      <Box direction="col" cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
+                        {validItems.slice(1).map((item, index) => (
+                          <ContentItemRenderer
+                            key={`${contentGrid.sys?.id}-${index + 1}-${item.sys?.id ?? index + 1}`}
+                            item={item}
+                            index={index + 1}
+                            validItems={validItems}
+                            parentPageListSlug={props.parentPageListSlug}
+                            currentPath={props.currentPath}
+                            variant="grid"
+                          />
+                        ))}
+                      </Box>
+                    )}
+                  </Box>
+                ) : isThreeItemPostLayout ? (
                   // Custom 3-item layout with first item on left, next two stacked on right
                   <div
                     className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-5 lg:gap-5"

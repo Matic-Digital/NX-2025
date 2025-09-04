@@ -14,6 +14,7 @@ export * from './GraphQLResponse';
 export * from './Header';
 export * from './Image';
 export * from './ImageBetween';
+export * from './OfficeLocation';
 export * from './Modal';
 export * from './Page';
 export * from './PageList';

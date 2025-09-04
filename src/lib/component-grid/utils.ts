@@ -1,31 +1,33 @@
 import type {
   Accordion as AccordionType,
-  ContentGridItem as ContentGridItemType,
-  Post as PostType,
-  Video as VideoType,
-  Product as ProductType,
-  Solution as SolutionType,
   AirImage as AirImageType,
-  Slider as SliderType,
+  Collection as CollectionType,
+  ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
+  OfficeLocation as OfficeLocationType,
   PageList as PageListType,
+  Post as PostType,
+  Product as ProductType,
+  Slider as SliderType,
+  Solution as SolutionType,
   Testimonials as TestimonialsType,
-  Collection as CollectionType
+  Video as VideoType
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
   | AccordionType
-  | ContentGridItemType
-  | PostType
-  | VideoType
-  | ProductType
-  | SolutionType
   | AirImageType
-  | SliderType
+  | CollectionType
+  | ContentGridItemType
   | CtaGridType
+  | OfficeLocationType
   | PageListType
+  | PostType
+  | ProductType
+  | SliderType
+  | SolutionType
   | TestimonialsType
-  | CollectionType;
+  | VideoType;
 
 /**
  * Content type detection utilities
@@ -34,32 +36,35 @@ export const contentTypeDetectors = {
   isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
     item.__typename === 'Accordion',
 
+  isCollection: (item: ContentGridItemUnion): item is CollectionType =>
+    item.__typename === 'Collection',
+
   isContentGridItem: (item: ContentGridItemUnion): item is ContentGridItemType =>
     item.__typename === 'ContentGridItem',
 
-  isPost: (item: ContentGridItemUnion): item is PostType => item.__typename === 'Post',
-
-  isVideo: (item: ContentGridItemUnion): item is VideoType => item.__typename === 'Video',
+  isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item.__typename === 'CtaGrid',
 
   isImage: (item: ContentGridItemUnion): item is AirImageType => item.__typename === 'Image',
 
-  isProduct: (item: ContentGridItemUnion): item is ProductType => item.__typename === 'Product',
+  isLocation: (item: ContentGridItemUnion): item is OfficeLocationType =>
+    item.__typename === 'OfficeLocation',
 
-  isSolution: (item: ContentGridItemUnion): item is SolutionType => item.__typename === 'Solution',
+  isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
+
+  isPost: (item: ContentGridItemUnion): item is PostType => item.__typename === 'Post',
+
+  isProduct: (item: ContentGridItemUnion): item is ProductType => item.__typename === 'Product',
 
   isService: (item: ContentGridItemUnion): item is SolutionType => item.__typename === 'Service',
 
   isSlider: (item: ContentGridItemUnion): item is SliderType => item.__typename === 'Slider',
 
-  isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item.__typename === 'CtaGrid',
-
-  isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
+  isSolution: (item: ContentGridItemUnion): item is SolutionType => item.__typename === 'Solution',
 
   isTestimonials: (item: ContentGridItemUnion): item is TestimonialsType =>
     item.__typename === 'Testimonials',
 
-  isCollection: (item: ContentGridItemUnion): item is CollectionType =>
-    item.__typename === 'Collection'
+  isVideo: (item: ContentGridItemUnion): item is VideoType => item.__typename === 'Video'
 };
 
 /**

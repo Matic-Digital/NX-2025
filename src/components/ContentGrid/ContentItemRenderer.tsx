@@ -19,28 +19,36 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderAccordion
   },
   {
+    detector: contentTypeDetectors.isCollection,
+    renderer: contentRenderers.renderCollection
+  },
+  {
     detector: contentTypeDetectors.isContentGridItem,
     renderer: contentRenderers.renderContentGridItem
   },
   {
-    detector: contentTypeDetectors.isPost,
-    renderer: contentRenderers.renderPost
-  },
-  {
-    detector: contentTypeDetectors.isVideo,
-    renderer: contentRenderers.renderVideo
+    detector: contentTypeDetectors.isCtaGrid,
+    renderer: contentRenderers.renderCtaGrid
   },
   {
     detector: contentTypeDetectors.isImage,
     renderer: contentRenderers.renderImage
   },
   {
-    detector: contentTypeDetectors.isProduct,
-    renderer: contentRenderers.renderProduct
+    detector: contentTypeDetectors.isLocation,
+    renderer: contentRenderers.renderLocation
   },
   {
-    detector: contentTypeDetectors.isSolution,
-    renderer: contentRenderers.renderSolution
+    detector: contentTypeDetectors.isPageList,
+    renderer: contentRenderers.renderPageList
+  },
+  {
+    detector: contentTypeDetectors.isPost,
+    renderer: contentRenderers.renderPost
+  },
+  {
+    detector: contentTypeDetectors.isProduct,
+    renderer: contentRenderers.renderProduct
   },
   {
     detector: contentTypeDetectors.isService,
@@ -51,20 +59,16 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderSlider
   },
   {
-    detector: contentTypeDetectors.isCtaGrid,
-    renderer: contentRenderers.renderCtaGrid
-  },
-  {
-    detector: contentTypeDetectors.isPageList,
-    renderer: contentRenderers.renderPageList
+    detector: contentTypeDetectors.isSolution,
+    renderer: contentRenderers.renderSolution
   },
   {
     detector: contentTypeDetectors.isTestimonials,
     renderer: contentRenderers.renderTestimonials
   },
   {
-    detector: contentTypeDetectors.isCollection,
-    renderer: contentRenderers.renderCollection
+    detector: contentTypeDetectors.isVideo,
+    renderer: contentRenderers.renderVideo
   }
 ];
 
@@ -87,10 +91,10 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
     variant
   };
 
-  console.log('ContentItemRenderer processing item:', { 
-    typename: item.__typename, 
+  console.log('ContentItemRenderer processing item:', {
+    typename: item.__typename,
     sysId: item.sys?.id,
-    hasTitle: !!item.title 
+    hasTitle: !!item.title
   });
 
   // Find the appropriate renderer for this content type

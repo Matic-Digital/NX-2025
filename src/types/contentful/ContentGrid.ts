@@ -10,19 +10,21 @@ import { SliderSchema } from './Slider';
 import { SolutionSchema } from './Solution';
 import { ProductSchema } from './Product';
 import { AccordionSchema } from './Accordion';
+import { OfficeLocationSchema } from './OfficeLocation';
 
 // Union type for items
 const ContentGridItemUnion = z.union([
   AccordionSchema,
   ContentGridItemSchema,
-  PostSchema,
-  ServiceSchema,
   CtaGridSchema,
-  VideoSchema,
+  ImageSchema,
+  OfficeLocationSchema,
+  PostSchema,
+  ProductSchema,
+  ServiceSchema,
   SliderSchema,
   SolutionSchema,
-  ProductSchema,
-  ImageSchema
+  VideoSchema
 ]);
 export type ContentGridItemOrPost = z.infer<typeof ContentGridItemUnion>;
 

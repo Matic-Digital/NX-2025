@@ -179,7 +179,6 @@ const fragments = {
     slug
   `,
 
-
   PAGELIST_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title

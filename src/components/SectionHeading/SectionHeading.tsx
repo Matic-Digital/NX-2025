@@ -26,6 +26,11 @@ export function SectionHeading(props: SectionHeadingProps) {
   // Preserve custom props that aren't part of Contentful data
   const { componentType, isDarkMode, isProductContext, hasSolutionItems } = props;
 
+  // If no section heading data is provided, return null
+  if (!sectionHeading) {
+    return null;
+  }
+
   if (componentType === 'banner-hero') {
     console.log('SectionHeading props:', { componentType, isDarkMode, isProductContext });
     console.log('SectionHeading received props:', props);

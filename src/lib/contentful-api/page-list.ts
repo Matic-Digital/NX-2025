@@ -8,6 +8,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { LOCATION_GRAPHQL_FIELDS } from './office-location';
 import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';

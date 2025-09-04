@@ -3,7 +3,6 @@ import { fetchGraphQL } from '../api';
 import type { ContentGrid, ContentGridItem, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
@@ -26,7 +25,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
 export const CONTENTGRID_GRAPHQL_FIELDS = `
   ${SYS_FIELDS} 
   heading {
-    ${SECTION_HEADING_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
   }
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
@@ -45,6 +44,15 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
           }
         }
       }
+      ... on CtaGrid {
+        ${SYS_FIELDS}
+      }
+      ... on Image {
+        ${SYS_FIELDS}
+      }
+      ... on OfficeLocation {
+        ${SYS_FIELDS}
+      }
       ... on Post {
         ${SYS_FIELDS}
       }
@@ -54,22 +62,16 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Service {
         ${SYS_FIELDS}
       }
-      ... on Solution {
-        ${SYS_FIELDS}
-      }
-      ... on Video {
-        ${SYS_FIELDS}
-      }
-      ... on Image {
-        ${SYS_FIELDS}
-      }
       ... on Slider {
         ${SYS_FIELDS}
       }
-      ... on CtaGrid {
+      ... on Solution {
         ${SYS_FIELDS}
       }
       ... on Testimonials {
+        ${SYS_FIELDS}
+      }
+      ... on Video {
         ${SYS_FIELDS}
       }
     }
@@ -166,7 +168,6 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
     throw new Error('Unknown error fetching ContentGrids');
   }
 }
-
 
 /**
  * Fetches Collection IDs from a ContentGrid by checking for empty objects
