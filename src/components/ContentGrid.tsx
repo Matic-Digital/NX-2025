@@ -169,6 +169,7 @@ export function ContentGrid(props: ContentGridProps) {
               {/* section heading */}
               <LazySectionHeading
                 {...contentGrid.heading}
+                componentType={contentGrid.componentType}
                 sectionHeadingId={contentGrid.heading.sys.id}
                 isDarkMode={shouldUseDarkMode}
                 hasSolutionItems={analysis.allItemsAreSolutions}
