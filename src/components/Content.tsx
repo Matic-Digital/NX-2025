@@ -8,7 +8,7 @@ import {
 import Link from 'next/link';
 import { getContentById } from '@/lib/contentful-api/content';
 import { AirImage } from '@/components/media/AirImage';
-import type { Content } from '@/types/contentful/Content';
+import type { Content, ContentOverlay } from '@/types/contentful/Content';
 import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
@@ -18,10 +18,6 @@ import { Box } from '@/components/global/matic-ds';
 import { Button } from './ui/button';
 import { SectionHeading } from './SectionHeading/SectionHeading';
 import { cn } from '@/lib/utils';
-
-interface ContentOverlayProps {
-  children: React.ReactNode;
-}
 
 type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
 
@@ -122,7 +118,7 @@ export function Content(props: Content) {
     </div>
   );
 
-  const ContentOverlay = ({ children }: ContentOverlayProps) => (
+  const ContentOverlay = ({ children }: ContentOverlay) => (
     <div
       className="flex h-full w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:p-10"
       style={{

@@ -16,10 +16,12 @@ import { LazyTestimonials } from '@/components/LazyTestimonials';
 import { LazyCollection } from '@/components/LazyCollection';
 import Collection from '@/components/Collection';
 import { Location } from '@/components/OfficeLocation';
+import { LazyContactCard } from '@/components/ContactCard/LazyContactCard';
 
 import type {
   Accordion as AccordionType,
   AirImage as AirImageType,
+  ContactCard as ContactCardType,
   Collection as CollectionType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
@@ -47,6 +49,14 @@ interface RenderContext {
 export const contentRenderers = {
   renderAccordion: (item: AccordionType, context: RenderContext) => (
     <Accordion key={item.sys?.id ?? context.index} {...item} />
+  ),
+
+  renderContactCard: (item: ContactCardType, context: RenderContext) => (
+    <LazyContactCard
+      key={item.sys?.id ?? context.index}
+      {...item}
+      contactCardId={item.sys?.id ?? `contact-card-${context.index}`}
+    />
   ),
 
   renderCollection: (item: CollectionType, context: RenderContext) => {

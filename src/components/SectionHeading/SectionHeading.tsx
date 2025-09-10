@@ -25,6 +25,7 @@ export function SectionHeading(props: SectionHeadingProps) {
 
   // Preserve custom props that aren't part of Contentful data
   const { componentType, isDarkMode, isProductContext, hasSolutionItems } = props;
+  console.log('SectionHeading props:', props);
 
   // If no section heading data is provided, return null
   if (!sectionHeading) {
@@ -50,7 +51,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         direction="col"
         gap={{ base: 2, md: 4 }}
         className={cn(
-          'col-span-2 max-w-[600px]', 
+          'col-span-2 max-w-[600px]',
           !hasCtaCollection && 'max-w-5xl',
           hasSolutionItems && 'max-w-[32.3rem]'
         )}
@@ -118,7 +119,7 @@ export function SectionHeading(props: SectionHeadingProps) {
     >
       {/* title */}
       <h2
-        className="text-text-on-invert lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
+        className="text-foreground lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
         {...inspectorProps({ fieldId: 'heading.title' })}
       >
         {sectionHeading.title}
@@ -134,7 +135,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         {sectionHeading.description && (
           <p
             {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-text-on-invert w-full xl:text-right"
+            className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
           >
             {sectionHeading.description}
           </p>

@@ -2,6 +2,7 @@ import type {
   Accordion as AccordionType,
   AirImage as AirImageType,
   Collection as CollectionType,
+  ContactCard as ContactCardType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as OfficeLocationType,
@@ -18,6 +19,7 @@ export type ContentGridItemUnion =
   | AccordionType
   | AirImageType
   | CollectionType
+  | ContactCardType
   | ContentGridItemType
   | CtaGridType
   | OfficeLocationType
@@ -35,6 +37,9 @@ export type ContentGridItemUnion =
 export const contentTypeDetectors = {
   isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
     item.__typename === 'Accordion',
+
+  isContactCard: (item: ContentGridItemUnion): item is ContactCardType =>
+    item.__typename === 'ContactCard',
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
     item.__typename === 'Collection',

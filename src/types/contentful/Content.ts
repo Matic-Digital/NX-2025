@@ -32,6 +32,10 @@ export const ContentSchema = z.object({
 
 export type Content = z.infer<typeof ContentSchema>;
 
+export type ContentOverlay = {
+  children: React.ReactNode;
+};
+
 export interface ContentResponse {
   items: Content[];
 }

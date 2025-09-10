@@ -1,4 +1,5 @@
 export * from './banner-hero';
+export * from './contact-card';
 export * from './content-grid';
 export * from './cta-banner';
 export * from './footer';

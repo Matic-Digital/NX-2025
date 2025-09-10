@@ -4,6 +4,7 @@ import { PostSchema } from './Post';
 import { SectionHeadingSchema } from './SectionHeading';
 import { ServiceSchema } from './Service';
 import { ContentGridItemSchema } from './ContentGridItem';
+import { ContactCardSchema } from './ContactCard';
 import { CtaGridSchema } from './CtaGrid';
 import { VideoSchema } from './Video';
 import { SliderSchema } from './Slider';
@@ -17,6 +18,7 @@ const ContentGridItemUnion = z.union([
   AccordionSchema,
   ContentGridItemSchema,
   CtaGridSchema,
+  ContactCardSchema,
   ImageSchema,
   OfficeLocationSchema,
   PostSchema,
@@ -34,11 +36,12 @@ export const ContentGridSchema = z.object({
   }),
   isDarkMode: z.boolean().optional(),
   title: z.string(),
-  heading: SectionHeadingSchema,
+  heading: SectionHeadingSchema.optional(),
   backgroundImage: ImageSchema.optional(),
   itemsCollection: z.object({
     items: z.array(ContentGridItemUnion)
   }),
+  componentType: z.string().optional(),
   __typename: z.string().optional()
 });
 

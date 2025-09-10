@@ -35,6 +35,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Accordion {
         ${SYS_FIELDS}
       }
+      ... on ContactCard {
+        ${SYS_FIELDS}
+      }
       ... on ContentGridItem {
         ${SYS_FIELDS}
         variant

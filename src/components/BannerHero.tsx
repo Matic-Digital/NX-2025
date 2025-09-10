@@ -16,6 +16,7 @@ interface BannerHeroProps extends BannerHero {
   productContext?: {
     type: 'product';
   };
+  contentType?: string;
 }
 
 export function BannerHero(props: BannerHeroProps) {
@@ -30,10 +31,16 @@ export function BannerHero(props: BannerHeroProps) {
   console.log('BannerHero bannerHero:', bannerHero);
   console.log('BannerHero heading data:', bannerHero?.heading);
 
+  const isImageBetween = props.contentType === 'ImageBetween';
+
   return (
     <ErrorBoundary>
       <Section
-        className={cn('relative flex h-[789px]', isProductContext ? 'items-center' : 'items-end')}
+        className={cn(
+          'relative flex h-[789px]',
+          isProductContext ? 'items-center' : isImageBetween ? 'items-center' : 'items-end',
+          'dark'
+        )}
         {...inspectorProps}
       >
         {/* Background Image */}
