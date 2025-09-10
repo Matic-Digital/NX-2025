@@ -15,7 +15,6 @@ export * from './Footer';
 export * from './GraphQLResponse';
 export * from './Header';
 export * from './Image';
-export * from './ImageBetween';
 export * from './Modal';
 export * from './OfficeLocation';
 export * from './Page';

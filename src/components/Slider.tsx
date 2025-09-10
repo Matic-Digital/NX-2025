@@ -28,6 +28,7 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
+import type { ContentOverlay } from '@/types/contentful/Content';
 import type { SliderItemType } from '@/types/contentful/Slider';
 
 interface SliderCardProps {
@@ -38,11 +39,7 @@ interface SliderCardProps {
   api?: CarouselApi;
 }
 
-interface ContentOverlayProps {
-  children: React.ReactNode;
-}
-
-const ContentOverlay = ({ children }: ContentOverlayProps) => (
+const ContentOverlay = ({ children }: ContentOverlay) => (
   <div className="relative h-full">
     <div
       className="flex h-full w-full max-w-[393px] flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px]"
@@ -501,7 +498,7 @@ const GenericSlider = ({
                               'text-headline-lg transition-all duration-300',
                               isActive
                                 ? '!text-text-body scale-100'
-                                : '!text-gray-600 origin-left scale-55'
+                                : 'origin-left scale-55 !text-gray-600'
                             )}
                           >
                             {timelineItemData.year}

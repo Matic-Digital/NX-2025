@@ -36,7 +36,7 @@ export const ContentGridSchema = z.object({
   }),
   isDarkMode: z.boolean().optional(),
   title: z.string(),
-  heading: SectionHeadingSchema,
+  heading: SectionHeadingSchema.optional(),
   backgroundImage: ImageSchema.optional(),
   itemsCollection: z.object({
     items: z.array(ContentGridItemUnion)

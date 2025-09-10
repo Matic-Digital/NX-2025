@@ -19,6 +19,8 @@ export function ContactCard(props: ContactCardProps) {
   const contactCard = useContentfulLiveUpdates(props) as ContactCard;
   const inspectorProps = useContentfulInspectorMode({ entryId: contactCard?.sys?.id });
 
+  console.log('ContactCard render', contactCard);
+
   if (!contactCard) {
     return null;
   }

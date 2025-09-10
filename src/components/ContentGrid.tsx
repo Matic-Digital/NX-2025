@@ -152,7 +152,7 @@ export function ContentGrid(props: ContentGridProps) {
   return (
     <ErrorBoundary>
       <div className={shouldUseDarkMode ? 'dark' : ''}>
-        <Section className={`relative ${shouldUseDarkMode ? 'bg-[#111]' : ''}`}>
+        <Section className="relative">
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage
               link={contentGrid.backgroundImage?.link}
@@ -167,13 +167,15 @@ export function ContentGrid(props: ContentGridProps) {
               className={cn('relative z-20', analysis.allItemsAreSolutions && 'justify-between')}
             >
               {/* section heading */}
-              <LazySectionHeading
-                {...contentGrid.heading}
-                componentType={contentGrid.componentType}
-                sectionHeadingId={contentGrid.heading.sys.id}
-                isDarkMode={shouldUseDarkMode}
-                hasSolutionItems={analysis.allItemsAreSolutions}
-              />
+              {contentGrid.heading && (
+                <LazySectionHeading
+                  {...contentGrid.heading}
+                  componentType={contentGrid.componentType}
+                  sectionHeadingId={contentGrid.heading?.sys.id}
+                  isDarkMode={shouldUseDarkMode}
+                  hasSolutionItems={analysis.allItemsAreSolutions}
+                />
+              )}
 
               {/* items */}
               {(() => {

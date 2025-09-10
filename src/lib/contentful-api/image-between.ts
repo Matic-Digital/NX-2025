@@ -1,4 +1,3 @@
-import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { VIDEO_GRAPHQL_FIELDS } from './video';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
@@ -11,7 +10,12 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   contentTop {
-    ${CONTENTGRID_GRAPHQL_FIELDS}
+    ... on ContentGrid {
+      ${SYS_FIELDS}
+    }
+    ... on BannerHero {
+      ${SYS_FIELDS}
+    }
   }
   asset {
     __typename
@@ -24,12 +28,15 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
     ... on Slider {
       ${SYS_FIELDS}
     }
+    ... on ContentGrid {
+      ${SYS_FIELDS}
+    }
   }
   backgroundMedia {
     ${ASSET_FIELDS}
   }
   contentBottom {
-    ${CONTENTGRID_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
   }
 `;
 

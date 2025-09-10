@@ -6,7 +6,7 @@ import { getSectionHeadingById } from '@/lib/contentful-api/section-heading';
 import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
 
 interface LazySectionHeadingProps {
-  sectionHeadingId: string;
+  sectionHeadingId?: string;
   componentType?: string;
   isDarkMode?: boolean;
   isProductContext?: boolean;
@@ -28,7 +28,7 @@ export function LazySectionHeading({
     async function fetchSectionHeading() {
       try {
         setLoading(true);
-        const data = await getSectionHeadingById(sectionHeadingId, false);
+        const data = await getSectionHeadingById(sectionHeadingId ?? '', false);
         setSectionHeading(data);
       } catch (err) {
         console.error('Failed to fetch section heading:', err);
