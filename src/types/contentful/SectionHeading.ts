@@ -8,6 +8,7 @@ export const SectionHeadingSchema = z.object({
   overline: z.string().optional(),
   title: z.string(),
   description: z.string().optional(),
+  variant: z.string().optional(),
   ctaCollection: z
     .object({
       items: z.array(ButtonSchema)

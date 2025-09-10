@@ -9,6 +9,7 @@ export const SECTION_HEADING_GRAPHQL_FIELDS = `
   overline
   title
   description
+  variant
   ctaCollection(limit: 2) {
     items {
       sys { id }
