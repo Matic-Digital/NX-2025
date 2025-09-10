@@ -142,7 +142,6 @@ export function ImageBetween(props: ImageBetween) {
                 {imageBetween.contentTop.__typename === 'BannerHero' && contentTopData && (
                   <BannerHero
                     {...(contentTopData as BannerHeroType)}
-                    isDarkMode={true}
                     contentType={imageBetween.__typename}
                   />
                 )}
@@ -154,29 +153,33 @@ export function ImageBetween(props: ImageBetween) {
         {/* Central Image */}
         {imageBetween.asset && (
           <div className="relative flex items-center justify-center">
-            <Container className="absolute z-20">
-              {/* Render asset based on type */}
-              {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
+            {/* Render asset based on type */}
+            {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
+              <Container className="absolute z-20">
                 <AirImage
                   link={(imageBetween.asset as Image).link}
                   altText={(imageBetween.asset as Image).altText ?? imageBetween.asset.title ?? ''}
                   className="w-full object-contain"
                   {...inspectorProps({ fieldId: 'asset' })}
                 />
-              )}
-              {imageBetween.asset && imageBetween.asset.__typename === 'Slider' && (
+              </Container>
+            )}
+            {imageBetween.asset && imageBetween.asset.__typename === 'Slider' && (
+              <Container className="absolute z-20">
                 <Slider {...imageBetween.asset} {...inspectorProps({ fieldId: 'asset' })} />
-              )}
-              {imageBetween.asset &&
-                imageBetween.asset.__typename === 'ContentGrid' &&
-                assetContentGrid && (
+              </Container>
+            )}
+            {imageBetween.asset &&
+              imageBetween.asset.__typename === 'ContentGrid' &&
+              assetContentGrid && (
+                <Container className="absolute z-20 !p-0">
                   <ContentGrid
                     {...assetContentGrid}
                     isDarkMode={true}
                     componentType={imageBetween.__typename}
                   />
-                )}
-            </Container>
+                </Container>
+              )}
           </div>
         )}
 

@@ -16,7 +16,6 @@ interface BannerHeroProps extends BannerHero {
   productContext?: {
     type: 'product';
   };
-  isDarkMode?: boolean;
   contentType?: string;
 }
 
@@ -40,7 +39,7 @@ export function BannerHero(props: BannerHeroProps) {
         className={cn(
           'relative flex h-[789px]',
           isProductContext ? 'items-center' : isImageBetween ? 'items-center' : 'items-end',
-          bannerHero.isDarkMode && 'dark'
+          'dark'
         )}
         {...inspectorProps}
       >
@@ -57,8 +56,6 @@ export function BannerHero(props: BannerHeroProps) {
             sectionHeadingId={bannerHero.heading.sys.id}
             componentType="banner-hero"
             isProductContext={isProductContext}
-            isDarkMode={bannerHero.isDarkMode}
-            // isDarkMode={true}
           />
         </div>
       </Section>
