@@ -21,6 +21,7 @@ import type { ContentGrid as ContentGridType } from '@/types/contentful';
 interface ContentGridProps extends ContentGridType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
+  forceTabletSingleColumn?: boolean; // Force single column layout on tablet
 }
 
 export function ContentGrid(props: ContentGridProps) {
@@ -302,7 +303,11 @@ export function ContentGrid(props: ContentGridProps) {
                   </div>
                 ) : (
                   // Existing uniform grid layout
-                  <Box cols={gridConfig.cols} gap={gridConfig.gap} wrap={true}>
+                  <Box 
+                    cols={props.forceTabletSingleColumn ? { base: 1, lg: typeof gridConfig.cols === 'number' ? gridConfig.cols : gridConfig.cols.lg || 2 } : gridConfig.cols} 
+                    gap={gridConfig.gap} 
+                    wrap={true}
+                  >
                     {validItems.map((item, index) => (
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
