@@ -93,13 +93,13 @@ export function RegionsMap(props: RegionsMap) {
       <Box direction="col" gap={12} className="bg-subtle p-4 md:p-16">
         {/* Header */}
         <Box direction="col" gap={2} className="text-center">
-          <p className="text-gray-700 text-body-sm uppercase">{overline}</p>
+          <p className="text-body-sm text-gray-700 uppercase">{overline}</p>
           <h2 className="text-headline-md lg:text-headline-lg leading-14">{title}</h2>
         </Box>
 
         {/* World Map SVG */}
         <div className="relative">
-          <div className="absolute inset-0 z-20 size-full"></div>
+          <div className="absolute inset-0 size-full"></div>
           <div className="relative z-10 w-full">
             <RegionsMapImageInteractive
               hoveredRegion={hoveredRegion}
