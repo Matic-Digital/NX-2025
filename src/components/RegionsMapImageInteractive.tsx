@@ -1,4 +1,5 @@
 import { MapPin } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface RegionsMapImageProps {
   hoveredRegion?: string | null;
@@ -53,12 +54,13 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
         {/* Location pins - one per region */}
         <g className="location-pins">
           {/* North America pin */}
-          <foreignObject x="200" y="145" width="46" height="46">
+          <foreignObject x="200" y="145" width="46" height="46" className="group">
             <MapPin
               size={46}
-              className={`fill-black text-white ${
-                hoveredRegion === 'northAmerica' ? 'md:fill-primary md:stroke-white' : ''
-              }`}
+              className={cn(
+                'fill-black text-white',
+                hoveredRegion === 'northAmerica' && 'md:fill-primary md:stroke-white'
+              )}
             />
           </foreignObject>
 
@@ -66,9 +68,10 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="635" y="135" width="46" height="46">
             <MapPin
               size={46}
-              className={`fill-black text-white ${
+              className={cn(
+                'fill-black text-white',
                 hoveredRegion === 'europe' ? 'md:fill-primary md:stroke-white' : ''
-              }`}
+              )}
             />
           </foreignObject>
 
@@ -76,9 +79,10 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="380" y="430" width="46" height="46">
             <MapPin
               size={46}
-              className={`fill-black text-white ${
+              className={cn(
+                'fill-black text-white',
                 hoveredRegion === 'latinAmerica' ? 'md:fill-primary md:stroke-white' : ''
-              }`}
+              )}
             />
           </foreignObject>
 
@@ -86,9 +90,10 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="1030" y="450" width="46" height="46">
             <MapPin
               size={46}
-              className={`fill-black text-white ${
+              className={cn(
+                'fill-black text-white',
                 hoveredRegion === 'australiaPacific' ? 'md:fill-primary md:stroke-white' : ''
-              }`}
+              )}
             />
           </foreignObject>
 
@@ -96,9 +101,10 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           <foreignObject x="770" y="260" width="46" height="46">
             <MapPin
               size={46}
-              className={`fill-black text-white ${
+              className={cn(
+                'fill-black text-white',
                 hoveredRegion === 'middleEastIndiaAfrica' ? 'md:fill-primary md:stroke-white' : ''
-              }`}
+              )}
             />
           </foreignObject>
         </g>
@@ -107,7 +113,6 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
         <g className="interactive-regions">
           <rect
             id="northAmerica"
-            className={`region-overlay ${hoveredRegion === 'northAmerica' ? 'hovered' : ''}`}
             x="30"
             y="130"
             width="320"
@@ -130,10 +135,10 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
           />
           <rect
             id="latinAmerica"
-            x="180"
-            y="280"
+            x="300"
+            y="300"
             width="200"
-            height="280"
+            height="200"
             fill="transparent"
             onMouseEnter={() => onRegionHover?.('latinAmerica')}
             onMouseLeave={() => onRegionHover?.(null)}
