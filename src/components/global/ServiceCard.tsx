@@ -112,7 +112,7 @@ export function ServiceCard(props: ServiceCardProps) {
             ))}
             <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
               <Link href={`/services/${service.slug}`}>
-                <Button variant="outlineWhite">{service.cardButtonText}</Button>
+                <Button variant="outlineTrasparentWhite">{service.cardButtonText}</Button>
               </Link>
             </Box>
           </Box>
