@@ -372,33 +372,54 @@ const GenericSlider = ({
 
         {/* Combined Navigation - Handles TimelineSlider (left side) and other sliders (top right) */}
         {showAltNavigation && (
-          <div
-            className={cn(
-              'absolute hidden gap-4 lg:flex',
-              isTimelineSlider
-                ? 'top-3/4 left-8 z-10 -translate-y-2/3 flex-row'
-                : '-top-12 right-29',
-              isTeamMemberSlider && 'right-0',
-              isTimelineSlider && 'right-0'
+          <>
+            {isTimelineSlider ? (
+              <>
+                {/* Mobile Timeline Navigation - Separate buttons on each side */}
+                <CarouselPrevious
+                  className="absolute left-6 top-1/2 z-50 size-10 -translate-y-1/2 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded shadow-sm lg:hidden"
+                  variant="outline"
+                  aria-label="Previous slide"
+                />
+                <CarouselNext
+                  className="absolute right-6 top-1/2 z-50 size-10 -translate-y-1/2 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded shadow-sm lg:hidden"
+                  variant="outline"
+                  aria-label="Next slide"
+                />
+                {/* Desktop Timeline Navigation - Grouped together */}
+                <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
+                  <CarouselPrevious
+                    className="relative left-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded shadow-sm"
+                    variant="outline"
+                    aria-label="Previous slide"
+                  />
+                  <CarouselNext
+                    className="relative right-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded shadow-sm"
+                    variant="outline"
+                    aria-label="Next slide"
+                  />
+                </div>
+              </>
+            ) : (
+              <div
+                className={cn(
+                  'absolute hidden gap-4 lg:flex -top-12 right-29',
+                  isTeamMemberSlider && 'right-0'
+                )}
+              >
+                <CarouselPrevious
+                  className="relative left-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded-none"
+                  variant="outline"
+                  aria-label="Previous slide"
+                />
+                <CarouselNext
+                  className="relative right-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900 rounded-none"
+                  variant="outline"
+                  aria-label="Next slide"
+                />
+              </div>
             )}
-          >
-            <CarouselPrevious
-              className={cn(
-                'relative left-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
-                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
-              )}
-              variant="outline"
-              aria-label="Previous slide"
-            />
-            <CarouselNext
-              className={cn(
-                'relative right-0 size-8 border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900',
-                isTimelineSlider ? 'rounded shadow-sm' : 'rounded-none'
-              )}
-              variant="outline"
-              aria-label="Next slide"
-            />
-          </div>
+          </>
         )}
       </Carousel>
 
