@@ -10,7 +10,7 @@ export * from './ContentGridItem';
 export * from './CtaBanner';
 export * from './CtaGrid';
 export * from './ExternalPage';
-export * from './FeatureSliderItem';
+export * from './SliderItem';
 export * from './Footer';
 export * from './GraphQLResponse';
 export * from './Header';

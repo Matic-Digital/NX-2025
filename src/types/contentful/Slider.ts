@@ -1,29 +1,16 @@
 import { z } from 'zod';
-import { SectionHeadingSchema } from './SectionHeading';
 import { ImageSchema } from './Image';
-import { FeatureSliderItemSchema } from './FeatureSliderItem';
+import { SliderItemSchema } from './SliderItem';
 import { TimelineSliderItemSchema } from './TimelineSliderItem';
 import { TeamMemberSchema } from './TeamMember';
 import { PostSliderItemSchema } from './Post';
-
-const SliderItemSchema = z.object({
-  sys: z.object({
-    id: z.string()
-  }),
-  title: z.string(),
-  heading: SectionHeadingSchema,
-  image: ImageSchema,
-  __typename: z.string().optional()
-});
-
-export type SliderItem = z.infer<typeof SliderItemSchema>;
 
 // Union type for slider items
 const SliderItemUnion = z.union([
   SliderItemSchema,
   PostSliderItemSchema,
   ImageSchema,
-  FeatureSliderItemSchema,
+  SliderItemSchema,
   TimelineSliderItemSchema,
   TeamMemberSchema
 ]);

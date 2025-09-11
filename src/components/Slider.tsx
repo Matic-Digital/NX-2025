@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getSlidersByIds } from '@/lib/contentful-api/slider';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -18,7 +20,6 @@ import type {
   SliderItem,
   PostSliderItem,
   Image as ImageType,
-  FeatureSliderItem,
   TimelineSliderItem,
   TeamMember
 } from '@/types/contentful';
@@ -30,6 +31,7 @@ import {
 } from '@contentful/live-preview/react';
 import type { ContentOverlay } from '@/types/contentful/Content';
 import type { SliderItemType } from '@/types/contentful/Slider';
+import { ArrowUpRight } from 'lucide-react';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -64,6 +66,67 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
     }
   );
 
+  // Guard clause: return fallback if updatedItem is undefined
+  if (!updatedItem) {
+    return (
+      <div className={baseCardClasses}>
+        <div className="flex h-full items-center justify-center">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle SliderItem type
+  if (updatedItem.__typename === 'SliderItem') {
+    const sliderItem = updatedItem as SliderItem;
+    const isCurrentSlide = current === index + 1;
+    return (
+      <Box
+        direction="col"
+        gap={4}
+        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
+      >
+        {sliderItem.icon && (
+          <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
+            <Image
+              src={sliderItem.icon?.url ?? ''}
+              alt={sliderItem.title}
+              className={cn('filter', isCurrentSlide ? 'invert' : '')}
+              width={60}
+              height={60}
+            />
+          </div>
+        )}
+        <Box direction="col" gap={2}>
+          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {sliderItem.title}
+          </h3>
+          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {sliderItem.description}
+          </p>
+        </Box>
+
+        {sliderItem.cta && (
+          <Box direction="row" gap={2}>
+            <Link
+              key={sliderItem.cta.sys?.id}
+              href={sliderItem.cta.internalLink?.slug ?? sliderItem.cta.externalLink ?? '#'}
+              {...(sliderItem.cta.externalLink
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              <Button variant="outlineWhite" className="flex items-center gap-2">
+                {sliderItem.cta.text}
+                {isCurrentSlide && <ArrowUpRight />}
+              </Button>
+            </Link>
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
   // Handle Image type
   if (updatedItem.__typename === 'Image') {
     const imageItem = updatedItem as ImageType;
@@ -74,48 +137,6 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
           altText={imageItem.altText}
           className="absolute h-full w-full object-cover"
         />
-      </div>
-    );
-  }
-
-  // Handle SliderItem type
-  if (updatedItem.__typename === 'SliderItem') {
-    const sliderItem = updatedItem as SliderItem;
-    return (
-      <div className={baseCardClasses}>
-        <AirImage
-          link={sliderItem.image?.link}
-          altText={sliderItem.image?.altText}
-          className="absolute h-full w-full object-cover"
-        />
-        <ContentOverlay>
-          <Box direction="col" gap={5}>
-            <Box direction="col" gap={1.5}>
-              {sliderItem.heading.overline && (
-                <p
-                  className="text-body-sm text-white uppercase"
-                  {...inspectorProps({ fieldId: 'heading.overline' })}
-                >
-                  {sliderItem.heading.overline}
-                </p>
-              )}
-              <h2
-                className="text-headline-sm leading-tight text-white"
-                {...inspectorProps({ fieldId: 'heading.title' })}
-              >
-                {sliderItem.heading.title}
-              </h2>
-            </Box>
-            {sliderItem.heading.description && (
-              <p
-                className="text-body-xs letter-spacing-[0.14px] leading-normal text-white"
-                {...inspectorProps({ fieldId: 'heading.description' })}
-              >
-                {sliderItem.heading.description}
-              </p>
-            )}
-          </Box>
-        </ContentOverlay>
       </div>
     );
   }
@@ -159,38 +180,6 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
           </Box>
         </ContentOverlay>
       </div>
-    );
-  }
-
-  // Handle FeatureSliderItem type
-  if (updatedItem.__typename === 'FeatureSliderItem') {
-    const featureSliderItem = updatedItem as FeatureSliderItem;
-    const isCurrentSlide = current === index + 1;
-
-    return (
-      <Box
-        direction="col"
-        gap={4}
-        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
-      >
-        <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
-          <Image
-            src={featureSliderItem.icon?.url ?? ''}
-            alt={featureSliderItem.title}
-            className={cn('filter', isCurrentSlide ? 'invert' : '')}
-            width={60}
-            height={60}
-          />
-        </div>
-        <Box direction="col" gap={2}>
-          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
-            {featureSliderItem.title}
-          </h3>
-          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
-            {featureSliderItem.description}
-          </p>
-        </Box>
-      </Box>
     );
   }
 
@@ -317,7 +306,7 @@ const GenericSlider = ({
   showAltNavigation = false,
   isFullWidth = true
 }: GenericSliderProps) => {
-  const isFeatureSlider = sliderData.itemsCollection.items[0]?.__typename === 'FeatureSliderItem';
+  const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
 
@@ -358,7 +347,7 @@ const GenericSlider = ({
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
                 className={cn(
-                  isFeatureSlider
+                  isSlider
                     ? 'basis-[411px]'
                     : isTeamMemberSlider
                       ? 'basis-[300px]'
@@ -412,6 +401,38 @@ const GenericSlider = ({
           </div>
         )}
       </Carousel>
+
+      {showIndicators && (
+        <div className="relative z-50 mx-auto -mt-4 flex h-1 w-[532px] flex-shrink-0 items-center gap-4">
+          {sliderData.itemsCollection.items.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => api?.scrollTo(index)}
+              className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
+                'bg-[#F5B12D] opacity-100': current === index + 1
+              })}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+
+      {showAltIndicators && (
+        <Container>
+          <div className="mx-auto mt-12 flex h-1">
+            {sliderData.itemsCollection.items.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
+                  'bg-surface-invert': current === index + 1
+                })}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </Container>
+      )}
 
       {/* Separate Timeline Component - Only for Timeline Sliders */}
       {isTimelineSlider && (
@@ -526,38 +547,6 @@ const GenericSlider = ({
           </div>
         </div>
       )}
-
-      {showIndicators && (
-        <div className="relative z-50 mx-auto -mt-4 flex h-1 w-[532px] flex-shrink-0 items-center gap-4">
-          {sliderData.itemsCollection.items.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
-                'bg-[#F5B12D] opacity-100': current === index + 1
-              })}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
-
-      {showAltIndicators && (
-        <Container>
-          <div className="mx-auto mt-12 flex h-1">
-            {sliderData.itemsCollection.items.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => api?.scrollTo(index)}
-                className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
-                  'bg-surface-invert': current === index + 1
-                })}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </Container>
-      )}
     </div>
   );
 };
@@ -625,7 +614,7 @@ export function Slider(props: SliderSys) {
   }
 
   const isImageSlider = firstItem.__typename === 'Image';
-  const isFeatureSliderItemSlider = firstItem.__typename === 'FeatureSliderItem';
+  const isSliderItemSlider = firstItem.__typename === 'SliderItem';
   const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
   const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
 
@@ -637,16 +626,11 @@ export function Slider(props: SliderSys) {
       api={api}
       setApi={setApi}
       showIndicators={isImageSlider}
-      showAltIndicators={isFeatureSliderItemSlider || isTeamMemberSlider}
+      showAltIndicators={isSliderItemSlider || isTeamMemberSlider}
       showNavigation={
-        !isImageSlider &&
-        !isFeatureSliderItemSlider &&
-        !isTimelineSliderItemSlider &&
-        !isTeamMemberSlider
+        !isImageSlider && !isSliderItemSlider && !isTimelineSliderItemSlider && !isTeamMemberSlider
       }
-      showAltNavigation={
-        isFeatureSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider
-      }
+      showAltNavigation={isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider}
       isFullWidth={!isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider}
     />
   );

@@ -219,7 +219,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
             <div className="mt-auto">
               <Link href={getHref()} className="inline-block w-auto">
                 <Button
-                  variant="outlineWhite"
+                  variant="outlineTrasparentWhite"
                   className="hover:bg-background hover:text-foreground transition-colors"
                 >
                   Learn More
