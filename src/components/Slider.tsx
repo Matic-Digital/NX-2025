@@ -85,7 +85,7 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn('bg-subtle h-full w-full p-8', isCurrentSlide && 'bg-primary')}
       >
         {sliderItem.icon && (
           <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
@@ -108,17 +108,26 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
         </Box>
 
         {sliderItem.cta && (
-          <Box direction="row" gap={2}>
+          <Box direction="row" gap={2} className="mt-auto">
             <Link
               key={sliderItem.cta.sys?.id}
               href={sliderItem.cta.internalLink?.slug ?? sliderItem.cta.externalLink ?? '#'}
               {...(sliderItem.cta.externalLink
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
+              className="group"
             >
-              <Button variant="outlineWhite" className="flex items-center gap-2">
+              <Button
+                variant="outlineWhite"
+                className={cn(
+                  'hover:bg-primary hover:text-text-on-primary',
+                  isCurrentSlide && 'hover:bg-white hover:text-black'
+                )}
+              >
                 {sliderItem.cta.text}
-                {isCurrentSlide && <ArrowUpRight />}
+                {isCurrentSlide && (
+                  <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                )}
               </Button>
             </Link>
           </Box>
@@ -309,11 +318,15 @@ const GenericSlider = ({
   const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
+  const hasOnePostSlide =
+    sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
 
   return (
     <div
       className={cn(isFullWidth ? 'relative w-screen' : 'relative')}
-      style={{ marginLeft: isFullWidth ? 'calc(-50vw + 50%)' : '' }}
+      style={{
+        marginLeft: isFullWidth && !hasOnePostSlide ? 'calc(-50vw + 50%)' : ''
+      }}
     >
       <Carousel
         setApi={setApi}
@@ -613,10 +626,11 @@ export function Slider(props: SliderSys) {
     );
   }
 
+  const isPostSlider = firstItem.__typename === 'Post';
   const isImageSlider = firstItem.__typename === 'Image';
-  const isSliderItemSlider = firstItem.__typename === 'SliderItem';
-  const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
   const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
+  const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
+  const isSliderItemSlider = firstItem.__typename === 'SliderItem';
 
   // Configure slider based on content type
   return (
@@ -631,7 +645,9 @@ export function Slider(props: SliderSys) {
         !isImageSlider && !isSliderItemSlider && !isTimelineSliderItemSlider && !isTeamMemberSlider
       }
       showAltNavigation={isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider}
-      isFullWidth={!isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider}
+      isFullWidth={
+        isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
+      }
     />
   );
 }

@@ -27,7 +27,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
   const { sys, heading, description, variant, icon, image } = contentData;
-  console.log('ContentGridItem variant', { variant, heading });
+  console.log('ContentGridItem', contentData);
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -232,6 +232,60 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
+  const BackgroundPrimaryHoverItem = () => (
+    <div className="group rounded-xxs bg-subtle relative overflow-hidden">
+      {/* Card Content */}
+      <Box
+        direction="col"
+        gap={4}
+        className="group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 transition-colors"
+      >
+        {/* Icon */}
+        {icon?.url && (
+          <div className="w-fit">
+            <div className="group-hover:bg-background bg-foreground p-2 transition-colors">
+              <SvgIcon
+                src={icon.url}
+                alt={heading}
+                width={40}
+                height={40}
+                className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Text Content */}
+        <Box direction="col" gap={8} className="min-h-[250px] justify-between">
+          <Box direction="col" gap={2}>
+            <h3
+              className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+              {...inspectorProps({ fieldId: 'heading' })}
+            >
+              {heading}
+            </h3>
+            {description && (
+              <p
+                className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 hidden transition-colors group-hover:block"
+                {...inspectorProps({ fieldId: 'description' })}
+              >
+                {description}
+              </p>
+            )}
+          </Box>
+          <Link href={getHref()}>
+            <Button
+              variant="outline"
+              className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
+            >
+              See Details
+            </Button>
+          </Link>
+        </Box>
+      </Box>
+    </div>
+  );
+
   const BackgroundGradientHoverItem = () => (
     <div className="group rounded-xxs bg-subtle relative overflow-hidden">
       {/* Card Image */}
@@ -287,6 +341,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
   switch (variant) {
     case 'BackgroundImage':
       return <BackgroundImageItem />;
+    case 'BackgroundPrimaryHover':
+      return <BackgroundPrimaryHoverItem />;
     case 'BackgroundGradientHover':
       return <BackgroundGradientHoverItem />;
     case 'Link':

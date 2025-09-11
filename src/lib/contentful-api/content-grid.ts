@@ -12,13 +12,13 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   title
   heading
   description
-  variant
   icon {
     ${ASSET_FIELDS}
   }
   image {
     ${IMAGE_GRAPHQL_FIELDS}
   }
+  variant
 `;
 
 // ContentGrid fields
