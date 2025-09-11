@@ -440,7 +440,12 @@ const GenericSlider = ({
           <div className="w-full">
             {/* Timeline Bar */}
             <div className="mb-8">
-              <div className="relative h-0.5 w-full bg-gray-200">
+              <div 
+                className="relative h-0.5 w-full bg-gray-200 transition-transform duration-500 ease-in-out lg:!transform-none"
+                style={{
+                  transform: `translateX(-${((current - 1) / (sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1)) * 100}%)`
+                }}
+              >
                 {/* Individual Timeline Segments */}
                 {sliderData.itemsCollection.items
                   .filter((item) => item.__typename === 'TimelineSliderItem')
@@ -498,7 +503,7 @@ const GenericSlider = ({
               <div
                 className="flex gap-8 transition-transform duration-500 ease-in-out"
                 style={{
-                  transform: `translateX(-${Math.max(0, current - 2) * (100 / 7)}%)`,
+                  transform: `translateX(-${(current - 1) * (100 / sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length)}%)`,
                   width: `${(sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length / 2.5) * 100}%`
                 }}
               >

@@ -172,7 +172,7 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.asset &&
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
-                <Container className="absolute z-20 !p-0">
+                <Container className=" -mt-[18rem] -mb-[20rem] md:absolute z-20 !px-0">
                   <ContentGrid
                     {...assetContentGrid}
                     isDarkMode={true}
