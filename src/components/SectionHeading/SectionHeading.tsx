@@ -289,3 +289,15 @@ export function SectionHeading(props: SectionHeadingProps) {
       return <DefaultSectionHeading />;
   }
 }
+
+// return (
+//   <div className={isDarkMode ? 'dark' : undefined}>
+//     {isBannerHeroComponent && isProductContext
+//       ? CenteredSectionHeading
+//       : isBannerHeroComponent
+//         ? BannerHeroSectionHeading
+//         : isProductContext
+//           ? CenteredSectionHeading
+//           : DefaultSectionHeading}
+//   </div>
+// );

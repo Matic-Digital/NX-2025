@@ -127,7 +127,7 @@ export function ImageBetween(props: ImageBetween) {
           <Box
             direction="col"
             gap={8}
-            className={cn('mb-0', imageBetween.asset && 'mb-72', isBannerHero && 'mb-0')}
+            className={cn('mb-0', imageBetween.asset && imageBetween.asset.__typename === 'Image' && 'mb-24 md:mb-96', imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72', isBannerHero && 'mb-0')}
           >
             {/* Top Content Grid */}
             {imageBetween.contentTop && (
@@ -172,7 +172,7 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.asset &&
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
-                <Container className="absolute z-20 !p-0">
+                <Container className=" -mt-[18rem] -mb-[20rem] md:absolute z-20 !px-0">
                   <ContentGrid
                     {...assetContentGrid}
                     isDarkMode={true}
@@ -185,7 +185,7 @@ export function ImageBetween(props: ImageBetween) {
 
         <Section className="relative h-full w-full overflow-hidden">
           {/* Light Bottom Section */}
-          <div className={cn('mt-0', imageBetween.asset && 'mt-72')}>
+          <div className={cn('mt-0', imageBetween.asset && imageBetween.asset.__typename === 'Image' && 'mt-28 md:mt-96', imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mt-72')}>
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (
