@@ -85,7 +85,7 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle h-full w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn('bg-subtle h-full min-h-[350px] w-full p-8', isCurrentSlide && 'bg-primary')}
       >
         {sliderItem.icon && (
           <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
