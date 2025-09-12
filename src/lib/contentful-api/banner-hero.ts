@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../api';
 import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTION_HEADING_GRAPHQL_FIELDS } from './section-heading';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from '../../components/SectionHeading/SectionHeadingApi';
 import { SYS_FIELDS } from './graphql-fields';
 
 // BannerHero fields

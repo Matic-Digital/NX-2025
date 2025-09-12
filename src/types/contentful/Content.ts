@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ProductSchema } from './Product';
-import { SectionHeadingSchema } from './SectionHeading';
+import { SectionHeadingSchema } from './';
 import { ImageSchema } from './Image';
 import { VideoSchema } from './Video';
 import { ContentGridItemSchema } from './ContentGridItem';

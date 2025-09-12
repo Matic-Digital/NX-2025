@@ -28,8 +28,6 @@ export function ImageBetween(props: ImageBetween) {
   const [assetContentGrid, setAssetContentGrid] = useState<ContentGridType | null>(null);
   const [contentBottomData, setContentBottomData] = useState<ContentGridType | null>(null);
 
-  console.log('ImageBetween props:', props);
-
   const isBannerHero = imageBetween.contentTop?.__typename === 'BannerHero';
 
   // Fetch full data for contentTop
@@ -38,10 +36,10 @@ export function ImageBetween(props: ImageBetween) {
       if (imageBetween.contentTop?.sys?.id) {
         try {
           if (imageBetween.contentTop.__typename === 'ContentGrid') {
-            const contentGridData = await getContentGridById(imageBetween.contentTop.sys.id);
+            const contentGridData = await getContentGridById(imageBetween.contentTop.sys.id ?? '');
             setContentTopData(contentGridData);
           } else if (isBannerHero) {
-            const bannerHeroData = await getBannerHero(imageBetween.contentTop.sys.id);
+            const bannerHeroData = await getBannerHero(imageBetween.contentTop.sys.id ?? '');
             setContentTopData(bannerHeroData);
           }
         } catch (error) {
@@ -65,7 +63,7 @@ export function ImageBetween(props: ImageBetween) {
         imageBetween.asset.sys?.id
       ) {
         try {
-          const contentGridData = await getContentGridById(imageBetween.asset.sys.id);
+          const contentGridData = await getContentGridById(imageBetween.asset.sys.id ?? '');
           setAssetContentGrid(contentGridData);
         } catch (error) {
           console.error('Failed to fetch ContentGrid asset:', error);
@@ -88,7 +86,7 @@ export function ImageBetween(props: ImageBetween) {
         imageBetween.contentBottom.sys?.id
       ) {
         try {
-          const contentGridData = await getContentGridById(imageBetween.contentBottom.sys.id);
+          const contentGridData = await getContentGridById(imageBetween.contentBottom.sys.id ?? '');
           setContentBottomData(contentGridData);
         } catch (error) {
           console.error('Failed to fetch contentBottom:', error);
@@ -127,7 +125,14 @@ export function ImageBetween(props: ImageBetween) {
           <Box
             direction="col"
             gap={8}
-            className={cn('mb-0', imageBetween.asset && imageBetween.asset.__typename === 'Image' && 'mb-24 lg:mb-56 xl:mb-96', imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72', isBannerHero && 'mb-0')}
+            className={cn(
+              'mb-0',
+              imageBetween.asset &&
+                imageBetween.asset.__typename === 'Image' &&
+                'mb-24 lg:mb-56 xl:mb-96',
+              imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
+              isBannerHero && 'mb-0'
+            )}
           >
             {/* Top Content Grid */}
             {imageBetween.contentTop && (
@@ -172,7 +177,7 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.asset &&
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
-                <Container className=" -mt-[18rem] -mb-[20rem] lg:absolute z-20 !px-0">
+                <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute">
                   <ContentGrid
                     {...assetContentGrid}
                     isDarkMode={true}
@@ -186,7 +191,15 @@ export function ImageBetween(props: ImageBetween) {
 
         <Section className="relative h-full w-full overflow-hidden">
           {/* Light Bottom Section */}
-          <div className={cn('mt-0', imageBetween.asset && imageBetween.asset.__typename === 'Image' && 'mt-28 lg:mt-56 xl:mt-96', imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mt-72')}>
+          <div
+            className={cn(
+              'mt-0',
+              imageBetween.asset &&
+                imageBetween.asset.__typename === 'Image' &&
+                'mt-28 lg:mt-56 xl:mt-96',
+              imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mt-72'
+            )}
+          >
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (

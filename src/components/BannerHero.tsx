@@ -7,7 +7,7 @@ import {
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Section } from '@/components/global/matic-ds';
-import { LazySectionHeading } from '@/components/SectionHeading/LazySectionHeading';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import type { BannerHero } from '@/types/contentful/BannerHero';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
@@ -24,7 +24,6 @@ export function BannerHero(props: BannerHeroProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: bannerHero?.sys?.id });
   const pathname = usePathname();
 
-  // const isProductContext = pathname?.includes('/products/');
   const isProductContext = pathname?.includes('/trackers/');
 
   console.log('BannerHero props:', props);
@@ -52,10 +51,9 @@ export function BannerHero(props: BannerHeroProps) {
 
         {/* Content Overlay */}
         <div className="relative z-10 container mx-auto w-full px-6 lg:px-8">
-          <LazySectionHeading
+          <SectionHeading
             sectionHeadingId={bannerHero.heading.sys.id}
             componentType="banner-hero"
-            isProductContext={isProductContext}
           />
         </div>
       </Section>

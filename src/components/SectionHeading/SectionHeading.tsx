@@ -1,39 +1,95 @@
 'use client';
 
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 
-import { Button } from '@/components/ui/button';
-import { Box } from '@/components/global/matic-ds';
-import type { SectionHeading } from '@/types/contentful/SectionHeading';
+// Utils
 import { cn } from '@/lib/utils';
+import { getSectionHeadingById } from './SectionHeadingApi';
 
-interface SectionHeadingProps extends SectionHeading {
+// Components
+import { Box } from '@/components/global/matic-ds';
+import { Button } from '@/components/ui/button';
+import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
+
+// Types
+import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
+
+interface SectionHeadingProps extends Partial<SectionHeading> {
+  sectionHeadingId?: string;
   componentType?: string;
   isDarkMode?: boolean;
-  isProductContext?: boolean;
   hasSolutionItems?: boolean;
 }
+const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
+  if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
+    return variant as SectionHeadingVariant;
+  }
+  return 'Default';
+};
 
 export function SectionHeading(props: SectionHeadingProps) {
-  const sectionHeading = useContentfulLiveUpdates(props);
+  const { sectionHeadingId, componentType, hasSolutionItems, ...restProps } = props;
+  const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
+  const [loading, setLoading] = useState(!!sectionHeadingId);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch data if sectionHeadingId is provided
+  useEffect(() => {
+    if (!sectionHeadingId) return;
+
+    async function fetchSectionHeading() {
+      try {
+        setLoading(true);
+        const data = await getSectionHeadingById(sectionHeadingId ?? '', false);
+        setFetchedData(data);
+      } catch (err) {
+        console.error('Failed to fetch section heading:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load section heading');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void fetchSectionHeading();
+  }, [sectionHeadingId]);
+
+  // Use fetched data if available, otherwise use props data
+  const sectionHeading = useContentfulLiveUpdates(fetchedData ?? (restProps as SectionHeading));
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
-  // Preserve custom props that aren't part of Contentful data
-  const { componentType, hasSolutionItems, variant } = props;
-  console.log('SectionHeading props:', props);
+  const hasCtaCollection = (sectionHeading?.ctaCollection?.items?.length ?? 0) > 0;
 
-  // If no section heading data is provided, return null
+  if (loading) {
+    return (
+      <SectionHeadingSkeleton
+        variant={getValidVariant(props.variant)}
+        componentType={componentType}
+        hasSolutionItems={hasSolutionItems}
+        hasCtaCollection={hasCtaCollection}
+        hasDescription={sectionHeading?.description !== null}
+        hasOverline={sectionHeading?.overline !== null}
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
   if (!sectionHeading) {
     return null;
   }
-
-  const isContentComponent = componentType === 'content';
-  const hasCtaCollection = (props.ctaCollection?.items?.length ?? 0) > 0;
 
   const gap = hasCtaCollection ? 12 : 0;
   const cols = { base: 1, md: 2, xl: hasCtaCollection ? 3 : 2 };
@@ -251,7 +307,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         gap={2}
         {...inspectorProps({ fieldId: 'heading' })}
         className={cn('col-span-1 items-end xl:ml-auto', {
-          'items-center': isContentComponent
+          'items-center': componentType === 'content'
         })}
       >
         {hasCtaCollection &&
@@ -278,7 +334,7 @@ export function SectionHeading(props: SectionHeadingProps) {
     </Box>
   );
 
-  switch (variant) {
+  switch (sectionHeading?.variant) {
     case 'Horizontal':
       return <HorizontalSectionHeading />;
     case 'Stacked':
@@ -289,15 +345,3 @@ export function SectionHeading(props: SectionHeadingProps) {
       return <DefaultSectionHeading />;
   }
 }
-
-// return (
-//   <div className={isDarkMode ? 'dark' : undefined}>
-//     {isBannerHeroComponent && isProductContext
-//       ? CenteredSectionHeading
-//       : isBannerHeroComponent
-//         ? BannerHeroSectionHeading
-//         : isProductContext
-//           ? CenteredSectionHeading
-//           : DefaultSectionHeading}
-//   </div>
-// );

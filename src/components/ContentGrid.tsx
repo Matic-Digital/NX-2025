@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { LazySectionHeading } from '@/components/SectionHeading/LazySectionHeading';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { AirImage } from '@/components/media/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import { ContentItemRenderer } from './ContentGrid/ContentItemRenderer';
@@ -169,8 +169,7 @@ export function ContentGrid(props: ContentGridProps) {
             >
               {/* section heading */}
               {contentGrid.heading && (
-                <LazySectionHeading
-                  {...contentGrid.heading}
+                <SectionHeading
                   componentType={contentGrid.componentType}
                   sectionHeadingId={contentGrid.heading?.sys.id}
                   isDarkMode={shouldUseDarkMode}
@@ -303,9 +302,19 @@ export function ContentGrid(props: ContentGridProps) {
                   </div>
                 ) : (
                   // Existing uniform grid layout
-                  <Box 
-                    cols={props.forceTabletSingleColumn ? { base: 1, lg: typeof gridConfig.cols === 'number' ? gridConfig.cols : gridConfig.cols.lg || 2 } : gridConfig.cols} 
-                    gap={gridConfig.gap} 
+                  <Box
+                    cols={
+                      props.forceTabletSingleColumn
+                        ? {
+                            base: 1,
+                            lg:
+                              typeof gridConfig.cols === 'number'
+                                ? gridConfig.cols
+                                : gridConfig.cols.lg || 2
+                          }
+                        : gridConfig.cols
+                    }
+                    gap={gridConfig.gap}
                     wrap={true}
                   >
                     {validItems.map((item, index) => (

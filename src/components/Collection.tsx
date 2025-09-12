@@ -23,7 +23,6 @@ interface CollectionProps {
 }
 
 export default function Collection({ collectionData, sys, __typename }: CollectionProps) {
-  console.log('Collection component rendered with:', { collectionData, sys });
   const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
   const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
   const [posts, setPosts] = useState<Post[]>([]);

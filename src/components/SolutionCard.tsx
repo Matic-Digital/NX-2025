@@ -12,7 +12,6 @@ interface SolutionProps extends SolutionSys {
 
 export function SolutionCard(props: SolutionProps) {
   const { index = 1 } = props;
-  console.log('solution props:', index);
 
   const [solutionData, setSolutionData] = useState<Solution | null>(null);
   const [loading, setLoading] = useState(true);

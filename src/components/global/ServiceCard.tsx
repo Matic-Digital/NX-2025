@@ -24,8 +24,6 @@ export function ServiceCard(props: ServiceCardProps) {
   const service = useContentfulLiveUpdates(serviceData);
   const { activeCardId, setActiveCardId } = useServiceCard();
 
-  console.log('serviceData', serviceData);
-
   // Fetch service data
   useEffect(() => {
     async function fetchServiceData() {

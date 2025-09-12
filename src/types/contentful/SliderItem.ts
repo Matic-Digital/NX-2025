@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
 import { ButtonSchema } from './Button';
-// import { SectionHeadingSchema } from './SectionHeading';
 
 export const SliderItemSchema = z.object({
   sys: z.object({

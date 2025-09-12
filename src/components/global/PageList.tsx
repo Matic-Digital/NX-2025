@@ -78,9 +78,6 @@ export function PageList(props: PageListProps) {
     entryId: pageList?.sys?.id || ''
   });
 
-  console.log('PageList props:', props);
-  console.log('Live updated pageList:', pageList);
-
   return (
     <div className="page-component">
       {/* Render Page Content */}

@@ -11,7 +11,7 @@ import { AirImage } from '@/components/media/AirImage';
 import type { Content, ContentOverlay } from '@/types/contentful/Content';
 import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
-import type { SectionHeading as SectionHeadingType } from '@/types/contentful/SectionHeading';
+import type { SectionHeading as SectionHeadingType } from './SectionHeading/SectionHeadingSchema';
 import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
 import type { Image } from '@/types/contentful/Image';
 import { Box } from '@/components/global/matic-ds';
@@ -337,13 +337,10 @@ export function Content(props: Content) {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="relative flex h-full items-center justify-center p-10">
+          {/* TODO: need to fix this */}
           <SectionHeading
-            sys={{ id: '' }}
             title={data.title}
             description={data.description}
-            ctaCollection={
-              !isProductData(data) && !isContentGridItemData(data) ? data.ctaCollection : undefined
-            }
             componentType={'content'}
             isDarkMode={true}
           />

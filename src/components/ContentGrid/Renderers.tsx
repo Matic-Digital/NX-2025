@@ -16,7 +16,7 @@ import { LazyTestimonials } from '@/components/LazyTestimonials';
 import { LazyCollection } from '@/components/LazyCollection';
 import Collection from '@/components/Collection';
 import { Location } from '@/components/OfficeLocation';
-import { LazyContactCard } from '@/components/ContactCard/LazyContactCard';
+import { ContactCard } from '@/components/ContactCard/ContactCard';
 
 import type {
   Accordion as AccordionType,
@@ -52,7 +52,7 @@ export const contentRenderers = {
   ),
 
   renderContactCard: (item: ContactCardType, context: RenderContext) => (
-    <LazyContactCard
+    <ContactCard
       key={item.sys?.id ?? context.index}
       {...item}
       contactCardId={item.sys?.id ?? `contact-card-${context.index}`}

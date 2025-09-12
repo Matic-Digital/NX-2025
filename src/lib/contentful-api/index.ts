@@ -1,5 +1,5 @@
 export * from './banner-hero';
-export * from './contact-card';
+export * from '../../components/ContactCard/ContactCardApi';
 export * from './content-grid';
 export * from './cta-banner';
 export * from './footer';
@@ -12,7 +12,7 @@ export * from './page-list';
 export * from './post';
 export * from './product';
 export * from './region';
-export * from './section-heading';
+export * from '../../components/SectionHeading/SectionHeadingApi';
 export * from './service';
 export * from './slider';
 export * from './slider-item';

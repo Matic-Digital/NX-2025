@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ButtonSchema } from './Button';
+import { ButtonSchema } from '@/types/contentful';
 
 export const ContactCardSchema = z.object({
   sys: z.object({

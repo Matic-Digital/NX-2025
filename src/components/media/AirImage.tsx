@@ -82,7 +82,6 @@ export const AirImage: React.FC<AirImageType> = (props) => {
         </div>
       );
     }
-    console.log('AirImage: No link found in props');
     return null;
   }
 

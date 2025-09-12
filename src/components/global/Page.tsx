@@ -114,9 +114,6 @@ export function Page(props: PageProps) {
     return null;
   }
 
-  console.log('Page props:', props);
-  console.log('Live updated page:', page);
-
   return (
     <div className="page-component">
       {/* Render Page Content */}
@@ -126,12 +123,6 @@ export function Page(props: PageProps) {
             {page.pageContentCollection.items.map((content, index) => {
               const key = content.sys?.id || index;
 
-              console.log(
-                'RegionsMap Content type:',
-                content.__typename,
-                'RegionsMap Content:',
-                content
-              );
               try {
                 switch (content.__typename) {
                   case 'BannerHero':

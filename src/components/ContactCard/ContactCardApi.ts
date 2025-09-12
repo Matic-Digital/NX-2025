@@ -1,8 +1,8 @@
-import { fetchGraphQL } from '../api';
-import type { ContactCard } from '@/types/contentful/ContactCard';
-import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS } from './graphql-fields';
-import { BUTTON_GRAPHQL_FIELDS } from './button';
+import { fetchGraphQL } from '../../lib/api';
+import type { ContactCard } from './ContactCardSchema';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { BUTTON_GRAPHQL_FIELDS } from '../../lib/contentful-api/button';
 
 // ContactCard GraphQL fields
 export const CONTACT_CARD_GRAPHQL_FIELDS = `
