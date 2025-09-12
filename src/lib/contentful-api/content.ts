@@ -1,7 +1,6 @@
 import { fetchGraphQL } from '../api';
 import { SYS_FIELDS } from './graphql-fields';
 import { PRODUCT_GRAPHQL_FIELDS } from './product';
-import { SECTION_HEADING_GRAPHQL_FIELDS } from '../../components/SectionHeading/SectionHeadingApi';
 import type { Content } from '@/types/contentful/Content';
 import { ContentfulError, NetworkError } from '../errors';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
