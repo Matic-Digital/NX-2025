@@ -8,7 +8,7 @@ import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
 import { SolutionCard } from '@/components/SolutionCard';
-import { PostCard } from '@/components/global/PostCard';
+import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { Testimonials } from '@/components/global/Testimonials';

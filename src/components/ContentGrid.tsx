@@ -30,7 +30,6 @@ export function ContentGrid(props: ContentGridProps) {
   const [enhancedItems, setEnhancedItems] = React.useState<ContentGridItemUnion[]>([]);
   const [_isLoadingCollections, setIsLoadingCollections] = React.useState(false);
 
-  const id = contentGrid.sys?.id;
   const rawItems = contentGrid.itemsCollection?.items;
 
   // Enhanced items processing with Collection detection and fetching
@@ -102,10 +101,6 @@ export function ContentGrid(props: ContentGridProps) {
     void processItems();
   }, [rawItems, contentGrid.sys?.id]);
 
-  console.log('ContentGrid render', id, '- raw items:', rawItems);
-  console.log('ContentGrid render', id, '- enhanced items:', enhancedItems);
-  console.log('ContentGrid render', id, '- first enhanced item:', enhancedItems[0]);
-
   // Filter out items that don't have a valid typename or sys.id
   const validItems =
     enhancedItems?.filter((item) => {
@@ -140,15 +135,6 @@ export function ContentGrid(props: ContentGridProps) {
 
   // Auto-enable dark mode if all items are accordions
   const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
-
-  console.log('ContentGrid debug:', {
-    validItemsCount: validItems.length,
-    itemTypes: validItems.map((item) => item.__typename),
-    validItems: validItems,
-    allItemsAreAccordions: analysis.allItemsAreAccordions,
-    propsDarkMode: props.isDarkMode,
-    shouldUseDarkMode
-  });
 
   return (
     <ErrorBoundary>

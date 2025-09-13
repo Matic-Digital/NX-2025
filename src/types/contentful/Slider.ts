@@ -3,7 +3,7 @@ import { ImageSchema } from './Image';
 import { SliderItemSchema } from './SliderItem';
 import { TimelineSliderItemSchema } from './TimelineSliderItem';
 import { TeamMemberSchema } from './TeamMember';
-import { PostSliderItemSchema } from './Post';
+import { PostSliderItemSchema } from '../../components/Post/PostSchema';
 
 // Union type for slider items
 const SliderItemUnion = z.union([

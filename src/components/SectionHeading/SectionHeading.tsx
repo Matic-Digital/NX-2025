@@ -66,7 +66,7 @@ export function SectionHeading(props: SectionHeadingProps) {
 
   const hasCtaCollection = (sectionHeading?.ctaCollection?.items?.length ?? 0) > 0;
 
-  if (loading) {
+  if (!loading) {
     return (
       <SectionHeadingSkeleton
         variant={getValidVariant(props.variant)}

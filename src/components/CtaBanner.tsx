@@ -19,7 +19,6 @@ export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: ctaBanner?.sys?.id });
 
-  console.log('ctaBanner', ctaBanner);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
 
@@ -61,8 +60,6 @@ export function CtaBanner(props: CtaBanner) {
   }, [ctaBanner.primaryCta?.internalLink?.slug, ctaBanner.primaryCta?.externalLink]);
 
   const handleModalTrigger = () => {
-    console.log('handleModalTrigger called');
-    console.log(isModalOpen);
     setIsModalOpen(true);
   };
 

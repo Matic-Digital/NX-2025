@@ -17,10 +17,10 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as postAPI from '@/lib/contentful-api/post';
+import * as postAPI from '@/components/Post/PostApi';
 import { fetchGraphQL } from '@/lib/api';
 import { ContentfulError, NetworkError } from '@/lib/errors';
-import type { Post } from '@/types/contentful/Post';
+import type { Post } from '@/components/Post/PostSchema';
 
 // Mock the fetchGraphQL function
 vi.mock('@/lib/api', () => ({

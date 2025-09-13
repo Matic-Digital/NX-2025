@@ -33,15 +33,11 @@ export function Accordion({ sys }: AccordionProps) {
     setHoveredItem(null);
   };
 
-  console.log('Accordion: data', accordionData);
-  console.log('Accordion: sys.id', sys.id);
-
   useEffect(() => {
     async function fetchAccordionData() {
       try {
         setLoading(true);
         const data = await getAccordionsByIds([sys.id]);
-        console.log('Accordion: received data from API', data);
         if (data.length > 0 && data[0]) {
           setAccordionData(data[0]);
         } else {
@@ -82,62 +78,71 @@ export function Accordion({ sys }: AccordionProps) {
             const isHovered = hoveredItem === itemValue;
             const isFirstItem = index === 0;
             const shouldShowExpanded = isFirstItem && !hoveredItem;
-            
+
             return (
               <AccordionItem
                 key={`accordion-${index}-item-${item.sys.id}`}
                 value={itemValue}
-                className={`bg-[#1D1E1F] text-white border-none overflow-hidden transition-all duration-500 ease-out shadow-lg lg:${
+                className={`overflow-hidden border-none bg-[#1D1E1F] text-white shadow-lg transition-all duration-500 ease-out lg:${
                   isHovered || shouldShowExpanded ? 'shadow-lg' : 'shadow-none'
                 }`}
               >
                 <AccordionTrigger
                   chevron={false}
                   onMouseOver={() => handleHover(itemValue)}
-                  className={`p-0 hover:no-underline transition-all duration-500 ease-out h-auto ${
+                  className={`h-auto p-0 transition-all duration-500 ease-out hover:no-underline ${
                     isHovered || shouldShowExpanded ? 'lg:h-auto' : 'lg:h-60'
                   }`}
                 >
-                <Box direction="col" gap={0} cols={{ base: 1, lg: 12 }} className="min-h-20 lg:flex-row">
-                  {item.image?.sys?.id && (
-                    <div className="col-span-7 h-full overflow-hidden">
-                      <AirImage
-                        sys={{ id: item.image.sys.id }}
-                        className={`w-full object-cover h-full ${
-                          isHovered || shouldShowExpanded ? 'lg:h-full' : 'lg:h-60'
-                        }`}
-                      />
-                    </div>
-                  )}
                   <Box
                     direction="col"
-                    gap={6}
-                    className="relative col-span-5 p-12 transition-all duration-500 ease-out"
+                    gap={0}
+                    cols={{ base: 1, lg: 12 }}
+                    className="min-h-20 lg:flex-row"
                   >
-                    <Image
-                      src="https://air-prod.imgix.net/15bada56-2831-4406-98af-2330b3782171.jpg?w=1160&h=986&fm=webp&fit=crop&auto=auto"
-                      fill
-                      className={`z-10 transition-all duration-500 ease-out opacity-100 ${
-                        isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
-                      }`}
-                      alt="background gradient image"
-                    />
+                    {item.image?.sys?.id && (
+                      <div className="col-span-7 h-full overflow-hidden">
+                        <AirImage
+                          sys={{ id: item.image.sys.id }}
+                          className={`h-full w-full object-cover ${
+                            isHovered || shouldShowExpanded ? 'lg:h-full' : 'lg:h-60'
+                          }`}
+                        />
+                      </div>
+                    )}
+                    <Box
+                      direction="col"
+                      gap={6}
+                      className="relative col-span-5 p-12 transition-all duration-500 ease-out"
+                    >
+                      <Image
+                        src="https://air-prod.imgix.net/15bada56-2831-4406-98af-2330b3782171.jpg?w=1160&h=986&fm=webp&fit=crop&auto=auto"
+                        fill
+                        className={`z-10 opacity-100 transition-all duration-500 ease-out ${
+                          isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
+                        }`}
+                        alt="background gradient image"
+                      />
 
-                    <h3 className={`text-headline-sm text-white relative z-20 max-w-[300px] transition-all duration-500 ease-out line-clamp-none ${
-                      isHovered || shouldShowExpanded ? 'lg:line-clamp-none' : 'lg:line-clamp-2'
-                    }`}>
-                      {item.heading}
-                    </h3>
-                    <div className={`relative z-20 transition-all duration-500 ease-out opacity-100 ${
-                      isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
-                    }`}>
-                      {item.description && <p className="text-white">{item.description}</p>}
-                    </div>
+                      <h3
+                        className={`text-headline-sm relative z-20 line-clamp-none max-w-[300px] text-white transition-all duration-500 ease-out ${
+                          isHovered || shouldShowExpanded ? 'lg:line-clamp-none' : 'lg:line-clamp-2'
+                        }`}
+                      >
+                        {item.heading}
+                      </h3>
+                      <div
+                        className={`relative z-20 opacity-100 transition-all duration-500 ease-out ${
+                          isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
+                        }`}
+                      >
+                        {item.description && <p className="text-white">{item.description}</p>}
+                      </div>
+                    </Box>
                   </Box>
-                </Box>
-              </AccordionTrigger>
-            </AccordionItem>
-            )
+                </AccordionTrigger>
+              </AccordionItem>
+            );
           })}
         </Box>
       </AccordionPrimitive>

@@ -48,12 +48,6 @@ export async function getTestimonials(preview = false): Promise<Testimonials[]> 
     return [];
   }
 
-  // Debug: Log the actual response structure
-  console.log(
-    'Raw testimonialsCollection data:',
-    JSON.stringify(data.testimonialsCollection.items, null, 2)
-  );
-
   return data.testimonialsCollection.items.filter(Boolean).map((item, index) => {
     try {
       return TestimonialsSchema.parse(item);
@@ -91,9 +85,6 @@ export async function getTestimonialsById(
   if (!data.testimonials) {
     return null;
   }
-
-  // Debug: Log the actual response structure
-  console.log('Raw testimonials data:', JSON.stringify(data.testimonials, null, 2));
 
   try {
     return TestimonialsSchema.parse(data.testimonials);

@@ -9,7 +9,7 @@ export * from './image-between';
 export * from './image';
 export * from './page';
 export * from './page-list';
-export * from './post';
+export * from '../../components/Post/PostApi';
 export * from './product';
 export * from './region';
 export * from '../../components/SectionHeading/SectionHeadingApi';

@@ -19,15 +19,15 @@ import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-li
 import { getProductBySlug } from '@/lib/contentful-api/product';
 import { getServiceBySlug } from '@/lib/contentful-api/service';
 import { getSolutionBySlug } from '@/lib/contentful-api/solution';
-import { getPostBySlug } from '@/lib/contentful-api/post';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { getPostBySlug } from '@/components/Post/PostApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList, PageListContent } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { Post } from '@/types/contentful/Post';
-import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
+import type { Post } from '@/components/Post/PostSchema';
+import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
@@ -536,7 +536,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     notFound();
   }
 
-  const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
+  const pageLayout = pageList.pageLayout as PageLayoutSchema | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 

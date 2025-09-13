@@ -1,10 +1,10 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 
-import type { Post, PostResponse } from '@/types/contentful/Post';
-import { SYS_FIELDS } from './graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { ContentfulError, NetworkError } from '../errors';
-import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from './team-member';
+import type { Post, PostResponse } from '@/components/Post/PostSchema';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '../../lib/contentful-api/team-member';
 
 // Simplified Post fields for ContentGrid (to avoid complexity limits)
 export const POST_GRAPHQL_FIELDS_SIMPLE = `

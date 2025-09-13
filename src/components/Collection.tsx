@@ -5,13 +5,13 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import { getAllPostsMinimal } from '@/lib/contentful-api/post';
+import { getAllPostsMinimal } from '@/components/Post/PostApi';
 import { getAllPagesMinimal } from '@/lib/contentful-api/page';
 import { getCollectionById } from '@/lib/contentful-api/collection';
 import type { Collection } from '@/types/contentful/Collection';
-import type { Post } from '@/types/contentful/Post';
+import type { Post } from '@/components/Post/PostSchema';
 import type { Page } from '@/types/contentful/Page';
-import { PostCard } from '@/components/global/PostCard';
+import { PostCard } from '@/components/Post/PostCard';
 import { PageCard } from '@/components/global/PageCard';
 
 interface CollectionProps {

@@ -6,7 +6,7 @@ import { BUTTON_GRAPHQL_FIELDS } from './button';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from './timeline-slider-item';
 import { TEAM_MEMBER_GRAPHQL_FIELDS } from './team-member';
-import { POST_SLIDER_GRAPHQL_FIELDS } from './post';
+import { POST_SLIDER_GRAPHQL_FIELDS } from '../../components/Post/PostApi';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 const SLIDERITEM_GRAPHQL_FIELDS = `

@@ -38,12 +38,7 @@ export const getCtaGridById = async (
   id: string,
   preview = false
 ): Promise<{ item: CtaGrid | null }> => {
-  console.log('🚀 getCtaGridById called with ID:', id);
-
   try {
-    console.log('🚀 About to call fetchGraphQL (this was hanging before)');
-
-    // First, let's see what the actual query looks like
     const query = `query GetCtaGridById($preview: Boolean!, $id: String!) {
       ctaGrid(id: $id, preview: $preview) {
         ${CTAGRID_GRAPHQL_FIELDS}

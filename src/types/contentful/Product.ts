@@ -66,7 +66,7 @@ export const ProductSchema: z.ZodType<{
   description: z.string().optional(),
   icon: AssetSchema.optional(),
   image: ImageSchema.optional(),
-  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
+  pageLayout: z.lazy(() => require('./PageLayoutSchema').PageLayoutSchema).optional(),
   itemsCollection: z
     .object({
       items: z.array(ProductContentUnion)

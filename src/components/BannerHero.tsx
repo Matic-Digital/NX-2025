@@ -26,10 +26,6 @@ export function BannerHero(props: BannerHeroProps) {
 
   const isProductContext = pathname?.includes('/trackers/');
 
-  console.log('BannerHero props:', props);
-  console.log('BannerHero bannerHero:', bannerHero);
-  console.log('BannerHero heading data:', bannerHero?.heading);
-
   const isImageBetween = props.contentType === 'ImageBetween';
 
   return (

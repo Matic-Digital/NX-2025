@@ -108,12 +108,17 @@ export function SectionHeadingSkeleton({
         className={cn(
           'col-span-2 max-w-[600px]',
           !hasCtaCollection && 'max-w-5xl',
-          hasSolutionItems && 'max-w-[32.3rem]'
+          hasSolutionItems && 'min-w-[22.3rem]'
         )}
       >
         {hasOverline && <SkeletonBox className="h-4 w-24" />}
-        <SkeletonBox className="h-12 w-full lg:h-16" />
-        {hasDescription && <SkeletonBox className="h-6 w-full" />}
+        <SkeletonBox className="h-12 w-full lg:h-18" />
+        {hasDescription && (
+          <>
+            <SkeletonBox className="h-6 w-2/3" />
+            <SkeletonBox className="h-6 w-2/3" />
+          </>
+        )}
       </Box>
 
       {/* cta skeleton */}
@@ -125,8 +130,8 @@ export function SectionHeadingSkeleton({
       >
         {hasCtaCollection && (
           <>
-            <SkeletonBox className="h-10 w-24" />
-            <SkeletonBox className="h-10 w-20" />
+            <SkeletonBox className="h-10 w-36" />
+            <SkeletonBox className="h-10 w-36" />
           </>
         )}
       </Box>

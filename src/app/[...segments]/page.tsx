@@ -29,9 +29,9 @@ import { getPageListBySlug } from '@/lib/contentful-api/page-list';
 import { getProductBySlug } from '@/lib/contentful-api/product';
 import { getServiceBySlug } from '@/lib/contentful-api/service';
 import { getSolutionBySlug } from '@/lib/contentful-api/solution';
-import { getPostBySlug } from '@/lib/contentful-api/post';
+import { getPostBySlug } from '@/components/Post/PostApi';
 import { getPageBySlug } from '@/lib/contentful-api/page';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
@@ -42,8 +42,8 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { Post } from '@/types/contentful/Post';
-import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
+import type { Post } from '@/components/Post/PostSchema';
+import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import {
@@ -456,20 +456,20 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
     );
 
     // Get layout from the deepest PageList or content item
-    let pageLayout: PageLayoutType | undefined;
+    let pageLayout: PageLayoutSchema | undefined;
 
     if (type === 'PageList') {
       const pageList = content as PageListType;
-      pageLayout = pageList.pageLayout as PageLayoutType | undefined;
+      pageLayout = pageList.pageLayout as PageLayoutSchema | undefined;
     } else if (parentPageLists.length > 0) {
       // Use layout from the deepest parent PageList
       const deepestParent = parentPageLists[parentPageLists.length - 1]!;
-      pageLayout = deepestParent.pageLayout as PageLayoutType | undefined;
+      pageLayout = deepestParent.pageLayout as PageLayoutSchema | undefined;
     } else {
       // For standalone content items, try to get their layout
       const item = content as ContentItem;
       if ('pageLayout' in item) {
-        pageLayout = item.pageLayout as PageLayoutType | undefined;
+        pageLayout = item.pageLayout as PageLayoutSchema | undefined;
       }
     }
 

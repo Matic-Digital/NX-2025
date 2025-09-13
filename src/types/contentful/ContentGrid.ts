@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
-import { PostSchema } from './Post';
+import { PostSchema } from '../../components/Post/PostSchema';
 import { SectionHeadingSchema } from './';
 import { ServiceSchema } from './Service';
 import { ContentGridItemSchema } from './ContentGridItem';

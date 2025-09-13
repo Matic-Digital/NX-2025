@@ -28,8 +28,8 @@ import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import { RegionsMap } from '@/components/RegionsMap';
 import { PageList } from '@/components/global/PageList';
-import { PageLayout } from '@/components/layout/PageLayout';
-import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Header as HeaderType } from '@/types/contentful/Header';
@@ -341,7 +341,7 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
 // Helper function to render a Page
 function renderPage(page: Page) {
-  const pageLayout = page.pageLayout as PageLayoutType | undefined;
+  const pageLayout = page.pageLayout as PageLayoutSchema | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (
@@ -376,7 +376,7 @@ function renderPage(page: Page) {
 
 // Helper function to render a PageList
 function renderPageList(pageList: PageListType) {
-  const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
+  const pageLayout = pageList.pageLayout as PageLayoutSchema | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 

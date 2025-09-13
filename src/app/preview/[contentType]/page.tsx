@@ -29,7 +29,7 @@ import { PageList } from '@/components/global/PageList';
 import { Page } from '@/components/global/Page';
 import { Header } from '@/components/global/Header';
 import { Footer } from '@/components/global/Footer';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
 
 // Import all API functions
 import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
