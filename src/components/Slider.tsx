@@ -550,18 +550,23 @@ const GenericSlider = ({
       </Carousel>
 
       {showIndicators && (
-        <div className="relative z-50 mx-auto -mt-4 flex h-1 w-[532px] flex-shrink-0 items-center gap-4">
-          {sliderData.itemsCollection.items.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
-                'bg-[#F5B12D] opacity-100': current === index + 1
-              })}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        <Container>
+          <div className={cn(
+            "relative z-10 mt-4 flex h-1 items-center gap-4",
+            isPostSlider ? "lg:hidden" : ""
+          )}>
+            {sliderData.itemsCollection.items.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
+                  'bg-[#F5B12D] opacity-100': current === index + 1
+                })}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </Container>
       )}
 
       {showAltIndicators && (
@@ -868,7 +873,7 @@ export function Slider(props: SliderSys) {
         api={api}
         solutionUrls={solutionUrls}
         setApi={setApi}
-        showIndicators={isImageSlider}
+        showIndicators={isImageSlider || isPostSlider}
         showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
         showNavigation={
           !isImageSlider &&
