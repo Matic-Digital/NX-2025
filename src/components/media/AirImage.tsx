@@ -19,7 +19,7 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
     const urlObj = new URL(url);
     const width = urlObj.searchParams.get('w');
     const height = urlObj.searchParams.get('h');
-    
+
     if (width && height) {
       return {
         width: parseInt(width, 10),
@@ -29,7 +29,7 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
   } catch (error) {
     console.error('Failed to parse Air imgix URL:', error);
   }
-  
+
   return null;
 };
 
@@ -115,37 +115,24 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
   // Extract dimensions from Air imgix URL first, then fallback to props
   const airDimensions = extractDimensionsFromAirUrl(link);
-  
-  // Prioritize URL dimensions, then provided dimensions, then defaults
-  const defaultWidth = airDimensions?.width ?? width ?? 1208;
-  const defaultHeight = airDimensions?.height ?? height ?? 800;
+
+  // Always use original Air dimensions if available, otherwise use provided or defaults
+  const intrinsicWidth = airDimensions?.width ?? width ?? 1208;
+  const intrinsicHeight = airDimensions?.height ?? height ?? 800;
 
   // For Air imgix URLs, enhance quality parameters while preserving dimensions
-  const optimizedSrc = airDimensions 
-    ? link.replace('&auto=auto', '&auto=format&q=90&sharp=1') 
-    : optimizeContentfulImage(link, defaultWidth, defaultHeight, 85);
+  const optimizedSrc = airDimensions
+    ? link.replace('&auto=auto', '&auto=format&q=90&sharp=1')
+    : optimizeContentfulImage(link, intrinsicWidth, intrinsicHeight, 85);
 
-  // Use regular img tag for Air images to bypass Next.js dimension constraints
-  if (airDimensions) {
-    return (
-      <img
-        src={optimizedSrc}
-        alt={altText ?? ''}
-        className={className}
-        loading={priority ? 'eager' : 'lazy'}
-        style={{ height: '100%', width: '100%', objectFit: 'cover' }}
-      />
-    );
-  }
-
-  // Use Next.js Image for non-Air images
+  // Always use Next.js Image component
   return (
     <Image
       src={optimizedSrc}
       alt={altText ?? ''}
       className={className}
-      width={defaultWidth}
-      height={defaultHeight}
+      width={intrinsicWidth}
+      height={intrinsicHeight}
       priority={priority}
       loading={priority ? 'eager' : 'lazy'}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
