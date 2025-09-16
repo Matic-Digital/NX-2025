@@ -78,26 +78,30 @@ export function ServiceCard(props: ServiceCardProps) {
         }}
       >
         <div
-          className={`absolute inset-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 ${
-            isActive ? 'opacity-100' : 'opacity-0'
+          className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
+            isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
           }`}
         />
-        <AirImage
-          {...service.cardImage}
-          className={`absolute inset-0 transform object-cover transition-all duration-0 ease-in-out group-hover:scale-100 group-hover:opacity-100 group-hover:duration-800 ${
-            isActive ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
-          }`}
-        />
-        <Box direction="col" className="relative z-10 h-full justify-end">
+        <div className="absolute top-0 right-0 left-0 h-[60%] opacity-100">
+          <AirImage
+            {...service.cardImage}
+            className="absolute inset-0 scale-100 transform object-cover opacity-100"
+          />
+        </div>
+        <Box direction="col" className="relative z-10 h-full">
           <Box
             direction="col"
-            className={`relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 before:absolute before:inset-0 before:bg-gradient-to-b before:from-[#D84500] before:to-[#CC4000] before:opacity-0 before:transition-opacity before:duration-500 ${
-              isActive
-                ? 'bg-primary translate-y-0 before:opacity-100'
-                : 'translate-y-[5.25rem] bg-transparent before:opacity-0'
-            }`}
+            className="relative z-10 mt-[55%] translate-y-0 transform bg-transparent px-[2rem] pt-[3.75rem] md:pt-[2rem]"
           >
-            <h3 className="text-headline-md relative z-10 mb-[1rem] text-white">
+            <h3
+              className="text-headline-md md:text-headline-md relative z-10 mb-[1rem] text-white"
+              style={{
+                fontSize: '1.75rem',
+                fontWeight: 400,
+                lineHeight: '130%',
+                color: '#FFF'
+              }}
+            >
               {service.cardTitle}
             </h3>
             {service.cardTags?.map((tag, index) => (
@@ -109,8 +113,10 @@ export function ServiceCard(props: ServiceCardProps) {
               </Fragment>
             ))}
             <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
-              <Link href={`/services/${service.slug}`}>
-                <Button variant="outlineTrasparentWhite">{service.cardButtonText}</Button>
+              <Link href={`/services/${service.slug}`} className="w-full">
+                <Button variant="outlineTrasparentWhite" className="w-full">
+                  {service.cardButtonText}
+                </Button>
               </Link>
             </Box>
           </Box>

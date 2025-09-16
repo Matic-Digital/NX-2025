@@ -9,9 +9,11 @@ export const TeamMemberSchema = z.object({
   name: z.string(),
   jobTitle: z.string(),
   image: ImageSchema,
-  bio: z.object({
-    json: z.any()
-  }).optional(),
+  bio: z
+    .object({
+      json: z.any()
+    })
+    .optional(),
   email: z.string().optional(),
   linkedIn: z.string().optional(),
   __typename: z.string().optional()
