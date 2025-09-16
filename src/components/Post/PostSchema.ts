@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { ImageSchema } from './Image';
-import { TeamMemberSchema } from './TeamMember';
+import { ImageSchema } from '../../types/contentful/Image';
+import { TeamMemberSchema } from '../../types/contentful/TeamMember';
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([
@@ -56,10 +56,10 @@ export const PostSliderItemSchema = z.object({
   __typename: z.string().optional()
 });
 
-export interface PostResponse {
-  items: Post[];
-}
-
-export type Post = z.infer<typeof PostSchema>;
+export type PostSchema = z.infer<typeof PostSchema>;
 export type PostCategory = z.infer<typeof PostCategorySchema>;
 export type PostSliderItem = z.infer<typeof PostSliderItemSchema>;
+
+export interface PostResponse {
+  items: PostSchema[];
+}

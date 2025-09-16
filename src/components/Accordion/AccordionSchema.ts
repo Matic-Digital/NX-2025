@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ContentGridItemSchema } from './ContentGridItem';
+import { ContentGridItemSchema } from '../../types/contentful/ContentGridItem';
 
 export const AccordionSchema = z.object({
   sys: z.object({
@@ -12,4 +12,4 @@ export const AccordionSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type Accordion = z.infer<typeof AccordionSchema>;
+export type AccordionSchema = z.infer<typeof AccordionSchema>;

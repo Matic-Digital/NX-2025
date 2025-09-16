@@ -66,7 +66,9 @@ function buildRoutingPath(
 
     // Check if this PageList contains the target item in its pagesCollection
     const containsItem = pageList.pagesCollection?.items?.some((item) => {
+      if (!item) return false; // Skip null items
       const itemSlug = 'slug' in item ? item.slug : 'link' in item ? item.link : undefined;
+      // Check both slug and ID matches, and also check if itemId is a PageList slug that matches this item's slug
       return itemSlug === itemId || item.sys?.id === itemId;
     });
 
@@ -77,10 +79,12 @@ function buildRoutingPath(
 
       // Recursively find if this PageList is nested within another PageList
       // This builds the complete parent chain (e.g., products > trackers)
-      const parentPath = buildRoutingPath(pageList.sys.id, pageLists, newVisited, depth + 1);
+      // Use the PageList's slug for the recursive search, not its ID
+      const parentPath = buildRoutingPath(pageList.slug, pageLists, newVisited, depth + 1);
 
       // Return the full routing path: parent path + current PageList slug
-      return [...parentPath, pageList.slug];
+      const fullPath = [...parentPath, pageList.slug];
+      return fullPath;
     }
   }
 
@@ -215,9 +219,6 @@ export async function GET(request: NextRequest) {
       const parentSlug = parentPath[parentPath.length - 1]; // Last element is direct parent
       const fullPath = [...parentPath, slug].join('/');
 
-      console.log(`API: Item '${slug}' has routing path: ${fullPath}`);
-      console.log(`API: Parent path: [${parentPath.join(', ')}]`);
-
       // Find the parent PageList object
       const parentPageList = pageLists.find((pl) => pl.slug === parentSlug);
 
@@ -233,7 +234,6 @@ export async function GET(request: NextRequest) {
           : null
       });
     } else {
-      console.log(`API: Item '${slug}' is not nested within any PageList`);
       return NextResponse.json({
         parentPath: [],
         parentSlug: null,

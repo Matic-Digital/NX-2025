@@ -3,7 +3,8 @@ import { ImageSchema } from './Image';
 import { SliderItemSchema } from './SliderItem';
 import { TimelineSliderItemSchema } from './TimelineSliderItem';
 import { TeamMemberSchema } from './TeamMember';
-import { PostSliderItemSchema } from './Post';
+import { PostSliderItemSchema } from '../../components/Post/PostSchema';
+import { SolutionSchema } from './Solution';
 
 // Union type for slider items
 const SliderItemUnion = z.union([
@@ -12,7 +13,8 @@ const SliderItemUnion = z.union([
   ImageSchema,
   SliderItemSchema,
   TimelineSliderItemSchema,
-  TeamMemberSchema
+  TeamMemberSchema,
+  SolutionSchema
 ]);
 
 export type SliderItemType = z.infer<typeof SliderItemUnion>;

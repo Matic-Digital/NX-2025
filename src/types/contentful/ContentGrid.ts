@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
-import { PostSchema } from './Post';
+import { PostSchema } from '../../components/Post/PostSchema';
 import { SectionHeadingSchema } from './';
 import { ServiceSchema } from './Service';
 import { ContentGridItemSchema } from './ContentGridItem';
@@ -10,7 +10,7 @@ import { VideoSchema } from './Video';
 import { SliderSchema } from './Slider';
 import { SolutionSchema } from './Solution';
 import { ProductSchema } from './Product';
-import { AccordionSchema } from './Accordion';
+import { AccordionSchema } from '../../components/Accordion/AccordionSchema';
 import { OfficeLocationSchema } from './OfficeLocation';
 
 // Union type for items

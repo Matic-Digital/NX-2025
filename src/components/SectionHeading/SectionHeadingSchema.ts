@@ -18,10 +18,10 @@ export const SectionHeadingSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type SectionHeading = z.infer<typeof SectionHeadingSchema>;
+export type SectionHeadingSchema = z.infer<typeof SectionHeadingSchema>;
 
 export type SectionHeadingVariant = (typeof SECTION_HEADING_VARIANTS)[number];
 
 export interface SectionHeadingResponse {
-  items: SectionHeading[];
+  items: SectionHeadingSchema[];
 }

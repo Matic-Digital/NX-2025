@@ -10,17 +10,17 @@ import {
 import { Phone, Mail, PhoneCall, Headset, Mic } from 'lucide-react';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '@/components/ui/button';
-import type { ContactCard as ContactCardType } from './ContactCardSchema';
+import type { ContactCardSchema } from './ContactCardSchema';
 import { ContactCardSkeleton } from './ContactCardSkeleton';
 import { getContactCardById } from './ContactCardApi';
 
-interface ContactCardProps extends Partial<ContactCardType> {
+interface ContactCardProps extends Partial<ContactCardSchema> {
   contactCardId?: string;
 }
 
 export function ContactCard(props: ContactCardProps) {
   const { contactCardId, ...restProps } = props;
-  const [fetchedData, setFetchedData] = useState<ContactCardType | null>(null);
+  const [fetchedData, setFetchedData] = useState<ContactCardSchema | null>(null);
   const [loading, setLoading] = useState(!!contactCardId);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,7 +45,7 @@ export function ContactCard(props: ContactCardProps) {
   }, [contactCardId]);
 
   // Use fetched data if available, otherwise use props data
-  const contactCard = useContentfulLiveUpdates(fetchedData ?? (restProps as ContactCardType));
+  const contactCard = useContentfulLiveUpdates(fetchedData ?? (restProps as ContactCardSchema));
   const inspectorProps = useContentfulInspectorMode({ entryId: contactCard?.sys?.id });
 
   if (loading) {

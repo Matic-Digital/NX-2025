@@ -1,4 +1,4 @@
-export * from './Accordion';
+export * from '../../components/Accordion/AccordionSchema';
 export * from './Asset';
 export * from './BannerHero';
 export * from './Button';
@@ -18,9 +18,9 @@ export * from './Image';
 export * from './Modal';
 export * from './OfficeLocation';
 export * from './Page';
-export * from './PageLayout';
+export * from '../../components/PageLayout/PageLayoutSchema';
 export * from './PageList';
-export * from './Post';
+export * from '../../components/Post/PostSchema';
 export * from './Product';
 export * from './Region';
 export * from '../../components/SectionHeading/SectionHeadingSchema';

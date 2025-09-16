@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
+import { ButtonSchema } from './Button';
 
 export const SolutionSysSchema = z.object({
   sys: z.object({
@@ -18,11 +19,12 @@ export const SolutionSchema = z.object({
   }),
   title: z.string(),
   slug: z.string(),
-  cardHeading: z.string(),
-  cardSubheading: z.string(),
+  heading: z.string(),
+  subheading: z.string(),
   cardTitle: z.string(),
-  cardDescription: z.string(),
-  cardBackgroundImage: ImageSchema,
+  description: z.string(),
+  backgroundImage: ImageSchema,
+  cta: ButtonSchema,
   __typename: z.string().optional()
 });
 

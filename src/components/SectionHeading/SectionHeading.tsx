@@ -18,10 +18,10 @@ import { Button } from '@/components/ui/button';
 import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
 
 // Types
-import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
+import type { SectionHeadingSchema, SectionHeadingVariant } from './SectionHeadingSchema';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-interface SectionHeadingProps extends Partial<SectionHeading> {
+interface SectionHeadingProps extends Partial<SectionHeadingSchema> {
   sectionHeadingId?: string;
   componentType?: string;
   isDarkMode?: boolean;
@@ -36,7 +36,7 @@ const getValidVariant = (variant: string | undefined): SectionHeadingVariant => 
 
 export function SectionHeading(props: SectionHeadingProps) {
   const { sectionHeadingId, componentType, hasSolutionItems, ...restProps } = props;
-  const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
+  const [fetchedData, setFetchedData] = useState<SectionHeadingSchema | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +61,9 @@ export function SectionHeading(props: SectionHeadingProps) {
   }, [sectionHeadingId]);
 
   // Use fetched data if available, otherwise use props data
-  const sectionHeading = useContentfulLiveUpdates(fetchedData ?? (restProps as SectionHeading));
+  const sectionHeading = useContentfulLiveUpdates(
+    fetchedData ?? (restProps as SectionHeadingSchema)
+  );
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
   const hasCtaCollection = (sectionHeading?.ctaCollection?.items?.length ?? 0) > 0;

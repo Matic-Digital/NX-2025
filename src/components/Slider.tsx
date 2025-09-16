@@ -21,7 +21,8 @@ import type {
   PostSliderItem,
   Image as ImageType,
   TimelineSliderItem,
-  TeamMember
+  TeamMember,
+  Solution
 } from '@/types/contentful';
 import { AirImage } from '@/components/media/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
@@ -32,6 +33,7 @@ import {
 import type { ContentOverlay } from '@/types/contentful/Content';
 import type { SliderItemType } from '@/types/contentful/Slider';
 import { ArrowUpRight } from 'lucide-react';
+import { resolveNestedUrls } from '@/lib/page-link-utils';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -39,6 +41,7 @@ interface SliderCardProps {
   current: number;
   sliderData?: Slider;
   api?: CarouselApi;
+  solutionUrls?: Record<string, string>;
 }
 
 const ContentOverlay = ({ children }: ContentOverlay) => (
@@ -55,7 +58,7 @@ const ContentOverlay = ({ children }: ContentOverlay) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current }: SliderCardProps) => {
+const SliderCard = ({ item, index, current, solutionUrls }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
@@ -283,6 +286,62 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
     );
   }
 
+  if (updatedItem.__typename === 'Solution') {
+    const solution = updatedItem as Solution;
+    const isCurrentSlide = current === index + 1;
+    console.log('✅ Slider solution', solution);
+    return (
+      <Box
+        direction="col"
+        gap={4}
+        className={cn('bg-subtle h-full min-h-[350px] w-full p-8', isCurrentSlide && 'bg-primary')}
+      >
+        <Box direction="col" gap={2}>
+          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {solution.title}
+          </h3>
+          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
+            {solution.description}
+          </p>
+        </Box>
+
+        {solution.cta && (
+          <Box direction="row" gap={2} className="mt-auto">
+            <Link
+              key={solution.cta.sys?.id}
+              href={
+                // Check if we have a resolved URL for this Solution CTA
+                // Use the internalLink sys.id as the key (matching resolveNestedUrls logic)
+                (() => {
+                  const internalLinkId = solution.cta.internalLink?.sys?.id ?? solution.sys?.id;
+                  const resolvedUrl = internalLinkId ? solutionUrls?.[internalLinkId] : null;
+                  return resolvedUrl ?? solution.cta.externalLink ?? 'test';
+                })()
+              }
+              {...(solution.cta.externalLink
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+              className="group"
+            >
+              <Button
+                variant="outlineWhite"
+                className={cn(
+                  'hover:bg-primary hover:text-text-on-primary',
+                  isCurrentSlide && 'hover:bg-white hover:text-black'
+                )}
+              >
+                {solution.cta.text}
+                {isCurrentSlide && (
+                  <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                )}
+              </Button>
+            </Link>
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
   // Fallback for unknown types
   return (
     <div className={baseCardClasses}>
@@ -296,7 +355,8 @@ const SliderCard = ({ item, index, current }: SliderCardProps) => {
 interface GenericSliderProps {
   sliderData: Slider;
   current: number;
-  api: CarouselApi | undefined;
+  api?: CarouselApi;
+  solutionUrls?: Record<string, string>;
   setApi: (api: CarouselApi) => void;
   showIndicators?: boolean;
   showAltIndicators?: boolean;
@@ -309,6 +369,7 @@ const GenericSlider = ({
   sliderData,
   current,
   api,
+  solutionUrls,
   setApi,
   showIndicators = false,
   showAltIndicators = false,
@@ -316,6 +377,7 @@ const GenericSlider = ({
   isFullWidth = true
 }: GenericSliderProps) => {
   const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
+  const isSolutionSlider = sliderData.itemsCollection.items[0]?.__typename === 'Solution';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
   const hasOnePostSlide =
@@ -368,15 +430,19 @@ const GenericSlider = ({
                         ? 'basis-full'
                         : isFullWidth
                           ? 'basis-full sm:basis-4/5'
-                          : 'basis-full'
+                          : isSolutionSlider
+                            ? 'basis-[411px]'
+                            : 'basis-full'
                 )}
               >
                 <SliderCard
+                  key={item.sys.id}
+                  item={item}
                   index={index}
                   current={current}
-                  item={item}
-                  sliderData={isTimelineSlider ? sliderData : undefined}
-                  api={isTimelineSlider ? api : undefined}
+                  sliderData={sliderData}
+                  api={api}
+                  solutionUrls={solutionUrls}
                 />
               </CarouselItem>
             );
@@ -595,6 +661,7 @@ export function Slider(props: SliderSys) {
   const [loading, setLoading] = useState(true);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!api) {
@@ -625,6 +692,34 @@ export function Slider(props: SliderSys) {
 
     void fetchSliderData();
   }, [props.sys.id]);
+
+  // Generate correct URLs for Solutions by looking up their parent PageList
+  // PageList Nesting Integration: Dynamically resolve all Solution URLs to respect nesting hierarchy
+  // This ensures all Solution slider items link to proper nested URLs when parent PageLists exist
+  useEffect(() => {
+    const fetchNestedUrls = async () => {
+      if (!sliderData?.itemsCollection?.items) return;
+
+      // Filter only Solution items and extract their CTA links
+      const allSolutions = sliderData.itemsCollection.items
+        .filter((item) => item.__typename === 'Solution')
+        .map((item) => item as Solution);
+
+      const solutionItems = allSolutions.filter((solution) => solution.cta);
+
+      const urlMap = await resolveNestedUrls(solutionItems, (solution) => ({
+        sys: solution.cta.sys,
+        // If CTA doesn't have internalLink with slug, create one using the Solution's own slug
+        internalLink: solution.cta.internalLink?.slug
+          ? solution.cta.internalLink
+          : { sys: solution.sys, slug: solution.slug },
+        externalLink: solution.cta.externalLink
+      }));
+      setSolutionUrls(urlMap);
+    };
+
+    void fetchNestedUrls();
+  }, [sliderData?.itemsCollection?.items]);
 
   if (loading) {
     return (
@@ -657,6 +752,7 @@ export function Slider(props: SliderSys) {
   const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
   const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
   const isSliderItemSlider = firstItem.__typename === 'SliderItem';
+  const isSolutionSlider = firstItem.__typename === 'Solution';
 
   // Configure slider based on content type
   return (
@@ -664,13 +760,20 @@ export function Slider(props: SliderSys) {
       sliderData={sliderData}
       current={current}
       api={api}
+      solutionUrls={solutionUrls}
       setApi={setApi}
       showIndicators={isImageSlider}
-      showAltIndicators={isSliderItemSlider || isTeamMemberSlider}
+      showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
       showNavigation={
-        !isImageSlider && !isSliderItemSlider && !isTimelineSliderItemSlider && !isTeamMemberSlider
+        !isImageSlider &&
+        !isSliderItemSlider &&
+        !isTimelineSliderItemSlider &&
+        !isTeamMemberSlider &&
+        !isSolutionSlider
       }
-      showAltNavigation={isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider}
+      showAltNavigation={
+        isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider || isSolutionSlider
+      }
       isFullWidth={
         isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
       }

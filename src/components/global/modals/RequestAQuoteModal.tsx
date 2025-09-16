@@ -19,10 +19,6 @@ export function RequestAQuoteModal({
   title,
   description
 }: RequestAQuoteModalProps) {
-  console.log('isOpen', isOpen);
-  console.log('onOpenChange', onOpenChange);
-  console.log('title', title);
-  console.log('description', description);
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>

@@ -7,10 +7,10 @@ import {
 } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/media/AirImage';
-import { getPostById } from '@/lib/contentful-api/post';
-import type { Post } from '@/types/contentful/Post';
+import { getPostById } from '@/components/Post/PostApi';
+import type { PostSchema } from '@/components/Post/PostSchema';
 import Link from 'next/link';
-import { categoryColorMap } from '@/constants/post';
+import { categoryColorMap } from '@/components/Post/PostCategories';
 import { cn } from '@/lib/utils';
 import { ArrowUpRight } from 'lucide-react';
 
@@ -33,9 +33,9 @@ interface PostCardProps {
   variant?: string;
 }
 
-// TODO: need to use variant here to display row on 
+// TODO: need to use variant here to display row on
 export function PostCard({ sys, variant }: PostCardProps) {
-  const [postData, setPostData] = useState<Post | null>(null);
+  const [postData, setPostData] = useState<PostSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const isRowVariant = variant === 'row';
   const isFeaturedVariant = variant === 'featured';
@@ -88,7 +88,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
         gap={0}
         className={cn(
           // Mobile: always column layout, Large: row layout only for row variant
-          'flex-col h-full',
+          'h-full flex-col',
           isRowVariant && '',
           isFeaturedVariant && 'h-full'
         )}

@@ -10,7 +10,7 @@ import { ContentSchema } from './Content';
 import { ProductSchema } from './Product';
 import { ServiceSchema } from './Service';
 import { SolutionSchema } from './Solution';
-import { PostSchema } from './Post';
+import { PostSchema } from '../../components/Post/PostSchema';
 
 // Define non-recursive unions first
 const PageListContentUnion = z.union([
@@ -33,7 +33,7 @@ const BasePageListSchema = z.object({
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
-  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
+  pageLayout: z.lazy(() => require('./PageLayoutSchema').PageLayoutSchema).optional(),
   pageContentCollection: z
     .object({
       items: z.array(PageListContentUnion)
@@ -104,7 +104,7 @@ export const PageListWithRefsSchema = z.object({
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   openGraphImage: z.lazy(() => require('./Image').ImageSchema).optional(),
-  pageLayout: z.lazy(() => require('./PageLayout').PageLayoutSchema).optional(),
+  pageLayout: z.lazy(() => require('./PageLayoutSchema').PageLayoutSchema).optional(),
   pagesCollection: z
     .object({
       items: z.array(PageSchema)

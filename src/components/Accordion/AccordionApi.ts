@@ -1,7 +1,7 @@
-import { SYS_FIELDS } from './graphql-fields';
-import { fetchGraphQL } from '../api';
-import type { Accordion } from '@/types/contentful';
-import { ContentfulError, NetworkError } from '../errors';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { fetchGraphQL } from '../../lib/api';
+import type { AccordionSchema } from './AccordionSchema';
+import { ContentfulError, NetworkError } from '../../lib/errors';
 
 export const ACCORDION_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -23,7 +23,7 @@ export const ACCORDION_GRAPHQL_FIELDS = `
 export async function getAccordionsByIds(
   accordionIds: string[],
   preview = false
-): Promise<Accordion[]> {
+): Promise<AccordionSchema[]> {
   if (accordionIds.length === 0) {
     return [];
   }
@@ -50,7 +50,7 @@ export async function getAccordionsByIds(
 
     // Access data using type assertion to help TypeScript understand the structure
     const data = response.data as unknown as {
-      accordionCollection?: { items?: Accordion[] };
+      accordionCollection?: { items?: AccordionSchema[] };
     };
 
     // Validate the data structure
