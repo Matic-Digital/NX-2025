@@ -106,7 +106,7 @@ export function Header(props: HeaderProps) {
   return (
     <ErrorBoundary>
       <Container
-        className={`sticky top-0 z-50 pt-6 ${isScrolled ? 'transition-all duration-300' : ''}`}
+        className={`sticky top-0 z-50 pt-0 md:pt-6 ${isScrolled ? 'transition-all duration-300' : ''}`}
       >
         <header
           className={`px-6 max-md:py-1.5 lg:w-full ${isScrolled ? '' : ''} ${isScrolled ? 'bg-black/40 backdrop-blur-2xl transition-all duration-300' : ''}`}
