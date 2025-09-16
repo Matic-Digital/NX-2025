@@ -32,8 +32,9 @@ import {
 } from '@contentful/live-preview/react';
 import type { ContentOverlay } from '@/types/contentful/Content';
 import type { SliderItemType } from '@/types/contentful/Slider';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import { resolveNestedUrls } from '@/lib/page-link-utils';
+import { TeamMemberModal } from '@/components/global/modals/TeamMemberModal';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -42,6 +43,7 @@ interface SliderCardProps {
   sliderData?: Slider;
   api?: CarouselApi;
   solutionUrls?: Record<string, string>;
+  onTeamMemberClick?: (teamMember: TeamMember) => void;
 }
 
 const ContentOverlay = ({ children }: ContentOverlay) => (
@@ -58,7 +60,7 @@ const ContentOverlay = ({ children }: ContentOverlay) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current, solutionUrls }: SliderCardProps) => {
+const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
@@ -263,28 +265,46 @@ const SliderCard = ({ item, index, current, solutionUrls }: SliderCardProps) => 
     const teamMember = updatedItem as TeamMember;
 
     return (
-      <Box direction="col" gap={6}>
-        <div className="aspect-square w-full overflow-hidden">
+      <Box
+        direction="col"
+        gap={6}
+        className="group/card cursor-pointer transition-all duration-300 hover:!opacity-100"
+      >
+        <div className="relative aspect-square w-full overflow-hidden">
           <AirImage
             link={teamMember.image?.link}
             altText={teamMember.image?.altText}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-all duration-300"
           />
+          {/* Dark overlay that shows on non-hovered cards when any card is hovered */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover/card:!opacity-0" />
+          {/* Orange plus icon that shows on hover */}
+          <button
+            onClick={() => onTeamMemberClick?.(teamMember)}
+            className="bg-primary absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-0 transition-all duration-300 group-hover/card:opacity-100 hover:bg-primary/90"
+          >
+            <Plus className="size-6 text-white" />
+          </button>
         </div>
         <div className="mt-4">
           <h3
-            className="text-lg font-semibold text-gray-900"
+            className="group-hover/card:text-primary text-lg font-semibold text-gray-900 transition-colors duration-300"
             {...inspectorProps({ fieldId: 'name' })}
           >
             {teamMember.name}
           </h3>
-          <p className="text-sm text-gray-600" {...inspectorProps({ fieldId: 'jobTitle' })}>
+          <p
+            className="group-hover/card:text-primary text-sm text-gray-600 transition-colors duration-300"
+            {...inspectorProps({ fieldId: 'jobTitle' })}
+          >
             {teamMember.jobTitle}
           </p>
         </div>
       </Box>
     );
   }
+
+  
 
   if (updatedItem.__typename === 'Solution') {
     const solution = updatedItem as Solution;
@@ -363,6 +383,7 @@ interface GenericSliderProps {
   showNavigation?: boolean;
   showAltNavigation?: boolean;
   isFullWidth?: boolean;
+  onTeamMemberClick?: (teamMember: TeamMember) => void;
 }
 
 const GenericSlider = ({
@@ -374,7 +395,8 @@ const GenericSlider = ({
   showIndicators = false,
   showAltIndicators = false,
   showAltNavigation = false,
-  isFullWidth = true
+  isFullWidth = true,
+  onTeamMemberClick
 }: GenericSliderProps) => {
   const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
   const isSolutionSlider = sliderData.itemsCollection.items[0]?.__typename === 'Solution';
@@ -413,7 +435,7 @@ const GenericSlider = ({
       >
         <CarouselContent
           className={cn(
-            isTeamMemberSlider && 'lg:overflow-visible',
+            isTeamMemberSlider && 'group lg:overflow-visible',
             isTimelineSlider && 'overflow-hidden'
           )}
         >
@@ -443,6 +465,7 @@ const GenericSlider = ({
                   sliderData={sliderData}
                   api={api}
                   solutionUrls={solutionUrls}
+                  onTeamMemberClick={onTeamMemberClick}
                 />
               </CarouselItem>
             );
@@ -662,6 +685,20 @@ export function Slider(props: SliderSys) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
+  const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleTeamMemberClick = (teamMember: TeamMember) => {
+    setSelectedTeamMember(teamMember);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = (open: boolean) => {
+    setIsModalOpen(open);
+    if (!open) {
+      setSelectedTeamMember(null);
+    }
+  };
 
   useEffect(() => {
     if (!api) {
@@ -756,27 +793,39 @@ export function Slider(props: SliderSys) {
 
   // Configure slider based on content type
   return (
-    <GenericSlider
-      sliderData={sliderData}
-      current={current}
-      api={api}
-      solutionUrls={solutionUrls}
-      setApi={setApi}
-      showIndicators={isImageSlider}
-      showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
-      showNavigation={
-        !isImageSlider &&
-        !isSliderItemSlider &&
-        !isTimelineSliderItemSlider &&
-        !isTeamMemberSlider &&
-        !isSolutionSlider
-      }
-      showAltNavigation={
-        isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider || isSolutionSlider
-      }
-      isFullWidth={
-        isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
-      }
-    />
+    <>
+      <GenericSlider
+        sliderData={sliderData}
+        current={current}
+        api={api}
+        solutionUrls={solutionUrls}
+        setApi={setApi}
+        showIndicators={isImageSlider}
+        showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
+        showNavigation={
+          !isImageSlider &&
+          !isSliderItemSlider &&
+          !isTimelineSliderItemSlider &&
+          !isTeamMemberSlider &&
+          !isSolutionSlider
+        }
+        showAltNavigation={
+          isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider || isSolutionSlider
+        }
+        isFullWidth={
+          isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
+        }
+        onTeamMemberClick={handleTeamMemberClick}
+      />
+      
+      {/* Team Member Modal */}
+      {selectedTeamMember && (
+        <TeamMemberModal
+          isOpen={isModalOpen}
+          onOpenChange={handleModalClose}
+          teamMember={selectedTeamMember}
+        />
+      )}
+    </>
   );
 }
