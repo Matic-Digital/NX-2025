@@ -42,7 +42,7 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { Post } from '@/components/Post/PostSchema';
+import type { PostSchema } from '@/components/Post/PostSchema';
 import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
@@ -68,7 +68,7 @@ interface NestedSegmentsProps {
 }
 
 // Content item type union
-type ContentItem = Page | Product | Service | Solution | Post;
+type ContentItem = Page | Product | Service | Solution | PostSchema;
 
 // Generate static params for static site generation
 export async function generateStaticParams() {

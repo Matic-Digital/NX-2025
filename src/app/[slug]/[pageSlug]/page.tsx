@@ -26,7 +26,7 @@ import type { PageList, PageListContent } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { Post } from '@/components/Post/PostSchema';
+import type { PostSchema } from '@/components/Post/PostSchema';
 import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
@@ -123,7 +123,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   }
 
   // Try to fetch the content item as different content types
-  let contentItem: Page | Product | Service | Solution | Post | null = null;
+  let contentItem: Page | Product | Service | Solution | PostSchema | null = null;
   let pageList: PageList | null = null;
 
   try {
@@ -211,7 +211,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
 // Helper function to render content based on content type
 function renderContentByType(
-  contentItem: Page | Product | Service | Solution | Post | PageList,
+  contentItem: Page | Product | Service | Solution | PostSchema | PageList,
   contentType: string | null
 ) {
   // For PageList content type, render like a normal PageList
@@ -390,16 +390,16 @@ function renderContentByType(
 
         {contentType === 'Solution' && (
           <div>
-            <h2>{(contentItem as Solution).cardHeading}</h2>
-            <h3>{(contentItem as Solution).cardSubheading}</h3>
-            <p>{(contentItem as Solution).cardDescription}</p>
+            <h2>{(contentItem as Solution).heading}</h2>
+            <h3>{(contentItem as Solution).subheading}</h3>
+            <p>{(contentItem as Solution).description}</p>
             {/* Add more Solution-specific rendering here */}
           </div>
         )}
 
         {contentType === 'Post' && (
           <div>
-            <p>{(contentItem as Post).excerpt}</p>
+            <p>{(contentItem as PostSchema).excerpt}</p>
             {/* Add more Post-specific rendering here */}
           </div>
         )}
@@ -432,7 +432,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   console.log(
     `[slug]/[pageSlug] route: Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`
   );
-  let contentItem: Page | Product | Service | Solution | Post | PageList | null = null;
+  let contentItem: Page | Product | Service | Solution | PostSchema | PageList | null = null;
   let pageList: PageList | null = null;
   let contentType: string | null = null;
 

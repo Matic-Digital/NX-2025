@@ -49,6 +49,7 @@ export function BannerHero(props: BannerHeroProps) {
         <div className="relative z-10 container mx-auto w-full px-6 lg:px-8">
           <SectionHeading
             sectionHeadingId={bannerHero.heading.sys.id}
+            variant={bannerHero.heading.variant}
             componentType="banner-hero"
           />
         </div>

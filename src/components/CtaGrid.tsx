@@ -12,6 +12,7 @@ import { ErrorBoundary } from './global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { Box, Container } from '@/components/global/matic-ds';
+import { resolveNestedUrls } from '@/lib/page-link-utils';
 
 export function CtaGrid(props: CtaGrid) {
   const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);
@@ -44,43 +45,14 @@ export function CtaGrid(props: CtaGrid) {
   // This ensures all CTA grid items link to proper nested URLs when parent PageLists exist
   useEffect(() => {
     const fetchNestedUrls = async () => {
-      const urlMap: Record<string, string> = {};
-
-      // Process each CTA to determine its correct nested URL structure
-      for (const cta of liveCtaGrid.ctaCollection?.items || []) {
-        if (cta.internalLink?.slug) {
-          try {
-            // Query the check-page-parent API to detect nesting relationships
-            const response = await fetch(`/api/check-page-parent?slug=${cta.internalLink.slug}`);
-            if (response.ok) {
-              const data = (await response.json()) as {
-                parentPageList?: unknown;
-                fullPath?: string;
-              };
-              if (data.parentPageList && data.fullPath) {
-                // Use full nested path when parent PageLists are detected
-                // e.g., /products/trackers/nx-horizon instead of /nx-horizon
-                urlMap[cta.internalLink.sys.id] = `/${data.fullPath}`;
-              } else {
-                // Fallback to flat URL structure when no nesting is detected
-                urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
-              }
-            } else {
-              // Fallback to flat slug on API failure
-              urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
-            }
-          } catch (error) {
-            console.error(`Error finding nested path for Product ${cta.internalLink.slug}:`, error);
-            // Fallback to flat slug on error
-            urlMap[cta.internalLink.sys.id] = `/${cta.internalLink.slug}`;
-          }
-        } else if (cta.externalLink) {
-          // External links remain unchanged
-          urlMap[cta.sys.id] = cta.externalLink;
-        }
-      }
-
+      const ctaItems = liveCtaGrid.ctaCollection?.items || [];
+      const urlMap = await resolveNestedUrls(ctaItems, (cta) => ({
+        sys: cta.sys,
+        internalLink: cta.internalLink,
+        externalLink: cta.externalLink
+      }));
       setProductUrls(urlMap);
+      console.log('✅ CtaGrid productUrls:', urlMap);
     };
 
     void fetchNestedUrls();
@@ -136,7 +108,6 @@ export function CtaGrid(props: CtaGrid) {
                   <div className="mt-8">
                     {liveCtaGrid.ctaCollection.items.map((cta, index) => {
                       const isProduct = cta.internalLink?.__typename === 'Product';
-
                       return (
                         <Button
                           key={cta.sys?.id || index}
@@ -199,7 +170,7 @@ export function CtaGrid(props: CtaGrid) {
                 <div className="mt-auto">
                   {liveCtaGrid.ctaCollection.items.map((cta, index) => {
                     const isProduct = cta.internalLink?.__typename === 'Product';
-
+                    console.log('✅ Full CTA object:', cta.internalLink);
                     return (
                       <Button
                         key={cta.sys?.id || index}

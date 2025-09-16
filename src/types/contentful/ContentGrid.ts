@@ -10,7 +10,7 @@ import { VideoSchema } from './Video';
 import { SliderSchema } from './Slider';
 import { SolutionSchema } from './Solution';
 import { ProductSchema } from './Product';
-import { AccordionSchema } from './Accordion';
+import { AccordionSchema } from '../../components/Accordion/AccordionSchema';
 import { OfficeLocationSchema } from './OfficeLocation';
 
 // Union type for items

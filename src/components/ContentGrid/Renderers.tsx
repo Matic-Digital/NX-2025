@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Box } from '@/components/global/matic-ds';
 import { ContentGridItem } from '../ContentGridItem';
-import { Accordion } from '@/components/Accordion';
+import { Accordion } from '@/components/Accordion/Accordion';
 import { AirImage } from '@/components/media/AirImage';
 import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
@@ -19,16 +19,16 @@ import { Location } from '@/components/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 
 import type {
-  Accordion as AccordionType,
+  AccordionSchema,
   AirImage as AirImageType,
-  ContactCard as ContactCardType,
+  ContactCardSchema,
   Collection as CollectionType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as LocationType,
   PageList as PageListType,
   PageListPages as PageListPagesType,
-  Post as PostType,
+  PostSchema,
   Product as ProductType,
   Slider as SliderType,
   Solution as SolutionType,
@@ -47,11 +47,11 @@ interface RenderContext {
 }
 
 export const contentRenderers = {
-  renderAccordion: (item: AccordionType, context: RenderContext) => (
+  renderAccordion: (item: AccordionSchema, context: RenderContext) => (
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderContactCard: (item: ContactCardType, context: RenderContext) => (
+  renderContactCard: (item: ContactCardSchema, context: RenderContext) => (
     <ContactCard
       key={item.sys?.id ?? context.index}
       {...item}
@@ -89,7 +89,7 @@ export const contentRenderers = {
     <Location key={item.sys?.id ?? context.index} {...item} {...context} />
   ),
 
-  renderPost: (item: PostType, context: RenderContext) => {
+  renderPost: (item: PostSchema, context: RenderContext) => {
     // spread in context to use the variant prop in PostCard
     return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
   },

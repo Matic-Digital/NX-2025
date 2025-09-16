@@ -11,7 +11,11 @@ import { AirImage } from '@/components/media/AirImage';
 import type { Content, ContentOverlay } from '@/types/contentful/Content';
 import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
-import type { SectionHeading as SectionHeadingType } from './SectionHeading/SectionHeadingSchema';
+import type {
+  SectionHeadingSchema,
+  SectionHeadingVariant
+} from './SectionHeading/SectionHeadingSchema';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
 import type { Image } from '@/types/contentful/Image';
 import { Box } from '@/components/global/matic-ds';
@@ -22,8 +26,8 @@ import { cn } from '@/lib/utils';
 type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
 
 type SectionHeadingCardData = Pick<
-  SectionHeadingType,
-  'overline' | 'title' | 'description' | 'ctaCollection'
+  SectionHeadingSchema,
+  'overline' | 'title' | 'description' | 'ctaCollection' | 'variant'
 > & {
   image: {
     link?: string;
@@ -136,6 +140,21 @@ export function Content(props: Content) {
       data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
     ): data is ProductCardData => {
       return 'slug' in data;
+    };
+
+    // Helper function to validate SectionHeading variant
+    const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
+      if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
+        return variant as SectionHeadingVariant;
+      }
+      return 'Default';
+    };
+
+    // Type guard to check if data is SectionHeadingCardData
+    const isSectionHeadingCardData = (
+      data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    ): data is SectionHeadingCardData => {
+      return 'variant' in data && 'overline' in data;
     };
 
     // Type guard to check if data is ContentGridItemCardData
@@ -341,6 +360,7 @@ export function Content(props: Content) {
           <SectionHeading
             title={data.title}
             description={data.description}
+            variant={isSectionHeadingCardData(data) ? getValidVariant(data.variant) : 'Default'}
             componentType={'content'}
             isDarkMode={true}
           />
@@ -425,7 +445,7 @@ export function Content(props: Content) {
 
     // Handle SectionHeading content
     if ('__typename' in item && item.__typename === 'SectionHeading') {
-      const sectionHeading = item as unknown as SectionHeadingType;
+      const sectionHeading = item as unknown as SectionHeadingSchema;
 
       // If Content has a background image, use ContentCard
       if (liveContent.asset?.__typename === 'Image') {
@@ -436,6 +456,7 @@ export function Content(props: Content) {
           title: sectionHeading.title,
           description: sectionHeading.description,
           ctaCollection: sectionHeading.ctaCollection,
+          variant: sectionHeading.variant,
           image: {
             link: imageAsset.link ?? '',
             altText: imageAsset.altText ?? imageAsset.title,
@@ -455,7 +476,6 @@ export function Content(props: Content) {
       // Fallback to regular SectionHeading component if no background image
       return (
         <SectionHeading
-          sys={{ id: sectionHeading.sys.id }}
           title={sectionHeading.title}
           description={sectionHeading.description}
           ctaCollection={sectionHeading.ctaCollection}

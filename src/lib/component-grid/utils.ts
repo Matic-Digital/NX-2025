@@ -1,13 +1,13 @@
 import type {
-  Accordion as AccordionType,
+  AccordionSchema,
   AirImage as AirImageType,
   Collection as CollectionType,
-  ContactCard as ContactCardType,
+  ContactCardSchema,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as OfficeLocationType,
   PageList as PageListType,
-  Post as PostType,
+  PostSchema,
   Product as ProductType,
   Slider as SliderType,
   Solution as SolutionType,
@@ -16,15 +16,15 @@ import type {
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
-  | AccordionType
+  | AccordionSchema
   | AirImageType
   | CollectionType
-  | ContactCardType
+  | ContactCardSchema
   | ContentGridItemType
   | CtaGridType
   | OfficeLocationType
   | PageListType
-  | PostType
+  | PostSchema
   | ProductType
   | SliderType
   | SolutionType
@@ -35,10 +35,10 @@ export type ContentGridItemUnion =
  * Content type detection utilities
  */
 export const contentTypeDetectors = {
-  isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
+  isAccordion: (item: ContentGridItemUnion): item is AccordionSchema =>
     item.__typename === 'Accordion',
 
-  isContactCard: (item: ContentGridItemUnion): item is ContactCardType =>
+  isContactCard: (item: ContentGridItemUnion): item is ContactCardSchema =>
     item.__typename === 'ContactCard',
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
@@ -56,7 +56,7 @@ export const contentTypeDetectors = {
 
   isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
 
-  isPost: (item: ContentGridItemUnion): item is PostType => item.__typename === 'Post',
+  isPost: (item: ContentGridItemUnion): item is PostSchema => item.__typename === 'Post',
 
   isProduct: (item: ContentGridItemUnion): item is ProductType => item.__typename === 'Product',
 

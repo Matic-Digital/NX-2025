@@ -1,6 +1,7 @@
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SYS_FIELDS } from './graphql-fields';
+import { BUTTON_GRAPHQL_FIELDS } from './button';
 
 import type { Solution } from '@/types/contentful';
 
@@ -11,13 +12,16 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
-  cardHeading
-  cardSubheading
+  heading
+  subheading
   cardTitle
-  cardDescription
-  cardBackgroundImage {
+  description
+  backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
+    cta {
+      ${BUTTON_GRAPHQL_FIELDS}
+    }
 `;
 
 export async function getSolutionById(id: string, preview = false): Promise<Solution | null> {

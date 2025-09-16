@@ -14,8 +14,8 @@ export const ContactCardSchema = z.object({
   cta: ButtonSchema.optional()
 });
 
-export type ContactCard = z.infer<typeof ContactCardSchema>;
+export type ContactCardSchema = z.infer<typeof ContactCardSchema>;
 
 export interface ContactCardResponse {
-  items: ContactCard[];
+  items: ContactCardSchema[];
 }

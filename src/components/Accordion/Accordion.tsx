@@ -7,9 +7,9 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '@/components/ui/accordion';
-import { getAccordionsByIds } from '@/lib/contentful-api/accordion';
+import { getAccordionsByIds } from './AccordionApi';
 import { AirImage } from '@/components/media/AirImage';
-import type { Accordion as AccordionType } from '@/types/contentful';
+import type { AccordionSchema } from './AccordionSchema';
 import { Box } from '@/components/global/matic-ds';
 
 interface AccordionProps {
@@ -19,7 +19,7 @@ interface AccordionProps {
 }
 
 export function Accordion({ sys }: AccordionProps) {
-  const [accordionData, setAccordionData] = useState<AccordionType | null>(null);
+  const [accordionData, setAccordionData] = useState<AccordionSchema | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [openItem, setOpenItem] = useState('item-0'); // First item is always open

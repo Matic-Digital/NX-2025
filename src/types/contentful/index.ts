@@ -1,4 +1,4 @@
-export * from './Accordion';
+export * from '../../components/Accordion/AccordionSchema';
 export * from './Asset';
 export * from './BannerHero';
 export * from './Button';

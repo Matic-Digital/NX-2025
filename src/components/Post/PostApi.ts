@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '../../lib/api';
 
-import type { Post, PostResponse } from '@/components/Post/PostSchema';
+import type { PostSchema, PostResponse } from '@/components/Post/PostSchema';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
 import { ContentfulError, NetworkError } from '../../lib/errors';
@@ -93,7 +93,7 @@ export const POST_GRAPHQL_FIELDS = `
  */
 export async function getAllPosts(preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQL<PostSchema>(
       `query GetAllPosts($preview: Boolean!) {
         postCollection(preview: $preview, order: datePublished_DESC) {
           items {
@@ -111,7 +111,7 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
     }
 
     // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+    const data = response.data as unknown as { postCollection?: { items?: PostSchema[] } };
 
     // Validate the data structure
     if (!data.postCollection?.items?.length) {
@@ -138,9 +138,9 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to Post or null if not found
  */
-export async function getPostById(id: string, preview = false): Promise<Post | null> {
+export async function getPostById(id: string, preview = false): Promise<PostSchema | null> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQL<PostSchema>(
       `query GetPostById($id: String!, $preview: Boolean!) {
         post(id: $id, preview: $preview) {
           ${POST_GRAPHQL_FIELDS}
@@ -156,7 +156,7 @@ export async function getPostById(id: string, preview = false): Promise<Post | n
     }
 
     // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { post?: Post };
+    const data = response.data as unknown as { post?: PostSchema };
 
     // Return null if post not found
     if (!data.post) {
@@ -181,9 +181,9 @@ export async function getPostById(id: string, preview = false): Promise<Post | n
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to Post or null if not found
  */
-export async function getPostBySlug(slug: string, preview = false): Promise<Post | null> {
+export async function getPostBySlug(slug: string, preview = false): Promise<PostSchema | null> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQL<PostSchema>(
       `query GetPostBySlug($slug: String!, $preview: Boolean!) {
         postCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
@@ -201,7 +201,7 @@ export async function getPostBySlug(slug: string, preview = false): Promise<Post
     }
 
     // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+    const data = response.data as unknown as { postCollection?: { items?: PostSchema[] } };
 
     // Return null if post not found
     if (!data.postCollection?.items?.length) {
@@ -232,7 +232,7 @@ export async function getPostBySlug(slug: string, preview = false): Promise<Post
  */
 export async function getAllPostsMinimal(preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQL<PostSchema>(
       `query GetAllPostsMinimal($preview: Boolean!) {
         postCollection(preview: $preview, order: datePublished_DESC) {
           items {
@@ -263,7 +263,7 @@ export async function getAllPostsMinimal(preview = false): Promise<PostResponse>
     }
 
     // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+    const data = response.data as unknown as { postCollection?: { items?: PostSchema[] } };
 
     // Return empty array if no posts found
     if (!data.postCollection?.items) {
@@ -292,7 +292,7 @@ export async function getAllPostsMinimal(preview = false): Promise<PostResponse>
  */
 export async function getPostsByCategory(category: string, preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQL<PostSchema>(
       `query GetPostsByCategory($category: String!, $preview: Boolean!) {
         postCollection(where: { categories_contains_some: [$category] }, preview: $preview, order: datePublished_DESC) {
           items {
@@ -310,7 +310,7 @@ export async function getPostsByCategory(category: string, preview = false): Pro
     }
 
     // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+    const data = response.data as unknown as { postCollection?: { items?: PostSchema[] } };
 
     // Return empty array if no posts found
     if (!data.postCollection?.items) {
