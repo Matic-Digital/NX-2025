@@ -106,7 +106,10 @@ export function PageCard(props: PageCardProps) {
               isFeaturedVariant && 'lg:gap-[1rem] lg:p-[2rem]'
             )}
           >
-            <p className="text-body-xs uppercase text-primary" {...inspectorProps({ fieldId: '__typename' })}>
+            <p
+              className="text-body-xs text-primary uppercase"
+              {...inspectorProps({ fieldId: '__typename' })}
+            >
               Page
             </p>
             <h2
@@ -142,9 +145,7 @@ export function PageCard(props: PageCardProps) {
               isRowVariant && '2xl:pl-[1rem]'
             )}
           >
-            <p className="text-body-xs text-[#525252]">
-              View Page
-            </p>
+            <p className="text-body-xs text-[#525252]">View Page</p>
             <Box
               direction="col"
               gap={0}

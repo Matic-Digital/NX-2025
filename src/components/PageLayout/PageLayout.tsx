@@ -69,7 +69,7 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
     <>
       {fullHeader && <Header {...fullHeader} />}
       <Main className="-mt-25 overflow-hidden">
-        <Box direction="col" gap={12}>
+        <Box direction="col" gap={0}>
           {children}
         </Box>
       </Main>
