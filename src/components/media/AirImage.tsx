@@ -120,9 +120,25 @@ export const AirImage: React.FC<AirImageType> = (props) => {
   const defaultWidth = airDimensions?.width ?? width ?? 1208;
   const defaultHeight = airDimensions?.height ?? height ?? 800;
 
-  // Optimize the Contentful image URL
-  const optimizedSrc = optimizeContentfulImage(link, defaultWidth, defaultHeight, 85);
+  // For Air imgix URLs, enhance quality parameters while preserving dimensions
+  const optimizedSrc = airDimensions 
+    ? link.replace('&auto=auto', '&auto=format&q=90&sharp=1') 
+    : optimizeContentfulImage(link, defaultWidth, defaultHeight, 85);
 
+  // Use regular img tag for Air images to bypass Next.js dimension constraints
+  if (airDimensions) {
+    return (
+      <img
+        src={optimizedSrc}
+        alt={altText ?? ''}
+        className={className}
+        loading={priority ? 'eager' : 'lazy'}
+        style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+      />
+    );
+  }
+
+  // Use Next.js Image for non-Air images
   return (
     <Image
       src={optimizedSrc}
