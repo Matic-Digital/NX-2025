@@ -120,12 +120,12 @@ export const AirImage: React.FC<AirImageType> = (props) => {
   const intrinsicWidth = airDimensions?.width ?? width ?? 1208;
   const intrinsicHeight = airDimensions?.height ?? height ?? 800;
 
-  // For Air imgix URLs, enhance quality parameters while preserving dimensions
+  // For Air imgix URLs, keep original URL completely unchanged, only optimize Contentful images
   const optimizedSrc = airDimensions
-    ? link.replace('&auto=auto', '&auto=format&q=90&sharp=1')
+    ? link // Keep original Air URL completely unchanged
     : optimizeContentfulImage(link, intrinsicWidth, intrinsicHeight, 85);
 
-  // Always use Next.js Image component
+  // For Air images, use unoptimized to preserve intrinsic dimensions
   return (
     <Image
       src={optimizedSrc}
@@ -137,6 +137,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
       loading={priority ? 'eager' : 'lazy'}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       style={{ objectFit: 'cover' }}
+      unoptimized={!!airDimensions} // Disable Next.js optimization for Air images
     />
   );
 };
