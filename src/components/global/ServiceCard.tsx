@@ -2,14 +2,14 @@
 
 import { useEffect, useState, Fragment } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { Box } from '@/components/global/matic-ds';
-import AirImage from '@/components/media/AirImage';
-import type { Service } from '@/types/contentful/Service';
-import Link from 'next/link';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { Button } from '@/components/ui/button';
 import { useServiceCard } from '@/contexts/ServiceCardContext';
+import { AirImage } from '@/components/media/AirImage';
+import { Box } from '@/components/global/matic-ds/box';
+import { Button } from '@/components/ui/button';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { getServiceById } from '@/lib/contentful-api/service';
+import Link from 'next/link';
+import type { Service } from '@/types/contentful/Service';
 
 interface ServiceCardProps {
   serviceId: string;
@@ -43,17 +43,20 @@ export function ServiceCard(props: ServiceCardProps) {
     }
   }, [serviceId]);
 
-  // Set first card as active on mount if no card is active
+  // Set first card as active on mount if no card is active (desktop only)
   useEffect(() => {
-    if (isFirst && activeCardId === null) {
+    if (isFirst && activeCardId === null && window.innerWidth >= 768) {
       setActiveCardId(cardId);
     }
   }, [isFirst, cardId, activeCardId, setActiveCardId]);
 
-  const isActive = activeCardId === cardId;
+  const isActive = activeCardId === cardId && window.innerWidth >= 768;
 
   const handleMouseEnter = () => {
-    setActiveCardId(cardId);
+    // Only handle mouse enter on desktop
+    if (window.innerWidth >= 768) {
+      setActiveCardId(cardId);
+    }
   };
 
   // Show loading state
@@ -77,27 +80,36 @@ export function ServiceCard(props: ServiceCardProps) {
             'linear-gradient(198deg, rgba(8, 8, 15, 0.02) -1.13%, rgba(8, 8, 15, 0.05) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
         }}
       >
-        <div
-          className={`absolute inset-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 ${
-            isActive ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
+        <div className="absolute top-0 right-0 left-0 h-[60%] opacity-100 md:hidden">
+          <AirImage
+            {...service.cardImage}
+            className="absolute inset-0 transform object-cover scale-100 opacity-100"
+          />
+        </div>
         <AirImage
           {...service.cardImage}
-          className={`absolute inset-0 transform object-cover transition-all duration-0 ease-in-out group-hover:scale-100 group-hover:opacity-100 group-hover:duration-800 ${
-            isActive ? 'scale-100 opacity-100' : 'scale-110 opacity-0'
+          className={`absolute inset-0 transform object-cover transition-all duration-0 ease-in-out hidden md:block md:group-hover:scale-100 md:group-hover:opacity-100 md:group-hover:duration-800 ${
+            isActive ? 'md:scale-100 md:opacity-100' : 'md:scale-110 md:opacity-0'
           }`}
         />
-        <Box direction="col" className="relative z-10 h-full justify-end">
+        <Box direction="col" className="relative z-10 h-full md:justify-end">
           <Box
             direction="col"
-            className={`relative z-10 transform px-[2rem] pt-[2rem] transition-all duration-500 ease-in-out group-hover:translate-y-0 before:absolute before:inset-0 before:bg-gradient-to-b before:from-[#D84500] before:to-[#CC4000] before:opacity-0 before:transition-opacity before:duration-500 ${
+            className={`relative z-10 transform px-[2rem] pt-[3.75rem] md:pt-[2rem] transition-all duration-500 ease-in-out md:group-hover:translate-y-0 md:before:absolute md:before:inset-0 md:before:bg-gradient-to-b md:before:from-[#D84500] md:before:to-[#CC4000] md:before:opacity-0 md:before:transition-opacity md:before:duration-500 mt-[60%] md:mt-0 bg-transparent translate-y-0 ${
               isActive
-                ? 'bg-primary translate-y-0 before:opacity-100'
-                : 'translate-y-[5.25rem] bg-transparent before:opacity-0'
+                ? 'md:bg-primary md:translate-y-0 md:before:opacity-100'
+                : 'md:translate-y-[5.25rem] md:bg-transparent md:before:opacity-0'
             }`}
           >
-            <h3 className="text-headline-md relative z-10 mb-[1rem] text-white">
+            <h3
+              className="text-headline-md md:text-headline-md relative z-10 mb-[1rem] text-white"
+              style={{
+                fontSize: '1.75rem',
+                fontWeight: 400,
+                lineHeight: '130%',
+                color: '#FFF'
+              }}
+            >
               {service.cardTitle}
             </h3>
             {service.cardTags?.map((tag, index) => (
@@ -109,8 +121,10 @@ export function ServiceCard(props: ServiceCardProps) {
               </Fragment>
             ))}
             <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
-              <Link href={`/services/${service.slug}`}>
-                <Button variant="outlineTrasparentWhite">{service.cardButtonText}</Button>
+              <Link href={`/services/${service.slug}`} className="w-full">
+                <Button variant="outlineTrasparentWhite" className="w-full">
+                  {service.cardButtonText}
+                </Button>
               </Link>
             </Box>
           </Box>

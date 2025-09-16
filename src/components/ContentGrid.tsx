@@ -8,9 +8,11 @@ import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { AirImage } from '@/components/media/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import { ContentItemRenderer } from './ContentGrid/ContentItemRenderer';
+import useEmblaCarousel from 'embla-carousel-react';
 import {
   calculateGridConfig,
   collectionAnalyzers,
+  contentTypeDetectors,
   type ContentGridItemUnion
 } from '../lib/component-grid/utils';
 import { getCollectionIdsFromContentGrid } from '@/lib/contentful-api/content-grid';
@@ -118,6 +120,42 @@ export function ContentGrid(props: ContentGridProps) {
     console.warn(`ContentGrid render ${renderKey} - Duplicate items found:`, duplicateIds);
   }
 
+  // Check if content grid contains only services for mobile carousel
+  const serviceItems = validItems.filter(contentTypeDetectors.isService);
+  const isServiceOnlyGrid = validItems.length > 0 && serviceItems.length === validItems.length;
+
+  // Embla carousel for service-only grids
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'center',
+    containScroll: 'trimSnaps',
+    dragFree: false,
+    slidesToScroll: 1,
+    breakpoints: {
+      '(min-width: 768px)': { active: false }
+    }
+  });
+
+  // Track current slide for indicators
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setCurrentSlide(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
+
+  // Service card context is handled by the ServiceCardProvider wrapper
+  // Individual ServiceCard components will manage their own active state
+
   // Calculate grid configuration using utilities
   const gridConfig = calculateGridConfig(validItems);
   const { direction, gap, analysis } = gridConfig;
@@ -165,7 +203,70 @@ export function ContentGrid(props: ContentGridProps) {
 
               {/* items */}
               {(() => {
-                const gridContent = isLocationLayout ? (
+                const gridContent = isServiceOnlyGrid ? (
+                  // Service carousel for service-only content grids on mobile
+                  <div className="w-full">
+                    {/* Mobile Carousel */}
+                    <div className="md:hidden">
+                      <div className="overflow-hidden" ref={emblaRef}>
+                        <div className="flex gap-4 pl-4">
+                          {serviceItems.map((service, index) => {
+                            const isActiveSlide = currentSlide === index;
+                            return (
+                              <div
+                                key={service.sys?.id ?? `service-${index}`}
+                                className="min-w-0 flex-[0_0_80%]"
+                              >
+                                <div className={isActiveSlide ? 'group' : ''}>
+                                  <ContentItemRenderer
+                                    item={service}
+                                    index={index}
+                                    validItems={validItems}
+                                    parentPageListSlug={props.parentPageListSlug}
+                                    currentPath={props.currentPath}
+                                    variant="grid"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Carousel Indicators */}
+                      <div className="relative z-50 mx-auto mt-8 flex h-1 w-full max-w-[90vw] flex-shrink-0 items-center gap-4 px-4">
+                        {serviceItems.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              emblaApi?.scrollTo(index);
+                              // Active card state is managed by ServiceCard components
+                            }}
+                            className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
+                              'bg-[#F5B12D] opacity-100': currentSlide === index
+                            })}
+                            aria-label={`Go to slide ${index + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Desktop Grid */}
+                    <div className="hidden gap-6 md:grid md:grid-cols-2 lg:grid-cols-3">
+                      {serviceItems.map((service, index) => (
+                        <ContentItemRenderer
+                          key={service.sys?.id ?? `service-${index}`}
+                          item={service}
+                          index={index}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                          variant="grid"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : isLocationLayout ? (
                   // Location featured grid layout - first item featured, rest in grid
                   <Box direction="col" gap={8} className="w-full">
                     {/* Featured location - spans full width */}
