@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
@@ -14,11 +13,13 @@ import { getSectionHeadingById } from './SectionHeadingApi';
 
 // Components
 import { Box } from '@/components/global/matic-ds';
-import { Button } from '@/components/ui/button';
 import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
+import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
+import { ModalCtaButton } from '@/components/global/ModalCtaButton';
 
 // Types
 import type { SectionHeadingSchema, SectionHeadingVariant } from './SectionHeadingSchema';
+import type { Modal } from '@/types/contentful/Modal';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 interface SectionHeadingProps extends Partial<SectionHeadingSchema> {
@@ -39,6 +40,13 @@ export function SectionHeading(props: SectionHeadingProps) {
   const [fetchedData, setFetchedData] = useState<SectionHeadingSchema | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
+
+  const handleModalOpen = (modal: Modal, _modalType: 'quote' | 'support') => {
+    setSelectedModal(modal);
+    setModalOpen(true);
+  };
 
   // Fetch data if sectionHeadingId is provided
   useEffect(() => {
@@ -135,23 +143,18 @@ export function SectionHeading(props: SectionHeadingProps) {
         >
           {hasCtaCollection &&
             sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <Link
+              <ModalCtaButton
                 key={cta.sys?.id || index}
-                href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-                {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                <Button
-                  variant={
-                    (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'primary'
-                      : index === 0
-                        ? 'white'
-                        : 'primary'
-                  }
-                >
-                  {cta.text}
-                </Button>
-              </Link>
+                cta={cta}
+                variant={
+                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+                    ? 'primary'
+                    : index === 0
+                      ? 'white'
+                      : 'primary'
+                }
+                onModalOpen={handleModalOpen}
+              />
             ))}
         </Box>
       </Box>
@@ -187,23 +190,18 @@ export function SectionHeading(props: SectionHeadingProps) {
         <Box gap={3} {...inspectorProps({ fieldId: 'heading' })} className="items-end lg:ml-auto">
           {hasCtaCollection &&
             sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <Link
+              <ModalCtaButton
                 key={cta.sys?.id || index}
-                href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-                {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                <Button
-                  variant={
-                    (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'primary'
-                      : index === 0
-                        ? 'white'
-                        : 'primary'
-                  }
-                >
-                  {cta.text}
-                </Button>
-              </Link>
+                cta={cta}
+                variant={
+                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+                    ? 'primary'
+                    : index === 0
+                      ? 'white'
+                      : 'primary'
+                }
+                onModalOpen={handleModalOpen}
+              />
             ))}
         </Box>
       </Box>
@@ -248,23 +246,18 @@ export function SectionHeading(props: SectionHeadingProps) {
         >
           {hasCtaCollection &&
             sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <Link
+              <ModalCtaButton
                 key={cta.sys?.id || index}
-                href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-                {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              >
-                <Button
-                  variant={
-                    (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                      ? 'primary'
-                      : index === 0
-                        ? 'white'
-                        : 'primary'
-                  }
-                >
-                  {cta.text}
-                </Button>
-              </Link>
+                cta={cta}
+                variant={
+                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+                    ? 'primary'
+                    : index === 0
+                      ? 'white'
+                      : 'primary'
+                }
+                onModalOpen={handleModalOpen}
+              />
             ))}
         </Box>
       </Box>
@@ -314,36 +307,46 @@ export function SectionHeading(props: SectionHeadingProps) {
       >
         {hasCtaCollection &&
           sectionHeading.ctaCollection?.items?.map((cta, index) => (
-            <Link
+            <ModalCtaButton
               key={cta.sys?.id || index}
-              href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-              {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >
-              <Button
-                variant={
-                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+              cta={cta}
+              variant={
+                (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
+                  ? 'primary'
+                  : index === 0
                     ? 'primary'
-                    : index === 0
-                      ? 'primary'
-                      : 'outline'
-                }
-              >
-                {cta.text}
-              </Button>
-            </Link>
+                    : 'outline'
+              }
+              onModalOpen={handleModalOpen}
+            />
           ))}
       </Box>
     </Box>
   );
 
-  switch (sectionHeading?.variant) {
-    case 'Horizontal':
-      return <HorizontalSectionHeading />;
-    case 'Stacked':
-      return <StackedSectionHeading />;
-    case 'Centered':
-      return <CenteredSectionHeading />;
-    default:
-      return <DefaultSectionHeading />;
-  }
+  return (
+    <>
+      {(() => {
+        switch (sectionHeading?.variant) {
+          case 'Horizontal':
+            return <HorizontalSectionHeading />;
+          case 'Stacked':
+            return <StackedSectionHeading />;
+          case 'Centered':
+            return <CenteredSectionHeading />;
+          default:
+            return <DefaultSectionHeading />;
+        }
+      })()}
+      
+      {selectedModal && (
+        <RequestAQuoteModal
+          isOpen={modalOpen}
+          onOpenChange={setModalOpen}
+          title={selectedModal.title ?? 'Request a Quote'}
+          description={selectedModal.description ?? 'Please fill out the form below and we will get back to you shortly.'}
+        />
+      )}
+    </>
+  );
 }
