@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { getSlidersByIds } from '@/lib/contentful-api/slider';
@@ -47,9 +47,9 @@ interface SliderCardProps {
 }
 
 const ContentOverlay = ({ children }: ContentOverlay) => (
-  <div className="relative h-full">
+  <div className="absolute right-0 bottom-0 left-0 md:relative md:h-full">
     <div
-      className="flex h-full w-full max-w-[393px] flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px]"
+      className="flex w-full flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px] md:h-full md:max-w-[393px]"
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -149,7 +149,7 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
         <AirImage
           link={imageItem.link}
           altText={imageItem.altText}
-          className="absolute h-full w-full object-cover"
+          className="absolute h-full w-full object-cover object-left md:object-cover"
         />
       </div>
     );
@@ -191,6 +191,16 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
                 {postItem.excerpt}
               </p>
             )}
+
+            <Link href={`/${postItem.slug}`} className="">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-black"
+              >
+                Read More
+              </Button>
+            </Link>
           </Box>
         </ContentOverlay>
       </div>
@@ -281,7 +291,7 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
           {/* Orange plus icon that shows on hover */}
           <button
             onClick={() => onTeamMemberClick?.(teamMember)}
-            className="bg-primary absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-0 transition-all duration-300 group-hover/card:opacity-100 hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-0 transition-all duration-300 group-hover/card:opacity-100"
           >
             <Plus className="size-6 text-white" />
           </button>
@@ -303,8 +313,6 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
       </Box>
     );
   }
-
-  
 
   if (updatedItem.__typename === 'Solution') {
     const solution = updatedItem as Solution;
@@ -402,6 +410,7 @@ const GenericSlider = ({
   const isSolutionSlider = sliderData.itemsCollection.items[0]?.__typename === 'Solution';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
+  const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
   const hasOnePostSlide =
     sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
 
@@ -451,7 +460,7 @@ const GenericSlider = ({
                       : isTimelineSlider
                         ? 'basis-full'
                         : isFullWidth
-                          ? 'basis-full sm:basis-4/5'
+                          ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
                           : isSolutionSlider
                             ? 'basis-[411px]'
                             : 'basis-full'
@@ -475,9 +484,9 @@ const GenericSlider = ({
         {/* Combined Navigation - Handles TimelineSlider (left side) and other sliders (top right) */}
         {showAltNavigation && (
           <>
-            {isTimelineSlider ? (
+            {isTimelineSlider || isPostSlider ? (
               <>
-                {/* Mobile Timeline Navigation - Separate buttons on each side */}
+                {/* Mobile Navigation - Separate buttons on each side */}
                 <CarouselPrevious
                   className="absolute top-1/2 left-6 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
@@ -488,19 +497,34 @@ const GenericSlider = ({
                   variant="outline"
                   aria-label="Next slide"
                 />
-                {/* Desktop Timeline Navigation - Grouped together */}
-                <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
-                  <CarouselPrevious
-                    className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
-                    variant="outline"
-                    aria-label="Previous slide"
-                  />
-                  <CarouselNext
-                    className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
-                    variant="outline"
-                    aria-label="Next slide"
-                  />
-                </div>
+                {/* Desktop Navigation */}
+                {isTimelineSlider ? (
+                  <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
+                    <CarouselPrevious
+                      className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                      variant="outline"
+                      aria-label="Previous slide"
+                    />
+                    <CarouselNext
+                      className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                      variant="outline"
+                      aria-label="Next slide"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <CarouselPrevious
+                      className="absolute top-1/2 left-8 z-50 hidden size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:flex"
+                      variant="outline"
+                      aria-label="Previous slide"
+                    />
+                    <CarouselNext
+                      className="absolute top-1/2 right-8 z-50 hidden size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:flex"
+                      variant="outline"
+                      aria-label="Next slide"
+                    />
+                  </>
+                )}
               </>
             ) : (
               <div
@@ -526,18 +550,23 @@ const GenericSlider = ({
       </Carousel>
 
       {showIndicators && (
-        <div className="relative z-50 mx-auto -mt-4 flex h-1 w-[532px] flex-shrink-0 items-center gap-4">
-          {sliderData.itemsCollection.items.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
-                'bg-[#F5B12D] opacity-100': current === index + 1
-              })}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+        <Container>
+          <div className={cn(
+            "relative z-10 mt-4 flex h-1 items-center gap-4",
+            isPostSlider ? "lg:hidden" : ""
+          )}>
+            {sliderData.itemsCollection.items.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => api?.scrollTo(index)}
+                className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
+                  'bg-[#F5B12D] opacity-100': current === index + 1
+                })}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </Container>
       )}
 
       {showAltIndicators && (
@@ -687,6 +716,8 @@ export function Slider(props: SliderSys) {
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   const handleTeamMemberClick = (teamMember: TeamMember) => {
     setSelectedTeamMember(teamMember);
@@ -711,6 +742,48 @@ export function Slider(props: SliderSys) {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+
+  // Intersection Observer to track if slider is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) {
+          setIsInView(entry.isIntersecting);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    const currentRef = sliderRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  // Global keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isInView || !api) return;
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        api.scrollPrev();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        api.scrollNext();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [api, isInView]);
 
   useEffect(() => {
     async function fetchSliderData() {
@@ -793,14 +866,14 @@ export function Slider(props: SliderSys) {
 
   // Configure slider based on content type
   return (
-    <>
+    <div ref={sliderRef}>
       <GenericSlider
         sliderData={sliderData}
         current={current}
         api={api}
         solutionUrls={solutionUrls}
         setApi={setApi}
-        showIndicators={isImageSlider}
+        showIndicators={isImageSlider || isPostSlider}
         showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
         showNavigation={
           !isImageSlider &&
@@ -810,14 +883,18 @@ export function Slider(props: SliderSys) {
           !isSolutionSlider
         }
         showAltNavigation={
-          isSliderItemSlider || isTimelineSliderItemSlider || isTeamMemberSlider || isSolutionSlider
+          isSliderItemSlider ||
+          isTimelineSliderItemSlider ||
+          isTeamMemberSlider ||
+          isSolutionSlider ||
+          isPostSlider
         }
         isFullWidth={
           isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
         }
         onTeamMemberClick={handleTeamMemberClick}
       />
-      
+
       {/* Team Member Modal */}
       {selectedTeamMember && (
         <TeamMemberModal
@@ -826,6 +903,6 @@ export function Slider(props: SliderSys) {
           teamMember={selectedTeamMember}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -80,22 +80,24 @@ export function ServiceCard(props: ServiceCardProps) {
             'linear-gradient(198deg, rgba(8, 8, 15, 0.02) -1.13%, rgba(8, 8, 15, 0.05) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
         }}
       >
-        <div className="absolute top-0 right-0 left-0 h-[60%] opacity-100 md:hidden">
-          <AirImage
-            {...service.cardImage}
-            className="absolute inset-0 transform object-cover scale-100 opacity-100"
-          />
+        <div className="absolute top-0 right-0 left-0 h-[14rem] overflow-hidden opacity-100 md:hidden">
+          <div className="relative h-[14rem] w-full overflow-hidden">
+            <AirImage
+              {...service.cardImage}
+              className="absolute top-0 left-0 h-[14rem] w-full scale-100 transform object-cover opacity-100"
+            />
+          </div>
         </div>
         <AirImage
           {...service.cardImage}
-          className={`absolute inset-0 transform object-cover transition-all duration-0 ease-in-out hidden md:block md:group-hover:scale-100 md:group-hover:opacity-100 md:group-hover:duration-800 ${
+          className={`absolute inset-0 hidden transform object-cover transition-all duration-0 ease-in-out md:block md:group-hover:scale-100 md:group-hover:opacity-100 md:group-hover:duration-800 ${
             isActive ? 'md:scale-100 md:opacity-100' : 'md:scale-110 md:opacity-0'
           }`}
         />
         <Box direction="col" className="relative z-10 h-full md:justify-end">
           <Box
             direction="col"
-            className={`relative z-10 transform px-[2rem] pt-[3.75rem] md:pt-[2rem] transition-all duration-500 ease-in-out md:group-hover:translate-y-0 md:before:absolute md:before:inset-0 md:before:bg-gradient-to-b md:before:from-[#D84500] md:before:to-[#CC4000] md:before:opacity-0 md:before:transition-opacity md:before:duration-500 mt-[60%] md:mt-0 bg-transparent translate-y-0 ${
+            className={`relative z-10 mt-[60%] translate-y-0 transform bg-transparent px-[2rem] pt-[3.75rem] transition-all duration-500 ease-in-out md:mt-0 md:pt-[2rem] md:group-hover:translate-y-0 md:before:absolute md:before:inset-0 md:before:bg-gradient-to-b md:before:from-[#D84500] md:before:to-[#CC4000] md:before:opacity-0 md:before:transition-opacity md:before:duration-500 ${
               isActive
                 ? 'md:bg-primary md:translate-y-0 md:before:opacity-100'
                 : 'md:translate-y-[5.25rem] md:bg-transparent md:before:opacity-0'
