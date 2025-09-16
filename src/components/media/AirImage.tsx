@@ -6,6 +6,34 @@ import type { AirImage as AirImageType } from '@/types/contentful/Image';
 import { getImageById } from '@/lib/contentful-api/image';
 
 /**
+ * Extracts width and height from Air imgix URLs
+ * @param url - Air imgix URL (e.g., https://air-prod.imgix.net/image.jpg?w=2880&h=1560&...)
+ * @returns Object with width and height, or null if not found
+ */
+const extractDimensionsFromAirUrl = (url: string): { width: number; height: number } | null => {
+  if (!url.includes('air-prod.imgix.net')) {
+    return null; // Not an Air imgix URL
+  }
+
+  try {
+    const urlObj = new URL(url);
+    const width = urlObj.searchParams.get('w');
+    const height = urlObj.searchParams.get('h');
+    
+    if (width && height) {
+      return {
+        width: parseInt(width, 10),
+        height: parseInt(height, 10)
+      };
+    }
+  } catch (error) {
+    console.error('Failed to parse Air imgix URL:', error);
+  }
+  
+  return null;
+};
+
+/**
  * Optimizes Contentful image URLs for better quality and performance
  * @param url - Original Contentful image URL
  * @param width - Desired width
@@ -85,9 +113,12 @@ export const AirImage: React.FC<AirImageType> = (props) => {
     return null;
   }
 
-  // Use higher default resolutions for better quality
-  const defaultWidth = width ?? 1208;
-  const defaultHeight = height ?? 800;
+  // Extract dimensions from Air imgix URL first, then fallback to props
+  const airDimensions = extractDimensionsFromAirUrl(link);
+  
+  // Prioritize URL dimensions, then provided dimensions, then defaults
+  const defaultWidth = airDimensions?.width ?? width ?? 1208;
+  const defaultHeight = airDimensions?.height ?? height ?? 800;
 
   // Optimize the Contentful image URL
   const optimizedSrc = optimizeContentfulImage(link, defaultWidth, defaultHeight, 85);
