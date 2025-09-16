@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { AirImage } from '@/components/media/AirImage';
 import { ArrowUpRight } from 'lucide-react';
@@ -37,6 +37,7 @@ export function TeamMemberModal({ isOpen, onOpenChange, teamMember }: TeamMember
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] max-w-[75vw] gap-0 overflow-hidden rounded-none p-0 md:max-w-[90vw] lg:max-w-[75vw]">
+        <DialogTitle className="sr-only">{teamMember.name} - Team Member Details</DialogTitle>
         <Box
           direction={{ base: 'col', md: 'row' }}
           gap={0}
@@ -55,7 +56,7 @@ export function TeamMemberModal({ isOpen, onOpenChange, teamMember }: TeamMember
           <Box
             direction="col"
             gap={6}
-            className="w-full min-h-[400px] overflow-y-auto py-8 px-6 sm:px-8 md:w-[55%] md:px-12 md:py-12 lg:w-[50%]"
+            className="min-h-[400px] w-full overflow-y-auto px-6 py-8 sm:px-8 md:w-[55%] md:px-12 md:py-12 lg:w-[50%]"
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{teamMember.name}</h2>
