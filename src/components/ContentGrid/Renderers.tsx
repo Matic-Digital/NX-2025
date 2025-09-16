@@ -119,9 +119,28 @@ export const contentRenderers = {
     <Slider key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderSolution: (item: SolutionType, context: RenderContext) => (
-    <SolutionCard key={item.sys?.id ?? context.index} index={context.index} {...item} />
-  ),
+  renderSolution: (item: SolutionType, context: RenderContext) => {
+    // Convert Solution to ContentGridItem format
+    const contentGridItemData: ContentGridItemType & Pick<SolutionType, 'slug'> = {
+      sys: item.sys,
+      __typename: 'Solution' as const,
+      slug: item.slug,
+      title: item.cardTitle || item.heading || item.title || '',
+      heading: item.heading || item.cardTitle || item.title || '',
+      description: item.description || item.subheading || '',
+      variant: item.variant,
+      image: item.backgroundImage
+    };
+
+    return (
+      <ContentGridItem
+        key={item.sys?.id ?? context.index}
+        {...contentGridItemData}
+        parentPageListSlug={context.parentPageListSlug}
+        currentPath={context.currentPath}
+      />
+    );
+  },
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
     // If we only have sys.id (lazy loading case), create a LazyTestimonials component

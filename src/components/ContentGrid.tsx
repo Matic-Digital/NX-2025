@@ -151,7 +151,10 @@ export function ContentGrid(props: ContentGridProps) {
             <Box
               direction={direction}
               gap={gap}
-              className={cn('relative z-20', analysis.allItemsAreSolutions && 'justify-between')}
+              className={cn(
+                'relative z-20',
+                analysis.allItemsAreExpandingHoverCards && 'justify-between'
+              )}
             >
               {/* section heading */}
               {contentGrid.heading && (
@@ -159,7 +162,9 @@ export function ContentGrid(props: ContentGridProps) {
                   componentType={contentGrid.componentType}
                   sectionHeadingId={contentGrid.heading?.sys.id}
                   isDarkMode={shouldUseDarkMode}
-                  hasSolutionItems={analysis.allItemsAreSolutions}
+                  hasSolutionItems={
+                    analysis.allItemsAreSolutions || analysis.allItemsAreExpandingHoverCards
+                  }
                 />
               )}
 

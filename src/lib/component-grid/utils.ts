@@ -95,6 +95,15 @@ export const collectionAnalyzers = {
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),
 
+  allItemsAreExpandingHoverCards: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 &&
+    items.every(
+      (item) =>
+        contentTypeDetectors.isContentGridItem(item) &&
+        'variant' in item &&
+        item.variant === 'ExpandingHoverCard'
+    ),
+
   allItemsArePosts: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isPost),
 
@@ -129,6 +138,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
   const analysis = {
     allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
+    allItemsAreExpandingHoverCards: collectionAnalyzers.allItemsAreExpandingHoverCards(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
     allItemsAreServices: collectionAnalyzers.allItemsAreServices(items),
     hasAccordions: collectionAnalyzers.hasAccordions(items),
@@ -144,15 +154,17 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
     base: 1,
     md: analysis.allItemsAreSolutions
       ? 1
-      : analysis.hasCtaGrids
+      : analysis.allItemsAreExpandingHoverCards
         ? 1
-        : analysis.hasSliders
+        : analysis.hasCtaGrids
           ? 1
-          : analysis.hasAccordions
+          : analysis.hasSliders
             ? 1
-            : analysis.hasCollections
+            : analysis.hasAccordions
               ? 1
-              : 2,
+              : analysis.hasCollections
+                ? 1
+                : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasSliders
@@ -168,31 +180,39 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
                   ? 4
                   : 3
                 : analysis.allItemsAreSolutions
-                  ? 3
-                  : analysis.hasImages
-                    ? 1
-                    : analysis.hasAccordions
+                  ? 4
+                  : analysis.allItemsAreExpandingHoverCards
+                    ? 3
+                    : analysis.hasImages
                       ? 1
-                      : 3
+                      : analysis.hasAccordions
+                        ? 1
+                        : 3
   };
 
   const gap = analysis.allItemsArePosts
     ? 12
     : analysis.allItemsAreSolutions
-      ? { base: 5, xl: 4 }
-      : analysis.allItemsAreServices
-        ? 5
-        : 8;
+      ? 8
+      : analysis.allItemsAreExpandingHoverCards
+        ? { base: 5, xl: 4 }
+        : analysis.allItemsAreServices
+          ? 5
+          : 8;
 
   const direction = analysis.allItemsAreSolutions
-    ? { base: 'col' as const, xl: 'row' as const }
-    : ('col' as const);
+    ? ('col' as const)
+    : analysis.allItemsAreExpandingHoverCards
+      ? { base: 'col' as const, xl: 'row' as const }
+      : ('col' as const);
 
   const _sectionGap = analysis.allItemsAreSolutions
-    ? { base: 12, xl: 2 }
-    : analysis.hasCtaGrids
-      ? 12
-      : 12;
+    ? 12
+    : analysis.allItemsAreExpandingHoverCards
+      ? { base: 12, xl: 2 }
+      : analysis.hasCtaGrids
+        ? 12
+        : 12;
 
   // Special case for 4-item asymmetric layout
   const useCustomLayout =
