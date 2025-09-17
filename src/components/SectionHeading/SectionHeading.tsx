@@ -338,13 +338,16 @@ export function SectionHeading(props: SectionHeadingProps) {
             return <DefaultSectionHeading />;
         }
       })()}
-      
+
       {selectedModal && (
         <RequestAQuoteModal
           isOpen={modalOpen}
           onOpenChange={setModalOpen}
           title={selectedModal.title ?? 'Request a Quote'}
-          description={selectedModal.description ?? 'Please fill out the form below and we will get back to you shortly.'}
+          description={
+            selectedModal.description ??
+            'Please fill out the form below and we will get back to you shortly.'
+          }
         />
       )}
     </>

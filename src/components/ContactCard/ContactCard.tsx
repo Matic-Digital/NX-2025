@@ -145,7 +145,10 @@ export function ContactCard(props: ContactCardProps) {
             >
               <Box direction="row" gap={2} className="items-center">
                 <Mail />
-                <Link href={`mailto:${contactCard.email}`} {...inspectorProps({ fieldId: 'email' })}>
+                <Link
+                  href={`mailto:${contactCard.email}`}
+                  {...inspectorProps({ fieldId: 'email' })}
+                >
                   {contactCard.email}
                 </Link>
               </Box>
@@ -166,23 +169,29 @@ export function ContactCard(props: ContactCardProps) {
           )}
         </Box>
       </Box>
-      
+
       {/* Modals */}
       {selectedModal && modalType === 'quote' && (
         <RequestAQuoteModal
           isOpen={modalOpen}
           onOpenChange={setModalOpen}
           title={selectedModal.title ?? 'Request a Quote'}
-          description={selectedModal.description ?? 'Please fill out the form below and we will get back to you shortly.'}
+          description={
+            selectedModal.description ??
+            'Please fill out the form below and we will get back to you shortly.'
+          }
         />
       )}
-      
+
       {selectedModal && modalType === 'support' && (
         <RequestSupportModal
           isOpen={modalOpen}
           onOpenChange={setModalOpen}
           title={selectedModal.title ?? 'Request Support'}
-          description={selectedModal.description ?? 'Please fill out the form below and we will get back to you shortly.'}
+          description={
+            selectedModal.description ??
+            'Please fill out the form below and we will get back to you shortly.'
+          }
         />
       )}
     </>

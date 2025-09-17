@@ -13,7 +13,13 @@ interface ModalCtaButtonProps {
   className?: string;
 }
 
-export function ModalCtaButton({ cta, variant, modalType = 'quote', onModalOpen, className }: ModalCtaButtonProps) {
+export function ModalCtaButton({
+  cta,
+  variant,
+  modalType = 'quote',
+  onModalOpen,
+  className
+}: ModalCtaButtonProps) {
   if (cta.modal) {
     return (
       <Button
@@ -35,7 +41,9 @@ export function ModalCtaButton({ cta, variant, modalType = 'quote', onModalOpen,
       href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
       {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
-      <Button variant={variant} className={className}>{cta.text}</Button>
+      <Button variant={variant} className={className}>
+        {cta.text}
+      </Button>
     </Link>
   );
 }
