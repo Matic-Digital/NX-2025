@@ -285,7 +285,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           </p>
         )}
         <h2
-          className="text-headline-lg text-foreground leading-tight"
+          className="text-headline-md text-foreground leading-tight"
           {...inspectorProps({ fieldId: 'heading.title' })}
         >
           {sectionHeading.title}

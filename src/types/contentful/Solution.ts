@@ -12,20 +12,33 @@ export const SolutionSysSchema = z.object({
 
 export type SolutionSys = z.infer<typeof SolutionSysSchema>;
 
-// a video from Mux
 export const SolutionSchema = z.object({
   sys: z.object({
-    id: z.string()
+    id: z.string(),
+    contentType: z
+      .object({
+        sys: z.object({
+          id: z.string()
+        })
+      })
+      .optional(),
+    updatedAt: z.string().optional()
   }),
   title: z.string(),
   slug: z.string(),
-  heading: z.string(),
-  subheading: z.string(),
-  cardTitle: z.string(),
+  heading: z.string().optional(),
+  subheading: z.string().optional(),
+  cardTitle: z.string().optional(),
   description: z.string(),
-  backgroundImage: ImageSchema,
-  cta: ButtonSchema,
-  variant: z.string(),
+  backgroundImage: ImageSchema.optional(),
+  cta: ButtonSchema.optional(),
+  pageLayout: z.unknown().optional(),
+  itemsCollection: z
+    .object({
+      items: z.array(z.unknown())
+    })
+    .optional(),
+  variant: z.string().optional(),
   __typename: z.string().optional()
 });
 
