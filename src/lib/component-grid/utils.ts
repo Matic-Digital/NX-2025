@@ -153,67 +153,53 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
     base: 1,
     md: analysis.hasVideos
       ? 1
-      : analysis.allItemsAreSolutions
+      : analysis.allItemsAreExpandingHoverCards
         ? 1
-        : analysis.allItemsAreExpandingHoverCards
+        : analysis.hasCtaGrids
           ? 1
-          : analysis.hasCtaGrids
+          : analysis.hasSliders
             ? 1
-            : analysis.hasSliders
+            : analysis.hasAccordions
               ? 1
-              : analysis.hasAccordions
+              : analysis.hasCollections
                 ? 1
-                : analysis.hasCollections
-                  ? 1
-                  : 2,
+                : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasSliders
         ? 1
-        : analysis.hasCtaGrids
-          ? 1
-          : analysis.hasFullWidthItems
-            ? 1
-            : analysis.hasCollections
-              ? 1
-              : analysis.allItemsArePosts
-                ? items.length === 4
-                  ? 4
-                  : 3
-                : analysis.allItemsAreSolutions
-                  ? 2
-                  : analysis.allItemsAreExpandingHoverCards
-                    ? 3
-                    : analysis.hasImages
-                      ? 1
-                      : analysis.hasAccordions
-                        ? 1
-                        : 3
+        : analysis.allItemsAreExpandingHoverCards
+          ? 2
+          : analysis.hasCtaGrids
+            ? 2
+            : analysis.hasAccordions
+              ? 2
+              : analysis.hasCollections
+                ? 2
+                : analysis.hasImages
+                  ? 1
+                  : analysis.hasAccordions
+                    ? 1
+                    : 3
   };
 
   const gap = analysis.allItemsArePosts
     ? 12
-    : analysis.allItemsAreSolutions
-      ? 8
-      : analysis.allItemsAreExpandingHoverCards
-        ? { base: 5, xl: 4 }
-        : analysis.allItemsAreServices
-          ? 5
-          : 8;
-
-  const direction = analysis.allItemsAreSolutions
-    ? ('col' as const)
     : analysis.allItemsAreExpandingHoverCards
-      ? { base: 'col' as const, xl: 'row' as const }
-      : ('col' as const);
+      ? { base: 5, xl: 4 }
+      : analysis.allItemsAreServices
+        ? 5
+        : 8;
 
-  const _sectionGap = analysis.allItemsAreSolutions
-    ? 12
-    : analysis.allItemsAreExpandingHoverCards
-      ? { base: 12, xl: 2 }
-      : analysis.hasCtaGrids
-        ? 12
-        : 12;
+  const direction = analysis.allItemsAreExpandingHoverCards
+    ? { base: 'col' as const, xl: 'row' as const }
+    : ('col' as const);
+
+  const _sectionGap = analysis.allItemsAreExpandingHoverCards
+    ? { base: 12, xl: 2 }
+    : analysis.hasCtaGrids
+      ? 12
+      : 12;
 
   // Handle specific ContentGrid variants
   if (variant === 'Default') {
@@ -226,10 +212,30 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
     };
   }
 
+  if (variant === 'HoverCardCustom') {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 3 },
+      gap: 12,
+      direction: { base: 'col' as const, xl: 'row' as const },
+      variant: 'HoverCardCustom'
+    };
+  }
+
+  if (variant === 'FourColumns') {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 4 }, // 4 columns for FourColumns grid
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'FourColumns'
+    };
+  }
+
   if (variant === 'FullWidth') {
     return {
       analysis,
-      cols: 1,
+      cols: 1, // 1 column for FullWidth grid
       gap: 12,
       direction: 'col' as const,
       variant: 'FullWidth'

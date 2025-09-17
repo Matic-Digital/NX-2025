@@ -432,6 +432,20 @@ export function ContentGrid(props: ContentGridProps) {
                       />
                     ))}
                   </Box>
+                ) : gridVariant === 'HoverCardCustom' ? (
+                  <Box cols={gridConfig.cols} gap={gridConfig.gap} wrap={true}>
+                    {validItems.filter(Boolean).map((item, index) => (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
+                        item={item}
+                        index={index}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="hoverCardCustom"
+                      />
+                    ))}
+                  </Box>
                 ) : (
                   <Box
                     cols={
