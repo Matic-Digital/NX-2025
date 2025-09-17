@@ -21,7 +21,7 @@
  * - Generates proper metadata for nested structures
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -34,9 +34,12 @@ import { getPageBySlug } from '@/lib/contentful-api/page';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
+import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
+import { Slider } from '@/components/Slider';
+import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
@@ -58,7 +61,10 @@ const componentMap = {
   Content,
   ContentGrid,
   CtaBanner,
-  ImageBetween
+  CtaGrid,
+  ImageBetween,
+  Slider,
+  RegionsMap
 };
 
 // Define props for the nested component
@@ -372,16 +378,16 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
     type === 'Solution' ||
     type === 'Post'
   ) {
-    // Products use 'itemsCollection', while Pages use 'pageContentCollection'
+    // Different content types use different field names for their collections
     const contentItem = content as {
       title?: string;
       pageContentCollection?: { items?: unknown[] };
-      itemsCollection?: { items?: unknown[] };
+      itemsCollection?: { items?: unknown[] }; // Products and Solutions use itemsCollection
     };
 
     // Use the appropriate collection based on content type
     const contentItems =
-      type === 'Product'
+      type === 'Product' || type === 'Solution'
         ? (contentItem.itemsCollection?.items ?? [])
         : (contentItem.pageContentCollection?.items ?? []);
 
@@ -417,7 +423,12 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
 
 const renderPageListContentByType = (component: unknown, componentIndex: number) => {
   const typedComponent = component as { __typename?: string; sys?: { id?: string } };
-  if (!typedComponent?.__typename) return null;
+  if (!typedComponent?.__typename) {
+    console.warn(`Component at index ${componentIndex} has no __typename:`, component);
+    return null;
+  }
+
+  console.log(`Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`);
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
@@ -425,7 +436,7 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 
-  console.warn(`No component found for type: ${typedComponent.__typename}`);
+  console.warn(`No component found for type: ${typedComponent.__typename}. Available types:`, Object.keys(componentMap));
   return null;
 };
 
