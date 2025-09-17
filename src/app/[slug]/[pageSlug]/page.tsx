@@ -26,8 +26,8 @@ import type { PageList, PageListContent } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { PostSchema } from '@/components/Post/PostSchema';
-import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import type { Post } from '@/components/Post/PostSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
@@ -123,7 +123,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   }
 
   // Try to fetch the content item as different content types
-  let contentItem: Page | Product | Service | Solution | PostSchema | null = null;
+  let contentItem: Page | Product | Service | Solution | Post | null = null;
   let pageList: PageList | null = null;
 
   try {
@@ -211,7 +211,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
 // Helper function to render content based on content type
 function renderContentByType(
-  contentItem: Page | Product | Service | Solution | PostSchema | PageList,
+  contentItem: Page | Product | Service | Solution | Post | PageList,
   contentType: string | null
 ) {
   // For PageList content type, render like a normal PageList
@@ -399,7 +399,7 @@ function renderContentByType(
 
         {contentType === 'Post' && (
           <div>
-            <p>{(contentItem as PostSchema).excerpt}</p>
+            <p>{(contentItem as Post).excerpt}</p>
             {/* Add more Post-specific rendering here */}
           </div>
         )}
@@ -432,7 +432,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   console.log(
     `[slug]/[pageSlug] route: Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`
   );
-  let contentItem: Page | Product | Service | Solution | PostSchema | PageList | null = null;
+  let contentItem: Page | Product | Service | Solution | Post | PageList | null = null;
   let pageList: PageList | null = null;
   let contentType: string | null = null;
 
@@ -536,7 +536,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     notFound();
   }
 
-  const pageLayout = pageList.pageLayout as PageLayoutSchema | undefined;
+  const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 

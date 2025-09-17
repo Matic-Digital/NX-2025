@@ -56,10 +56,10 @@ export const PostSliderItemSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type PostSchema = z.infer<typeof PostSchema>;
+export type Post = z.infer<typeof PostSchema>;
 export type PostCategory = z.infer<typeof PostCategorySchema>;
 export type PostSliderItem = z.infer<typeof PostSliderItemSchema>;
 
 export interface PostResponse {
-  items: PostSchema[];
+  items: Post[];
 }

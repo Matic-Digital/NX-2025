@@ -1,6 +1,6 @@
 import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { fetchGraphQL } from '../../lib/api';
-import type { SectionHeadingSchema } from '@/types/contentful';
+import type { SectionHeading } from './SectionHeadingSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 
 // SectionHeading fields
@@ -24,13 +24,17 @@ export const SECTION_HEADING_GRAPHQL_FIELDS = `
         title
         description
       }
+      icon
     }
   }
 `;
 
-export const getSectionHeadingById = async (id: string, preview: boolean) => {
+export const getSectionHeadingById = async (
+  id: string,
+  preview: boolean
+): Promise<SectionHeading | null> => {
   try {
-    const response = await fetchGraphQL<SectionHeadingSchema>(
+    const response = await fetchGraphQL<SectionHeading>(
       `query GetSectionHeadingById($preview: Boolean!, $id: String!) {
                 sectionHeading(id: $id, preview: $preview) {
                     ${SECTION_HEADING_GRAPHQL_FIELDS}

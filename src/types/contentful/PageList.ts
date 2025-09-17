@@ -19,7 +19,8 @@ const PageListContentUnion = z.union([
   ContentGridSchema,
   CtaBannerSchema,
   ImageBetweenSchema,
-  ProductSchema
+  ProductSchema,
+  SolutionSchema
 ]);
 export type PageListContent = z.infer<typeof PageListContentUnion>;
 

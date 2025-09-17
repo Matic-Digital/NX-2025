@@ -15,7 +15,7 @@ import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
-import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 
 /**
  * Generate metadata for the page, including Open Graph tags
@@ -123,7 +123,7 @@ export default async function HomePage() {
  * Renders a Contentful page as the homepage
  */
 async function renderContentfulHomePage(page: Page) {
-  const pageLayout = page.pageLayout as PageLayoutSchema | undefined;
+  const pageLayout = page.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
   return (

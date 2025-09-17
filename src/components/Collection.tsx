@@ -9,7 +9,7 @@ import { getAllPostsMinimal } from '@/components/Post/PostApi';
 import { getAllPagesMinimal } from '@/lib/contentful-api/page';
 import { getCollectionById } from '@/lib/contentful-api/collection';
 import type { Collection } from '@/types/contentful/Collection';
-import type { PostSchema } from '@/components/Post/PostSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
 import type { Page } from '@/types/contentful/Page';
 import { PostCard } from '@/components/Post/PostCard';
 import { PageCard } from '@/components/global/PageCard';
@@ -25,7 +25,7 @@ interface CollectionProps {
 export default function Collection({ collectionData, sys, __typename }: CollectionProps) {
   const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
   const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
-  const [posts, setPosts] = useState<PostSchema[]>([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [loadingPages, setLoadingPages] = useState(false);

@@ -15,14 +15,14 @@ import { getSectionHeadingById } from './SectionHeadingApi';
 import { Box } from '@/components/global/matic-ds';
 import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
-import { ModalCtaButton } from '@/components/global/ModalCtaButton';
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 
 // Types
-import type { SectionHeadingSchema, SectionHeadingVariant } from './SectionHeadingSchema';
+import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
 import type { Modal } from '@/types/contentful/Modal';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-interface SectionHeadingProps extends Partial<SectionHeadingSchema> {
+interface SectionHeadingProps extends Partial<SectionHeading> {
   sectionHeadingId?: string;
   componentType?: string;
   isDarkMode?: boolean;
@@ -37,7 +37,7 @@ const getValidVariant = (variant: string | undefined): SectionHeadingVariant => 
 
 export function SectionHeading(props: SectionHeadingProps) {
   const { sectionHeadingId, componentType, hasSolutionItems, ...restProps } = props;
-  const [fetchedData, setFetchedData] = useState<SectionHeadingSchema | null>(null);
+  const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,9 +69,7 @@ export function SectionHeading(props: SectionHeadingProps) {
   }, [sectionHeadingId]);
 
   // Use fetched data if available, otherwise use props data
-  const sectionHeading = useContentfulLiveUpdates(
-    fetchedData ?? (restProps as SectionHeadingSchema)
-  );
+  const sectionHeading = useContentfulLiveUpdates(fetchedData ?? restProps);
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
   const hasCtaCollection = (sectionHeading?.ctaCollection?.items?.length ?? 0) > 0;

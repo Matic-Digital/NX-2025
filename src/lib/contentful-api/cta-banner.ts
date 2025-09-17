@@ -1,9 +1,10 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaBanner, CtaBannerResponse } from '@/types/contentful';
-import { INTERNAL_LINK_FIELDS, SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
+import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { ContentfulError, NetworkError } from '../errors';
+import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `
@@ -17,27 +18,10 @@ export const CTABANNER_GRAPHQL_FIELDS = `
     ${IMAGE_GRAPHQL_FIELDS}
   }
   primaryCta {
-    sys { id }
-    text
-    internalText
-    internalLink {
-      ${INTERNAL_LINK_FIELDS}
-    }
-    externalLink
+    ${BUTTON_GRAPHQL_FIELDS}
   }
   secondaryCta {
-    sys { id }
-    text
-    internalText
-    internalLink {
-      ${INTERNAL_LINK_FIELDS}
-    }
-    externalLink
-    modal {
-      sys { id }
-      title
-      description
-    }
+    ${BUTTON_GRAPHQL_FIELDS}
   }
 `;
 

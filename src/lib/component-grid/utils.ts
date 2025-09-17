@@ -1,13 +1,13 @@
 import type {
-  AccordionSchema,
+  Accordion as AccordionType,
   AirImage as AirImageType,
   Collection as CollectionType,
-  ContactCardSchema,
+  ContactCard as ContactCardType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as OfficeLocationType,
   PageList as PageListType,
-  PostSchema,
+  Post as PostType,
   Product as ProductType,
   Slider as SliderType,
   Solution as SolutionType,
@@ -16,15 +16,15 @@ import type {
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
-  | AccordionSchema
+  | AccordionType
   | AirImageType
   | CollectionType
-  | ContactCardSchema
+  | ContactCardType
   | ContentGridItemType
   | CtaGridType
   | OfficeLocationType
   | PageListType
-  | PostSchema
+  | PostType
   | ProductType
   | SliderType
   | SolutionType
@@ -35,10 +35,10 @@ export type ContentGridItemUnion =
  * Content type detection utilities
  */
 export const contentTypeDetectors = {
-  isAccordion: (item: ContentGridItemUnion): item is AccordionSchema =>
+  isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
     item?.__typename === 'Accordion',
 
-  isContactCard: (item: ContentGridItemUnion): item is ContactCardSchema =>
+  isContactCard: (item: ContentGridItemUnion): item is ContactCardType =>
     item?.__typename === 'ContactCard',
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
@@ -56,7 +56,7 @@ export const contentTypeDetectors = {
 
   isPageList: (item: ContentGridItemUnion): item is PageListType => item?.__typename === 'PageList',
 
-  isPost: (item: ContentGridItemUnion): item is PostSchema => item?.__typename === 'Post',
+  isPost: (item: ContentGridItemUnion): item is PostType => item?.__typename === 'Post',
 
   isProduct: (item: ContentGridItemUnion): item is ProductType => item?.__typename === 'Product',
 
@@ -151,7 +151,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
 
   const cols = {
     base: 1,
-    md: analysis.allItemsAreSolutions
+    md: analysis.hasVideos
       ? 1
       : analysis.allItemsAreExpandingHoverCards
         ? 1
@@ -168,59 +168,77 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
       ? 1
       : analysis.hasSliders
         ? 1
-        : analysis.hasCtaGrids
-          ? 1
-          : analysis.hasFullWidthItems
-            ? 1
-            : analysis.hasCollections
-              ? 1
-              : analysis.allItemsArePosts
-                ? items.length === 4
-                  ? 4
-                  : 3
-                : analysis.allItemsAreSolutions
-                  ? 2
-                  : analysis.allItemsAreExpandingHoverCards
-                    ? 3
-                    : analysis.hasImages
-                      ? 1
-                      : analysis.hasAccordions
-                        ? 1
-                        : 3
+        : analysis.allItemsAreExpandingHoverCards
+          ? 2
+          : analysis.hasCtaGrids
+            ? 2
+            : analysis.hasAccordions
+              ? 2
+              : analysis.hasCollections
+                ? 2
+                : analysis.hasImages
+                  ? 1
+                  : analysis.hasAccordions
+                    ? 1
+                    : 3
   };
 
   const gap = analysis.allItemsArePosts
     ? 12
-    : analysis.allItemsAreSolutions
-      ? 8
-      : analysis.allItemsAreExpandingHoverCards
-        ? { base: 5, xl: 4 }
-        : analysis.allItemsAreServices
-          ? 5
-          : 8;
-
-  const direction = analysis.allItemsAreSolutions
-    ? ('col' as const)
     : analysis.allItemsAreExpandingHoverCards
-      ? { base: 'col' as const, xl: 'row' as const }
-      : ('col' as const);
+      ? { base: 5, xl: 4 }
+      : analysis.allItemsAreServices
+        ? 5
+        : 8;
 
-  const _sectionGap = analysis.allItemsAreSolutions
-    ? 12
-    : analysis.allItemsAreExpandingHoverCards
-      ? { base: 12, xl: 2 }
-      : analysis.hasCtaGrids
-        ? 12
-        : 12;
+  const direction = analysis.allItemsAreExpandingHoverCards
+    ? { base: 'col' as const, xl: 'row' as const }
+    : ('col' as const);
+
+  const _sectionGap = analysis.allItemsAreExpandingHoverCards
+    ? { base: 12, xl: 2 }
+    : analysis.hasCtaGrids
+      ? 12
+      : 12;
 
   // Handle specific ContentGrid variants
   if (variant === 'Default') {
     return {
       analysis,
-      cols: { base: 1, md: 2, lg: 3 }, // 3 columns for Default grid
+      cols: { base: 1, md: 2, xl: 3 }, // 3 columns for Default grid
       gap: 12,
       direction: 'col' as const,
       variant: 'Default'
+    };
+  }
+
+  if (variant === 'HoverCardCustom') {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 3 },
+      gap: 12,
+      direction: { base: 'col' as const, xl: 'row' as const },
+      variant: 'HoverCardCustom'
+    };
+  }
+
+  if (variant === 'FourColumns') {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 4 }, // 4 columns for FourColumns grid
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'FourColumns'
+    };
+  }
+
+  if (variant === 'FullWidth') {
+    return {
+      analysis,
+      cols: 1, // 1 column for FullWidth grid
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'FullWidth'
     };
   }
 

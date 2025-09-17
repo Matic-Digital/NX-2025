@@ -27,11 +27,12 @@ export function CtaBanner(props: CtaBanner) {
   // This ensures CTA buttons link to proper nested URLs (e.g., /products/trackers instead of /trackers)
   useEffect(() => {
     const fetchNestedUrl = async () => {
-      if (ctaBanner.primaryCta?.internalLink?.slug) {
+      const primaryCta = ctaBanner.primaryCta;
+      if (primaryCta?.internalLink?.slug) {
         try {
           // Query the check-page-parent API to detect if the linked content has parent PageLists
           const response = await fetch(
-            `/api/check-page-parent?slug=${ctaBanner.primaryCta.internalLink.slug}`
+            `/api/check-page-parent?slug=${primaryCta.internalLink.slug}`
           );
           if (response.ok) {
             const data = (await response.json()) as { parentPageList?: unknown; fullPath?: string };
@@ -40,24 +41,24 @@ export function CtaBanner(props: CtaBanner) {
               setPrimaryCtaUrl(`/${data.fullPath}`);
             } else {
               // Fallback to flat URL structure when no nesting is detected
-              setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+              setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
             }
           } else {
             // Fallback to flat URL on API failure
-            setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+            setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
           }
         } catch (error) {
           console.error('Error fetching nested URL for primary CTA:', error);
           // Fallback to flat URL on error
-          setPrimaryCtaUrl(`/${ctaBanner.primaryCta.internalLink.slug}`);
+          setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
         }
-      } else if (ctaBanner.primaryCta?.externalLink) {
-        setPrimaryCtaUrl(ctaBanner.primaryCta.externalLink);
+      } else if (primaryCta?.externalLink) {
+        setPrimaryCtaUrl(primaryCta.externalLink);
       }
     };
 
     void fetchNestedUrl();
-  }, [ctaBanner.primaryCta?.internalLink?.slug, ctaBanner.primaryCta?.externalLink]);
+  }, [ctaBanner.primaryCta]);
 
   const handleModalTrigger = () => {
     setIsModalOpen(true);

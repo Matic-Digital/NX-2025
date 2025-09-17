@@ -45,8 +45,8 @@ import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Product } from '@/types/contentful/Product';
 import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
-import type { PostSchema } from '@/components/Post/PostSchema';
-import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import type { Post } from '@/components/Post/PostSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import {
@@ -74,7 +74,7 @@ interface NestedSegmentsProps {
 }
 
 // Content item type union
-type ContentItem = Page | Product | Service | Solution | PostSchema;
+type ContentItem = Page | Product | Service | Solution | Post;
 
 // Generate static params for static site generation
 export async function generateStaticParams() {
@@ -428,7 +428,9 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
     return null;
   }
 
-  console.log(`Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`);
+  console.log(
+    `Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`
+  );
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
@@ -436,7 +438,10 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 
-  console.warn(`No component found for type: ${typedComponent.__typename}. Available types:`, Object.keys(componentMap));
+  console.warn(
+    `No component found for type: ${typedComponent.__typename}. Available types:`,
+    Object.keys(componentMap)
+  );
   return null;
 };
 
@@ -467,20 +472,20 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
     );
 
     // Get layout from the deepest PageList or content item
-    let pageLayout: PageLayoutSchema | undefined;
+    let pageLayout: PageLayoutType | undefined;
 
     if (type === 'PageList') {
       const pageList = content as PageListType;
-      pageLayout = pageList.pageLayout as PageLayoutSchema | undefined;
+      pageLayout = pageList.pageLayout as PageLayoutType | undefined;
     } else if (parentPageLists.length > 0) {
       // Use layout from the deepest parent PageList
       const deepestParent = parentPageLists[parentPageLists.length - 1]!;
-      pageLayout = deepestParent.pageLayout as PageLayoutSchema | undefined;
+      pageLayout = deepestParent.pageLayout as PageLayoutType | undefined;
     } else {
       // For standalone content items, try to get their layout
       const item = content as ContentItem;
       if ('pageLayout' in item) {
-        pageLayout = item.pageLayout as PageLayoutSchema | undefined;
+        pageLayout = item.pageLayout as PageLayoutType | undefined;
       }
     }
 

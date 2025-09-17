@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
 import { PostSchema } from '../../components/Post/PostSchema';
-import { SectionHeadingSchema } from './';
+import { SectionHeadingSchema } from '../../components/SectionHeading/SectionHeadingSchema';
 import { ServiceSchema } from './Service';
 import { ContentGridItemSchema } from './ContentGridItem';
-import { ContactCardSchema } from './';
+import { ContactCardSchema } from '../../components/ContactCard/ContactCardSchema';
 import { CtaGridSchema } from './CtaGrid';
 import { VideoSchema } from './Video';
 import { SliderSchema } from './Slider';

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
-import { SectionHeadingSchema } from './';
+import { SectionHeadingSchema } from '../../components/SectionHeading/SectionHeadingSchema';
 
 export const BannerHeroSchema = z.object({
   sys: z.object({
