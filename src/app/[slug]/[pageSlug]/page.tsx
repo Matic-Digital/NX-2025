@@ -33,6 +33,7 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
+import RichContent from '@/components/RichContent';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Metadata } from 'next';
@@ -48,7 +49,9 @@ const componentMap = {
   Content,
   ContentGrid,
   CtaBanner,
-  ImageBetween
+  ImageBetween,
+  RichContent,
+  ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };
 
 // Define props for the nested page component

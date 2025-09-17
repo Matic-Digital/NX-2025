@@ -9,6 +9,7 @@ import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from './region';
+import { RICHCONTENT_GRAPHQL_FIELDS } from './rich-content';
 import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';
@@ -194,6 +195,9 @@ export async function getPageBySlug(
                 ... on RegionsMap {
                   ${SYS_FIELDS}
                 }
+                ... on ContentTypeRichText {
+                  ${RICHCONTENT_GRAPHQL_FIELDS}
+                }
               }
             }
           }
@@ -309,6 +313,9 @@ export async function getPageById(
                 }
                 ... on RegionsMap {
                   ${REGIONS_MAP_GRAPHQL_FIELDS}
+                }
+                ... on ContentTypeRichText {
+                  ${RICHCONTENT_GRAPHQL_FIELDS}
                 }
               }
             }

@@ -23,6 +23,7 @@ export * from './PageList';
 export * from '../../components/Post/PostSchema';
 export * from './Product';
 export * from './Region';
+export * from './RichContent';
 export * from '../../components/SectionHeading/SectionHeadingSchema';
 export * from './Service';
 export * from './Slider';

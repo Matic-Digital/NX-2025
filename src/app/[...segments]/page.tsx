@@ -38,6 +38,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
+import RichContent from '@/components/RichContent';
 import { Slider } from '@/components/Slider';
 import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
@@ -63,8 +64,15 @@ const componentMap = {
   CtaBanner,
   CtaGrid,
   ImageBetween,
+  RichContent,
+  ContentTypeRichText: RichContent, // Map Contentful's ContentTypeRichText to RichContent component
   Slider,
   RegionsMap
+} as const;
+
+// Type-safe component map with explicit typing
+type ComponentMapType = {
+  [K in keyof typeof componentMap]: typeof componentMap[K];
 };
 
 // Define props for the nested component
@@ -429,9 +437,14 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
   }
 
   console.log(`Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`);
+  console.log('Component data:', component);
+  console.log('Available component types:', Object.keys(componentMap));
+  console.log('Looking for component type:', typedComponent.__typename);
+  console.log('ComponentMap lookup result:', componentMap[typedComponent.__typename as keyof typeof componentMap]);
 
-  const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
+  const ComponentType = componentMap[typedComponent.__typename as keyof ComponentMapType];
   if (ComponentType) {
+    console.log(`Found ComponentType for ${typedComponent.__typename}:`, ComponentType.name);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
