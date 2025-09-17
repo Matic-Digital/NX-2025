@@ -151,19 +151,21 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
 
   const cols = {
     base: 1,
-    md: analysis.allItemsAreSolutions
+    md: analysis.hasVideos
       ? 1
-      : analysis.allItemsAreExpandingHoverCards
+      : analysis.allItemsAreSolutions
         ? 1
-        : analysis.hasCtaGrids
+        : analysis.allItemsAreExpandingHoverCards
           ? 1
-          : analysis.hasSliders
+          : analysis.hasCtaGrids
             ? 1
-            : analysis.hasAccordions
+            : analysis.hasSliders
               ? 1
-              : analysis.hasCollections
+              : analysis.hasAccordions
                 ? 1
-                : 2,
+                : analysis.hasCollections
+                  ? 1
+                  : 2,
     lg: analysis.hasVideos
       ? 1
       : analysis.hasSliders
