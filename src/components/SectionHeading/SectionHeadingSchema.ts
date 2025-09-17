@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ButtonSchema } from '@/types/contentful';
+import { ButtonSchema } from '@/components/Button/ButtonSchema';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 export const SectionHeadingSchema = z.object({
@@ -18,10 +18,10 @@ export const SectionHeadingSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type SectionHeadingSchema = z.infer<typeof SectionHeadingSchema>;
+export type SectionHeading = z.infer<typeof SectionHeadingSchema>;
 
 export type SectionHeadingVariant = (typeof SECTION_HEADING_VARIANTS)[number];
 
 export interface SectionHeadingResponse {
-  items: SectionHeadingSchema[];
+  items: SectionHeading[];
 }

@@ -10,7 +10,6 @@ import { Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import type { BannerHero } from '@/types/contentful/BannerHero';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
 
 interface BannerHeroProps extends BannerHero {
   productContext?: {
@@ -22,10 +21,7 @@ interface BannerHeroProps extends BannerHero {
 export function BannerHero(props: BannerHeroProps) {
   const bannerHero = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: bannerHero?.sys?.id });
-  const pathname = usePathname();
-
-  const isProductContext = pathname?.includes('/trackers/');
-
+  const isCenteredSectionHeading = bannerHero.heading.variant === 'Centered';
   const isImageBetween = props.contentType === 'ImageBetween';
 
   return (
@@ -33,7 +29,7 @@ export function BannerHero(props: BannerHeroProps) {
       <Section
         className={cn(
           'relative flex h-[789px]',
-          isProductContext ? 'items-center' : isImageBetween ? 'items-center' : 'items-end',
+          isCenteredSectionHeading || isImageBetween ? 'items-center' : 'items-end',
           'dark'
         )}
         {...inspectorProps}

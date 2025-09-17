@@ -110,7 +110,7 @@ export function CtaGrid(props: CtaGrid) {
                       const isProduct = cta.internalLink?.__typename === 'Product';
                       return (
                         <Button
-                          key={cta.sys?.id || index}
+                          key={cta.sys?.id ?? index}
                           variant="white"
                           {...inspectorProps({ fieldId: 'ctaCollection' })}
                           asChild
@@ -124,14 +124,14 @@ export function CtaGrid(props: CtaGrid) {
                                   : `/${cta.internalLink.slug}`
                               }
                             >
-                              {cta.text || cta.internalText}
+                              {cta.text ?? cta.internalText}
                             </Link>
                           ) : cta.externalLink ? (
                             <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
-                              {cta.text || cta.internalText}
+                              {cta.text ?? cta.internalText}
                             </a>
                           ) : (
-                            <span>{cta.text || cta.internalText}</span>
+                            <span>{cta.text ?? cta.internalText}</span>
                           )}
                         </Button>
                       );
@@ -173,7 +173,7 @@ export function CtaGrid(props: CtaGrid) {
                     console.log('✅ Full CTA object:', cta.internalLink);
                     return (
                       <Button
-                        key={cta.sys?.id || index}
+                        key={cta.sys?.id ?? index}
                         variant="primary"
                         {...inspectorProps({ fieldId: 'ctaCollection' })}
                         asChild
@@ -187,14 +187,14 @@ export function CtaGrid(props: CtaGrid) {
                                 : `/${cta.internalLink.slug}`
                             }
                           >
-                            {cta.text || cta.internalText}
+                            {cta.text ?? cta.internalText}
                           </Link>
                         ) : cta.externalLink ? (
                           <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
-                            {cta.text || cta.internalText}
+                            {cta.text ?? cta.internalText}
                           </a>
                         ) : (
-                          <span>{cta.text || cta.internalText}</span>
+                          <span>{cta.text ?? cta.internalText}</span>
                         )}
                       </Button>
                     );

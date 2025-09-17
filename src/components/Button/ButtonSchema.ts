@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ModalSchema } from './Modal';
+import { ModalSchema } from '@/types/contentful/Modal';
 
 // Simple schema for button internal links that matches GraphQL query response
 const ButtonInternalLinkSchema = z.object({
@@ -18,7 +18,13 @@ export const ButtonSchema = z.object({
   text: z.string(),
   internalLink: ButtonInternalLinkSchema.optional(),
   externalLink: z.optional(z.string().url()),
-  modal: z.optional(ModalSchema)
+  modal: z.optional(ModalSchema),
+  icon: z.optional(z.enum(['Email']))
 });
 
 export type Button = z.infer<typeof ButtonSchema>;
+
+export interface ButtonResponse {
+  items: Button[];
+  total: number;
+}

@@ -1,13 +1,13 @@
 import type {
-  AccordionSchema,
+  Accordion as AccordionType,
   AirImage as AirImageType,
   Collection as CollectionType,
-  ContactCardSchema,
+  ContactCard as ContactCardType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as OfficeLocationType,
   PageList as PageListType,
-  PostSchema,
+  Post as PostType,
   Product as ProductType,
   Slider as SliderType,
   Solution as SolutionType,
@@ -16,15 +16,15 @@ import type {
 } from '@/types/contentful';
 
 export type ContentGridItemUnion =
-  | AccordionSchema
+  | AccordionType
   | AirImageType
   | CollectionType
-  | ContactCardSchema
+  | ContactCardType
   | ContentGridItemType
   | CtaGridType
   | OfficeLocationType
   | PageListType
-  | PostSchema
+  | PostType
   | ProductType
   | SliderType
   | SolutionType
@@ -35,10 +35,10 @@ export type ContentGridItemUnion =
  * Content type detection utilities
  */
 export const contentTypeDetectors = {
-  isAccordion: (item: ContentGridItemUnion): item is AccordionSchema =>
+  isAccordion: (item: ContentGridItemUnion): item is AccordionType =>
     item?.__typename === 'Accordion',
 
-  isContactCard: (item: ContentGridItemUnion): item is ContactCardSchema =>
+  isContactCard: (item: ContentGridItemUnion): item is ContactCardType =>
     item?.__typename === 'ContactCard',
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
@@ -56,7 +56,7 @@ export const contentTypeDetectors = {
 
   isPageList: (item: ContentGridItemUnion): item is PageListType => item?.__typename === 'PageList',
 
-  isPost: (item: ContentGridItemUnion): item is PostSchema => item?.__typename === 'Post',
+  isPost: (item: ContentGridItemUnion): item is PostType => item?.__typename === 'Post',
 
   isProduct: (item: ContentGridItemUnion): item is ProductType => item?.__typename === 'Product',
 
@@ -221,6 +221,16 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
       gap: 12,
       direction: 'col' as const,
       variant: 'Default'
+    };
+  }
+
+  if (variant === 'FullWidth') {
+    return {
+      analysis,
+      cols: 1,
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'FullWidth'
     };
   }
 

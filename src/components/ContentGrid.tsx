@@ -105,16 +105,16 @@ export function ContentGrid(props: ContentGridProps) {
 
   // Filter out items that don't have a valid typename or sys.id
   const validItems =
-    enhancedItems?.filter((item) => {
-      const hasValidId = item?.sys?.id;
-      const hasValidTypename = item?.__typename;
+    enhancedItems?.filter((item): item is ContentGridItemUnion => {
+      const hasValidId = Boolean(item?.sys?.id);
+      const hasValidTypename = Boolean(item?.__typename);
 
       return hasValidId && hasValidTypename;
     }) || [];
 
   // Check for duplicate items
   const itemIds =
-    contentGrid.itemsCollection?.items?.map((item) => item?.sys?.id).filter(Boolean) || [];
+    contentGrid.itemsCollection?.items?.map((item) => item?.sys?.id).filter((id): id is string => Boolean(id)) || [];
   const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
   if (duplicateIds.length > 0) {
     console.warn(`ContentGrid render ${renderKey} - Duplicate items found:`, duplicateIds);
@@ -416,8 +416,21 @@ export function ContentGrid(props: ContentGridProps) {
                       />
                     )}
                   </Box>
+                ) : gridVariant === 'FullWidth' ? (
+                  <Box cols={1} gap={gridConfig.gap} wrap={true}>
+                    {validItems.filter(Boolean).map((item, index) => (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
+                        item={item}
+                        index={index}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="fullWidth"
+                      />
+                    ))}
+                  </Box>
                 ) : (
-                  // Existing uniform grid layout
                   <Box
                     cols={
                       props.forceTabletSingleColumn

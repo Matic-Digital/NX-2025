@@ -289,12 +289,12 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
           {/* Dark overlay that shows on non-hovered cards when any card is hovered */}
           <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover/card:!opacity-0" />
           {/* Orange plus icon that shows on hover */}
-          <button
+          <Button
             onClick={() => onTeamMemberClick?.(teamMember)}
             className="bg-primary hover:bg-primary/90 absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-0 transition-all duration-300 group-hover/card:opacity-100"
           >
             <Plus className="size-6 text-white" />
-          </button>
+          </Button>
         </div>
         <div className="mt-4">
           <h3
@@ -551,12 +551,14 @@ const GenericSlider = ({
 
       {showIndicators && (
         <Container>
-          <div className={cn(
-            "relative z-10 mt-4 flex h-1 items-center gap-4",
-            isPostSlider ? "lg:hidden" : ""
-          )}>
+          <div
+            className={cn(
+              'relative z-10 mt-4 flex h-1 items-center gap-4',
+              isPostSlider ? 'lg:hidden' : ''
+            )}
+          >
             {sliderData.itemsCollection.items.map((_, index) => (
-              <button
+              <Button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
                 className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
@@ -573,7 +575,7 @@ const GenericSlider = ({
         <Container>
           <div className="mx-auto mt-12 flex h-1">
             {sliderData.itemsCollection.items.map((_, index) => (
-              <button
+              <Button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
                 className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
@@ -631,7 +633,7 @@ const GenericSlider = ({
                   .map((item, timelineIndex) => {
                     const timelineItemData = item as TimelineSliderItem;
                     return (
-                      <button
+                      <Button
                         key={item.sys.id}
                         onClick={() => api?.scrollTo(timelineIndex)}
                         className={cn(

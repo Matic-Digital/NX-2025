@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../api';
 import type { Page, PageResponse, PageWithRefs } from '@/types/contentful/Page';
 import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
-import type { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { ContentfulError, NetworkError } from '../errors';
 import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
@@ -147,7 +147,7 @@ export async function getPageBySlug(
     const pageData = response.data.pageCollection.items[0]!;
 
     // Type assertion for pageLayout to avoid 'any' type
-    const pageLayout = pageData.pageLayout as PageLayoutSchema | undefined;
+    const pageLayout = pageData.pageLayout as PageLayoutType | undefined;
 
     // Fetch header data if referenced
     let header = null;
@@ -263,7 +263,7 @@ export async function getPageById(
     const pageData = response.data.pageCollection.items[0]!;
 
     // Type assertion for pageLayout to avoid 'any' type
-    const pageLayout = pageData.pageLayout as PageLayoutSchema | undefined;
+    const pageLayout = pageData.pageLayout as PageLayoutType | undefined;
 
     // Fetch header data if referenced
     let header = null;

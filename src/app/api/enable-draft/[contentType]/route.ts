@@ -6,7 +6,7 @@ import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api
 import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
 import { getBannerHero } from '@/lib/contentful-api/banner-hero';
-import { getButtonById } from '@/lib/contentful-api/button';
+import { getButtonById } from '@/components/Button/ButtonApi';
 import { getContentById } from '@/lib/contentful-api/content';
 import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { getFooterById } from '@/lib/contentful-api/footer';

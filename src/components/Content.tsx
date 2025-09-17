@@ -12,7 +12,7 @@ import type { Content, ContentOverlay } from '@/types/contentful/Content';
 import type { ContentVariant } from '@/types/contentful/Content';
 import type { Product } from '@/types/contentful/Product';
 import type {
-  SectionHeadingSchema,
+  SectionHeading as SectionHeadingType,
   SectionHeadingVariant
 } from './SectionHeading/SectionHeadingSchema';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
 
 type SectionHeadingCardData = Pick<
-  SectionHeadingSchema,
+  SectionHeadingType,
   'overline' | 'title' | 'description' | 'ctaCollection' | 'variant'
 > & {
   image: {
@@ -445,7 +445,7 @@ export function Content(props: Content) {
 
     // Handle SectionHeading content
     if ('__typename' in item && item.__typename === 'SectionHeading') {
-      const sectionHeading = item as unknown as SectionHeadingSchema;
+      const sectionHeading = item as unknown as SectionHeadingType;
 
       // If Content has a background image, use ContentCard
       if (liveContent.asset?.__typename === 'Image') {

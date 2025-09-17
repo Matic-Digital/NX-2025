@@ -11,8 +11,8 @@ export const PageLayoutSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type PageLayoutSchema = z.infer<typeof PageLayoutSchema>;
+export type PageLayout = z.infer<typeof PageLayoutSchema>;
 
 export interface PageLayoutResponse {
-  items: PageLayoutSchema[];
+  items: PageLayout[];
 }

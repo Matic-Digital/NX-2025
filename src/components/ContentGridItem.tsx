@@ -156,8 +156,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
   const LinkItem = () => {
     return (
       <Link href={getHref()} className="group flex flex-col">
-        <Box className="md:flex-col flex-row md:gap-4 gap-[1.75rem]">
-          <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors h-fit min-h-[3.5rem] min-w-[3.5rem]">
+        <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
+          <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
             {icon?.url && (
               <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
             )}
@@ -179,7 +179,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const BackgroundImageItem = () => (
-    <div className="group relative min-h-[37.5rem] md:min-h-[500px] w-full overflow-hidden">
+    <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[500px]">
       {/* Background image */}
       <AirImage
         link={image?.link ?? ''}
@@ -192,14 +192,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <Box
           direction="col"
           gap={6}
-          className="text-background flex h-fit md:h-full w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
+          className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:h-full md:p-8 lg:p-10"
         >
           <div className="flex h-full flex-col">
             <div>
-              <div className="flex md:flex-col flex-row gap-[0.75rem]">
+              <div className="flex flex-row gap-[0.75rem] md:flex-col">
                 <div className="md:mb-6">{renderIcon(true)}</div>
                 <h3
-                  className="text-headline-sm mt-2 line-clamp-2 md:mb-4 font-medium"
+                  className="text-headline-sm mt-2 line-clamp-2 font-medium md:mb-4"
                   {...inspectorProps({ fieldId: 'heading' })}
                 >
                   {heading}
@@ -222,7 +222,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               <Link href={getHref()} className="inline-block w-full md:w-auto">
                 <Button
                   variant="outlineTrasparentWhite"
-                  className="hover:bg-background hover:text-foreground transition-colors w-full"
+                  className="hover:bg-background hover:text-foreground w-full transition-colors"
                 >
                   Learn More
                 </Button>
