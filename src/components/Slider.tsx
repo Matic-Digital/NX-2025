@@ -818,12 +818,12 @@ export function Slider(props: SliderSys) {
       const solutionItems = allSolutions.filter((solution) => solution.cta);
 
       const urlMap = await resolveNestedUrls(solutionItems, (solution) => ({
-        sys: solution.cta.sys,
+        sys: solution.cta!.sys,
         // If CTA doesn't have internalLink with slug, create one using the Solution's own slug
-        internalLink: solution.cta.internalLink?.slug
-          ? solution.cta.internalLink
+        internalLink: solution.cta!.internalLink?.slug
+          ? solution.cta!.internalLink
           : { sys: solution.sys, slug: solution.slug },
-        externalLink: solution.cta.externalLink
+        externalLink: solution.cta!.externalLink
       }));
       setSolutionUrls(urlMap);
     };

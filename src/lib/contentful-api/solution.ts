@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-assignment */
+
 import { fetchGraphQL } from '../api';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { SYS_FIELDS } from './graphql-fields';
 import { BUTTON_GRAPHQL_FIELDS } from './button';
+import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 
 import type { Solution } from '@/types/contentful';
 
@@ -19,9 +22,15 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
-    cta {
-      ${BUTTON_GRAPHQL_FIELDS}
+  cta {
+    ${BUTTON_GRAPHQL_FIELDS}
+  }
+  itemsCollection {
+    items {
+      ${BANNERHERO_GRAPHQL_FIELDS}
     }
+  }
+  variant
 `;
 
 export async function getSolutionById(id: string, preview = false): Promise<Solution | null> {
