@@ -87,6 +87,12 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   currentPath,
   variant
 }) => {
+  // Early return if item is null/undefined
+  if (!item) {
+    console.warn('ContentItemRenderer received null/undefined item');
+    return null;
+  }
+
   const context = {
     index,
     validItems,
@@ -104,6 +110,6 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   }
 
   // Fallback: skip unrecognized items
-  console.warn(`Unrecognized content type: ${item.__typename}`);
+  console.warn(`Unrecognized content type: ${item?.__typename}`);
   return null;
 };

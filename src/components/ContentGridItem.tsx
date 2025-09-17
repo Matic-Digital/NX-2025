@@ -26,7 +26,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, heading, description, variant, icon, image } = contentData;
+  const { sys, title, heading, description, variant, icon, image } = contentData;
   console.log('ContentGridItem', contentData);
 
   // Fetch full content data and link details on component mount
@@ -43,7 +43,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           setFullContentData(fullData);
         }
 
-        // Fetch link details
+        // Fetch link details for ContentGridItem
         const linkData = await getContentGridItemLink(sys.id);
         if (linkData?.link?.slug) {
           // Default to flat URL structure
@@ -97,7 +97,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     };
 
     void fetchContentData();
-  }, [sys?.id, props.parentPageListSlug]);
+  }, [sys?.id, props.parentPageListSlug, props.__typename]);
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -234,59 +234,46 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
-  const BackgroundPrimaryHoverItem = () => (
-    <div className="group rounded-xxs bg-subtle relative overflow-hidden">
-      {/* Card Content */}
-      <Box
-        direction="col"
-        gap={4}
-        className="group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 transition-colors"
-      >
-        {/* Icon */}
-        {icon?.url && (
-          <div className="w-fit">
-            <div className="group-hover:bg-background bg-foreground p-2 transition-colors">
-              <SvgIcon
-                src={icon.url}
-                alt={heading}
-                width={40}
-                height={40}
-                className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Text Content */}
-        <Box direction="col" gap={8} className="min-h-[250px] justify-between">
-          <Box direction="col" gap={2}>
-            <h3
-              className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
-              {...inspectorProps({ fieldId: 'heading' })}
-            >
-              {heading}
-            </h3>
-            {description && (
-              <p
-                className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 hidden transition-colors group-hover:block"
-                {...inspectorProps({ fieldId: 'description' })}
+  const BackgroundPrimaryHoverItem = () => {
+    return (
+      <div className="group rounded-xxs bg-subtle relative min-h-[24rem] min-w-[24rem] overflow-hidden">
+        {/* Card Content */}
+        <Box
+          direction="col"
+          gap={4}
+          className="group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 transition-all duration-300"
+        >
+          {/* Text Content */}
+          <Box direction="col" gap={4} className="h-full justify-between">
+            <Box direction="col" gap={3}>
+              <h3
+                className="text-headline-sm line-clamp-2 transition-colors duration-300 group-hover:text-white"
+                {...inspectorProps({ fieldId: 'heading' })}
               >
-                {description}
-              </p>
-            )}
+                {heading}
+              </h3>
+              {description && (
+                <p
+                  className="text-body-sm text-text-subtle line-clamp-4 opacity-0 transition-all duration-300 group-hover:text-white group-hover:opacity-100"
+                  {...inspectorProps({ fieldId: 'description' })}
+                >
+                  {description}
+                </p>
+              )}
+            </Box>
+            <Link href={getHref()}>
+              <Button
+                variant="outline"
+                className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
+              >
+                See Details
+              </Button>
+            </Link>
           </Box>
-          <Link href={getHref()}>
-            <Button
-              variant="outline"
-              className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
-            >
-              See Details
-            </Button>
-          </Link>
         </Box>
-      </Box>
-    </div>
-  );
+      </div>
+    );
+  };
 
   const BackgroundGradientHoverItem = () => (
     <div className="group rounded-xxs bg-subtle relative overflow-hidden">
@@ -339,6 +326,64 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
+  const ExpandingHoverCardItem = () => {
+    // Get index from ContentGrid context - for now using a placeholder
+    const index = 0; // This will need to be passed from ContentGrid
+
+    return (
+      <div className="group relative w-full cursor-pointer overflow-hidden bg-gray-100 p-6 transition-all duration-300 xl:mt-12 xl:h-[531px] xl:w-[243px] xl:p-8 xl:hover:mt-[-23px] xl:hover:h-[602px] dark:bg-[#1D1E1F]">
+        {/* Background Image - appears on hover */}
+        {image?.link && (
+          <div className="absolute inset-0 -left-1 transition-opacity duration-300 group-hover:opacity-100 xl:opacity-0">
+            <Image
+              src={image.link}
+              alt={image.altText ?? ''}
+              fill
+              className="object-cover"
+              priority={false}
+            />
+          </div>
+        )}
+        <div className="relative z-10 h-full">
+          <Box direction="col" gap={12}>
+            {/* Top content - appears on hover */}
+            <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
+              <Box direction="col" gap={{ base: 0, xl: 6 }}>
+                <h2
+                  className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"
+                  {...inspectorProps({ fieldId: 'heading' })}
+                >
+                  {heading}
+                </h2>
+                <p className="text-body-lg leading-snug text-white">{description}</p>
+              </Box>
+            </div>
+
+            {/* Bottom content - always anchored at bottom */}
+            <div className="xl:absolute xl:right-0 xl:bottom-0 xl:left-0">
+              <Box direction="col" gap={{ base: 2, xl: 6 }}>
+                <Box direction="col" gap={1}>
+                  <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h3
+                    className="text-body-md xl:text-headline-xs leading-tight group-hover:text-white dark:text-white"
+                    {...inspectorProps({ fieldId: 'heading' })}
+                  >
+                    {title}
+                  </h3>
+                </Box>
+                <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
+                  {description}
+                </p>
+              </Box>
+            </div>
+          </Box>
+        </div>
+      </div>
+    );
+  };
+
   // Determine rendering style based on variant field from Contentful
   switch (variant) {
     case 'BackgroundImage':
@@ -347,6 +392,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundPrimaryHoverItem />;
     case 'BackgroundGradientHover':
       return <BackgroundGradientHoverItem />;
+    case 'ExpandingHoverCard':
+      return <ExpandingHoverCardItem />;
     case 'Link':
       return <LinkItem />;
     default:

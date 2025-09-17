@@ -1,90 +1,128 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
+import {
+  useContentfulLiveUpdates,
+  useContentfulInspectorMode
+} from '@contentful/live-preview/react';
 import { getSolutionsByIds } from '@/lib/contentful-api/solution';
 import { Box } from '@/components/global/matic-ds';
-import type { Solution, SolutionSys } from '@/types/contentful/Solution';
+import type { Solution } from '@/types/contentful/Solution';
+import { Button } from './ui/button';
 
-interface SolutionProps extends SolutionSys {
+interface SolutionCardProps extends Partial<Solution> {
+  solutionId?: string;
   index?: number;
 }
 
-export function SolutionCard(props: SolutionProps) {
-  const { index = 1 } = props;
+export function SolutionCard(props: SolutionCardProps) {
+  const { solutionId, ...restProps } = props;
+  const [fetchedData, setFetchedData] = useState<Solution | null>(null);
+  const [loading, setLoading] = useState(!!solutionId);
+  const [error, setError] = useState<string | null>(null);
 
-  const [solutionData, setSolutionData] = useState<Solution | null>(null);
-  const [loading, setLoading] = useState(true);
+  console.log('SolutionCard', { props: props, fetchedData: fetchedData });
 
+  // Fetch data if solutionId is provided
   useEffect(() => {
-    const fetchSolutionData = async () => {
+    if (!solutionId) return;
+
+    async function fetchSolution() {
       try {
-        const solutions = await getSolutionsByIds([props.sys.id]);
+        setLoading(true);
+        const solutions = await getSolutionsByIds([solutionId!]);
         if (solutions.length > 0 && solutions[0]) {
-          setSolutionData(solutions[0]);
+          setFetchedData(solutions[0]);
+        } else {
+          setError('Solution not found');
         }
-      } catch (error) {
-        console.error('Error fetching solution data:', error);
+      } catch (err) {
+        console.error('Failed to fetch solution:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load solution');
       } finally {
         setLoading(false);
       }
-    };
+    }
 
-    void fetchSolutionData();
-  }, [props.sys.id]);
+    void fetchSolution();
+  }, [solutionId]);
+
+  // Use fetched data if available, otherwise use props data
+  const solutionData = useContentfulLiveUpdates(fetchedData ?? (restProps as Solution));
+  const inspectorProps = useContentfulInspectorMode({ entryId: solutionData?.sys?.id });
+  const { title, description, variant, slug } = solutionData;
+  console.log('SolutionCard', { title, description, variant, slug });
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-muted-foreground">Loading solution...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
   }
 
   if (!solutionData) {
-    return <div>Solution not found</div>;
+    return null;
   }
 
-  return (
-    <div className="group relative w-full cursor-pointer overflow-hidden bg-gray-100 p-6 transition-all duration-300 xl:mt-12 xl:h-[531px] xl:w-[243px] xl:p-8 xl:hover:mt-[-23px] xl:hover:h-[602px] dark:bg-[#1D1E1F]">
-      {/* Background Image - appears on hover */}
-      {solutionData?.backgroundImage?.link && (
-        <div className="absolute inset-0 -left-1 transition-opacity duration-300 group-hover:opacity-100 xl:opacity-0">
-          <Image
-            src={solutionData?.backgroundImage?.link}
-            alt={solutionData?.backgroundImage?.altText ?? ''}
-            fill
-            className="object-cover"
-            priority={false}
-          />
-        </div>
-      )}
-      <div className="relative z-10 h-full">
-        <Box direction="col" gap={12}>
-          {/* Top content - appears on hover */}
-          <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
-            <Box direction="col" gap={{ base: 0, xl: 6 }}>
-              <h2 className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11">
-                {solutionData?.heading}
-              </h2>
-              <p className="text-body-lg leading-snug text-white">{solutionData?.subheading}</p>
-            </Box>
-          </div>
+  const DefaultItem = () => {
+    return <div>default</div>;
+  };
 
-          {/* Bottom content - always anchored at bottom */}
-          <div className="xl:absolute xl:right-0 xl:bottom-0 xl:left-0">
-            <Box direction="col" gap={{ base: 2, xl: 6 }}>
-              <Box direction="col" gap={1}>
-                <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-body-md xl:text-headline-xs leading-tight group-hover:text-white dark:text-white">
-                  {solutionData?.cardTitle}
-                </h3>
-              </Box>
-              <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
-                {solutionData?.description}
-              </p>
+  const BackgroundPrimaryHoverItem = () => {
+    return (
+      <div className="group rounded-xxs bg-subtle relative min-h-[24rem] min-w-[24rem] overflow-hidden">
+        {/* Card Content */}
+        <Box
+          direction="col"
+          gap={4}
+          className="group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 transition-all duration-300"
+        >
+          {/* Text Content */}
+          <Box direction="col" gap={4} className="h-full justify-between">
+            <Box direction="col" gap={3}>
+              <h3
+                className="text-headline-sm line-clamp-2 transition-colors duration-300 group-hover:text-white"
+                {...inspectorProps({ fieldId: 'heading' })}
+              >
+                {title}
+              </h3>
+              {description && (
+                <p
+                  className="text-body-sm text-text-subtle line-clamp-4 opacity-0 transition-all duration-300 group-hover:text-white group-hover:opacity-100"
+                  {...inspectorProps({ fieldId: 'description' })}
+                >
+                  {description}
+                </p>
+              )}
             </Box>
-          </div>
+            <Link href={`/solutions/${slug}`}>
+              <Button
+                variant="outline"
+                className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
+              >
+                See Details
+              </Button>
+            </Link>
+          </Box>
         </Box>
       </div>
-    </div>
-  );
+    );
+  };
+
+  switch (variant) {
+    case 'BackgroundPrimaryHover':
+      return <BackgroundPrimaryHoverItem />;
+    default:
+      return <DefaultItem />;
+  }
 }
