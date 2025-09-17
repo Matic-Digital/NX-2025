@@ -217,7 +217,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
   if (variant === 'Default') {
     return {
       analysis,
-      cols: { base: 1, md: 2, lg: 3 }, // 3 columns for Default grid
+      cols: { base: 1, md: 2, xl: 3 }, // 3 columns for Default grid
       gap: 12,
       direction: 'col' as const,
       variant: 'Default'

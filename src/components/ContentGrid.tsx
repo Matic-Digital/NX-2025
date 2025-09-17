@@ -426,7 +426,11 @@ export function ContentGrid(props: ContentGridProps) {
                             lg:
                               typeof gridConfig.cols === 'number'
                                 ? gridConfig.cols
-                                : gridConfig.cols.lg || 2
+                                : 'lg' in gridConfig.cols
+                                  ? (gridConfig.cols.lg ?? 2)
+                                  : 'xl' in gridConfig.cols
+                                    ? (gridConfig.cols.xl ?? 2)
+                                    : 2
                           }
                         : gridConfig.cols
                     }
