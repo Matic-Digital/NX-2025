@@ -41,6 +41,7 @@ export const ContentGridSchema = z.object({
   itemsCollection: z.object({
     items: z.array(ContentGridItemUnion)
   }),
+  variant: z.string(),
   componentType: z.string().optional(),
   __typename: z.string().optional()
 });

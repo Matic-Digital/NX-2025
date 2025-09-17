@@ -36,40 +36,40 @@ export type ContentGridItemUnion =
  */
 export const contentTypeDetectors = {
   isAccordion: (item: ContentGridItemUnion): item is AccordionSchema =>
-    item.__typename === 'Accordion',
+    item?.__typename === 'Accordion',
 
   isContactCard: (item: ContentGridItemUnion): item is ContactCardSchema =>
-    item.__typename === 'ContactCard',
+    item?.__typename === 'ContactCard',
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
-    item.__typename === 'Collection',
+    item?.__typename === 'Collection',
 
   isContentGridItem: (item: ContentGridItemUnion): item is ContentGridItemType =>
-    item.__typename === 'ContentGridItem',
+    item?.__typename === 'ContentGridItem',
 
-  isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item.__typename === 'CtaGrid',
+  isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item?.__typename === 'CtaGrid',
 
-  isImage: (item: ContentGridItemUnion): item is AirImageType => item.__typename === 'Image',
+  isImage: (item: ContentGridItemUnion): item is AirImageType => item?.__typename === 'Image',
 
   isLocation: (item: ContentGridItemUnion): item is OfficeLocationType =>
-    item.__typename === 'OfficeLocation',
+    item?.__typename === 'OfficeLocation',
 
-  isPageList: (item: ContentGridItemUnion): item is PageListType => item.__typename === 'PageList',
+  isPageList: (item: ContentGridItemUnion): item is PageListType => item?.__typename === 'PageList',
 
-  isPost: (item: ContentGridItemUnion): item is PostSchema => item.__typename === 'Post',
+  isPost: (item: ContentGridItemUnion): item is PostSchema => item?.__typename === 'Post',
 
-  isProduct: (item: ContentGridItemUnion): item is ProductType => item.__typename === 'Product',
+  isProduct: (item: ContentGridItemUnion): item is ProductType => item?.__typename === 'Product',
 
-  isService: (item: ContentGridItemUnion): item is SolutionType => item.__typename === 'Service',
+  isService: (item: ContentGridItemUnion): item is SolutionType => item?.__typename === 'Service',
 
-  isSlider: (item: ContentGridItemUnion): item is SliderType => item.__typename === 'Slider',
+  isSlider: (item: ContentGridItemUnion): item is SliderType => item?.__typename === 'Slider',
 
-  isSolution: (item: ContentGridItemUnion): item is SolutionType => item.__typename === 'Solution',
+  isSolution: (item: ContentGridItemUnion): item is SolutionType => item?.__typename === 'Solution',
 
   isTestimonials: (item: ContentGridItemUnion): item is TestimonialsType =>
-    item.__typename === 'Testimonials',
+    item?.__typename === 'Testimonials',
 
-  isVideo: (item: ContentGridItemUnion): item is VideoType => item.__typename === 'Video'
+  isVideo: (item: ContentGridItemUnion): item is VideoType => item?.__typename === 'Video'
 };
 
 /**
@@ -126,15 +126,14 @@ export const collectionAnalyzers = {
     items.some(contentTypeDetectors.isCollection),
 
   // hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
-  //   items.some((item) => 'image' in item && item.image)
   hasFullWidthItems: (items: ContentGridItemUnion[]): boolean =>
     items.some((item) => 'variant' in item && item.variant === 'BackgroundImage')
 };
 
 /**
- * Grid configuration calculator
+ * Calculate grid configuration based on content types and variant
  */
-export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
+export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: string) => {
   const analysis = {
     allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
@@ -180,7 +179,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
                   ? 4
                   : 3
                 : analysis.allItemsAreSolutions
-                  ? 4
+                  ? 2
                   : analysis.allItemsAreExpandingHoverCards
                     ? 3
                     : analysis.hasImages
@@ -214,31 +213,32 @@ export const calculateGridConfig = (items: ContentGridItemUnion[]) => {
         ? 12
         : 12;
 
-  // Special case for 4-item asymmetric layout
-  const useCustomLayout =
-    items.length === 4 &&
-    !analysis.hasAccordions &&
-    !analysis.allItemsArePosts &&
-    !analysis.hasSliders &&
-    !analysis.hasVideos;
-
-  if (useCustomLayout) {
+  // Handle specific ContentGrid variants
+  if (variant === 'Default') {
     return {
       analysis,
-      cols: { base: 1, md: 2, lg: 2 }, // This will be overridden by custom grid
+      cols: { base: 1, md: 2, lg: 3 }, // 3 columns for Default grid
       gap: 12,
       direction: 'col' as const,
-      useCustomLayout: true,
-      layoutType: 'fourItemAsymmetric'
+      variant: 'Default'
+    };
+  }
+
+  if (variant === 'Offset') {
+    return {
+      analysis,
+      cols: { base: 1, md: 2, lg: 3 }, // 3 columns for offset grid
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'Offset'
     };
   }
 
   return {
+    analysis,
     cols,
-    direction,
     gap,
-    useCustomLayout: false,
-    layoutType: 'default',
-    analysis
+    direction,
+    variant: variant ?? 'Default'
   };
 };

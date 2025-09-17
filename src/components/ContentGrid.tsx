@@ -157,8 +157,8 @@ export function ContentGrid(props: ContentGridProps) {
   // Individual ServiceCard components will manage their own active state
 
   // Calculate grid configuration using utilities
-  const gridConfig = calculateGridConfig(validItems);
-  const { direction, gap, analysis } = gridConfig;
+  const gridConfig = calculateGridConfig(validItems, contentGrid.variant);
+  const { direction, gap, analysis, variant: gridVariant } = gridConfig;
 
   // Check if this is a 3-item post layout that needs special handling
   const isThreeItemPostLayout =
@@ -275,30 +275,36 @@ export function ContentGrid(props: ContentGridProps) {
                   // Location featured grid layout - first item featured, rest in grid
                   <Box direction="col" gap={8} className="w-full">
                     {/* Featured location - spans full width */}
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
-                      item={validItems[0]!}
-                      index={0}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                      variant="featured"
-                    />
+                    {validItems[0] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-0-${validItems[0].sys?.id ?? 0}`}
+                        item={validItems[0]}
+                        index={0}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="featured"
+                      />
+                    )}
 
                     {/* Remaining locations in responsive grid */}
                     {validItems.length > 1 && (
                       <Box direction="col" cols={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                        {validItems.slice(1).map((item, index) => (
-                          <ContentItemRenderer
-                            key={`${contentGrid.sys?.id}-${index + 1}-${item.sys?.id ?? index + 1}`}
-                            item={item}
-                            index={index + 1}
-                            validItems={validItems}
-                            parentPageListSlug={props.parentPageListSlug}
-                            currentPath={props.currentPath}
-                            variant="grid"
-                          />
-                        ))}
+                        {validItems
+                          .slice(1)
+                          .map((item, index) =>
+                            item ? (
+                              <ContentItemRenderer
+                                key={`${contentGrid.sys?.id}-${index + 1}-${item.sys?.id ?? index + 1}`}
+                                item={item}
+                                index={index + 1}
+                                validItems={validItems}
+                                parentPageListSlug={props.parentPageListSlug}
+                                currentPath={props.currentPath}
+                                variant="grid"
+                              />
+                            ) : null
+                          )}
                       </Box>
                     )}
                   </Box>
@@ -314,84 +320,102 @@ export function ContentGrid(props: ContentGridProps) {
                     }
                   >
                     {/* First item takes left 3 columns and spans 2 rows */}
-                    <div className="lg:col-span-3 lg:row-span-2">
+                    {validItems[0] && (
+                      <div className="lg:col-span-3 lg:row-span-2">
+                        <ContentItemRenderer
+                          key={`${contentGrid.sys?.id}-0-${validItems[0].sys?.id ?? 0}`}
+                          item={validItems[0]}
+                          index={0}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                          variant="featured"
+                        />
+                      </div>
+                    )}
+                    {/* Next two items stacked on the right 2 columns */}
+                    {validItems[1] && (
+                      <div className="lg:col-span-2">
+                        <ContentItemRenderer
+                          key={`${contentGrid.sys?.id}-1-${validItems[1].sys?.id ?? 1}`}
+                          item={validItems[1]}
+                          index={1}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                          variant="row"
+                        />
+                      </div>
+                    )}
+                    {validItems[2] && (
+                      <div className="lg:col-span-2">
+                        <ContentItemRenderer
+                          key={`${contentGrid.sys?.id}-2-${validItems[2].sys?.id ?? 2}`}
+                          item={validItems[2]}
+                          index={2}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                          variant="row"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : gridVariant === 'Offset' ? (
+                  // Custom 4-item staggered grid using Box
+                  <Box
+                    cols={gridConfig.cols}
+                    gap={gridConfig.gap}
+                    className="[&>*]:min-h-[22.5rem]"
+                  >
+                    {/* Top row - items in columns 1 and 2 */}
+                    {validItems[0] && (
                       <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
-                        item={validItems[0]!}
+                        key={`${contentGrid.sys?.id}-0-${validItems[0].sys?.id ?? 0}`}
+                        item={validItems[0]}
                         index={0}
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
-                        variant="featured"
                       />
-                    </div>
-                    {/* Next two items stacked on the right 2 columns */}
-                    <div className="lg:col-span-2">
+                    )}
+                    {validItems[1] && (
                       <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
-                        item={validItems[1]!}
+                        key={`${contentGrid.sys?.id}-1-${validItems[1].sys?.id ?? 1}`}
+                        item={validItems[1]}
                         index={1}
                         validItems={validItems}
                         parentPageListSlug={props.parentPageListSlug}
                         currentPath={props.currentPath}
-                        variant="row"
                       />
-                    </div>
-                    <div className="lg:col-span-2">
-                      <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
-                        item={validItems[2]!}
-                        index={2}
-                        validItems={validItems}
-                        parentPageListSlug={props.parentPageListSlug}
-                        currentPath={props.currentPath}
-                        variant="row"
-                      />
-                    </div>
-                  </div>
-                ) : gridConfig.useCustomLayout && gridConfig.layoutType === 'fourItemAsymmetric' ? (
-                  // Custom 4-item staggered grid (3 columns)
-                  <div className="grid grid-cols-1 gap-12 lg:grid-cols-3 [&>*]:min-h-[22.5rem]">
-                    {/* Top row - items in columns 1 and 2 */}
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-0-${validItems[0]?.sys?.id ?? 0}`}
-                      item={validItems[0]!}
-                      index={0}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                    />
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-1-${validItems[1]?.sys?.id ?? 1}`}
-                      item={validItems[1]!}
-                      index={1}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                    />
+                    )}
                     {/* Empty space in column 3 for top row */}
                     <div className="hidden lg:block"></div>
 
                     {/* Bottom row - empty column 1, items in columns 2 and 3 */}
                     <div className="hidden lg:block"></div>
 
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-2-${validItems[2]?.sys?.id ?? 2}`}
-                      item={validItems[2]!}
-                      index={2}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                    />
-                    <ContentItemRenderer
-                      key={`${contentGrid.sys?.id}-3-${validItems[3]?.sys?.id ?? 3}`}
-                      item={validItems[3]!}
-                      index={3}
-                      validItems={validItems}
-                      parentPageListSlug={props.parentPageListSlug}
-                      currentPath={props.currentPath}
-                    />
-                  </div>
+                    {validItems[2] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-2-${validItems[2].sys?.id ?? 2}`}
+                        item={validItems[2]}
+                        index={2}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                    {validItems[3] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-3-${validItems[3].sys?.id ?? 3}`}
+                        item={validItems[3]}
+                        index={3}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                  </Box>
                 ) : (
                   // Existing uniform grid layout
                   <Box
@@ -409,7 +433,7 @@ export function ContentGrid(props: ContentGridProps) {
                     gap={gridConfig.gap}
                     wrap={true}
                   >
-                    {validItems.map((item, index) => (
+                    {validItems.filter(Boolean).map((item, index) => (
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
                         item={item}

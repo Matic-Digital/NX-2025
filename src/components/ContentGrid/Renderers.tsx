@@ -7,7 +7,7 @@ import { AirImage } from '@/components/media/AirImage';
 import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
-import { SolutionCard } from '@/components/SolutionCard';
+import { SolutionCard } from '../SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
@@ -120,25 +120,15 @@ export const contentRenderers = {
   ),
 
   renderSolution: (item: SolutionType, context: RenderContext) => {
-    // Convert Solution to ContentGridItem format
-    const contentGridItemData: ContentGridItemType & Pick<SolutionType, 'slug'> = {
-      sys: item.sys,
-      __typename: 'Solution' as const,
-      slug: item.slug,
-      title: item.cardTitle || item.heading || item.title || '',
-      heading: item.heading || item.cardTitle || item.title || '',
-      description: item.description || item.subheading || '',
-      variant: item.variant,
-      image: item.backgroundImage
-    };
-
+    // If we only have sys.id (lazy loading case), use solutionId prop
+    if (item.sys?.id && !item.title && !item.heading) {
+      return (
+        <SolutionCard key={`lazy-${item.sys.id}`} solutionId={item.sys.id} index={context.index} />
+      );
+    }
+    // If we have full data, render normally
     return (
-      <ContentGridItem
-        key={item.sys?.id ?? context.index}
-        {...contentGridItemData}
-        parentPageListSlug={context.parentPageListSlug}
-        currentPath={context.currentPath}
-      />
+      <SolutionCard key={`full-${item.sys?.id ?? context.index}`} {...item} index={context.index} />
     );
   },
 

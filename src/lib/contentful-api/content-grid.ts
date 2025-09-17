@@ -89,6 +89,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
     }
   }
+  variant
 `;
 
 /**

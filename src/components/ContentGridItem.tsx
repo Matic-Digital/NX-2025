@@ -17,7 +17,6 @@ import { useState, useEffect } from 'react';
 interface ContentGridItemProps extends ContentGridItemType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
-  slug?: string; // Optional slug for Solution items
 }
 
 export function ContentGridItem(props: ContentGridItemProps) {
@@ -42,12 +41,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
         const fullData = await getContentGridItemById(sys.id);
         if (fullData) {
           setFullContentData(fullData);
-        }
-
-        if (props.slug && props.__typename === 'Solution') {
-          const href = `/solutions/${props.slug}`;
-          setLinkHref(href);
-          return;
         }
 
         // Fetch link details for ContentGridItem
@@ -104,7 +97,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     };
 
     void fetchContentData();
-  }, [sys?.id, props.parentPageListSlug, props.__typename, props.slug]);
+  }, [sys?.id, props.parentPageListSlug, props.__typename]);
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
