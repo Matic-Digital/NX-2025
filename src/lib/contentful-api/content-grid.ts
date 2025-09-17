@@ -70,6 +70,16 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
       ... on Solution {
         ${SYS_FIELDS}
+        title
+        slug
+        heading
+        subheading
+        cardTitle
+        description
+        backgroundImage {
+          ${IMAGE_GRAPHQL_FIELDS}
+        }
+        variant
       }
       ... on Testimonials {
         ${SYS_FIELDS}
@@ -79,6 +89,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
     }
   }
+  variant
 `;
 
 /**

@@ -25,6 +25,7 @@ export const SolutionSchema = z.object({
   description: z.string(),
   backgroundImage: ImageSchema,
   cta: ButtonSchema,
+  variant: z.string(),
   __typename: z.string().optional()
 });
 

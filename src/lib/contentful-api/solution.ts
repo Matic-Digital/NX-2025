@@ -19,9 +19,10 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
-    cta {
-      ${BUTTON_GRAPHQL_FIELDS}
-    }
+  cta {
+    ${BUTTON_GRAPHQL_FIELDS}
+  }
+  variant 
 `;
 
 export async function getSolutionById(id: string, preview = false): Promise<Solution | null> {

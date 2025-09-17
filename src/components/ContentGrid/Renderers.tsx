@@ -7,7 +7,7 @@ import { AirImage } from '@/components/media/AirImage';
 import { MuxVideoPlayer } from '@/components/media/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
-import { SolutionCard } from '@/components/SolutionCard';
+import { SolutionCard } from '../SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
@@ -119,9 +119,18 @@ export const contentRenderers = {
     <Slider key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderSolution: (item: SolutionType, context: RenderContext) => (
-    <SolutionCard key={item.sys?.id ?? context.index} index={context.index} {...item} />
-  ),
+  renderSolution: (item: SolutionType, context: RenderContext) => {
+    // If we only have sys.id (lazy loading case), use solutionId prop
+    if (item.sys?.id && !item.title && !item.heading) {
+      return (
+        <SolutionCard key={`lazy-${item.sys.id}`} solutionId={item.sys.id} index={context.index} />
+      );
+    }
+    // If we have full data, render normally
+    return (
+      <SolutionCard key={`full-${item.sys?.id ?? context.index}`} {...item} index={context.index} />
+    );
+  },
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
     // If we only have sys.id (lazy loading case), create a LazyTestimonials component
