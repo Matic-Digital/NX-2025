@@ -11,8 +11,7 @@ import { SolutionCard } from '../SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
-import { Testimonials } from '@/components/global/Testimonials';
-import { LazyTestimonials } from '@/components/LazyTestimonials';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
 import Collection from '@/components/Collection/Collection';
 import { Location } from '@/components/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
@@ -135,9 +134,9 @@ export const contentRenderers = {
   },
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), create a LazyTestimonials component
+    // If we only have sys.id (lazy loading case), pass testimonialsId to unified component
     if (item.sys?.id && !item.itemsCollection) {
-      return <LazyTestimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
+      return <Testimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
     }
     // If we have full data, render normally
     return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;

@@ -19,5 +19,5 @@ export * from './service';
 export * from './slider';
 export * from './slider-item';
 export * from './solution';
-export * from './testimonials';
+export * from '../../components/Testimonials/TestimonialsApi';
 export * from './video';

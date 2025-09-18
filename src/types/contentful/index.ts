@@ -28,6 +28,6 @@ export * from './Slider';
 export * from './Social';
 export * from './Solution';
 export * from './TeamMember';
-export * from './Testimonials';
+export * from '../../components/Testimonials/TestimonialsSchema';
 export * from './TimelineSliderItem';
 export * from './Video';
