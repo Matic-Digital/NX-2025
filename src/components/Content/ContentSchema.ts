@@ -1,23 +1,16 @@
 import { z } from 'zod';
-import { ProductSchema } from './Product';
-import { SectionHeadingSchema } from '../../components/SectionHeading/SectionHeadingSchema';
-import { ImageSchema } from './Image';
-import { VideoSchema } from './Video';
-import { ContentGridItemSchema } from './ContentGridItem';
+import { ProductSchema } from '../../types/contentful/Product';
+import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
+import { ImageSchema } from '../../types/contentful/Image';
+import { VideoSchema } from '../../types/contentful/Video';
+import { ContentGridItemSchema } from '../../types/contentful/ContentGridItem';
+import { ContentVariantEnum } from './ContentVariant';
 
 const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema, ContentGridItemSchema]);
 export type ContentItem = z.infer<typeof ContentItemUnion>;
 
 const ContentAssetUnion = z.union([ImageSchema, VideoSchema]);
 export type ContentAsset = z.infer<typeof ContentAssetUnion>;
-
-export const ContentVariantEnum = z.enum([
-  'ContentLeft',
-  'ContentCenter',
-  'ContentRight',
-  'FullWidth'
-]);
-export type ContentVariant = z.infer<typeof ContentVariantEnum>;
 
 export const ContentSchema = z.object({
   sys: z.object({

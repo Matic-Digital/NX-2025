@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { AssetSchema } from './Asset';
 import { ImageSchema } from './Image';
+import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
 // Define the ContentGridItem schema
 export const ContentGridItemSchema = z.object({
@@ -9,6 +10,11 @@ export const ContentGridItemSchema = z.object({
   }),
   title: z.string(),
   heading: z.string(),
+  ctaCollection: z
+    .object({
+      items: z.array(ButtonSchema)
+    })
+    .optional(),
   description: z.string(),
   icon: AssetSchema.optional(),
   image: ImageSchema.optional(),

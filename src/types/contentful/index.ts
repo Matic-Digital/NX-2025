@@ -3,7 +3,7 @@ export * from './Asset';
 export * from './BannerHero';
 export * from './Collection';
 export * from '../../components/ContactCard/ContactCardSchema';
-export * from './Content';
+export * from '../../components/Content/ContentSchema';
 export * from './ContentGrid';
 export * from './ContentGridItem';
 export * from './CtaBanner';

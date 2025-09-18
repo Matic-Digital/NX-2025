@@ -5,7 +5,7 @@ import { ContentGridSchema } from './ContentGrid';
 import { BannerHeroSchema } from './BannerHero';
 import { ImageBetweenSchema } from './ImageBetween';
 import { ImageSchema } from './Image';
-import { ContentSchema } from './Content';
+import { ContentSchema } from '../../components/Content/ContentSchema';
 import { RegionsMapSchema } from './Region';
 
 const PageContentUnion = z.union([

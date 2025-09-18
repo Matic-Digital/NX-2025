@@ -35,7 +35,7 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid';
-import { Content } from '@/components/Content';
+import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import { Slider } from '@/components/Slider';

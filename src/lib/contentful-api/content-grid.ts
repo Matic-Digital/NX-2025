@@ -3,7 +3,7 @@ import { fetchGraphQL } from '../api';
 import type { ContentGrid, ContentGridItem, ContentGridResponse } from '@/types/contentful';
 
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
+import { INTERNAL_LINK_FIELDS, SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { ContentfulError, NetworkError } from '../errors';
 
 // ContentGridItem fields - minimal for initial load (no link field)
@@ -11,6 +11,23 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   heading
+  ctaCollection(limit: 2) {
+      items {
+        sys { id }
+        internalText
+        text
+        internalLink {
+          ${INTERNAL_LINK_FIELDS}
+        }
+        externalLink
+        modal {
+          sys { id }
+          title
+          description
+        }
+        icon
+      }
+    }
   description
   icon {
     ${ASSET_FIELDS}

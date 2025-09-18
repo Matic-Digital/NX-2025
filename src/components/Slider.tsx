@@ -30,7 +30,7 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import type { ContentOverlay } from '@/types/contentful/Content';
+import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { SliderItemType } from '@/types/contentful/Slider';
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { resolveNestedUrls } from '@/lib/page-link-utils';

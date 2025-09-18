@@ -21,7 +21,7 @@ import {
 import { BannerHero } from '@/components/BannerHero';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ContentGridItem } from '@/components/ContentGridItem';
-import { Content } from '@/components/Content';
+import { Content } from '@/components/Content/Content';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween';
 import { Slider } from '@/components/Slider';
@@ -36,7 +36,7 @@ import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api
 import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
 import { getBannerHero } from '@/lib/contentful-api/banner-hero';
-import { getContentById } from '@/lib/contentful-api/content';
+import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';

@@ -7,7 +7,7 @@ import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
 import { getBannerHero } from '@/lib/contentful-api/banner-hero';
 import { getButtonById } from '@/components/Button/ButtonApi';
-import { getContentById } from '@/lib/contentful-api/content';
+import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';

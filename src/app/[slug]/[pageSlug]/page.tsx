@@ -30,7 +30,7 @@ import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { BannerHero } from '@/components/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
-import { Content } from '@/components/Content';
+import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import type { Header as HeaderType } from '@/types/contentful/Header';
