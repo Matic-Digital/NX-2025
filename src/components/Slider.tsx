@@ -551,10 +551,12 @@ const GenericSlider = ({
 
       {showIndicators && (
         <Container>
-          <div className={cn(
-            "relative z-10 mt-4 flex h-1 items-center gap-4",
-            isPostSlider ? "lg:hidden" : ""
-          )}>
+          <div
+            className={cn(
+              'relative z-10 mt-4 flex h-1 items-center gap-4',
+              isPostSlider ? 'lg:hidden' : ''
+            )}
+          >
             {sliderData.itemsCollection.items.map((_, index) => (
               <button
                 key={index}

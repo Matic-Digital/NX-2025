@@ -1,76 +1,280 @@
+'use client';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 
-import React from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types';
 import type { Document, Block, Inline } from '@contentful/rich-text-types';
 import type { RichContent as RichContentType } from '@/types/contentful/RichContent';
+import { Container } from '@/components/global/matic-ds';
+import Image from 'next/image';
 
 interface RichContentProps extends RichContentType {
   className?: string;
 }
+
+// Interface for table of contents items
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+// Function to extract text content from rich text nodes
+const extractTextFromNode = (node: any): string => {
+  if (typeof node === 'string') {
+    return node;
+  }
+
+  if (node?.content) {
+    return (node.content as any[]).map(extractTextFromNode).join('');
+  }
+
+  if (node?.value) {
+    return String(node.value);
+  }
+
+  return '';
+};
+
+// Function to generate a URL-friendly ID from text
+const generateId = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+    .replace(/^-|-$/g, '');
+};
+
+// Global state to track if we're currently in an appendix section
+let currentlyInAppendix = false;
+
+// Function to check if a node is within an appendix section
+const checkIfInAppendix = (node: any): boolean => {
+  return currentlyInAppendix;
+};
+
+// Function to update appendix context based on heading content
+const updateAppendixContext = (text: string): void => {
+  if (/appendix/i.test(text)) {
+    currentlyInAppendix = true;
+  } else if (/^\d+(\.\d+)?/.test(text.trim()) || /^[IVXLCDM]+\./i.test(text.trim())) {
+    // If we encounter a numbered section or roman numeral section after appendix, we're out of appendix
+    currentlyInAppendix = false;
+  }
+};
+
+// Function to extract h2 headings with numbers from the document
+const extractTocItems = (document: Document): TocItem[] => {
+  const tocItems: TocItem[] = [];
+  let inAppendixSection = false;
+
+  const traverseNodes = (nodes: any[]) => {
+    nodes.forEach((node) => {
+      if (
+        node.nodeType === BLOCKS.HEADING_2 ||
+        node.nodeType === BLOCKS.HEADING_3 ||
+        node.nodeType === BLOCKS.HEADING_4
+      ) {
+        const text = extractTextFromNode(node);
+
+        // Update appendix context during TOC extraction
+        if (node.nodeType === BLOCKS.HEADING_2) {
+          if (/appendix/i.test(text)) {
+            inAppendixSection = true;
+          } else if (/^\d+(\.\d+)?/.test(text.trim()) || /^[IVXLCDM]+\./i.test(text.trim())) {
+            inAppendixSection = false;
+          }
+        }
+
+        // Check if the heading contains a number (including decimal numbers like 18.1, 18.2) or is an appendix
+        // For h2s, check for roman numerals like I., II., III.
+        // For h3s, check for roman numerals like A.i, A.ii
+        // Also include roman numerals when we're in an appendix section
+        const hasNumber = /\d+(\.\d+)?/.test(text);
+        const isAppendix = /appendix/i.test(text);
+        const hasH2RomanNumeral =
+          node.nodeType === BLOCKS.HEADING_2 && /^[IVXLCDM]+\./i.test(text.trim());
+        const hasH3RomanNumeral =
+          node.nodeType === BLOCKS.HEADING_3 && /[A-Z]\.[ivxlcdm]+/i.test(text);
+        const isRomanInAppendix = inAppendixSection && /^[IVXLCDM]+\./i.test(text.trim());
+
+        if (
+          hasNumber ||
+          isAppendix ||
+          hasH2RomanNumeral ||
+          hasH3RomanNumeral ||
+          isRomanInAppendix
+        ) {
+          const id = generateId(text);
+          const level =
+            node.nodeType === BLOCKS.HEADING_2 ? 2 : node.nodeType === BLOCKS.HEADING_3 ? 3 : 4;
+          tocItems.push({
+            id,
+            text,
+            level
+          });
+        }
+      }
+
+      if (node.content) {
+        traverseNodes(node.content as any[]);
+      }
+    });
+  };
+
+  if (document.content) {
+    traverseNodes(document.content);
+  }
+
+  return tocItems;
+};
 
 // Use simpler types to avoid TypeScript complexity
 
 // Custom rendering options for rich text
 const renderOptions = {
   renderMark: {
-    [MARKS.BOLD]: (text: React.ReactNode) => <strong className="font-semibold">{text}</strong>,
+    [MARKS.BOLD]: (text: React.ReactNode) => (
+      <strong className="line-clamp-2 font-semibold">{text}</strong>
+    ),
     [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic">{text}</em>,
     [MARKS.UNDERLINE]: (text: React.ReactNode) => <u className="underline">{text}</u>,
     [MARKS.CODE]: (text: React.ReactNode) => (
-      <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono">{text}</code>
-    ),
+      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">{text}</code>
+    )
   },
   renderNode: {
-    [BLOCKS.PARAGRAPH]: (_node: Block | Inline, children: React.ReactNode) => (
-      <p className="mb-4 leading-relaxed">{children}</p>
-    ),
-    [BLOCKS.HEADING_1]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h1 className="text-4xl font-bold mb-6 mt-8">{children}</h1>
-    ),
-    [BLOCKS.HEADING_2]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h2 className="text-3xl font-bold mb-5 mt-7">{children}</h2>
-    ),
-    [BLOCKS.HEADING_3]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h3 className="text-2xl font-bold mb-4 mt-6">{children}</h3>
-    ),
-    [BLOCKS.HEADING_4]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h4 className="text-xl font-bold mb-3 mt-5">{children}</h4>
-    ),
-    [BLOCKS.HEADING_5]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h5 className="text-lg font-bold mb-3 mt-4">{children}</h5>
-    ),
-    [BLOCKS.HEADING_6]: (_node: Block | Inline, children: React.ReactNode) => (
-      <h6 className="text-base font-bold mb-2 mt-3">{children}</h6>
-    ),
-    [BLOCKS.UL_LIST]: (_node: Block | Inline, children: React.ReactNode) => (
-      <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>
-    ),
-    [BLOCKS.OL_LIST]: (_node: Block | Inline, children: React.ReactNode) => (
-      <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>
-    ),
-    [BLOCKS.LIST_ITEM]: (_node: Block | Inline, children: React.ReactNode) => (
-      <li className="ml-4">{children}</li>
-    ),
+    [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
+      const paddingClass = (node as any).data?.paddingClass || '';
+      const isInListItem = (node as any).data?.isInListItem || false;
+
+      if (isInListItem) {
+        return (
+          <span
+            className={`text-secondary text-[1rem] leading-[160%] font-normal whitespace-pre-line ${paddingClass}`}
+          >
+            {children}
+          </span>
+        );
+      }
+
+      return (
+        <p
+          className={`text-secondary my-[1.75rem] text-[1rem] leading-[160%] font-normal whitespace-pre-line ${paddingClass}`}
+        >
+          {children}
+        </p>
+      );
+    },
+    [BLOCKS.HEADING_2]: (node: Block | Inline, children: React.ReactNode) => {
+      const text = extractTextFromNode(node);
+      updateAppendixContext(text);
+      const id = generateId(text);
+      return (
+        <h2
+          id={id}
+          className="mt-[2.5rem] scroll-mt-4 text-[1.5rem] leading-[120%] font-normal md:text-[2.25rem]"
+        >
+          {children}
+        </h2>
+      );
+    },
+    [BLOCKS.HEADING_3]: (node: Block | Inline, children: React.ReactNode) => {
+      const text = extractTextFromNode(node);
+      const id = generateId(text);
+      return (
+        <h3
+          id={id}
+          className="mt-[2.5rem] scroll-mt-4 pl-[2rem] text-[1.25rem] leading-[160%] font-normal md:text-[1.75rem]"
+        >
+          {children}
+        </h3>
+      );
+    },
+    [BLOCKS.HEADING_4]: (node: Block | Inline, children: React.ReactNode) => {
+      const text = extractTextFromNode(node);
+      const id = generateId(text);
+      return (
+        <h4
+          id={id}
+          className="mt-[1.25rem] scroll-mt-4 pl-[4rem] text-[1rem] leading-[160%] font-normal md:text-[1.55rem]"
+        >
+          {children}
+        </h4>
+      );
+    },
+    [BLOCKS.HEADING_5]: (node: Block | Inline, children: React.ReactNode) => {
+      return (
+        <h5 className="mt-[1rem] scroll-mt-4 pl-[6rem] text-[1.125rem] leading-[160%] font-normal">
+          {children}
+        </h5>
+      );
+    },
+    [BLOCKS.HEADING_6]: (node: Block | Inline, children: React.ReactNode) => {
+      return (
+        <h6 className="mt-[1rem] scroll-mt-4 pl-[8rem] text-[1rem] leading-[160%] font-normal">
+          {children}
+        </h6>
+      );
+    },
+    [BLOCKS.UL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
+      const paddingClass = (node as any).data?.paddingClass || '';
+      return <ul className={`ml-6 list-disc ${paddingClass}`}>{children}</ul>;
+    },
+    [BLOCKS.OL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
+      // Check if this ordered list is within an appendix section by looking for parent h2 with "appendix"
+      const isInAppendix = checkIfInAppendix(node);
+      const paddingClass = (node as any).data?.paddingClass || '';
+      const nestingLevel = (node as any).data?.nestingLevel || 1;
+
+      let listStyleType = 'decimal';
+      if (isInAppendix) {
+        listStyleType = 'lower-roman';
+      } else if (nestingLevel === 1) {
+        listStyleType = 'upper-alpha';
+      } else {
+        listStyleType = 'decimal';
+      }
+
+      return (
+        <ol
+          className={`ml-6 ${isInAppendix ? 'list-roman' : ''} ${paddingClass}`}
+          style={{
+            listStyleType
+          }}
+        >
+          {children}
+        </ol>
+      );
+    },
+    [BLOCKS.LIST_ITEM]: (node: Block | Inline, children: React.ReactNode) => {
+      // Check if this list item is in an ordered list by checking parent context
+      const isInOrderedList = (node as any).data?.isInOrderedList || false;
+      return <li className={isInOrderedList ? 'mb-3' : ''}>{children}</li>;
+    },
     [BLOCKS.QUOTE]: (_node: Block | Inline, children: React.ReactNode) => (
-      <blockquote className="border-l-4 border-gray-300 pl-4 py-2 mb-4 italic bg-gray-50">
-        {children}
-      </blockquote>
+      <blockquote className="">{children}</blockquote>
     ),
-    [BLOCKS.HR]: () => <hr className="my-8 border-gray-300" />,
+    [BLOCKS.HR]: () => <hr className="" />,
     [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const nodeData = node as any;
       const { title, description, file } = nodeData.data?.target?.fields || {};
       const { url, contentType } = file || {};
-      
+
       if (contentType?.startsWith('image/')) {
         return (
           <div className="my-6">
@@ -78,17 +282,15 @@ const renderOptions = {
               src={url}
               alt={description ?? title ?? ''}
               title={title ?? ''}
-              className="max-w-full h-auto rounded-lg shadow-sm"
+              className="h-auto max-w-full rounded-lg shadow-sm"
             />
             {description && (
-              <p className="text-sm text-gray-600 mt-2 text-center italic">
-                {description}
-              </p>
+              <p className="mt-2 text-center text-sm text-gray-600 italic">{description}</p>
             )}
           </div>
         );
       }
-      
+
       if (contentType?.startsWith('video/')) {
         return (
           <div className="my-6">
@@ -96,33 +298,29 @@ const renderOptions = {
               src={url}
               title={title ?? ''}
               controls
-              className="max-w-full h-auto rounded-lg shadow-sm"
+              className="h-auto max-w-full rounded-lg shadow-sm"
             >
               Your browser does not support the video tag.
             </video>
             {description && (
-              <p className="text-sm text-gray-600 mt-2 text-center italic">
-                {description}
-              </p>
+              <p className="mt-2 text-center text-sm text-gray-600 italic">{description}</p>
             )}
           </div>
         );
       }
-      
+
       // Fallback for other file types
       return (
-        <div className="my-4 p-4 border border-gray-200 rounded-lg">
+        <div className="my-4 rounded-lg border border-gray-200 p-4">
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 underline hover:text-blue-800"
           >
             {title ?? 'Download File'}
           </a>
-          {description && (
-            <p className="text-sm text-gray-600 mt-1">{description}</p>
-          )}
+          {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
         </div>
       );
     },
@@ -130,15 +328,13 @@ const renderOptions = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const nodeData = node as any;
       const entryFields = nodeData.data?.target?.fields || {};
-      
+
       // Basic rendering for embedded entries
       return (
-        <div className="my-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-          <h4 className="font-semibold text-gray-800">
-            {entryFields.title ?? 'Embedded Content'}
-          </h4>
+        <div className="my-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <h4 className="font-semibold text-gray-800">{entryFields.title ?? 'Embedded Content'}</h4>
           {entryFields.description && (
-            <p className="text-sm text-gray-600 mt-2">{entryFields.description}</p>
+            <p className="mt-2 text-sm text-gray-600">{entryFields.description}</p>
           )}
         </div>
       );
@@ -147,11 +343,11 @@ const renderOptions = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const nodeData = node as any;
       const entryFields = nodeData.data?.target?.fields || {};
-      
+
       const title = entryFields.title ?? 'Embedded Content';
-      
+
       return (
-        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+        <span className="inline-block rounded bg-blue-100 px-2 py-1 text-sm text-blue-800">
           {title}
         </span>
       );
@@ -165,48 +361,363 @@ const renderOptions = {
           href={uri}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 underline"
+          className="text-blue-600 underline hover:text-blue-800"
         >
           {children}
         </a>
       );
-    },
-  },
+    }
+  }
 };
 
-const RichContent: React.FC<RichContentProps> = ({ sys, title, tableOfContents, content, className = '', __typename }) => {
-  console.log('RichContent component received props:', { sys, title, tableOfContents, content, __typename });
-  
-  if (!content?.json) {
+// Function to add hierarchical padding based on heading structure
+const addHierarchicalPadding = (nodes: any[]): any[] => {
+  let currentLevel = 1; // Start at H1 level (so H2 content gets padding)
+
+  const processNode = (
+    node: any,
+    isInList = false,
+    isOrderedList = false,
+    olNestingLevel = 0
+  ): any => {
+    if (node.nodeType === BLOCKS.HEADING_2) {
+      currentLevel = 2;
+      return node;
+    } else if (node.nodeType === BLOCKS.HEADING_3) {
+      currentLevel = 3;
+      return node;
+    } else if (node.nodeType === BLOCKS.HEADING_4) {
+      currentLevel = 4;
+      return node;
+    } else if (node.nodeType === BLOCKS.HEADING_5) {
+      currentLevel = 5;
+      return node;
+    } else if (node.nodeType === BLOCKS.HEADING_6) {
+      currentLevel = 6;
+      return node;
+    } else if (node.nodeType === BLOCKS.UL_LIST || node.nodeType === BLOCKS.OL_LIST) {
+      // Process list items
+      const isOrderedListNode = node.nodeType === BLOCKS.OL_LIST;
+      const currentNestingLevel = isOrderedListNode ? olNestingLevel + 1 : olNestingLevel;
+
+      const processedContent =
+        (node.content as any[])?.map((childNode: any) =>
+          processNode(childNode, true, isOrderedListNode, currentNestingLevel)
+        ) || [];
+
+      return {
+        ...node,
+        content: processedContent,
+        data: {
+          ...node.data,
+          paddingClass: currentLevel >= 2 ? `pl-[${(currentLevel - 1) * 2}rem]` : '',
+          nestingLevel: isOrderedListNode ? currentNestingLevel : undefined
+        }
+      } as any;
+    } else if (node.nodeType === BLOCKS.LIST_ITEM) {
+      // Process content inside list items, including nested lists
+      const processedContent =
+        (node.content as any[])?.map((childNode: any) => {
+          if (childNode.nodeType === BLOCKS.UL_LIST || childNode.nodeType === BLOCKS.OL_LIST) {
+            return processNode(childNode, false, false, olNestingLevel) as any;
+          }
+          return {
+            ...childNode,
+            data: {
+              ...childNode.data,
+              isInListItem: true
+            }
+          } as any;
+        }) || [];
+
+      // Process nested list items to mark them as ordered if they're in an ordered list
+      const finalProcessedContent = processedContent.map((childNode: any) => {
+        if (childNode.nodeType === BLOCKS.OL_LIST) {
+          return {
+            ...childNode,
+            content: (childNode.content as any[])?.map(
+              (listItem: any) =>
+                ({
+                  ...listItem,
+                  data: {
+                    ...listItem.data,
+                    isInOrderedList: true
+                  }
+                }) as any
+            )
+          } as any;
+        }
+        return childNode as any;
+      });
+      return {
+        ...node,
+        content: finalProcessedContent,
+        data: {
+          ...node.data,
+          isInOrderedList: isInList && isOrderedList
+        }
+      } as any;
+    } else if (currentLevel >= 2 && !isInList) {
+      // Calculate padding based on heading level
+      const paddingRem = (currentLevel - 1) * 2; // 2rem per level (H2 content = 2rem, H3 content = 4rem, etc.)
+      const paddingClass = `pl-[${paddingRem}rem]`;
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          paddingClass
+        }
+      };
+    }
+    return node;
+  };
+
+  return nodes.map((node: any) => processNode(node)) as any[];
+};
+
+const RichContent: React.FC<RichContentProps> = ({
+  sys,
+  title,
+  tableOfContents,
+  content,
+  legalContent,
+  variant,
+  className = '',
+  __typename
+}) => {
+  console.log('RichContent component received props:', {
+    sys,
+    title,
+    tableOfContents,
+    content,
+    legalContent,
+    variant,
+    __typename
+  });
+
+  // All hooks must be at the top level
+  const [activeSection, setActiveSection] = useState<string>('');
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  // Memoized values - using content?.json to avoid conditional hooks
+  const document = content?.json as Document | undefined;
+
+  const processedDocument = useMemo(() => {
+    if (document?.content) {
+      return {
+        ...document,
+        content: addHierarchicalPadding(document.content)
+      };
+    }
+    return document;
+  }, [document]);
+
+  const tocItems = useMemo(() => {
+    return tableOfContents && document ? extractTocItems(document) : [];
+  }, [document, tableOfContents]);
+
+  // Intersection Observer to track visible sections
+  useEffect(() => {
+    if (!tableOfContents || tocItems.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: '-20% 0px -70% 0px',
+        threshold: 0
+      }
+    );
+
+    // Observe all heading elements
+    tocItems.forEach((item) => {
+      const element = window.document.getElementById(item.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [tocItems, tableOfContents]);
+
+  // Intersection Observer for TOC visibility (back to top button)
+  useEffect(() => {
+    if (!tableOfContents) return;
+
+    const tocElement = window.document.querySelector('[data-toc-container]');
+    if (!tocElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Show back to top button when TOC is out of view
+          setShowBackToTop(!entry.isIntersecting);
+        });
+      },
+      {
+        rootMargin: '0px',
+        threshold: 0
+      }
+    );
+
+    observer.observe(tocElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [tableOfContents]);
+
+  // Early return after all hooks
+  if (!content?.json || !document) {
     console.log('RichContent: No content.json found');
     return null;
   }
 
-  const document = content.json as Document;
+  // Reset appendix context for each render
+  currentlyInAppendix = false;
+
+  // Function to scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Determine styling based on variant
+  const isLegalVariant = variant === 'Legal';
 
   return (
-    <div className={`rich-content prose prose-lg max-w-none ${className}`}>
-      {title && (
-        <h1 className="text-4xl font-bold mb-8 text-gray-900">
-          {title}
-        </h1>
-      )}
-      
-      {tableOfContents && (
-        <div className="mb-8 p-4 bg-gray-50 rounded-lg">
-          <h2 className="text-lg font-semibold mb-3 text-gray-800">
-            Table of Contents
-          </h2>
-          {/* TODO: Generate table of contents from headings */}
-          <p className="text-sm text-gray-600">
-            Table of contents will be generated automatically from headings.
-          </p>
+    <div className="my-[3rem]">
+      <Container>
+        {isLegalVariant && legalContent?.json && (
+          <div className="mb-[6rem]">
+            <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-8">
+              {documentToReactComponents(legalContent.json as Document, {
+                renderNode: {
+                  table: (node: Block | Inline, children: React.ReactNode) => (
+                    <div className="flex flex-1 flex-col lg:mb-0">
+                      <table className="h-full w-full flex-1">
+                        <colgroup>
+                          <col
+                            style={{ width: '12.5rem', minWidth: '12.5rem', maxWidth: '12.5rem' }}
+                          />
+                          <col />
+                        </colgroup>
+                        {children}
+                      </table>
+                    </div>
+                  ),
+                  'table-header-cell': (_node: Block | Inline, children: React.ReactNode) => (
+                    <th className="pr-4 text-left align-top font-semibold">{children}</th>
+                  ),
+                  'table-cell': (_node: Block | Inline, children: React.ReactNode) => (
+                    <td className="pr-4 align-top">{children}</td>
+                  ),
+                  'table-row': (_node: Block | Inline, children: React.ReactNode) => (
+                    <tr>{children}</tr>
+                  ),
+                  'table-head': (_node: Block | Inline, children: React.ReactNode) => (
+                    <thead>{children}</thead>
+                  ),
+                  'table-body': (_node: Block | Inline, children: React.ReactNode) => (
+                    <tbody className="h-full">{children}</tbody>
+                  )
+                }
+              })}
+            </div>
+          </div>
+        )}
+        <div className={`${className} flex flex-col gap-8 md:flex-row`}>
+          {tableOfContents && tocItems.length > 0 && (
+            <div className="w-full flex-shrink-0 md:max-w-[25.75rem]" data-toc-container>
+              <div
+                className={`max-h-[calc(100vh-2rem)] overflow-y-auto p-[2rem] ${
+                  isLegalVariant ? 'bg-subtle' : 'border border-blue-200 bg-blue-50'
+                }`}
+                style={{ position: 'sticky', top: '8rem' }}
+              >
+                <h2
+                  className="mb-[1.5rem] text-2xl leading-[120%] font-normal"
+                  style={{
+                    color: 'var(--Text-text-body, #171717)'
+                  }}
+                >
+                  Table of Contents
+                </h2>
+                <nav>
+                  <ul className={isLegalVariant ? 'space-y-1' : 'space-y-2'}>
+                    {tocItems.map((item) => (
+                      <li
+                        key={item.id}
+                        className={`${item.level === 3 ? 'ml-4' : item.level === 4 ? 'ml-8' : ''}`}
+                      >
+                        <a
+                          href={`#${item.id}`}
+                          className={`text-sm leading-[160%] font-normal tracking-[0.00875rem] transition-colors duration-200 hover:underline ${
+                            activeSection === item.id
+                              ? 'text-primary rounded'
+                              : 'hover:text-primary'
+                          }`}
+                          style={{
+                            color:
+                              activeSection === item.id
+                                ? undefined
+                                : 'var(--Text-text-secondary, #262626)'
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const element = window.document.getElementById(item.id);
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                          }}
+                        >
+                          {item.text.replace(/^(\d+(?:\.\d+)?)\.?\s*/, '$1\u00A0\u00A0')}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          )}
+
+          <div className="rich-text-content flex-1">
+            {processedDocument &&
+              documentToReactComponents(processedDocument as Document, renderOptions)}
+          </div>
         </div>
-      )}
-      
-      <div className="rich-text-content">
-        {documentToReactComponents(document, renderOptions)}
-      </div>
+
+        {/* Back to top button - mobile only */}
+        {showBackToTop && (
+          <button
+            onClick={scrollToTop}
+            className="bg-primary hover:bg-primary/90 fixed right-6 bottom-6 z-50 h-[3.75rem] w-[3.75rem] text-white shadow-lg transition-all duration-200 md:hidden"
+            aria-label="Back to top"
+          >
+            <svg
+              className="m-auto h-[2rem] w-[2rem]"
+              viewBox="0 0 30 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0.858154 15L15.0003 0.857867M15.0003 0.857867L29.1424 15M15.0003 0.857867V29.1421"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )}
+      </Container>
     </div>
   );
 };

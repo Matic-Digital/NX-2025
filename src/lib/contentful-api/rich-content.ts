@@ -17,6 +17,10 @@ export const RICHCONTENT_GRAPHQL_FIELDS = `
   content {
     json
   }
+  variant
+  legalContent {
+    json
+  }
 `;
 
 /**
@@ -63,10 +67,7 @@ export async function getAllRichContents(
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to rich content item or null if not found
  */
-export async function getRichContentById(
-  id: string,
-  preview = false
-): Promise<RichContent | null> {
+export async function getRichContentById(id: string, preview = false): Promise<RichContent | null> {
   const response = await fetchGraphQL(
     `query GetRichContentById($id: String!, $preview: Boolean!) {
       contentTypeRichText(id: $id, preview: $preview) {
@@ -89,10 +90,7 @@ export async function getRichContentById(
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to array of rich content items
  */
-export async function getRichContentsByIds(
-  ids: string[],
-  preview = false
-): Promise<RichContent[]> {
+export async function getRichContentsByIds(ids: string[], preview = false): Promise<RichContent[]> {
   if (ids.length === 0) {
     return [];
   }
@@ -190,7 +188,7 @@ export async function getRichContentsPaginated(
 ): Promise<RichContentResponse & { page: number; totalPages: number }> {
   const skip = (page - 1) * limit;
   const response = await getAllRichContents(preview, limit, skip);
-  
+
   return {
     ...response,
     page,

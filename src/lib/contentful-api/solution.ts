@@ -116,7 +116,11 @@ export async function getSolutionById(id: string, preview = false): Promise<Solu
           if (!typedItem?.__typename || !typedItem.sys?.id) {
             return item;
           }
-          const fullComponent = await fetchComponentById(typedItem.sys.id, typedItem.__typename, preview);
+          const fullComponent = await fetchComponentById(
+            typedItem.sys.id,
+            typedItem.__typename,
+            preview
+          );
           return fullComponent ?? item;
         })
       );
@@ -176,7 +180,11 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
           if (!typedItem?.__typename || !typedItem.sys?.id) {
             return item;
           }
-          const fullComponent = await fetchComponentById(typedItem.sys.id, typedItem.__typename, preview);
+          const fullComponent = await fetchComponentById(
+            typedItem.sys.id,
+            typedItem.__typename,
+            preview
+          );
           return fullComponent ?? item;
         })
       );

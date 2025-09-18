@@ -72,7 +72,7 @@ const componentMap = {
 
 // Type-safe component map with explicit typing
 type ComponentMapType = {
-  [K in keyof typeof componentMap]: typeof componentMap[K];
+  [K in keyof typeof componentMap]: (typeof componentMap)[K];
 };
 
 // Define props for the nested component
@@ -436,11 +436,16 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
     return null;
   }
 
-  console.log(`Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`);
+  console.log(
+    `Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`
+  );
   console.log('Component data:', component);
   console.log('Available component types:', Object.keys(componentMap));
   console.log('Looking for component type:', typedComponent.__typename);
-  console.log('ComponentMap lookup result:', componentMap[typedComponent.__typename as keyof typeof componentMap]);
+  console.log(
+    'ComponentMap lookup result:',
+    componentMap[typedComponent.__typename as keyof typeof componentMap]
+  );
 
   const ComponentType = componentMap[typedComponent.__typename as keyof ComponentMapType];
   if (ComponentType) {
@@ -449,7 +454,10 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 
-  console.warn(`No component found for type: ${typedComponent.__typename}. Available types:`, Object.keys(componentMap));
+  console.warn(
+    `No component found for type: ${typedComponent.__typename}. Available types:`,
+    Object.keys(componentMap)
+  );
   return null;
 };
 
