@@ -13,8 +13,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Slider } from '@/components/Slider';
 import { Testimonials } from '@/components/global/Testimonials';
 import { LazyTestimonials } from '@/components/LazyTestimonials';
-import { LazyCollection } from '@/components/LazyCollection';
-import Collection from '@/components/Collection';
+import Collection from '@/components/Collection/Collection';
 import { Location } from '@/components/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 
@@ -60,12 +59,15 @@ export const contentRenderers = {
   ),
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), create a LazyCollection component
-    if (item.sys?.id && !item.title && !item.itemsPerPage) {
-      return <LazyCollection key={`lazy-${item.sys.id}`} collectionId={item.sys.id} />;
-    }
-    // If we have full data, render normally
-    return <Collection key={`full-${item.sys?.id ?? context.index}`} {...item} />;
+    // Collection component handles both full data and lazy loading cases
+    return (
+      <Collection
+        key={`collection-${item.sys?.id ?? context.index}`}
+        collectionData={item.title ? item : undefined}
+        sys={item.sys}
+        __typename={item.__typename}
+      />
+    );
   },
 
   renderContentGridItem: (item: ContentGridItemType, context: RenderContext) => (

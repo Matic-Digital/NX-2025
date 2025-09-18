@@ -1,8 +1,8 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 
-import type { Collection, CollectionResponse } from '@/types/contentful/Collection';
-import { SYS_FIELDS } from './graphql-fields';
-import { ContentfulError, NetworkError } from '../errors';
+import type { Collection, CollectionResponse } from '@/components/Collection/CollectionSchema';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
 
 // Collection GraphQL fields
 export const COLLECTION_GRAPHQL_FIELDS = `

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Content type options as defined in the content model
+// Content type options as defined in the content mod@/components/Collection/Collection
 const ContentTypeSchema = z.enum(['Post', 'Page']);
 
 // Pagination options as defined in the content model

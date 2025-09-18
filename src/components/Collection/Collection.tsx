@@ -7,8 +7,8 @@ import {
 } from '@contentful/live-preview/react';
 import { getAllPostsMinimal } from '@/components/Post/PostApi';
 import { getAllPagesMinimal } from '@/lib/contentful-api/page';
-import { getCollectionById } from '@/lib/contentful-api/collection';
-import type { Collection } from '@/types/contentful/Collection';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
+import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
 import type { Page } from '@/types/contentful/Page';
 import { PostCard } from '@/components/Post/PostCard';
@@ -25,6 +25,7 @@ interface CollectionProps {
 export default function Collection({ collectionData, sys, __typename }: CollectionProps) {
   const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
   const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
+  const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
@@ -69,10 +70,12 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
       const fetchCollection = async () => {
         try {
           setIsLoading(true);
+          setError(null);
           const fetchedCollection = await getCollectionById(sys.id);
           setCollection(fetchedCollection);
-        } catch (error) {
-          console.error('Error fetching collection:', error);
+        } catch (err) {
+          console.error('Failed to fetch collection:', err);
+          setError('Failed to load collection');
         } finally {
           setIsLoading(false);
         }
@@ -130,11 +133,19 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
   const finalCollection = updatedCollection ?? collection;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-muted-foreground">Loading collection...</div>
+      </div>
+    );
   }
 
-  if (!finalCollection) {
-    return null;
+  if (error || !finalCollection) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">{error ?? 'Collection not found'}</div>
+      </div>
+    );
   }
 
   // If Collection content type includes "Post", render PostCards
