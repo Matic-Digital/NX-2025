@@ -4,7 +4,7 @@ import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { ContentfulError, NetworkError } from '../errors';
-import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
+import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';

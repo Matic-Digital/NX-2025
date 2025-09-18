@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import { CtaBannerSchema } from './CtaBanner';
 import { ContentGridSchema } from './ContentGrid';
-import { BannerHeroSchema } from './BannerHero';
+import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
 import { ImageBetweenSchema } from './ImageBetween';
 import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';

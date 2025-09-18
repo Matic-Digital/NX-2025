@@ -8,7 +8,7 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import type { BannerHero } from '@/types/contentful/BannerHero';
+import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';
 import { cn } from '@/lib/utils';
 
 interface BannerHeroProps extends BannerHero {

@@ -4,7 +4,7 @@ import { AssetSchema } from './Asset';
 import { ImageSchema } from './Image';
 import { CtaBannerSchema } from './CtaBanner';
 import { ContentGridSchema } from './ContentGrid';
-import { BannerHeroSchema } from './BannerHero';
+import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
 import { ImageBetweenSchema } from './ImageBetween';
 import { ContentSchema } from '../../components/Content/ContentSchema';
 

@@ -32,7 +32,7 @@ import { getSolutionBySlug } from '@/lib/contentful-api/solution';
 import { getPostBySlug } from '@/components/Post/PostApi';
 import { getPageBySlug } from '@/lib/contentful-api/page';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content/Content';

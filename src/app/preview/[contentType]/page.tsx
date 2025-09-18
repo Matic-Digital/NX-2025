@@ -18,7 +18,7 @@ import {
 } from '@contentful/live-preview/react';
 
 // Import all components
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ContentGridItem } from '@/components/ContentGridItem';
 import { Content } from '@/components/Content/Content';
@@ -35,7 +35,7 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
 import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
-import { getBannerHero } from '@/lib/contentful-api/banner-hero';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { getFooterById } from '@/lib/contentful-api/footer';

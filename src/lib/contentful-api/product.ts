@@ -7,7 +7,7 @@ import { getHeaderById } from './header';
 import { getFooterById } from './footer';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
+import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';

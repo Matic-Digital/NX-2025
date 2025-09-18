@@ -1,6 +1,6 @@
 export * from '../../components/Accordion/AccordionSchema';
 export * from './Asset';
-export * from './BannerHero';
+export * from '../../components/BannerHero/BannerHeroSchema';
 export * from '../../components/Collection/CollectionSchema';
 export * from '../../components/ContactCard/ContactCardSchema';
 export * from '../../components/Content/ContentSchema';

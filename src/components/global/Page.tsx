@@ -30,7 +30,7 @@ import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Image as ImageType } from '@/types/contentful/Image';
 
 // Import content components for dynamic rendering
-import { BannerHero } from '../BannerHero';
+import { BannerHero } from '../BannerHero/BannerHero';
 import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid';
 import { CtaBanner } from '../CtaBanner';

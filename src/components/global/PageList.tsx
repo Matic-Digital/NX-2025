@@ -27,7 +27,7 @@ import {
 } from '@contentful/live-preview/react';
 
 // Import content components for dynamic rendering
-import { BannerHero } from '../BannerHero';
+import { BannerHero } from '../BannerHero/BannerHero';
 import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid';
 import { CtaBanner } from '../CtaBanner';

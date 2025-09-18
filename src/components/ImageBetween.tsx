@@ -9,14 +9,14 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGrid } from '@/components/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Slider } from '@/components/Slider/Slider';
 import type { ImageBetween } from '@/types/contentful/ImageBetween';
 import type { Image } from '@/types/contentful/Image';
 import type { ContentGrid as ContentGridType } from '@/types/contentful/ContentGrid';
-import type { BannerHero as BannerHeroType } from '@/types/contentful/BannerHero';
+import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
 import { getContentGridById } from '@/lib/contentful-api/content-grid';
-import { getBannerHero } from '@/lib/contentful-api/banner-hero';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { cn } from '@/lib/utils';
 
 export function ImageBetween(props: ImageBetween) {

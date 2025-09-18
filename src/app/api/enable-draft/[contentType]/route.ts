@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
 import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
-import { getBannerHero } from '@/lib/contentful-api/banner-hero';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';

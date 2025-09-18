@@ -1,9 +1,9 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
-import { ContentfulError, NetworkError } from '../errors';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { SECTION_HEADING_GRAPHQL_FIELDS } from '../../components/SectionHeading/SectionHeadingApi';
-import { SYS_FIELDS } from './graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from '../SectionHeading/SectionHeadingApi';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 
 // BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `

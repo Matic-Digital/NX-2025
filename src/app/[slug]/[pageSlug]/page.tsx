@@ -28,7 +28,7 @@ import type { Service } from '@/types/contentful/Service';
 import type { Solution } from '@/types/contentful/Solution';
 import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';

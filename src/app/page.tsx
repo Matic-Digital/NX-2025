@@ -5,7 +5,7 @@ import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
 import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';

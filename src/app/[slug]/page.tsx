@@ -21,7 +21,7 @@
 import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/contentful-api';
-import { BannerHero } from '@/components/BannerHero';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
