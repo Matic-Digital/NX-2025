@@ -12,4 +12,4 @@ export const AccordionSchema = z.object({
   __typename: z.string().optional()
 });
 
-export type AccordionSchema = z.infer<typeof AccordionSchema>;
+export type Accordion = z.infer<typeof AccordionSchema>;

@@ -8,7 +8,7 @@ import {
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/media/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
-import type { PostSchema } from '@/components/Post/PostSchema';
+import type { Post } from '@/components/Post/PostSchema';
 import Link from 'next/link';
 import { categoryColorMap } from '@/components/Post/PostCategories';
 import { cn } from '@/lib/utils';
@@ -35,7 +35,7 @@ interface PostCardProps {
 
 // TODO: need to use variant here to display row on
 export function PostCard({ sys, variant }: PostCardProps) {
-  const [postData, setPostData] = useState<PostSchema | null>(null);
+  const [postData, setPostData] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const isRowVariant = variant === 'row';
   const isFeaturedVariant = variant === 'featured';

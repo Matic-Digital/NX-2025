@@ -10,21 +10,21 @@ import {
 import { Phone, Mail, PhoneCall, Headset, Mic } from 'lucide-react';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '@/components/ui/button';
-import type { ContactCardSchema } from './ContactCardSchema';
+import type { ContactCard } from './ContactCardSchema';
 import type { Modal } from '@/types/contentful/Modal';
 import { ContactCardSkeleton } from './ContactCardSkeleton';
 import { getContactCardById } from './ContactCardApi';
-import { ModalCtaButton } from '@/components/global/ModalCtaButton';
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
 import { RequestSupportModal } from '@/components/global/modals/RequestSupportModal';
 
-interface ContactCardProps extends Partial<ContactCardSchema> {
+interface ContactCardProps extends Partial<ContactCard> {
   contactCardId?: string;
 }
 
 export function ContactCard(props: ContactCardProps) {
   const { contactCardId, ...restProps } = props;
-  const [fetchedData, setFetchedData] = useState<ContactCardSchema | null>(null);
+  const [fetchedData, setFetchedData] = useState<ContactCard | null>(null);
   const [loading, setLoading] = useState(!!contactCardId);
   const [error, setError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,7 +58,7 @@ export function ContactCard(props: ContactCardProps) {
   }, [contactCardId]);
 
   // Use fetched data if available, otherwise use props data
-  const contactCard = useContentfulLiveUpdates(fetchedData ?? (restProps as ContactCardSchema));
+  const contactCard = useContentfulLiveUpdates(fetchedData ?? restProps);
   const inspectorProps = useContentfulInspectorMode({ entryId: contactCard?.sys?.id });
 
   if (loading) {
@@ -131,7 +131,10 @@ export function ContactCard(props: ContactCardProps) {
             >
               <Box direction="row" gap={2} className="items-center">
                 <Phone />
-                <Link href={`tel:${contactCard.phone}`} {...inspectorProps({ fieldId: 'phone' })}>
+                <Link
+                  href={`tel:${contactCard.phone ?? ''}`}
+                  {...inspectorProps({ fieldId: 'phone' })}
+                >
                   {contactCard.phone}
                 </Link>
               </Box>
@@ -146,7 +149,7 @@ export function ContactCard(props: ContactCardProps) {
               <Box direction="row" gap={2} className="items-center">
                 <Mail />
                 <Link
-                  href={`mailto:${contactCard.email}`}
+                  href={`mailto:${contactCard.email ?? ''}`}
                   {...inspectorProps({ fieldId: 'email' })}
                 >
                   {contactCard.email}

@@ -1,5 +1,6 @@
 export * from '../../components/Accordion/AccordionApi';
 export * from './banner-hero';
+export * from '../../components/Button/ButtonApi';
 export * from '../../components/ContactCard/ContactCardApi';
 export * from './content-grid';
 export * from './cta-banner';

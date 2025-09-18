@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ButtonSchema } from '@/types/contentful';
+import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
 export const ContactCardSchema = z.object({
   sys: z.object({
@@ -14,8 +14,8 @@ export const ContactCardSchema = z.object({
   cta: ButtonSchema.optional()
 });
 
-export type ContactCardSchema = z.infer<typeof ContactCardSchema>;
+export type ContactCard = z.infer<typeof ContactCardSchema>;
 
 export interface ContactCardResponse {
-  items: ContactCardSchema[];
+  items: ContactCard[];
 }

@@ -1,9 +1,10 @@
 import { fetchGraphQL } from '../api';
 
 import type { CtaGrid } from '@/types/contentful';
-import { SYS_FIELDS, INTERNAL_LINK_FIELDS } from './graphql-fields';
+import { SYS_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from './content-grid';
+import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 
 export const CTAGRID_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -21,13 +22,7 @@ export const CTAGRID_GRAPHQL_FIELDS = `
   ctaCollection(limit: 10) {
     items {
       ... on Button {
-        sys { id }
-        text
-        internalText
-        internalLink {
-          ${INTERNAL_LINK_FIELDS}
-        }
-        externalLink
+        ${BUTTON_GRAPHQL_FIELDS}
       }
     }
   }

@@ -19,16 +19,16 @@ import { Location } from '@/components/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 
 import type {
-  AccordionSchema,
+  Accordion as AccordionType,
   AirImage as AirImageType,
-  ContactCardSchema,
+  ContactCard as ContactCardType,
   Collection as CollectionType,
   ContentGridItem as ContentGridItemType,
   CtaGrid as CtaGridType,
   OfficeLocation as LocationType,
   PageList as PageListType,
   PageListPages as PageListPagesType,
-  PostSchema,
+  Post as PostType,
   Product as ProductType,
   Slider as SliderType,
   Solution as SolutionType,
@@ -47,11 +47,11 @@ interface RenderContext {
 }
 
 export const contentRenderers = {
-  renderAccordion: (item: AccordionSchema, context: RenderContext) => (
+  renderAccordion: (item: AccordionType, context: RenderContext) => (
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderContactCard: (item: ContactCardSchema, context: RenderContext) => (
+  renderContactCard: (item: ContactCardType, context: RenderContext) => (
     <ContactCard
       key={item.sys?.id ?? context.index}
       {...item}
@@ -89,7 +89,7 @@ export const contentRenderers = {
     <Location key={item.sys?.id ?? context.index} {...item} {...context} />
   ),
 
-  renderPost: (item: PostSchema, context: RenderContext) => {
+  renderPost: (item: PostType, context: RenderContext) => {
     // spread in context to use the variant prop in PostCard
     return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
   },

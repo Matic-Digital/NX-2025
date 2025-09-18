@@ -1,7 +1,6 @@
 export * from '../../components/Accordion/AccordionSchema';
 export * from './Asset';
 export * from './BannerHero';
-export * from './Button';
 export * from './Collection';
 export * from '../../components/ContactCard/ContactCardSchema';
 export * from './Content';

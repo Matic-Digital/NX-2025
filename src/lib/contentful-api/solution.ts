@@ -4,7 +4,7 @@ import { fetchGraphQL } from '../api';
 import { SYS_FIELDS } from './graphql-fields';
 import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
-import { BUTTON_GRAPHQL_FIELDS } from './button';
+import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 
 import type { Solution } from '@/types/contentful';
@@ -26,7 +26,7 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   cta {
     ${BUTTON_GRAPHQL_FIELDS}
   }
-  variant
+  variant 
 `;
 
 // Extended Solution fields for individual Solution pages with content items (lazy loading)
