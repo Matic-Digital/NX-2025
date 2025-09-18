@@ -59,7 +59,7 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
             {state ? `, ${state}` : ''}
           </h3>
 
-          <Box gap={2} className="justify-between text-base text-gray-600">
+          <Box gap={2} className="flex-col justify-between text-base text-gray-600 md:flex-row">
             <p>{address}</p>
             {phone && <p className="font-medium text-orange-500">{phone}</p>}
           </Box>
