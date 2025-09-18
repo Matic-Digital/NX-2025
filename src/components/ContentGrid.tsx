@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import type { ContentGrid as ContentGridType } from '@/types/contentful';
 
 interface ContentGridProps extends ContentGridType {
+  isDarkMode?: boolean;
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
   forceTabletSingleColumn?: boolean; // Force single column layout on tablet
@@ -178,7 +179,7 @@ export function ContentGrid(props: ContentGridProps) {
 
   return (
     <ErrorBoundary>
-      <div className={shouldUseDarkMode ? 'dark' : ''}>
+      <div className={shouldUseDarkMode ? 'dark bg-background' : ''}>
         <Section className="relative">
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage

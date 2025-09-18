@@ -34,7 +34,6 @@ export const ContentGridSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  isDarkMode: z.boolean().optional(),
   title: z.string(),
   heading: SectionHeadingSchema.optional(),
   backgroundImage: ImageSchema.optional(),
