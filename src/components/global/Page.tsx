@@ -31,7 +31,7 @@ import type { Image as ImageType } from '@/types/contentful/Image';
 
 // Import content components for dynamic rendering
 import { BannerHero } from '../BannerHero';
-import { Content } from '../Content';
+import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid';
 import { CtaBanner } from '../CtaBanner';
 import { CtaGrid } from '../CtaGrid';

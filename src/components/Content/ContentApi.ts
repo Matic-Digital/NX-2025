@@ -1,11 +1,11 @@
-import { fetchGraphQL } from '../api';
-import { SYS_FIELDS } from './graphql-fields';
-import { PRODUCT_GRAPHQL_FIELDS } from './product';
-import type { Content } from '@/types/contentful/Content';
-import { ContentfulError, NetworkError } from '../errors';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { VIDEO_GRAPHQL_FIELDS } from './video';
-import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from './content-grid';
+import { fetchGraphQL } from '../../lib/api';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { PRODUCT_GRAPHQL_FIELDS } from '../../lib/contentful-api/product';
+import type { Content } from '@/components/Content/ContentSchema';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { VIDEO_GRAPHQL_FIELDS } from '../../lib/contentful-api/video';
+import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../../lib/contentful-api/content-grid';
 
 // Define minimal content fields for references
 export const CONTENT_MINIMAL_FIELDS = `

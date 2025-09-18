@@ -6,6 +6,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from './banner-hero';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
+import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
 
 import type { Solution } from '@/types/contentful';
 
@@ -45,6 +46,16 @@ export const SOLUTION_GRAPHQL_FIELDS_FULL = `
           id
         }
       }
+      ... on CtaBanner {
+        sys {
+          id
+        }
+      }
+      ... on Content {
+        sys {
+          id
+        }
+      }
     }
   }
 `;
@@ -62,6 +73,10 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     case 'ContentGrid':
       fields = CONTENTGRID_GRAPHQL_FIELDS;
       query = `contentGrid(id: "${id}", preview: ${preview}) { ${fields} }`;
+      break;
+    case 'CtaBanner':
+      fields = CTABANNER_GRAPHQL_FIELDS;
+      query = `ctaBanner(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
     default:
       console.warn(`Unknown component type: ${typename}`);

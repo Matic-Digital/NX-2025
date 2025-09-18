@@ -222,13 +222,13 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
     };
   }
 
-  if (variant === 'FourColumns') {
+  if (variant === 'FourColumn') {
     return {
       analysis,
       cols: { base: 1, md: 2, lg: 4 }, // 4 columns for FourColumns grid
       gap: 12,
       direction: 'col' as const,
-      variant: 'FourColumns'
+      variant: 'FourColumn'
     };
   }
 

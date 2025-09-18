@@ -6,7 +6,7 @@ import { BannerHeroSchema } from './BannerHero';
 import { ImageBetweenSchema } from './ImageBetween';
 import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';
-import { ContentSchema } from './Content';
+import { ContentSchema } from '../../components/Content/ContentSchema';
 import { ProductSchema } from './Product';
 import { ServiceSchema } from './Service';
 import { SolutionSchema } from './Solution';
