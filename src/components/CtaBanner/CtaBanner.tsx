@@ -9,7 +9,7 @@ import {
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import type { CtaBanner } from '@/types/contentful/CtaBanner';
+import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';

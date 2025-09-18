@@ -6,7 +6,7 @@ export * from '../../components/ContactCard/ContactCardSchema';
 export * from '../../components/Content/ContentSchema';
 export * from './ContentGrid';
 export * from './ContentGridItem';
-export * from './CtaBanner';
+export * from '../../components/CtaBanner/CtaBannerSchema';
 export * from './CtaGrid';
 export * from './ExternalPage';
 export * from '../../components/Slider/SliderItemSchema';

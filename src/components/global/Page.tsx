@@ -33,7 +33,7 @@ import type { Image as ImageType } from '@/types/contentful/Image';
 import { BannerHero } from '../BannerHero/BannerHero';
 import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid';
-import { CtaBanner } from '../CtaBanner';
+import { CtaBanner } from '../CtaBanner/CtaBanner';
 import { CtaGrid } from '../CtaGrid';
 import { ImageBetween } from '../ImageBetween';
 import { Slider } from '../Slider/Slider';

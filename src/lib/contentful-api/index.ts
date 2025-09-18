@@ -3,7 +3,7 @@ export * from '../../components/BannerHero/BannerHeroApi';
 export * from '../../components/Button/ButtonApi';
 export * from '../../components/ContactCard/ContactCardApi';
 export * from './content-grid';
-export * from './cta-banner';
+export * from '../../components/CtaBanner/CtaBannerApi';
 export * from './footer';
 export * from './graphql-fields';
 export * from './header';

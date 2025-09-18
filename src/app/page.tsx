@@ -6,7 +6,7 @@ import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-ap
 import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';
 import { ImageBetween } from '@/components/ImageBetween';

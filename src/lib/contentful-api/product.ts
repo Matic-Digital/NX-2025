@@ -9,7 +9,7 @@ import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
-import { CTABANNER_GRAPHQL_FIELDS } from './cta-banner';
+import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)

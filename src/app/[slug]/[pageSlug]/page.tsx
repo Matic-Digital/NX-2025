@@ -29,7 +29,7 @@ import type { Solution } from '@/types/contentful/Solution';
 import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';

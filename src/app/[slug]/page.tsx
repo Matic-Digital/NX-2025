@@ -22,7 +22,7 @@ import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/contentful-api';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
