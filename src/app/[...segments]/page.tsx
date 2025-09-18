@@ -38,7 +38,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
-import { Slider } from '@/components/Slider';
+import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';

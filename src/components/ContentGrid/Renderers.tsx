@@ -10,7 +10,7 @@ import { ServiceCard } from '@/components/global/ServiceCard';
 import { SolutionCard } from '../SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid';
-import { Slider } from '@/components/Slider';
+import { Slider } from '@/components/Slider/Slider';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
 import Collection from '@/components/Collection/Collection';
 import { Location } from '@/components/OfficeLocation';

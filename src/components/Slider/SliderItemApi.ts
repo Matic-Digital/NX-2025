@@ -1,13 +1,13 @@
-import { fetchGraphQL } from '../api';
-import type { SliderItem } from '@/types/contentful/SliderItem';
-import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
+import { fetchGraphQL } from '../../lib/api';
+import type { SliderItem } from '@/components/Slider/SliderItemSchema';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from './timeline-slider-item';
-import { TEAM_MEMBER_GRAPHQL_FIELDS } from './team-member';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from '../../lib/contentful-api/timeline-slider-item';
+import { TEAM_MEMBER_GRAPHQL_FIELDS } from '../../lib/contentful-api/team-member';
 import { POST_SLIDER_GRAPHQL_FIELDS } from '@/components/Post/PostApi';
-import { SOLUTION_GRAPHQL_FIELDS } from './solution';
+import { SOLUTION_GRAPHQL_FIELDS } from '../../lib/contentful-api/solution';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 const SLIDERITEM_GRAPHQL_FIELDS = `

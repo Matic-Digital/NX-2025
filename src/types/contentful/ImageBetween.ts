@@ -2,7 +2,7 @@ import z from 'zod';
 import { AssetSchema } from './Asset';
 import { ContentGridSchema } from './ContentGrid';
 import { ImageSchema } from './Image';
-import { SliderSysSchema } from './Slider';
+import { SliderSysSchema } from '../../components/Slider/SliderSchema';
 import { VideoSchema } from './Video';
 
 const ContentAssetUnion = z.union([ImageSchema, SliderSysSchema, VideoSchema, ContentGridSchema]);

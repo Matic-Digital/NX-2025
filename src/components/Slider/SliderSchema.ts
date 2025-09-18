@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { ImageSchema } from './Image';
-import { SliderItemSchema } from './SliderItem';
-import { TimelineSliderItemSchema } from './TimelineSliderItem';
-import { TeamMemberSchema } from './TeamMember';
-import { PostSliderItemSchema } from '../../components/Post/PostSchema';
-import { SolutionSchema } from './Solution';
+import { ImageSchema } from '../../types/contentful/Image';
+import { SliderItemSchema } from './SliderItemSchema';
+import { TimelineSliderItemSchema } from '../../types/contentful/TimelineSliderItem';
+import { TeamMemberSchema } from '../../types/contentful/TeamMember';
+import { PostSliderItemSchema } from '../Post/PostSchema';
+import { SolutionSchema } from '../../types/contentful/Solution';
 
 // Union type for slider items
 const SliderItemUnion = z.union([

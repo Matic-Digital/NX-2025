@@ -7,7 +7,7 @@ import { ContentGridItemSchema } from './ContentGridItem';
 import { ContactCardSchema } from '../../components/ContactCard/ContactCardSchema';
 import { CtaGridSchema } from './CtaGrid';
 import { VideoSchema } from './Video';
-import { SliderSchema } from './Slider';
+import { SliderSchema } from '../../components/Slider/SliderSchema';
 import { SolutionSchema } from './Solution';
 import { ProductSchema } from './Product';
 import { AccordionSchema } from '../../components/Accordion/AccordionSchema';

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSlidersByIds } from '@/lib/contentful-api/slider';
+import { getSlidersByIds } from '@/components/Slider/SliderApi';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,7 +31,7 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
-import type { SliderItemType } from '@/types/contentful/Slider';
+import type { SliderItemType } from '@/components/Slider/SliderSchema';
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { resolveNestedUrls } from '@/lib/page-link-utils';
 import { TeamMemberModal } from '@/components/global/modals/TeamMemberModal';

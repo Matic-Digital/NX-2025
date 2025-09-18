@@ -10,7 +10,7 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGrid } from '@/components/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
 import { BannerHero } from '@/components/BannerHero';
-import { Slider } from '@/components/Slider';
+import { Slider } from '@/components/Slider/Slider';
 import type { ImageBetween } from '@/types/contentful/ImageBetween';
 import type { Image } from '@/types/contentful/Image';
 import type { ContentGrid as ContentGridType } from '@/types/contentful/ContentGrid';

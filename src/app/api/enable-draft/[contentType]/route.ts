@@ -16,8 +16,8 @@ import { getImageBetweenById } from '@/lib/contentful-api/image-between';
 import { getProductById } from '@/lib/contentful-api/product';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/lib/contentful-api/service';
-import { getSliderById } from '@/lib/contentful-api/slider';
-import { getSliderItemById } from '@/lib/contentful-api/slider-item';
+import { getSliderById } from '@/components/Slider/SliderApi';
+import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/lib/contentful-api/social';
 import { getSolutionById } from '@/lib/contentful-api/solution';
 

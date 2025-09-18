@@ -1,8 +1,8 @@
-import { fetchGraphQL } from '../api';
-import { SYS_FIELDS } from './graphql-fields';
+import { fetchGraphQL } from '../../lib/api';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import type { Slider } from '@/types/contentful';
-import { ContentfulError, NetworkError } from '../errors';
-import { SLIDERITEM_GRAPHQL_FIELDS_SIMPLE } from './slider-item';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { SLIDERITEM_GRAPHQL_FIELDS_SIMPLE } from './SliderItemApi';
 
 // Minimal slider fields for ContentGrid queries
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `

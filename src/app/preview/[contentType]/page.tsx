@@ -24,7 +24,7 @@ import { ContentGridItem } from '@/components/ContentGridItem';
 import { Content } from '@/components/Content/Content';
 import { CtaBanner } from '@/components/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween';
-import { Slider } from '@/components/Slider';
+import { Slider } from '@/components/Slider/Slider';
 import { PageList } from '@/components/global/PageList';
 import { Page } from '@/components/global/Page';
 import { Header } from '@/components/global/Header';
@@ -41,7 +41,7 @@ import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
 import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getImageBetweenById } from '@/lib/contentful-api/image-between';
-import { getSliderById } from '@/lib/contentful-api/slider';
+import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/lib/contentful-api/product';
 
 // Content type configuration

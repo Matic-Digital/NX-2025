@@ -36,7 +36,7 @@ import { ContentGrid } from '../ContentGrid';
 import { CtaBanner } from '../CtaBanner';
 import { CtaGrid } from '../CtaGrid';
 import { ImageBetween } from '../ImageBetween';
-import { Slider } from '../Slider';
+import { Slider } from '../Slider/Slider';
 import { RegionsMap } from '../RegionsMap';
 
 interface PageProps {
