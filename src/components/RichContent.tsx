@@ -1,23 +1,48 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, MARKS, INLINES } from '@contentful/rich-text-types';
 import type { Document, Block, Inline } from '@contentful/rich-text-types';
+import Image from 'next/image';
 import type { RichContent as RichContentType } from '@/types/contentful/RichContent';
 import { Container } from '@/components/global/matic-ds';
-import Image from 'next/image';
+
+// Type definitions for Contentful rich text nodes
+interface ContentfulNode {
+  nodeType: string;
+  content?: ContentfulNode[];
+  value?: string;
+  data?: {
+    paddingClass?: string;
+    isInListItem?: boolean;
+    nestingLevel?: number;
+    isInOrderedList?: boolean;
+    target?: {
+      fields?: {
+        title?: string;
+        description?: string;
+        file?: {
+          url?: string;
+          contentType?: string;
+        };
+      };
+    };
+    uri?: string;
+  };
+}
+
+// Helper functions to safely check node types
+const isHeading2 = (node: ContentfulNode): boolean => node.nodeType === 'heading-2';
+const isHeading3 = (node: ContentfulNode): boolean => node.nodeType === 'heading-3';
+const isHeading4 = (node: ContentfulNode): boolean => node.nodeType === 'heading-4';
+const isHeading5 = (node: ContentfulNode): boolean => node.nodeType === 'heading-5';
+const isHeading6 = (node: ContentfulNode): boolean => node.nodeType === 'heading-6';
+const isUlList = (node: ContentfulNode): boolean => node.nodeType === 'unordered-list';
+const isOlList = (node: ContentfulNode): boolean => node.nodeType === 'ordered-list';
+const isListItem = (node: ContentfulNode): boolean => node.nodeType === 'list-item';
+
 
 interface RichContentProps extends RichContentType {
   className?: string;
@@ -31,13 +56,13 @@ interface TocItem {
 }
 
 // Function to extract text content from rich text nodes
-const extractTextFromNode = (node: any): string => {
+const extractTextFromNode = (node: ContentfulNode | string): string => {
   if (typeof node === 'string') {
     return node;
   }
 
   if (node?.content) {
-    return (node.content as any[]).map(extractTextFromNode).join('');
+    return node.content.map(extractTextFromNode).join('');
   }
 
   if (node?.value) {
@@ -62,7 +87,7 @@ const generateId = (text: string): string => {
 let currentlyInAppendix = false;
 
 // Function to check if a node is within an appendix section
-const checkIfInAppendix = (node: any): boolean => {
+const checkIfInAppendix = (_node: ContentfulNode): boolean => {
   return currentlyInAppendix;
 };
 
@@ -81,17 +106,17 @@ const extractTocItems = (document: Document): TocItem[] => {
   const tocItems: TocItem[] = [];
   let inAppendixSection = false;
 
-  const traverseNodes = (nodes: any[]) => {
+  const traverseNodes = (nodes: ContentfulNode[]) => {
     nodes.forEach((node) => {
       if (
-        node.nodeType === BLOCKS.HEADING_2 ||
-        node.nodeType === BLOCKS.HEADING_3 ||
-        node.nodeType === BLOCKS.HEADING_4
+        isHeading2(node) ||
+        isHeading3(node) ||
+        isHeading4(node)
       ) {
         const text = extractTextFromNode(node);
 
         // Update appendix context during TOC extraction
-        if (node.nodeType === BLOCKS.HEADING_2) {
+        if (isHeading2(node)) {
           if (/appendix/i.test(text)) {
             inAppendixSection = true;
           } else if (/^\d+(\.\d+)?/.test(text.trim()) || /^[IVXLCDM]+\./i.test(text.trim())) {
@@ -106,9 +131,9 @@ const extractTocItems = (document: Document): TocItem[] => {
         const hasNumber = /\d+(\.\d+)?/.test(text);
         const isAppendix = /appendix/i.test(text);
         const hasH2RomanNumeral =
-          node.nodeType === BLOCKS.HEADING_2 && /^[IVXLCDM]+\./i.test(text.trim());
+          isHeading2(node) && /^[IVXLCDM]+\./i.test(text.trim());
         const hasH3RomanNumeral =
-          node.nodeType === BLOCKS.HEADING_3 && /[A-Z]\.[ivxlcdm]+/i.test(text);
+          isHeading3(node) && /[A-Z]\.[ivxlcdm]+/i.test(text);
         const isRomanInAppendix = inAppendixSection && /^[IVXLCDM]+\./i.test(text.trim());
 
         if (
@@ -120,7 +145,7 @@ const extractTocItems = (document: Document): TocItem[] => {
         ) {
           const id = generateId(text);
           const level =
-            node.nodeType === BLOCKS.HEADING_2 ? 2 : node.nodeType === BLOCKS.HEADING_3 ? 3 : 4;
+            isHeading2(node) ? 2 : isHeading3(node) ? 3 : 4;
           tocItems.push({
             id,
             text,
@@ -130,7 +155,7 @@ const extractTocItems = (document: Document): TocItem[] => {
       }
 
       if (node.content) {
-        traverseNodes(node.content as any[]);
+        traverseNodes(node.content);
       }
     });
   };
@@ -158,8 +183,9 @@ const renderOptions = {
   },
   renderNode: {
     [BLOCKS.PARAGRAPH]: (node: Block | Inline, children: React.ReactNode) => {
-      const paddingClass = (node as any).data?.paddingClass || '';
-      const isInListItem = (node as any).data?.isInListItem || false;
+      const contentfulNode = node as ContentfulNode;
+      const paddingClass = contentfulNode.data?.paddingClass ?? '';
+      const isInListItem = contentfulNode.data?.isInListItem ?? false;
 
       if (isInListItem) {
         return (
@@ -231,14 +257,16 @@ const renderOptions = {
       );
     },
     [BLOCKS.UL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
-      const paddingClass = (node as any).data?.paddingClass || '';
+      const contentfulNode = node as ContentfulNode;
+      const paddingClass = contentfulNode.data?.paddingClass ?? '';
       return <ul className={`ml-6 list-disc ${paddingClass}`}>{children}</ul>;
     },
     [BLOCKS.OL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
       // Check if this ordered list is within an appendix section by looking for parent h2 with "appendix"
-      const isInAppendix = checkIfInAppendix(node);
-      const paddingClass = (node as any).data?.paddingClass || '';
-      const nestingLevel = (node as any).data?.nestingLevel || 1;
+      const contentfulNode = node as ContentfulNode;
+      const isInAppendix = checkIfInAppendix(contentfulNode);
+      const paddingClass = contentfulNode.data?.paddingClass ?? '';
+      const nestingLevel = contentfulNode.data?.nestingLevel ?? 1;
 
       let listStyleType = 'decimal';
       if (isInAppendix) {
@@ -262,7 +290,8 @@ const renderOptions = {
     },
     [BLOCKS.LIST_ITEM]: (node: Block | Inline, children: React.ReactNode) => {
       // Check if this list item is in an ordered list by checking parent context
-      const isInOrderedList = (node as any).data?.isInOrderedList || false;
+      const contentfulNode = node as ContentfulNode;
+      const isInOrderedList = contentfulNode.data?.isInOrderedList ?? false;
       return <li className={isInOrderedList ? 'mb-3' : ''}>{children}</li>;
     },
     [BLOCKS.QUOTE]: (_node: Block | Inline, children: React.ReactNode) => (
@@ -270,18 +299,19 @@ const renderOptions = {
     ),
     [BLOCKS.HR]: () => <hr className="" />,
     [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nodeData = node as any;
-      const { title, description, file } = nodeData.data?.target?.fields || {};
-      const { url, contentType } = file || {};
+      const contentfulNode = node as ContentfulNode;
+      const { title, description, file } = contentfulNode.data?.target?.fields ?? {};
+      const { url, contentType } = file ?? {};
 
       if (contentType?.startsWith('image/')) {
         return (
           <div className="my-6">
-            <img
-              src={url}
+            <Image
+              src={url ?? ''}
               alt={description ?? title ?? ''}
               title={title ?? ''}
+              width={800}
+              height={600}
               className="h-auto max-w-full rounded-lg shadow-sm"
             />
             {description && (
@@ -325,9 +355,8 @@ const renderOptions = {
       );
     },
     [BLOCKS.EMBEDDED_ENTRY]: (node: Block | Inline) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nodeData = node as any;
-      const entryFields = nodeData.data?.target?.fields || {};
+      const contentfulNode = node as ContentfulNode;
+      const entryFields = contentfulNode.data?.target?.fields ?? {};
 
       // Basic rendering for embedded entries
       return (
@@ -340,9 +369,8 @@ const renderOptions = {
       );
     },
     [INLINES.EMBEDDED_ENTRY]: (node: Block | Inline) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nodeData = node as any;
-      const entryFields = nodeData.data?.target?.fields || {};
+      const contentfulNode = node as ContentfulNode;
+      const entryFields = contentfulNode.data?.target?.fields ?? {};
 
       const title = entryFields.title ?? 'Embedded Content';
 
@@ -353,9 +381,8 @@ const renderOptions = {
       );
     },
     [INLINES.HYPERLINK]: (node: Block | Inline, children: React.ReactNode) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nodeData = node as any;
-      const uri = nodeData.data?.uri;
+      const contentfulNode = node as ContentfulNode;
+      const uri = contentfulNode.data?.uri;
       return (
         <a
           href={uri}
@@ -371,39 +398,39 @@ const renderOptions = {
 };
 
 // Function to add hierarchical padding based on heading structure
-const addHierarchicalPadding = (nodes: any[]): any[] => {
+const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
   let currentLevel = 1; // Start at H1 level (so H2 content gets padding)
 
   const processNode = (
-    node: any,
+    node: ContentfulNode,
     isInList = false,
     isOrderedList = false,
     olNestingLevel = 0
-  ): any => {
-    if (node.nodeType === BLOCKS.HEADING_2) {
+  ): ContentfulNode => {
+    if (isHeading2(node)) {
       currentLevel = 2;
       return node;
-    } else if (node.nodeType === BLOCKS.HEADING_3) {
+    } else if (isHeading3(node)) {
       currentLevel = 3;
       return node;
-    } else if (node.nodeType === BLOCKS.HEADING_4) {
+    } else if (isHeading4(node)) {
       currentLevel = 4;
       return node;
-    } else if (node.nodeType === BLOCKS.HEADING_5) {
+    } else if (isHeading5(node)) {
       currentLevel = 5;
       return node;
-    } else if (node.nodeType === BLOCKS.HEADING_6) {
+    } else if (isHeading6(node)) {
       currentLevel = 6;
       return node;
-    } else if (node.nodeType === BLOCKS.UL_LIST || node.nodeType === BLOCKS.OL_LIST) {
+    } else if (isUlList(node) || isOlList(node)) {
       // Process list items
-      const isOrderedListNode = node.nodeType === BLOCKS.OL_LIST;
+      const isOrderedListNode = isOlList(node);
       const currentNestingLevel = isOrderedListNode ? olNestingLevel + 1 : olNestingLevel;
 
       const processedContent =
-        (node.content as any[])?.map((childNode: any) =>
+        node.content?.map((childNode: ContentfulNode) =>
           processNode(childNode, true, isOrderedListNode, currentNestingLevel)
-        ) || [];
+        ) ?? [];
 
       return {
         ...node,
@@ -413,13 +440,13 @@ const addHierarchicalPadding = (nodes: any[]): any[] => {
           paddingClass: currentLevel >= 2 ? `pl-[${(currentLevel - 1) * 2}rem]` : '',
           nestingLevel: isOrderedListNode ? currentNestingLevel : undefined
         }
-      } as any;
-    } else if (node.nodeType === BLOCKS.LIST_ITEM) {
+      };
+    } else if (isListItem(node)) {
       // Process content inside list items, including nested lists
       const processedContent =
-        (node.content as any[])?.map((childNode: any) => {
-          if (childNode.nodeType === BLOCKS.UL_LIST || childNode.nodeType === BLOCKS.OL_LIST) {
-            return processNode(childNode, false, false, olNestingLevel) as any;
+        node.content?.map((childNode: ContentfulNode) => {
+          if (isUlList(childNode) || isOlList(childNode)) {
+            return processNode(childNode, false, false, olNestingLevel);
           }
           return {
             ...childNode,
@@ -427,27 +454,27 @@ const addHierarchicalPadding = (nodes: any[]): any[] => {
               ...childNode.data,
               isInListItem: true
             }
-          } as any;
-        }) || [];
+          };
+        }) ?? [];
 
       // Process nested list items to mark them as ordered if they're in an ordered list
-      const finalProcessedContent = processedContent.map((childNode: any) => {
-        if (childNode.nodeType === BLOCKS.OL_LIST) {
+      const finalProcessedContent = processedContent.map((childNode: ContentfulNode) => {
+        if (isOlList(childNode)) {
           return {
             ...childNode,
-            content: (childNode.content as any[])?.map(
-              (listItem: any) =>
+            content: childNode.content?.map(
+              (listItem: ContentfulNode) =>
                 ({
                   ...listItem,
                   data: {
                     ...listItem.data,
                     isInOrderedList: true
                   }
-                }) as any
+                })
             )
-          } as any;
+          };
         }
-        return childNode as any;
+        return childNode;
       });
       return {
         ...node,
@@ -456,7 +483,7 @@ const addHierarchicalPadding = (nodes: any[]): any[] => {
           ...node.data,
           isInOrderedList: isInList && isOrderedList
         }
-      } as any;
+      };
     } else if (currentLevel >= 2 && !isInList) {
       // Calculate padding based on heading level
       const paddingRem = (currentLevel - 1) * 2; // 2rem per level (H2 content = 2rem, H3 content = 4rem, etc.)
@@ -473,7 +500,7 @@ const addHierarchicalPadding = (nodes: any[]): any[] => {
     return node;
   };
 
-  return nodes.map((node: any) => processNode(node)) as any[];
+  return nodes.map((node: ContentfulNode) => processNode(node));
 };
 
 const RichContent: React.FC<RichContentProps> = ({
@@ -600,19 +627,33 @@ const RichContent: React.FC<RichContentProps> = ({
             <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-8">
               {documentToReactComponents(legalContent.json as Document, {
                 renderNode: {
-                  table: (node: Block | Inline, children: React.ReactNode) => (
-                    <div className="flex flex-1 flex-col lg:mb-0">
-                      <table className="h-full w-full flex-1">
-                        <colgroup>
-                          <col
-                            style={{ width: '12.5rem', minWidth: '12.5rem', maxWidth: '12.5rem' }}
-                          />
-                          <col />
-                        </colgroup>
-                        {children}
-                      </table>
-                    </div>
-                  ),
+                  table: (node: Block | Inline, children: React.ReactNode) => {
+                    // Ensure proper table structure by wrapping content in tbody if no thead/tbody exists
+                    const hasTableStructure = React.Children.toArray(children).some((child) => {
+                      const reactChild = child as React.ReactElement;
+                      if (!reactChild?.type || !reactChild?.props) return false;
+                      
+                      const className = (reactChild.props as { className?: string }).className;
+                      return reactChild.type === 'thead' || 
+                             reactChild.type === 'tbody' ||
+                             (className?.includes('table-head') ?? false) ||
+                             (className?.includes('table-body') ?? false);
+                    });
+                    
+                    return (
+                      <div className="flex flex-1 flex-col lg:mb-0">
+                        <table className="h-full w-full flex-1">
+                          <colgroup>
+                            <col
+                              style={{ width: '12.5rem', minWidth: '12.5rem', maxWidth: '12.5rem' }}
+                            />
+                            <col />
+                          </colgroup>
+                          {hasTableStructure ? children : <tbody className="h-full">{children}</tbody>}
+                        </table>
+                      </div>
+                    );
+                  },
                   'table-header-cell': (_node: Block | Inline, children: React.ReactNode) => (
                     <th className="pr-4 text-left align-top font-semibold">{children}</th>
                   ),
