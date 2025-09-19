@@ -1,6 +1,6 @@
 import z from 'zod';
 import { AssetSchema } from './Asset';
-import { ContentGridSchema } from './ContentGrid';
+import { ContentGridSchema } from '../../components/ContentGrid/ContentGridSchema';
 import { ImageSchema } from './Image';
 import { SliderSysSchema } from '../../components/Slider/SliderSchema';
 import { VideoSchema } from './Video';

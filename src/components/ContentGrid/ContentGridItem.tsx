@@ -10,8 +10,11 @@ import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { SvgIcon } from '@/components/ui/svg-icon';
 import { cn } from '@/lib/utils';
-import type { ContentGridItem as ContentGridItemType } from '@/types/contentful/ContentGridItem';
-import { getContentGridItemById, getContentGridItemLink } from '@/lib/contentful-api/content-grid';
+import type { ContentGridItem as ContentGridItemType } from './ContentGridItemSchema';
+import {
+  getContentGridItemById,
+  getContentGridItemLink
+} from '@/components/ContentGrid/ContentGridApi';
 import { useState, useEffect } from 'react';
 
 interface ContentGridItemProps extends ContentGridItemType {
@@ -178,7 +181,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     );
   };
 
-  const BackgroundImageItem = () => ( 
+  const BackgroundImageItem = () => (
     <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[500px]">
       {/* Background image */}
       <AirImage

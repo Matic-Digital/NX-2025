@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-dynamic-require, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 import { z } from 'zod';
 import { CtaBannerSchema } from '../../components/CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from './ContentGrid';
+import { ContentGridSchema } from '../../components/ContentGrid/ContentGridSchema';
 import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
 import { ImageBetweenSchema } from './ImageBetween';
 import { PageSchema } from './Page';

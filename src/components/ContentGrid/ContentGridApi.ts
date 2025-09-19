@@ -1,10 +1,15 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 
-import type { ContentGrid, ContentGridItem, ContentGridResponse } from '@/types/contentful';
+import type { ContentGrid, ContentGridResponse } from './ContentGridSchema';
+import type { ContentGridItem } from './ContentGridItemSchema';
 
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { INTERNAL_LINK_FIELDS, SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
-import { ContentfulError, NetworkError } from '../errors';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import {
+  INTERNAL_LINK_FIELDS,
+  SYS_FIELDS,
+  ASSET_FIELDS
+} from '../../lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
 
 // ContentGridItem fields - minimal for initial load (no link field)
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `

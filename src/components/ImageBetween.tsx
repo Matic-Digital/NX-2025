@@ -7,15 +7,15 @@ import {
 } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { ContentGrid } from '@/components/ContentGrid';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Slider } from '@/components/Slider/Slider';
 import type { ImageBetween } from '@/types/contentful/ImageBetween';
 import type { Image } from '@/types/contentful/Image';
-import type { ContentGrid as ContentGridType } from '@/types/contentful/ContentGrid';
+import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
 import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
-import { getContentGridById } from '@/lib/contentful-api/content-grid';
+import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { cn } from '@/lib/utils';
 

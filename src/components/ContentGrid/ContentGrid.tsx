@@ -7,18 +7,18 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { AirImage } from '@/components/media/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
-import { ContentItemRenderer } from './ContentGrid/ContentItemRenderer';
+import { ContentItemRenderer } from './ContentItemRenderer';
 import useEmblaCarousel from 'embla-carousel-react';
 import {
   calculateGridConfig,
   collectionAnalyzers,
   contentTypeDetectors,
   type ContentGridItemUnion
-} from '../lib/component-grid/utils';
-import { getCollectionIdsFromContentGrid } from '@/lib/contentful-api/content-grid';
+} from '@/lib/component-grid/utils';
+import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
 import { cn } from '@/lib/utils';
 
-import type { ContentGrid as ContentGridType } from '@/types/contentful';
+import type { ContentGrid as ContentGridType } from './ContentGridSchema';
 
 interface ContentGridProps extends ContentGridType {
   isDarkMode?: boolean;

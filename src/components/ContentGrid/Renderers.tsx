@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Box } from '@/components/global/matic-ds';
-import { ContentGridItem } from '../ContentGridItem';
+import { ContentGridItem } from './ContentGridItem';
 import { Accordion } from '@/components/Accordion/Accordion';
 import { AirImage } from '@/components/media/AirImage';
 import { MuxVideoPlayer } from '@/components/media/MuxVideo';

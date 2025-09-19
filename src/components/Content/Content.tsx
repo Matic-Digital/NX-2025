@@ -25,7 +25,7 @@ import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
 } from '../SectionHeading/SectionHeadingSchema';
-import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
+import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { Image } from '@/types/contentful/Image';
 
 // Constants

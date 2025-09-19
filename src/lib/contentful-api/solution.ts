@@ -3,7 +3,7 @@
 import { fetchGraphQL } from '../api';
 import { SYS_FIELDS } from './graphql-fields';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';

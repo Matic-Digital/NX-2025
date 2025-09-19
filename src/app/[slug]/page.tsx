@@ -24,7 +24,7 @@ import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/content
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
-import { ContentGrid } from '@/components/ContentGrid';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import { RegionsMap } from '@/components/RegionsMap';
 import { PageList } from '@/components/global/PageList';

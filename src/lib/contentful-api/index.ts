@@ -2,7 +2,7 @@ export * from '../../components/Accordion/AccordionApi';
 export * from '../../components/BannerHero/BannerHeroApi';
 export * from '../../components/Button/ButtonApi';
 export * from '../../components/ContactCard/ContactCardApi';
-export * from './content-grid';
+export * from '../../components/ContentGrid/ContentGridApi';
 export * from '../../components/CtaBanner/CtaBannerApi';
 export * from './footer';
 export * from './graphql-fields';

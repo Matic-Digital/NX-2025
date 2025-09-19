@@ -5,7 +5,7 @@ import type { Content } from '@/components/Content/ContentSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
 import { VIDEO_GRAPHQL_FIELDS } from '../../lib/contentful-api/video';
-import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../../lib/contentful-api/content-grid';
+import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../ContentGrid/ContentGridApi';
 
 // Define minimal content fields for references
 export const CONTENT_MINIMAL_FIELDS = `

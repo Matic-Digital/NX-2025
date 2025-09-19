@@ -6,7 +6,7 @@ import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageL
 import { ContentfulError, NetworkError } from '../errors';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from './content-grid';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from './region';
 import { SYS_FIELDS } from './graphql-fields';

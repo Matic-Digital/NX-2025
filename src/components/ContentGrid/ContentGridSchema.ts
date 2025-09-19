@@ -1,17 +1,17 @@
 import { z } from 'zod';
-import { ImageSchema } from './Image';
-import { PostSchema } from '../../components/Post/PostSchema';
-import { SectionHeadingSchema } from '../../components/SectionHeading/SectionHeadingSchema';
-import { ServiceSchema } from './Service';
-import { ContentGridItemSchema } from './ContentGridItem';
-import { ContactCardSchema } from '../../components/ContactCard/ContactCardSchema';
-import { CtaGridSchema } from './CtaGrid';
-import { VideoSchema } from './Video';
-import { SliderSchema } from '../../components/Slider/SliderSchema';
-import { SolutionSchema } from './Solution';
-import { ProductSchema } from './Product';
-import { AccordionSchema } from '../../components/Accordion/AccordionSchema';
-import { OfficeLocationSchema } from './OfficeLocation';
+import { ImageSchema } from '@/types/contentful/Image';
+import { PostSchema } from '@/components/Post/PostSchema';
+import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
+import { ServiceSchema } from '@/types/contentful/Service';
+import { ContentGridItemSchema } from './ContentGridItemSchema';
+import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
+import { CtaGridSchema } from '@/types/contentful/CtaGrid';
+import { VideoSchema } from '@/types/contentful/Video';
+import { SliderSchema } from '@/components/Slider/SliderSchema';
+import { SolutionSchema } from '@/types/contentful/Solution';
+import { ProductSchema } from '@/types/contentful/Product';
+import { AccordionSchema } from '@/components/Accordion/AccordionSchema';
+import { OfficeLocationSchema } from '@/types/contentful/OfficeLocation';
 
 // Union type for items
 const ContentGridItemUnion = z.union([

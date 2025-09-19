@@ -7,7 +7,7 @@ import { getAllFooters } from '@/lib/contentful-api/footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { ContentGrid } from '@/components/ContentGrid';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';
 import { ImageBetween } from '@/components/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';

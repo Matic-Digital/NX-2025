@@ -2,7 +2,10 @@ import { draftMode, cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Import all the API functions
-import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
+import {
+  getContentGridById,
+  getContentGridItemById
+} from '@/components/ContentGrid/ContentGridApi';
 import { getPageById } from '@/lib/contentful-api/page';
 import { getPageListById } from '@/lib/contentful-api/page-list';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';

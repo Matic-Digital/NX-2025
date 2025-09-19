@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { AssetSchema } from './Asset';
 import { ImageSchema } from './Image';
 import { CtaBannerSchema } from '../../components/CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from './ContentGrid';
+import { ContentGridSchema } from '../../components/ContentGrid/ContentGridSchema';
 import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
 import { ImageBetweenSchema } from './ImageBetween';
 import { ContentSchema } from '../../components/Content/ContentSchema';

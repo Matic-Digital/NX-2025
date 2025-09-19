@@ -3,7 +3,7 @@ import { fetchGraphQL } from '../api';
 import type { CtaGrid } from '@/types/contentful';
 import { SYS_FIELDS } from './graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from './content-grid';
+import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 
 export const CTAGRID_GRAPHQL_FIELDS = `

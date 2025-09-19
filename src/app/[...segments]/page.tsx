@@ -36,7 +36,7 @@ import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content/Content';
-import { ContentGrid } from '@/components/ContentGrid';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/RegionsMap';

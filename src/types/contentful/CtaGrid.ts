@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ImageSchema } from './Image';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
-import { ContentGridItemSchema } from './ContentGridItem';
+import { ContentGridItemSchema } from '../../components/ContentGrid/ContentGridItemSchema';
 
 export const CtaGridVariantEnum = z.enum(['ContentLeft', 'ContentCenter', 'ContentRight']);
 export type CtaGridVariant = z.infer<typeof CtaGridVariantEnum>;

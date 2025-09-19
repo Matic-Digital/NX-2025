@@ -3,7 +3,7 @@ import { ProductSchema } from '../../types/contentful/Product';
 import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
 import { ImageSchema } from '../../types/contentful/Image';
 import { VideoSchema } from '../../types/contentful/Video';
-import { ContentGridItemSchema } from '../../types/contentful/ContentGridItem';
+import { ContentGridItemSchema } from '../ContentGrid/ContentGridItemSchema';
 import { ContentVariantEnum } from './ContentVariant';
 
 const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema, ContentGridItemSchema]);
