@@ -1,9 +1,9 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 
-import type { CtaGrid } from '@/types/contentful';
-import { SYS_FIELDS } from './graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
+import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 
 export const CTAGRID_GRAPHQL_FIELDS = `

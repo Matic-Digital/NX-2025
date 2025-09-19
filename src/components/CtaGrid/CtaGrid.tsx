@@ -6,9 +6,9 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
-import { getCtaGridById } from '@/lib/contentful-api/cta-grid';
-import type { CtaGrid } from '@/types/contentful/CtaGrid';
-import { ErrorBoundary } from './global/ErrorBoundary';
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { AirImage } from '@/components/media/AirImage';
 import { Button } from '@/components/ui/button';
 import { Box, Container } from '@/components/global/matic-ds';

@@ -34,7 +34,7 @@ import { getPageBySlug } from '@/lib/contentful-api/page';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { CtaGrid } from '@/components/CtaGrid';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';

@@ -5,7 +5,7 @@ import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeading
 import { ServiceSchema } from '@/types/contentful/Service';
 import { ContentGridItemSchema } from './ContentGridItemSchema';
 import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
-import { CtaGridSchema } from '@/types/contentful/CtaGrid';
+import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';
 import { VideoSchema } from '@/types/contentful/Video';
 import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/types/contentful/Solution';

@@ -31,7 +31,7 @@ import { BannerHero } from '../BannerHero/BannerHero';
 import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid/ContentGrid';
 import { CtaBanner } from '../CtaBanner/CtaBanner';
-import { CtaGrid } from '../CtaGrid';
+import { CtaGrid } from '../CtaGrid/CtaGrid';
 import { ImageBetween } from '../ImageBetween';
 import { Slider } from '../Slider/Slider';
 

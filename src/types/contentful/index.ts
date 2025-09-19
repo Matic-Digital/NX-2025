@@ -7,7 +7,7 @@ export * from '../../components/Content/ContentSchema';
 export * from '../../components/ContentGrid/ContentGridSchema';
 export * from '../../components/ContentGrid/ContentGridItemSchema';
 export * from '../../components/CtaBanner/CtaBannerSchema';
-export * from './CtaGrid';
+export * from '../../components/CtaGrid/CtaGridSchema';
 export * from './ExternalPage';
 export * from '../../components/Slider/SliderItemSchema';
 export * from './Footer';
