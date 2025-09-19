@@ -7,7 +7,7 @@ import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from '../../lib/contentful-api/timeline-slider-item';
 import { TEAM_MEMBER_GRAPHQL_FIELDS } from '../../lib/contentful-api/team-member';
 import { POST_SLIDER_GRAPHQL_FIELDS } from '@/components/Post/PostApi';
-import { SOLUTION_GRAPHQL_FIELDS } from '../../lib/contentful-api/solution';
+import { SOLUTION_GRAPHQL_FIELDS } from '../Solution/SolutionApi';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 const SLIDERITEM_GRAPHQL_FIELDS = `

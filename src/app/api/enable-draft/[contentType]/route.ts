@@ -22,7 +22,7 @@ import { getServiceById } from '@/lib/contentful-api/service';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/lib/contentful-api/social';
-import { getSolutionById } from '@/lib/contentful-api/solution';
+import { getSolutionById } from '@/components/Solution/SolutionApi';
 
 // Content type to API function mapping
 const contentTypeMap = {

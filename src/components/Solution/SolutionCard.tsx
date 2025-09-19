@@ -6,10 +6,10 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import { getSolutionsByIds } from '@/lib/contentful-api/solution';
+import { getSolutionsByIds } from '@/components/Solution/SolutionApi';
 import { Box } from '@/components/global/matic-ds';
-import type { Solution } from '@/types/contentful/Solution';
-import { Button } from './ui/button';
+import type { Solution } from '@/components/Solution/SolutionSchema';
+import { Button } from '@/components/ui/button';
 
 interface SolutionCardProps extends Partial<Solution> {
   solutionId?: string;

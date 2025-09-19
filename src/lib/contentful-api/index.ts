@@ -19,6 +19,6 @@ export * from '../../components/SectionHeading/SectionHeadingApi';
 export * from './service';
 export * from '../../components/Slider/SliderApi';
 export * from '../../components/Slider/SliderItemApi';
-export * from './solution';
+export * from '../../components/Solution/SolutionApi';
 export * from '../../components/Testimonials/TestimonialsApi';
 export * from '../../components/Video/VideoApi';

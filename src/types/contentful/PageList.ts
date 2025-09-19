@@ -9,7 +9,7 @@ import { ExternalPageSchema } from './ExternalPage';
 import { ContentSchema } from '../../components/Content/ContentSchema';
 import { ProductSchema } from './Product';
 import { ServiceSchema } from './Service';
-import { SolutionSchema } from './Solution';
+import { SolutionSchema } from '../../components/Solution/SolutionSchema';
 import { PostSchema } from '../../components/Post/PostSchema';
 
 // Define non-recursive unions first

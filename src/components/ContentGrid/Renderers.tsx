@@ -7,7 +7,7 @@ import { AirImage } from '@/components/Image/AirImage';
 import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
 import { ProductCard } from '@/components/global/ProductCard';
 import { ServiceCard } from '@/components/global/ServiceCard';
-import { SolutionCard } from '../SolutionCard';
+import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Slider } from '@/components/Slider/Slider';

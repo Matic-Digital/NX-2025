@@ -26,7 +26,7 @@ export * from '../../components/SectionHeading/SectionHeadingSchema';
 export * from './Service';
 export * from '../../components/Slider/SliderSchema';
 export * from './Social';
-export * from './Solution';
+export * from '../../components/Solution/SolutionSchema';
 export * from './TeamMember';
 export * from '../../components/Testimonials/TestimonialsSchema';
 export * from './TimelineSliderItem';

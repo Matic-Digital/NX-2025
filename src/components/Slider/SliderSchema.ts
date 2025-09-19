@@ -4,7 +4,7 @@ import { SliderItemSchema } from './SliderItemSchema';
 import { TimelineSliderItemSchema } from '../../types/contentful/TimelineSliderItem';
 import { TeamMemberSchema } from '../../types/contentful/TeamMember';
 import { PostSliderItemSchema } from '../Post/PostSchema';
-import { SolutionSchema } from '../../types/contentful/Solution';
+import { SolutionSchema } from '../Solution/SolutionSchema';
 
 // Union type for slider items
 const SliderItemUnion = z.union([
