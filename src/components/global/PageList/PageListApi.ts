@@ -1,17 +1,21 @@
-import { fetchGraphQL } from '../api';
-import type { PageList, PageListResponse, PageListWithRefs } from '@/types/contentful/PageList';
-import type { Header } from '@/types/contentful/Header';
-import type { Footer } from '@/types/contentful/Footer';
+import { fetchGraphQL } from '@/lib/api';
+import type {
+  PageList,
+  PageListResponse,
+  PageListWithRefs
+} from '@/components/global/PageList/PageListSchema';
+import type { Header } from '@/components/global/Header/HeaderSchema';
+import type { Footer } from '@/components/global/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import { ContentfulError, NetworkError } from '../errors';
-import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../components/ImageBetween/ImageBetweenApi';
-import { SYS_FIELDS } from './graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
+import { SYS_FIELDS } from '@/lib/contentful-api';
 
-import { getHeaderById } from './header';
-import { getFooterById } from './footer';
+import { getHeaderById } from '@/components/global/Header/HeaderApi';
+import { getFooterById } from '@/components/global/Footer/FooterApi';
 
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
@@ -26,7 +30,7 @@ import {
   getPOST_BASIC_FIELDS,
   getPAGELIST_BASIC_FIELDS,
   getPAGELIST_WITH_REFS_FIELDS
-} from './graphql-fields';
+} from '@/lib/contentful-api/graphql-fields';
 
 // Minimal PageList fields for initial fetch
 export const PAGELIST_MINIMAL_FIELDS = `

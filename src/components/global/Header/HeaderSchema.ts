@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { AssetSchema } from './Asset';
-import { PageSchema } from './Page';
-import { PageListSchema } from './PageList';
+import { AssetSchema } from '../../../types/contentful/Asset';
+import { PageSchema } from '../Page/PageSchema';
+import { PageListSchema } from '../PageList/PageListSchema';
 
 const NavLinksUnion = z.union([PageSchema, PageListSchema]);
 

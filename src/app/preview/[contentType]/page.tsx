@@ -25,10 +25,10 @@ import { Content } from '@/components/Content/Content';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
-import { PageList } from '@/components/global/PageList';
-import { Page } from '@/components/global/Page';
-import { Header } from '@/components/global/Header';
-import { Footer } from '@/components/global/Footer';
+import { PageList } from '@/components/global/PageList/PageList';
+import { Page } from '@/components/global/Page/Page';
+import { Header } from '@/components/global/Header/Header';
+import { Footer } from '@/components/global/Footer/Footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 
 // Import all API functions
@@ -36,13 +36,13 @@ import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/lib/contentful-api/page';
-import { getPageListById } from '@/lib/contentful-api/page-list';
+import { getPageById } from '@/components/global/Page/PageApi';
+import { getPageListById } from '@/components/global/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
-import { getFooterById } from '@/lib/contentful-api/footer';
-import { getHeaderById } from '@/lib/contentful-api/header';
+import { getFooterById } from '@/components/global/Footer/FooterApi';
+import { getHeaderById } from '@/components/global/Header/HeaderApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/components/Product/ProductApi';

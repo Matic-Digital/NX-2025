@@ -14,7 +14,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Header } from '@/components/global/Header';
+import { Header } from '@/components/global/Header/Header';
 import type { Header as HeaderType, Page, PageList } from '@/types/contentful';
 
 /**

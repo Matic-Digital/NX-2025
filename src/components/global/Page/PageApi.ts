@@ -1,20 +1,20 @@
-import { fetchGraphQL } from '../api';
-import type { Page, PageResponse, PageWithRefs } from '@/types/contentful/Page';
-import type { Header } from '@/types/contentful/Header';
-import type { Footer } from '@/types/contentful/Footer';
+import { fetchGraphQL } from '../../../lib/api';
+import type { Page, PageResponse, PageWithRefs } from '@/components/global/Page/PageSchema';
+import type { Header } from '@/components/global/Header/HeaderSchema';
+import type { Footer } from '@/components/global/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import { ContentfulError, NetworkError } from '../errors';
-import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../components/ImageBetween/ImageBetweenApi';
-import { REGIONS_MAP_GRAPHQL_FIELDS } from '../../components/Region/RegionApi';
-import { SYS_FIELDS } from './graphql-fields';
+import { ContentfulError, NetworkError } from '../../../lib/errors';
+import { BANNERHERO_GRAPHQL_FIELDS } from '../../BannerHero/BannerHeroApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '../../CtaBanner/CtaBannerApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '../../ContentGrid/ContentGridApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../ImageBetween/ImageBetweenApi';
+import { REGIONS_MAP_GRAPHQL_FIELDS } from '../../Region/RegionApi';
+import { SYS_FIELDS } from '../../../lib/contentful-api/graphql-fields';
 
-import { getHeaderById } from './header';
-import { getFooterById } from './footer';
+import { getHeaderById } from '../Header/HeaderApi';
+import { getFooterById } from '../Footer/FooterApi';
 
-import { getPAGE_WITH_REFS_FIELDS } from './graphql-fields';
+import { getPAGE_WITH_REFS_FIELDS } from '../../../lib/contentful-api/graphql-fields';
 
 // Define a new interface that extends Page with header and footer
 interface PageWithHeaderFooter extends Page {

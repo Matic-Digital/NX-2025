@@ -11,28 +11,25 @@ import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Slider } from '@/components/Slider/Slider';
-import { Testimonials } from '@/components/Testimonials/Testimonials';
 import Collection from '@/components/Collection/Collection';
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
 
-import type {
-  Accordion as AccordionType,
-  AirImage as AirImageType,
-  ContactCard as ContactCardType,
-  Collection as CollectionType,
-  ContentGridItem as ContentGridItemType,
-  CtaGrid as CtaGridType,
-  OfficeLocation as LocationType,
-  PageList as PageListType,
-  PageListPages as PageListPagesType,
-  Post as PostType,
-  Product as ProductType,
-  Slider as SliderType,
-  Solution as SolutionType,
-  Testimonials as TestimonialsType,
-  Video as VideoType
-} from '@/types/contentful';
+import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
+import type { Image as AirImageType } from '@/components/Image/ImageSchema';
+import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
+import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
+import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { OfficeLocation as LocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
+import type { PageList as PageListType, PageListPages as PageListPagesType } from '@/components/global/PageList/PageListSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
+import type { Product as ProductType } from '@/components/Product/ProductSchema';
+import type { Slider as SliderType } from '@/components/Slider/SliderSchema';
+import type { Solution as SolutionType } from '@/components/Solution/SolutionSchema';
+import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
+import type { Video as VideoType } from '@/components/Video/VideoSchema';
 
 import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
 

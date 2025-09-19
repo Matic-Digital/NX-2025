@@ -14,15 +14,15 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
-import { getPageBySlug } from '@/lib/contentful-api/page';
-import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-list';
+import { getPageBySlug } from '@/components/global/Page/PageApi';
+import { getPageListBySlug, getAllPageLists } from '@/components/global/PageList/PageListApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList, PageListContent } from '@/types/contentful/PageList';
+import type { Page } from '@/components/global/Page/PageSchema';
+import type { PageList, PageListContent } from '@/components/global/PageList/PageListSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
@@ -33,8 +33,8 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
 import type { Metadata } from 'next';
 import {
   extractOpenGraphImage,

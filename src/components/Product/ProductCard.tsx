@@ -6,7 +6,7 @@ import Image from 'next/image';
 import type { Product, ProductSys } from '@/components/Product/ProductSchema';
 import Link from 'next/link';
 import { getProductsByIds } from '@/components/Product/ProductApi';
-import { checkPageBelongsToPageList } from '@/lib/contentful-api/page-list';
+import { checkPageBelongsToPageList } from '@/components/global/PageList/PageListApi';
 import { useEffect, useState } from 'react';
 
 export const ProductCard = (props: ProductSys) => {

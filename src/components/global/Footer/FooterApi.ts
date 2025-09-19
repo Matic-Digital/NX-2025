@@ -5,10 +5,10 @@
 
 import { cache } from 'react';
 // Types
-import type { Footer, FooterResponse } from '@/types/contentful';
-import { fetchGraphQL } from '../api';
-import { ContentfulError, NetworkError, GraphQLError } from '../errors';
-import { getFOOTER_GRAPHQL_FIELDS } from './graphql-fields';
+import type { Footer, FooterResponse } from '@/components/global/Footer/FooterSchema';
+import { fetchGraphQL } from '../../../lib/api';
+import { ContentfulError, NetworkError, GraphQLError } from '../../../lib/errors';
+import { getFOOTER_GRAPHQL_FIELDS } from '../../../lib/contentful-api/graphql-fields';
 
 /**
  * Fetches all footers from Contentful

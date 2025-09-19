@@ -27,9 +27,9 @@ import { Menu, Search } from 'lucide-react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Container, Box } from '@/components/global/matic-ds';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList } from '@/types/contentful/PageList';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Page } from '@/components/global/Page/PageSchema';
+import type { PageList } from '@/components/global/PageList/PageListSchema';
 
 // Navigation menu components from shadcn
 import {

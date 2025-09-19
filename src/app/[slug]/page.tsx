@@ -27,14 +27,14 @@ import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { RegionsMap } from '@/components/Region/RegionsMap';
-import { PageList } from '@/components/global/PageList';
+import { PageList } from '@/components/global/PageList/PageList';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
-import type { PageListContent } from '@/types/contentful/PageList';
+import type { Page } from '@/components/global/Page/PageSchema';
+import type { PageList as PageListType } from '@/components/global/PageList/PageListSchema';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
+import type { PageListContent } from '@/components/global/PageList/PageListSchema';
 import {
   extractOpenGraphImage,
   extractSEOTitle,
@@ -357,13 +357,16 @@ function renderPage(page: Page) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type
@@ -398,13 +401,16 @@ function renderPageList(pageList: PageListType) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type

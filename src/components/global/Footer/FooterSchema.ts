@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { PageListSchema } from './PageList';
-import { SocialSchema } from '../../components/Social/SocialSchema';
+import { PageListSchema } from '@/components/global/PageList/PageListSchema';
+import { SocialSchema } from '@/components/Social/SocialSchema';
 
 export const FooterSchema = z.object({
   sys: z.object({

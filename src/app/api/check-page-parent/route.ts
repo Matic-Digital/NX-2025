@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAllPageLists } from '@/lib/contentful-api/page-list';
-import type { PageList } from '@/types/contentful/PageList';
+import { getAllPageLists } from '@/components/global/PageList/PageListApi';
+import type { PageList } from '@/components/global/PageList/PageListSchema';
 
 /**
  * Type guard to check if an item has a slug property

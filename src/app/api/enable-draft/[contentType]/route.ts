@@ -6,14 +6,14 @@ import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/lib/contentful-api/page';
-import { getPageListById } from '@/lib/contentful-api/page-list';
+import { getPageById } from '@/components/global/Page/PageApi';
+import { getPageListById } from '@/components/global/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
-import { getFooterById } from '@/lib/contentful-api/footer';
-import { getHeaderById } from '@/lib/contentful-api/header';
+import { getFooterById } from '@/components/global/Footer/FooterApi';
+import { getHeaderById } from '@/components/global/Header/HeaderApi';
 import { getImageById } from '@/components/Image/ImageApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getProductById } from '@/components/Product/ProductApi';

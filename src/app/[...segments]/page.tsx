@@ -25,12 +25,12 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPageListBySlug } from '@/lib/contentful-api/page-list';
+import { getPageListBySlug } from '@/components/global/PageList/PageListApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
-import { getPageBySlug } from '@/lib/contentful-api/page';
+import { getPageBySlug } from '@/components/global/Page/PageApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
@@ -40,15 +40,15 @@ import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/Region/RegionsMap';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList as PageListType } from '@/types/contentful/PageList';
+import type { Page } from '@/components/global/Page/PageSchema';
+import type { PageList as PageListType } from '@/components/global/PageList/PageListSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
 import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
 import {
   extractOpenGraphImage,
   extractSEOTitle,

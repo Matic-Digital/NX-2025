@@ -3,18 +3,18 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-import { getAllFooters } from '@/lib/contentful-api/footer';
+import { getAllFooters } from '@/components/global/Footer/FooterApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import type { FooterResponse } from '@/types/contentful/Footer';
+import type { FooterResponse } from '@/components/global/Footer/FooterSchema';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import type { PageResponse } from '@/types/contentful/Page';
-import type { PageListResponse } from '@/types/contentful/PageList';
-import type { Page } from '@/types/contentful/Page';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { PageResponse } from '@/components/global/Page/PageSchema';
+import type { PageListResponse } from '@/components/global/PageList/PageListSchema';
+import type { Page } from '@/components/global/Page/PageSchema';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 
 /**
@@ -140,14 +140,16 @@ async function renderContentfulHomePage(page: Page) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
-
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type

@@ -25,19 +25,19 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
 
 // Import content components for dynamic rendering
-import { BannerHero } from '../BannerHero/BannerHero';
-import { Content } from '../Content/Content';
-import { ContentGrid } from '../ContentGrid/ContentGrid';
-import { CtaBanner } from '../CtaBanner/CtaBanner';
-import { CtaGrid } from '../CtaGrid/CtaGrid';
-import { ImageBetween } from '../ImageBetween/ImageBetween';
-import { Slider } from '../Slider/Slider';
-import { RegionsMap } from '../Region/RegionsMap';
+import { BannerHero } from '../../BannerHero/BannerHero';
+import { Content } from '../../Content/Content';
+import { ContentGrid } from '../../ContentGrid/ContentGrid';
+import { CtaBanner } from '../../CtaBanner/CtaBanner';
+import { CtaGrid } from '../../CtaGrid/CtaGrid';
+import { ImageBetween } from '../../ImageBetween/ImageBetween';
+import { Slider } from '../../Slider/Slider';
+import { RegionsMap } from '../../Region/RegionsMap';
 
 interface PageProps {
   sys: {

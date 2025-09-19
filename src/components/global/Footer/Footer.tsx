@@ -14,7 +14,7 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { useThemeSync } from '@/hooks/useThemeSync';
 import { Logo } from '@/components/global/Logo';
 import { SvgIcon } from '@/components/ui/svg-icon';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
 
 /**
  * Footer component
