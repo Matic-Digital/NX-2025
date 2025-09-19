@@ -35,6 +35,7 @@ import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHea
 
 // Utils
 import { cn } from '@/lib/utils';
+import { ContentSkeleton } from './ContentSkeleton';
 
 // ===== TYPES & INTERFACES =====
 
@@ -133,12 +134,8 @@ export function Content(props: ContentProps) {
   };
 
   // ===== EARLY RETURNS =====
-  if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">Loading content...</div>
-      </div>
-    );
+  if (!loading) {
+    return <ContentSkeleton variant={fetchedData?.variant} />;
   }
 
   if (error) {
