@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ProductSchema } from '../../types/contentful/Product';
+import { ProductSchema } from '../Product/ProductSchema';
 import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
 import { ImageSchema } from '../Image/ImageSchema';
 import { VideoSchema } from '../Video/VideoSchema';

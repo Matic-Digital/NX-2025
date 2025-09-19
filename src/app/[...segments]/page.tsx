@@ -26,7 +26,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPageListBySlug } from '@/lib/contentful-api/page-list';
-import { getProductBySlug } from '@/lib/contentful-api/product';
+import { getProductBySlug } from '@/components/Product/ProductApi';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
@@ -42,7 +42,7 @@ import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { Product } from '@/types/contentful/Product';
+import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
 import type { Post } from '@/components/Post/PostSchema';

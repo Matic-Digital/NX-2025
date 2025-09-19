@@ -45,7 +45,7 @@ import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
-import { getProductById } from '@/lib/contentful-api/product';
+import { getProductById } from '@/components/Product/ProductApi';
 
 // Content type configuration
 interface ContentTypeConfig {

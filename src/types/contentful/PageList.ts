@@ -7,7 +7,7 @@ import { ImageBetweenSchema } from '../../components/ImageBetween/ImageBetweenSc
 import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';
 import { ContentSchema } from '../../components/Content/ContentSchema';
-import { ProductSchema } from './Product';
+import { ProductSchema } from '../../components/Product/ProductSchema';
 import { ServiceSchema } from '../../components/Service/ServiceSchema';
 import { SolutionSchema } from '../../components/Solution/SolutionSchema';
 import { PostSchema } from '../../components/Post/PostSchema';

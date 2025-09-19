@@ -9,7 +9,7 @@ import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';
 import { VideoSchema } from '@/components/Video/VideoSchema';
 import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
-import { ProductSchema } from '@/types/contentful/Product';
+import { ProductSchema } from '@/components/Product/ProductSchema';
 import { AccordionSchema } from '@/components/Accordion/AccordionSchema';
 import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
 

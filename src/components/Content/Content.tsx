@@ -20,7 +20,7 @@ import { getContentById } from '@/components/Content/ContentApi';
 // Types
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
-import type { Product } from '@/types/contentful/Product';
+import type { Product } from '@/components/Product/ProductSchema';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant

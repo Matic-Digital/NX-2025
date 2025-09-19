@@ -3,9 +3,9 @@
 import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import Image from 'next/image';
-import type { Product, ProductSys } from '@/types/contentful/Product';
+import type { Product, ProductSys } from '@/components/Product/ProductSchema';
 import Link from 'next/link';
-import { getProductsByIds } from '@/lib/contentful-api/product';
+import { getProductsByIds } from '@/components/Product/ProductApi';
 import { checkPageBelongsToPageList } from '@/lib/contentful-api/page-list';
 import { useEffect, useState } from 'react';
 

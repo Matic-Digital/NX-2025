@@ -20,7 +20,7 @@ export * from './Page';
 export * from '../../components/PageLayout/PageLayoutSchema';
 export * from './PageList';
 export * from '../../components/Post/PostSchema';
-export * from './Product';
+export * from '../../components/Product/ProductSchema';
 export * from './Region';
 export * from '../../components/SectionHeading/SectionHeadingSchema';
 export * from '../../components/Service/ServiceSchema';

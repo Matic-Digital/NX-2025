@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '../../lib/api';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { PRODUCT_GRAPHQL_FIELDS } from '../../lib/contentful-api/product';
+import { PRODUCT_GRAPHQL_FIELDS } from '../Product/ProductApi';
 import type { Content } from '@/components/Content/ContentSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';

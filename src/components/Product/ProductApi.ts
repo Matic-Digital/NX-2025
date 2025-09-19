@@ -1,16 +1,16 @@
-import { fetchGraphQL } from '../api';
-import type { Product } from '@/types/contentful/Product';
+import { fetchGraphQL } from '../../lib/api';
+import type { Product } from '@/components/Product/ProductSchema';
 import type { Header } from '@/types/contentful/Header';
 import type { Footer } from '@/types/contentful/Footer';
-import { ContentfulError, NetworkError } from '../errors';
-import { getHeaderById } from './header';
-import { getFooterById } from './footer';
-import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../../components/Image/ImageApi';
-import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../components/ImageBetween/ImageBetweenApi';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { getHeaderById } from '../../lib/contentful-api/header';
+import { getFooterById } from '../../lib/contentful-api/footer';
+import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
+import { BANNERHERO_GRAPHQL_FIELDS } from '../BannerHero/BannerHeroApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '../ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '../CtaBanner/CtaBannerApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../ImageBetween/ImageBetweenApi';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 export const PRODUCT_GRAPHQL_FIELDS = `

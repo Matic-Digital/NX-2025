@@ -13,7 +13,7 @@ export * from '../../components/OfficeLocation/OfficeLocationApi';
 export * from './page';
 export * from './page-list';
 export * from '../../components/Post/PostApi';
-export * from './product';
+export * from '../../components/Product/ProductApi';
 export * from './region';
 export * from '../../components/SectionHeading/SectionHeadingApi';
 export * from '../../components/Service/ServiceApi';

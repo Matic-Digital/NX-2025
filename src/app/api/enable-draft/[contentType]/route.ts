@@ -16,7 +16,7 @@ import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getImageById } from '@/components/Image/ImageApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
-import { getProductById } from '@/lib/contentful-api/product';
+import { getProductById } from '@/components/Product/ProductApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/components/Service/ServiceApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
