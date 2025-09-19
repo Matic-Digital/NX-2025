@@ -90,24 +90,27 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle h-full min-h-[350px] w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn(
+          'bg-subtle h-full min-h-[350px] w-full p-8',
+          isCurrentSlide && 'lg:bg-primary'
+        )}
       >
         {sliderItem.icon && (
-          <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'bg-white')}>
+          <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'lg:bg-white')}>
             <Image
               src={sliderItem.icon?.url ?? ''}
               alt={sliderItem.title}
-              className={cn('filter', isCurrentSlide ? 'invert' : '')}
+              className={cn('filter', isCurrentSlide ? 'lg:invert' : '')}
               width={60}
               height={60}
             />
           </div>
         )}
         <Box direction="col" gap={2}>
-          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
+          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'lg:text-text-on-invert')}>
             {sliderItem.title}
           </h3>
-          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
+          <p className={cn('!text-body-sm', isCurrentSlide && 'lg:text-text-on-invert')}>
             {sliderItem.description}
           </p>
         </Box>
@@ -211,7 +214,7 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
     const timelineItem = updatedItem as TimelineSliderItem;
 
     return (
-      <div className="relative h-[669px] bg-white">
+      <div className="relative h-[669px] bg-white pb-32 lg:pb-16">
         <div className="flex h-full">
           {/* Left Column - Timeline Navigation */}
           <div className="hidden w-1/4 flex-col justify-center px-8 lg:flex"></div>
@@ -291,9 +294,9 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
           {/* Orange plus icon that shows on hover */}
           <button
             onClick={() => onTeamMemberClick?.(teamMember)}
-            className="bg-primary hover:bg-primary/90 absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-0 transition-all duration-300 group-hover/card:opacity-100"
+            className="bg-background hover:bg-primary/90 group-hover/card:bg-primary absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-100 transition-all duration-300"
           >
-            <Plus className="size-6 text-white" />
+            <Plus className="text-text-on-background group-hover/card:text-text-on-primary size-6" />
           </button>
         </div>
         <div className="mt-4">
@@ -322,13 +325,16 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
       <Box
         direction="col"
         gap={4}
-        className={cn('bg-subtle h-full min-h-[350px] w-full p-8', isCurrentSlide && 'bg-primary')}
+        className={cn(
+          'bg-subtle h-full min-h-[350px] w-full p-8',
+          isCurrentSlide && 'lg:bg-primary'
+        )}
       >
         <Box direction="col" gap={2}>
-          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'text-text-on-invert')}>
+          <h3 className={cn('!text-headline-sm', isCurrentSlide && 'lg:text-text-on-invert')}>
             {solution.title}
           </h3>
-          <p className={cn('!text-body-sm', isCurrentSlide && 'text-text-on-invert')}>
+          <p className={cn('!text-body-sm', isCurrentSlide && 'lg:text-text-on-invert')}>
             {solution.description}
           </p>
         </Box>
@@ -352,16 +358,14 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
               className="group"
             >
               <Button
-                variant="outlineWhite"
+                variant="outline"
                 className={cn(
-                  'hover:bg-primary hover:text-text-on-primary',
-                  isCurrentSlide && 'hover:bg-white hover:text-black'
+                  'lg:hover:bg-primary lg:hover:text-text-on-primary border-gray-300 text-black',
+                  isCurrentSlide &&
+                    'lg:bg-white lg:text-black lg:hover:bg-white lg:hover:text-black'
                 )}
               >
                 {solution.cta.text}
-                {isCurrentSlide && (
-                  <ArrowUpRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                )}
               </Button>
             </Link>
           </Box>
@@ -411,6 +415,7 @@ const GenericSlider = ({
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
   const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+  const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
   const hasOnePostSlide =
     sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
 
@@ -431,15 +436,17 @@ const GenericSlider = ({
               : 'w-full'
         )}
         opts={{
-          loop: true,
-          align: 'center',
-          ...(isTeamMemberSlider && {
-            align: 'start'
-          }),
-          ...(isTimelineSlider && {
-            align: 'start',
-            containScroll: 'trimSnaps'
-          })
+          loop: sliderData.itemsCollection.items.length > 1,
+          align: sliderData.itemsCollection.items.length === 1 ? 'center' : 'center',
+          ...(isTeamMemberSlider &&
+            sliderData.itemsCollection.items.length > 1 && {
+              align: 'start'
+            }),
+          ...(isTimelineSlider &&
+            sliderData.itemsCollection.items.length > 1 && {
+              align: 'start',
+              containScroll: 'trimSnaps'
+            })
         }}
       >
         <CarouselContent
@@ -454,15 +461,15 @@ const GenericSlider = ({
                 key={`${item.sys.id}-${index}`}
                 className={cn(
                   isSlider
-                    ? 'basis-[411px]'
+                    ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                     : isTeamMemberSlider
                       ? 'basis-[300px]'
                       : isTimelineSlider
-                        ? 'basis-full'
+                        ? 'basis-[calc(100vw-4rem)] lg:basis-full'
                         : isFullWidth
                           ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
                           : isSolutionSlider
-                            ? 'basis-[411px]'
+                            ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                             : 'basis-full'
                 )}
               >
@@ -484,121 +491,181 @@ const GenericSlider = ({
         {/* Combined Navigation - Handles TimelineSlider (left side) and other sliders (top right) */}
         {showAltNavigation && (
           <>
-            {isTimelineSlider || isPostSlider ? (
+            {isTimelineSlider ? (
               <>
                 {/* Mobile Navigation - Separate buttons on each side */}
                 <CarouselPrevious
-                  className="absolute top-1/2 left-6 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
+                  className="absolute top-2/3 left-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Previous slide"
                 />
                 <CarouselNext
-                  className="absolute top-1/2 right-6 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
+                  className="absolute top-2/3 right-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Next slide"
                 />
                 {/* Desktop Navigation */}
-                {isTimelineSlider ? (
-                  <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
-                    <CarouselPrevious
-                      className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
-                      variant="outline"
-                      aria-label="Previous slide"
-                    />
-                    <CarouselNext
-                      className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
-                      variant="outline"
-                      aria-label="Next slide"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <CarouselPrevious
-                      className="absolute top-1/2 left-8 z-50 hidden size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:flex"
-                      variant="outline"
-                      aria-label="Previous slide"
-                    />
-                    <CarouselNext
-                      className="absolute top-1/2 right-8 z-50 hidden size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:flex"
-                      variant="outline"
-                      aria-label="Next slide"
-                    />
-                  </>
-                )}
+                <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
+                  <CarouselPrevious
+                    className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                    variant="outline"
+                    aria-label="Previous slide"
+                  />
+                  <CarouselNext
+                    className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                    variant="outline"
+                    aria-label="Next slide"
+                  />
+                </div>
               </>
-            ) : (
-              <div
-                className={cn(
-                  'absolute -top-12 right-29 hidden gap-4 lg:flex',
-                  isTeamMemberSlider && 'right-0'
-                )}
-              >
-                <CarouselPrevious
-                  className="relative left-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
-                  variant="outline"
-                  aria-label="Previous slide"
-                />
-                <CarouselNext
-                  className="relative right-0 size-8 rounded-none border border-gray-300 bg-white/90 text-gray-700 hover:bg-white hover:text-gray-900"
-                  variant="outline"
-                  aria-label="Next slide"
-                />
-              </div>
-            )}
+            ) : null}
           </>
         )}
       </Carousel>
 
       {showIndicators && (
-        <Container>
-          <div
-            className={cn(
-              'relative z-10 mt-4 flex h-1 items-center gap-4',
-              isPostSlider ? 'lg:hidden' : ''
-            )}
-          >
-            {sliderData.itemsCollection.items.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => api?.scrollTo(index)}
-                className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
-                  'bg-[#F5B12D] opacity-100': current === index + 1
-                })}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </Container>
+        <div className="absolute bottom-6 left-1/2 z-20 flex h-1 -translate-x-1/2 items-center gap-4">
+          {sliderData.itemsCollection.items.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => api?.scrollTo(index)}
+              className={cn('h-full w-12 cursor-pointer bg-[#171717] opacity-30', {
+                'bg-[#F5B12D] opacity-100': current === index + 1
+              })}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
       )}
 
       {showAltIndicators && (
         <Container>
-          <div className="mx-auto mt-12 flex h-1">
-            {sliderData.itemsCollection.items.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => api?.scrollTo(index)}
-                className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
-                  'bg-surface-invert': current === index + 1
-                })}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+          <div
+            className={cn(
+              'mx-auto mt-12 flex',
+              isTeamMemberSlider || isSlider || isSolutionSlider || isPostSlider || isServiceSlider
+                ? 'w-full items-center justify-between'
+                : 'justify-center'
+            )}
+          >
+            <div
+              className={cn(
+                'flex h-1',
+                isTeamMemberSlider ||
+                  isSlider ||
+                  isSolutionSlider ||
+                  isPostSlider ||
+                  isServiceSlider
+                  ? 'flex-1'
+                  : 'max-w-md flex-1'
+              )}
+            >
+              {sliderData.itemsCollection.items.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => api?.scrollTo(index)}
+                  className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
+                    'bg-surface-invert': current === index + 1
+                  })}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+            {(isTeamMemberSlider ||
+              isSlider ||
+              isSolutionSlider ||
+              isPostSlider ||
+              isServiceSlider) && (
+              <div className="ml-8 flex items-center gap-4">
+                <button
+                  onClick={() => api?.scrollPrev()}
+                  className="relative left-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                  aria-label="Previous slide"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => api?.scrollNext()}
+                  className="relative right-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
+                  aria-label="Next slide"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         </Container>
       )}
 
       {/* Separate Timeline Component - Only for Timeline Sliders */}
       {isTimelineSlider && (
-        <div className="absolute bottom-0 z-20 bg-white px-6 py-8 lg:right-0 lg:left-1/4">
+        <div className="absolute right-6 left-6 z-10 flex gap-4 lg:right-6 lg:left-1/4" style={{ top: '420px' }}>
           <div className="w-full">
-            {/* Timeline Bar */}
-            <div className="mb-8">
-              <div
-                className="relative h-0.5 w-full bg-gray-200 transition-transform duration-500 ease-in-out lg:!transform-none"
-                style={{
-                  transform: `translateX(-${((current - 1) / (sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1)) * 100}%)`
-                }}
+            {/* Timeline Bar positioned under the asset */}
+            <div className="mb-8 pt-6">
+              {/* Mobile Timeline Bar - Centered active bullet */}
+              <div className="relative h-0.5 w-full lg:hidden">
+                {/* Timeline Bullets - Mobile - Show only visible ones, center active */}
+                <div className="relative mx-10 overflow-hidden">
+                  {/* Timeline line behind bullets - with fade out effect */}
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div
+                    className="relative z-10 flex transition-transform duration-500 ease-in-out"
+                    style={{
+                      transform: `translateX(calc(50% - ${((current - 1) * 60)}px))`
+                    }}
+                  >
+                    {sliderData.itemsCollection.items
+                      .filter((item) => item.__typename === 'TimelineSliderItem')
+                      .map((item, timelineIndex) => {
+                        const timelineItemData = item as TimelineSliderItem;
+                        const isActive = current === timelineIndex + 1;
+                        
+                        return (
+                          <button
+                            key={item.sys.id}
+                            onClick={() => api?.scrollTo(timelineIndex)}
+                            className={cn(
+                              'relative z-10 h-3 w-3 rounded-full transition-colors duration-300 flex-shrink-0',
+                              isActive
+                                ? 'bg-gray-400'
+                                : 'bg-gray-200 hover:bg-gray-300'
+                            )}
+                            style={{
+                              marginRight: timelineIndex < sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1 ? '48px' : '0'
+                            }}
+                            aria-label={`Go to ${timelineItemData.year}`}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop Timeline Bar - Static */}
+              <div className="relative hidden h-0.5 w-full bg-gray-200 lg:block"
               >
                 {/* Individual Timeline Segments */}
                 {sliderData.itemsCollection.items
@@ -652,13 +719,13 @@ const GenericSlider = ({
               </div>
             </div>
 
-            {/* Sliding Timeline - Shows 3 items, slides to reveal more */}
-            <div className="overflow-hidden">
+            {/* Sliding Timeline - Shows 1 item on mobile, 3 items on desktop */}
+            <div className="overflow-hidden lg:overflow-visible">
               <div
-                className="flex gap-8 transition-transform duration-500 ease-in-out"
+                className="flex gap-0 transition-transform duration-500 ease-in-out"
                 style={{
-                  transform: `translateX(-${(current - 1) * (100 / sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length)}%)`,
-                  width: `${(sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length / 2.5) * 100}%`
+                  transform: window.innerWidth >= 1024 ? `translateX(-${(current - 1) * 33.33}%)` : `translateX(-${(current - 1) * 100}%)`,
+                  width: `100%`
                 }}
               >
                 {sliderData.itemsCollection.items
@@ -670,7 +737,7 @@ const GenericSlider = ({
                     ).length;
                     const isActive = (current - 1) % totalItems === timelineIndex;
                     return (
-                      <div key={item.sys.id} className="flex min-w-0 flex-1 flex-col">
+                      <div key={item.sys.id} className="flex min-w-0 flex-[0_0_100%] flex-col lg:flex-[0_0_33.33%]">
                         {/* Year */}
                         <div className="mb-4 flex h-[60px] items-start">
                           <span
@@ -793,7 +860,28 @@ export function Slider(props: SliderSys) {
         setLoading(true);
         const data = await getSlidersByIds([props.sys.id]);
         if (data.length > 0 && data[0]) {
-          setSliderData(data[0]);
+          const sliderData = data[0];
+
+          // Randomize team member order if this is a team member slider
+          if (sliderData.itemsCollection.items[0]?.__typename === 'TeamMember') {
+            // Fisher-Yates shuffle for equal distribution
+            const shuffledItems = [...sliderData.itemsCollection.items];
+            for (let i = shuffledItems.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              const temp = shuffledItems[i]!;
+              shuffledItems[i] = shuffledItems[j]!;
+              shuffledItems[j] = temp;
+            }
+            setSliderData({
+              ...sliderData,
+              itemsCollection: {
+                ...sliderData.itemsCollection,
+                items: shuffledItems
+              }
+            });
+          } else {
+            setSliderData(sliderData);
+          }
         }
       } catch (error) {
         console.error('Error fetching slider data:', error);
@@ -865,31 +953,46 @@ export function Slider(props: SliderSys) {
   const isTimelineSliderItemSlider = firstItem.__typename === 'TimelineSliderItem';
   const isSliderItemSlider = firstItem.__typename === 'SliderItem';
   const isSolutionSlider = firstItem.__typename === 'Solution';
+  const isServiceSlider = firstItem.__typename === 'Service';
+
+  // Check if there's only one item to hide navigation
+  const hasOnlyOneItem = sliderData.itemsCollection.items.length === 1;
 
   // Configure slider based on content type
   return (
-    <div ref={sliderRef}>
+    <div ref={sliderRef} className={isTimelineSliderItemSlider ? 'mb-8' : ''}>
       <GenericSlider
         sliderData={sliderData}
         current={current}
         api={api}
         solutionUrls={solutionUrls}
         setApi={setApi}
-        showIndicators={isImageSlider || isPostSlider}
-        showAltIndicators={isSliderItemSlider || isTeamMemberSlider || isSolutionSlider}
+        showIndicators={!hasOnlyOneItem && isImageSlider}
+        showAltIndicators={
+          !hasOnlyOneItem &&
+          (isSliderItemSlider ||
+            isTeamMemberSlider ||
+            isSolutionSlider ||
+            isPostSlider ||
+            isServiceSlider)
+        }
         showNavigation={
+          !hasOnlyOneItem &&
           !isImageSlider &&
           !isSliderItemSlider &&
           !isTimelineSliderItemSlider &&
           !isTeamMemberSlider &&
-          !isSolutionSlider
+          !isSolutionSlider &&
+          !isServiceSlider
         }
         showAltNavigation={
-          isSliderItemSlider ||
-          isTimelineSliderItemSlider ||
-          isTeamMemberSlider ||
-          isSolutionSlider ||
-          isPostSlider
+          !hasOnlyOneItem &&
+          (isSliderItemSlider ||
+            isTimelineSliderItemSlider ||
+            isTeamMemberSlider ||
+            isSolutionSlider ||
+            isPostSlider ||
+            isServiceSlider)
         }
         isFullWidth={
           isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider

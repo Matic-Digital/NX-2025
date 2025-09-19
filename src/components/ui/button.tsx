@@ -16,11 +16,11 @@ const buttonVariants = cva(
           'border border-white text-black shadow-xs bg-white hover:bg-black hover:text-white hover:border-transparent',
         destructive: 'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
         outline:
-          'border border-input text-text-body shadow-xs hover:bg-black hover:text-white  hover:border-transparent',
+          'border border-input text-text-body shadow-xs hover:bg-white hover:text-black hover:border-white dark:hover:bg-white dark:hover:text-black dark:hover:border-white',
         outlineWhite:
-          'border border-white text-gray-300 shadow-xs bg-white text-black hover:border-transparent',
+          'border border-white text-white shadow-xs bg-transparent hover:bg-white hover:text-black hover:border-white',
         outlineTrasparentWhite:
-          'border border-white text-gray-300 shadow-xs hover:bg-white hover:text-black hover:border-transparent',
+          'border border-white text-white shadow-xs bg-transparent hover:bg-white hover:text-black hover:border-white',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline'
       },

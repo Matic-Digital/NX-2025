@@ -241,21 +241,61 @@ export function ContentGrid(props: ContentGridProps) {
                         </div>
                       </div>
 
-                      {/* Carousel Indicators */}
-                      <div className="relative z-50 mx-auto mt-8 flex h-1 w-full max-w-[90vw] flex-shrink-0 items-center gap-4 px-4">
-                        {serviceItems.map((_, index) => (
+                      {/* Carousel Indicators with Navigation */}
+                      <div className="relative z-50 mx-auto mt-8 flex h-1 w-full max-w-[90vw] flex-shrink-0 items-center justify-between gap-4 px-4">
+                        <div className="flex h-1 flex-1 items-center">
+                          {serviceItems.map((_, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                emblaApi?.scrollTo(index);
+                                // Active card state is managed by ServiceCard components
+                              }}
+                              className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
+                                'bg-surface-invert': currentSlide === index
+                              })}
+                              aria-label={`Go to slide ${index + 1}`}
+                            />
+                          ))}
+                        </div>
+                        <div className="ml-8 flex items-center gap-4">
                           <button
-                            key={index}
-                            onClick={() => {
-                              emblaApi?.scrollTo(index);
-                              // Active card state is managed by ServiceCard components
-                            }}
-                            className={cn('h-full flex-1 cursor-pointer bg-[#171717] opacity-30', {
-                              'bg-[#F5B12D] opacity-100': currentSlide === index
-                            })}
-                            aria-label={`Go to slide ${index + 1}`}
-                          />
-                        ))}
+                            onClick={() => emblaApi?.scrollPrev()}
+                            className="relative left-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-transparent text-white shadow-sm hover:bg-white hover:text-gray-900"
+                            aria-label="Previous slide"
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="m12 19-7-7 7-7" />
+                              <path d="M19 12H5" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => emblaApi?.scrollNext()}
+                            className="relative right-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-transparent text-white shadow-sm hover:bg-white hover:text-gray-900"
+                            aria-label="Next slide"
+                          >
+                            <svg
+                              className="h-4 w-4"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M5 12h14" />
+                              <path d="m12 5 7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
