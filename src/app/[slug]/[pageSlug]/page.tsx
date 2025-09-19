@@ -14,15 +14,15 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
-import { getPageBySlug } from '@/components/global/Page/PageApi';
-import { getPageListBySlug, getAllPageLists } from '@/components/global/PageList/PageListApi';
+import { getPageBySlug } from '@/components/Page/PageApi';
+import { getPageListBySlug, getAllPageLists } from '@/components/PageList/PageListApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import type { Page } from '@/components/global/Page/PageSchema';
-import type { PageList, PageListContent } from '@/components/global/PageList/PageListSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList, PageListContent } from '@/components/PageList/PageListSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
@@ -63,14 +63,15 @@ async function checkForPartialPathRedirect(
   pageSlug: string
 ): Promise<string | null> {
   try {
-    const pageLists = await getAllPageLists(false);
+    const pageListsResponse = await getAllPageLists(false);
+    const pageLists = pageListsResponse.items;
 
     // Build routing path by finding parent PageLists
     const buildRoutingPath = (itemId: string, visited = new Set<string>()): string[] => {
       if (visited.has(itemId)) return []; // Prevent infinite loops
       visited.add(itemId);
 
-      for (const pageList of pageLists.items) {
+      for (const pageList of pageLists) {
         if (!pageList.pagesCollection?.items?.length) continue;
 
         const foundItem = pageList.pagesCollection.items.find((item) => item?.sys?.id === itemId);
@@ -84,7 +85,7 @@ async function checkForPartialPathRedirect(
     };
 
     // Find the PageList that matches pageListSlug
-    const targetPageList = pageLists.items.find((pl) => pl.slug === pageListSlug);
+    const targetPageList = pageLists.find((pl) => pl.slug === pageListSlug);
     if (!targetPageList) return null;
 
     // Check if this PageList has parents
@@ -153,7 +154,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
     // Check if the content item is in the PageList
     const itemInList = pageList.pagesCollection.items.some(
-      (item) => item.sys.id === contentItem!.sys.id
+      (item) => item?.sys?.id === contentItem!.sys.id
     );
 
     if (!itemInList) {
@@ -514,7 +515,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
     // Check if the content item is in the PageList
     const itemInList = pageList.pagesCollection.items.some(
-      (item) => item.sys.id === contentItem!.sys.id
+      (item) => item?.sys?.id === contentItem!.sys.id
     );
 
     if (!itemInList) {

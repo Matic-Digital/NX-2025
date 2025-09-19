@@ -28,8 +28,8 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Container, Box } from '@/components/global/matic-ds';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Page } from '@/components/global/Page/PageSchema';
-import type { PageList } from '@/components/global/PageList/PageListSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList } from '@/components/PageList/PageListSchema';
 
 // Navigation menu components from shadcn
 import {
@@ -140,7 +140,7 @@ export function Header(props: HeaderProps) {
                 <NavigationMenuList>
                   {header?.navLinksCollection?.items.map((item) => {
                     // Handle Page items
-                    if (item.__typename === 'Page') {
+                    if (item && '__typename' in item && item.__typename === 'Page') {
                       const page = item as Page;
                       return (
                         <NavigationMenuItem key={page.sys.id}>
@@ -156,7 +156,7 @@ export function Header(props: HeaderProps) {
                       );
                     }
                     // Handle PageList items (with dropdown)
-                    else if (item.__typename === 'PageList') {
+                    else if (item && '__typename' in item && item.__typename === 'PageList') {
                       const pageList = item as PageList;
                       return (
                         <NavigationMenuItem key={pageList.sys.id}>
@@ -245,7 +245,7 @@ export function Header(props: HeaderProps) {
                   <nav className="mt-6">
                     <ul className="space-y-4">
                       {header?.navLinksCollection?.items.map((item) => {
-                        if (item.__typename === 'Page') {
+                        if (item && '__typename' in item && item.__typename === 'Page') {
                           const page = item as Page;
                           return (
                             <li key={page.sys.id}>
@@ -263,7 +263,7 @@ export function Header(props: HeaderProps) {
                               </SheetClose>
                             </li>
                           );
-                        } else if (item.__typename === 'PageList') {
+                        } else if (item && '__typename' in item && item.__typename === 'PageList') {
                           const pageList = item as PageList;
                           return (
                             <li key={pageList.sys.id} className="py-2">

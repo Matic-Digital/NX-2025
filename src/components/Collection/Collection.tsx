@@ -6,13 +6,13 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { getAllPostsMinimal } from '@/components/Post/PostApi';
-import { getAllPagesMinimal } from '@/components/global/Page/PageApi';
+import { getAllPagesMinimal } from '@/components/Page/PageApi';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
 import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
-import type { Page } from '@/components/global/Page/PageSchema';
+import type { Page } from '@/components/Page/PageSchema';
 import { PostCard } from '@/components/Post/PostCard';
-import { PageCard } from '@/components/global/Page/PageCard';
+import { PageCard } from '@/components/Page/PageCard';
 
 interface CollectionProps {
   collectionData?: Collection;

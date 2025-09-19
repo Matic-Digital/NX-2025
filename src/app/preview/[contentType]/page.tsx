@@ -25,8 +25,8 @@ import { Content } from '@/components/Content/Content';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
-import { PageList } from '@/components/global/PageList/PageList';
-import { Page } from '@/components/global/Page/Page';
+import { PageList } from '@/components/PageList/PageList';
+import { Page } from '@/components/Page/Page';
 import { Header } from '@/components/Header/Header';
 import { Footer } from '@/components/Footer/Footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
@@ -36,8 +36,8 @@ import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/components/global/Page/PageApi';
-import { getPageListById } from '@/components/global/PageList/PageListApi';
+import { getPageById } from '@/components/Page/PageApi';
+import { getPageListById } from '@/components/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';

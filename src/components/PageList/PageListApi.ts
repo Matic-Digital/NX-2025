@@ -2,8 +2,10 @@ import { fetchGraphQL } from '@/lib/api';
 import type {
   PageList,
   PageListResponse,
-  PageListWithRefs
-} from '@/components/global/PageList/PageListSchema';
+  PageListWithRefs,
+  PageListBySlugResponse,
+  PageListCollectionResponse
+} from '@/components/PageList/PageListSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
@@ -183,7 +185,7 @@ export async function checkPageBelongsToPageList(
 export async function getAllPageLists(preview = false): Promise<PageListResponse> {
   try {
     // Use simplified fields to reduce query complexity
-    const response = await fetchGraphQL<PageList>(
+    const response = await fetchGraphQL<PageListCollectionResponse>(
       `query GetAllPageLists($preview: Boolean!) {
         pageListCollection(preview: $preview) {
           items {
@@ -201,7 +203,7 @@ export async function getAllPageLists(preview = false): Promise<PageListResponse
     }
 
     return {
-      items: response.data.pageListCollection.items,
+      items: response.data.pageListCollection.items as unknown as PageList[],
       total: response.data.pageListCollection.total
     };
   } catch (error) {
@@ -230,7 +232,7 @@ export async function getPageListBySlug(
     console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
 
     // First, fetch the basic PageList data with references
-    const response = await fetchGraphQL<PageListWithRefs>(
+    const response = await fetchGraphQL<PageListBySlugResponse>(
       `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
           items {
@@ -323,10 +325,10 @@ export async function getPageListBySlug(
 
     console.log(`Successfully fetched PageList with slug: ${slug}`);
 
-    const pageListData = response.data.pageListCollection.items[0]!;
+    const pageListData = response.data.pageListCollection.items[0]! as unknown as PageListWithRefs;
 
     // Type assertion for pageLayout to avoid 'any' type
-    const pageLayout = pageListData.pageLayout as PageLayoutType | undefined;
+    const pageLayout = (pageListData as unknown as { pageLayout?: PageLayoutType }).pageLayout;
 
     // Fetch header data if referenced
     let header = null;
@@ -413,11 +415,11 @@ export async function getPageListBySlug(
 
     // Combine all the data
     const result: PageListWithHeaderFooter = {
-      ...pageListData,
+      ...(pageListData as unknown as PageList),
       header,
       footer,
       pageContentCollection: pageContent
-    };
+    } as PageListWithHeaderFooter;
 
     // Debug the PageList structure
     console.log('PageList structure:', {
@@ -564,11 +566,11 @@ export async function getPageListById(
 
     // Combine all the data
     const result: PageListWithHeaderFooter = {
-      ...pageListData,
+      ...(pageListData as unknown as PageList),
       header,
       footer,
       pageContentCollection: pageContent
-    };
+    } as PageListWithHeaderFooter;
 
     // Debug the PageList structure
     console.log('PageList structure:', {

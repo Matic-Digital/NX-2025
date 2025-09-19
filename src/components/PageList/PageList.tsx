@@ -27,13 +27,13 @@ import {
 } from '@contentful/live-preview/react';
 
 // Import content components for dynamic rendering
-import { BannerHero } from '../../BannerHero/BannerHero';
-import { Content } from '../../Content/Content';
-import { ContentGrid } from '../../ContentGrid/ContentGrid';
-import { CtaBanner } from '../../CtaBanner/CtaBanner';
-import { CtaGrid } from '../../CtaGrid/CtaGrid';
-import { ImageBetween } from '../../ImageBetween/ImageBetween';
-import { Slider } from '../../Slider/Slider';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { Slider } from '@/components/Slider/Slider';
 
 interface PageListProps {
   sys: {

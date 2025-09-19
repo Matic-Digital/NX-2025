@@ -140,7 +140,7 @@ export function Footer(props: FooterType) {
                         })}
                       >
                         {pageList.pagesCollection?.items
-                          .filter((page) => page != null)
+                          .filter((page): page is NonNullable<typeof page> => page != null)
                           .map((page, index) => {
                             // Debug logging
                             console.log('Page object:', page);

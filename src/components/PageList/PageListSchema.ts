@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-dynamic-require, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 import { z } from 'zod';
-import { CtaBannerSchema } from '../../CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from '../../ContentGrid/ContentGridSchema';
-import { BannerHeroSchema } from '../../BannerHero/BannerHeroSchema';
-import { ImageBetweenSchema } from '../../ImageBetween/ImageBetweenSchema';
-import { PageSchema } from '../../global/Page/PageSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { BannerHeroSchema } from '@/components/BannerHero/BannerHeroSchema';
+import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
+import { PageSchema } from '@/components/Page/PageSchema';
 import { ExternalPageSchema } from './ExternalPageSchema';
-import { ContentSchema } from '../../Content/ContentSchema';
-import { ProductSchema } from '../../Product/ProductSchema';
-import { ServiceSchema } from '../../Service/ServiceSchema';
-import { SolutionSchema } from '../../Solution/SolutionSchema';
-import { PostSchema } from '../../Post/PostSchema';
+import { ContentSchema } from '@/components/Content/ContentSchema';
+import { ProductSchema } from '@/components/Product/ProductSchema';
+import { ServiceSchema } from '@/components/Service/ServiceSchema';
+import { SolutionSchema } from '@/components/Solution/SolutionSchema';
+import { PostSchema } from '@/components/Post/PostSchema';
 
 // Define non-recursive unions first
 const PageListContentUnion = z.union([
@@ -124,4 +124,17 @@ export type PageListWithRefs = z.infer<typeof PageListWithRefsSchema>;
 export interface PageListResponse {
   items: Array<PageList>;
   total: number;
+}
+
+export interface PageListBySlugResponse {
+  pageListCollection: {
+    items: PageListWithRefs[];
+  };
+}
+
+export interface PageListCollectionResponse {
+  pageListCollection: {
+    items: PageList[];
+    total: number;
+  };
 }

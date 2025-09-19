@@ -5,7 +5,7 @@ import type { ContactCard as ContactCardType } from '@/components/ContactCard/Co
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
 import type { OfficeLocation as OfficeLocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
-import type { PageList as PageListType } from '@/components/global/PageList/PageListSchema';
+import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
 import type { Product as ProductType } from '@/components/Product/ProductSchema';
 import type { Slider as SliderType } from '@/components/Slider/SliderSchema';

@@ -26,7 +26,7 @@ import type { OfficeLocation as LocationType } from '@/components/OfficeLocation
 import type {
   PageList as PageListType,
   PageListPages as PageListPagesType
-} from '@/components/global/PageList/PageListSchema';
+} from '@/components/PageList/PageListSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
 import type { Product as ProductType } from '@/components/Product/ProductSchema';
 import type { Slider as SliderType } from '@/components/Slider/SliderSchema';

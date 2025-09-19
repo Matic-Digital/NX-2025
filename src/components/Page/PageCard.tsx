@@ -7,8 +7,8 @@ import {
 } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
 import AirImage from '@/components/Image/AirImage';
-import { getPageById } from '@/components/global/Page/PageApi';
-import type { Page } from '@/components/global/Page/PageSchema';
+import { getPageById } from '@/components/Page/PageApi';
+import type { Page } from '@/components/Page/PageSchema';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { ArrowUpRight } from 'lucide-react';

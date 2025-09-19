@@ -6,7 +6,7 @@ import Image from 'next/image';
 import type { Product, ProductSys } from '@/components/Product/ProductSchema';
 import Link from 'next/link';
 import { getProductsByIds } from '@/components/Product/ProductApi';
-import { checkPageBelongsToPageList } from '@/components/global/PageList/PageListApi';
+import { checkPageBelongsToPageList } from '@/components/PageList/PageListApi';
 import { useEffect, useState } from 'react';
 
 export const ProductCard = (props: ProductSys) => {
@@ -41,7 +41,7 @@ export const ProductCard = (props: ProductSys) => {
         // Find the parent PageList for this Product
         const parentPageList = await checkPageBelongsToPageList(productData.sys.id, false);
 
-        if (parentPageList) {
+        if (parentPageList?.slug) {
           // Use the PageList slug + Product slug format
           setProductUrl(`/${parentPageList.slug}/${productData.slug}`);
         } else {

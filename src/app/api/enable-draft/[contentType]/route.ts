@@ -6,8 +6,8 @@ import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/components/global/Page/PageApi';
-import { getPageListById } from '@/components/global/PageList/PageListApi';
+import { getPageById } from '@/components/Page/PageApi';
+import { getPageListById } from '@/components/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getContentById } from '@/components/Content/ContentApi';
