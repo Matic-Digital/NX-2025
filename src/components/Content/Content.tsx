@@ -13,6 +13,8 @@ import { Box } from '@/components/global/matic-ds';
 import { Button } from '../ui/button';
 import { SectionHeading } from '../SectionHeading/SectionHeading';
 import { RequestAQuoteModal } from '../Modals/RequestAQuoteModal';
+import { ModalCtaButton, type ModalType } from '../Button/ModalCtaButton';
+import type { Modal } from '../Modals/Modal';
 
 // API
 import { getContentById } from '@/components/Content/ContentApi';
@@ -92,6 +94,10 @@ export function Content(props: ContentProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalData | null>(null);
 
+  console.log('🤩contentId', contentId);
+  console.log('🤩restProps', restProps);
+  console.log('🤩fetchedData', fetchedData);
+
   // Fetch data if contentId is provided
   useEffect(() => {
     if (!contentId) return;
@@ -117,14 +123,12 @@ export function Content(props: ContentProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: content?.sys?.id });
 
   // ===== HANDLERS =====
-  const handleModalTrigger = (modal?: ModalData) => {
-    setActiveModal(
-      modal ?? {
-        title: 'Request a Quote',
-        description: 'Please fill out the form below to request a quote.',
-        sys: { id: 'content-modal' }
-      }
-    );
+  const handleModalOpen = (modal: Modal, _modalType: ModalType) => {
+    setActiveModal({
+      title: modal.title ?? 'Request a Quote',
+      description: modal.description ?? 'Please fill out the form below to request a quote.',
+      sys: modal.sys ?? { id: 'modal-' + Date.now() }
+    });
     setIsModalOpen(true);
   };
 
@@ -188,13 +192,6 @@ export function Content(props: ContentProps) {
     return 'slug' in data;
   };
 
-  const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
-    if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
-      return variant as SectionHeadingVariant;
-    }
-    return 'Default';
-  };
-
   const isSectionHeadingCardData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
@@ -207,8 +204,26 @@ export function Content(props: ContentProps) {
     return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
   };
 
+  const isSectionHeadingData = (
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+  ): data is SectionHeadingCardData => {
+    return (
+      'overline' in data && 'ctaCollection' in data && !('heading' in data) && !('slug' in data)
+    );
+  };
+
+  const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
+    if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
+      return variant as SectionHeadingVariant;
+    }
+    return 'Default';
+  };
+
   // ===== CONTENT CARD COMPONENT =====
   const ContentCard = ({ data, inspectorProps, variant }: ContentCardProps) => {
+    console.log('ContentCard data', data);
+    console.log('ContentCard variant', variant);
+    console.log('ContentCard isSectionHeadingData', isSectionHeadingData(data));
     if (variant === 'ContentLeft') {
       return (
         <>
@@ -245,12 +260,22 @@ export function Content(props: ContentProps) {
                           {data.heading}
                         </p>
                       )}
-                      <h2
-                        className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
-                        {...inspectorProps({ fieldId: 'title' })}
-                      >
-                        {data.title}
-                      </h2>
+                      {isSectionHeadingData(data) && data.title && (
+                        <>
+                          <p
+                            className="text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'heading.overline' })}
+                          >
+                            {data.overline}
+                          </p>
+                          <h2
+                            className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
+                            {...inspectorProps({ fieldId: 'title' })}
+                          >
+                            {data.title}
+                          </h2>
+                        </>
+                      )}
                     </Box>
                     {data.description && (
                       <p
@@ -263,7 +288,7 @@ export function Content(props: ContentProps) {
                   </Box>
 
                   {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
-                  {isProductData(data) ? (
+                  {isProductData(data) && (
                     <Button
                       variant="white"
                       {...inspectorProps({ fieldId: 'button' })}
@@ -272,17 +297,24 @@ export function Content(props: ContentProps) {
                     >
                       <Link href={data.slug}>Explore {data.title}</Link>
                     </Button>
-                  ) : (
-                    isContentGridItemData(data) && (
-                      <Button
-                        variant="white"
-                        {...inspectorProps({ fieldId: 'button' })}
-                        className="w-fit"
-                        onClick={() => handleModalTrigger(data.ctaCollection?.items?.[0]?.modal)}
-                      >
-                        {data.ctaCollection?.items?.[0]?.text}
-                      </Button>
-                    )
+                  )}
+                  {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
+                    <ModalCtaButton
+                      cta={data.ctaCollection.items[0]}
+                      variant="white"
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                      className="w-fit"
+                    />
+                  )}
+                  {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
+                    <ModalCtaButton
+                      cta={data.ctaCollection.items[0]}
+                      variant="white"
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                      className="w-fit"
+                    />
                   )}
                 </Box>
               </ContentOverlay>
@@ -351,49 +383,21 @@ export function Content(props: ContentProps) {
                   </Button>
                 ) : (
                   'ctaCollection' in data &&
-                  data.ctaCollection?.items?.map((cta, index) => {
-                    // If CTA has a modal, use button with modal trigger instead of link
-                    if (cta.modal) {
-                      return (
-                        <Button
-                          key={cta.sys?.id || index}
-                          variant={
-                            (data.ctaCollection?.items?.length ?? 0) === 1
-                              ? 'white'
-                              : index === 0
-                                ? 'primary'
-                                : 'white'
-                          }
-                          onClick={() => handleModalTrigger(cta.modal)}
-                        >
-                          {cta.text}
-                        </Button>
-                      );
-                    }
-
-                    // Otherwise, use link as before
-                    return (
-                      <Link
-                        key={cta.sys?.id || index}
-                        href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-                        {...(cta.externalLink
-                          ? { target: '_blank', rel: 'noopener noreferrer' }
-                          : {})}
-                      >
-                        <Button
-                          variant={
-                            (data.ctaCollection?.items?.length ?? 0) === 1
-                              ? 'white'
-                              : index === 0
-                                ? 'primary'
-                                : 'white'
-                          }
-                        >
-                          {cta.text}
-                        </Button>
-                      </Link>
-                    );
-                  })
+                  data.ctaCollection?.items?.map((cta, index) => (
+                    <ModalCtaButton
+                      key={cta.sys?.id || index}
+                      cta={cta}
+                      variant={
+                        (data.ctaCollection?.items?.length ?? 0) === 1
+                          ? 'white'
+                          : index === 0
+                            ? 'primary'
+                            : 'white'
+                      }
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                    />
+                  ))
                 )}
               </Box>
             </Box>
@@ -410,10 +414,10 @@ export function Content(props: ContentProps) {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="relative flex h-full items-center justify-center p-10">
-          {/* TODO: need to fix this */}
           <SectionHeading
             title={data.title}
             description={data.description}
+            ctaCollection={isSectionHeadingCardData(data) ? data.ctaCollection : undefined}
             variant={isSectionHeadingCardData(data) ? getValidVariant(data.variant) : 'Default'}
             componentType={'content'}
             isDarkMode={true}
@@ -551,6 +555,7 @@ export function Content(props: ContentProps) {
       return (
         <>
           <SectionHeading
+            overline={sectionHeading.overline}
             title={sectionHeading.title}
             description={sectionHeading.description}
             ctaCollection={sectionHeading.ctaCollection}
