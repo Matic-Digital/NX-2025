@@ -38,7 +38,7 @@ import { CtaGrid } from '@/components/CtaGrid';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
-import RichContent from '@/components/RichContent';
+import RichContent from '@/components/RichContent/RichContent';
 import { Slider } from '@/components/Slider';
 import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
@@ -71,7 +71,7 @@ const componentMap = {
 } as const;
 
 // Type-safe component map with explicit typing
-type ComponentMapType = {
+type _ComponentMapType = {
   [K in keyof typeof componentMap]: (typeof componentMap)[K];
 };
 

@@ -33,7 +33,7 @@ import { CtaBanner } from '@/components/CtaBanner';
 import { Content } from '@/components/Content';
 import { ContentGrid } from '@/components/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween';
-import RichContent from '@/components/RichContent';
+import RichContent from '@/components/RichContent/RichContent';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Metadata } from 'next';
