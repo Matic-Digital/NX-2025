@@ -16,7 +16,7 @@ export * from '../../components/Post/PostApi';
 export * from './product';
 export * from './region';
 export * from '../../components/SectionHeading/SectionHeadingApi';
-export * from './service';
+export * from '../../components/Service/ServiceApi';
 export * from '../../components/Slider/SliderApi';
 export * from '../../components/Slider/SliderItemApi';
 export * from '../../components/Solution/SolutionApi';

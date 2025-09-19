@@ -7,9 +7,9 @@ import { AirImage } from '@/components/Image/AirImage';
 import { Box } from '@/components/global/matic-ds/box';
 import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { getServiceById } from '@/lib/contentful-api/service';
+import { getServiceById } from '@/components/Service/ServiceApi';
 import Link from 'next/link';
-import type { Service } from '@/types/contentful/Service';
+import type { Service } from '@/components/Service/ServiceSchema';
 
 interface ServiceCardProps {
   serviceId: string;

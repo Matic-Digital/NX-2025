@@ -8,7 +8,7 @@ import { PageSchema } from './Page';
 import { ExternalPageSchema } from './ExternalPage';
 import { ContentSchema } from '../../components/Content/ContentSchema';
 import { ProductSchema } from './Product';
-import { ServiceSchema } from './Service';
+import { ServiceSchema } from '../../components/Service/ServiceSchema';
 import { SolutionSchema } from '../../components/Solution/SolutionSchema';
 import { PostSchema } from '../../components/Post/PostSchema';
 

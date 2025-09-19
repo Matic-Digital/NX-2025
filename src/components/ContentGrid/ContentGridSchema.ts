@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PostSchema } from '@/components/Post/PostSchema';
 import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
-import { ServiceSchema } from '@/types/contentful/Service';
+import { ServiceSchema } from '@/components/Service/ServiceSchema';
 import { ContentGridItemSchema } from './ContentGridItemSchema';
 import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
 import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';

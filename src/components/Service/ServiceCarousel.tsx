@@ -2,7 +2,7 @@
 
 import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ServiceCard } from '@/components/global/ServiceCard';
+import { ServiceCard } from '@/components/Service/ServiceCard';
 import { cn } from '@/lib/utils';
 import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 

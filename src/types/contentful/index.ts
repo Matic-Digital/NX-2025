@@ -23,7 +23,7 @@ export * from '../../components/Post/PostSchema';
 export * from './Product';
 export * from './Region';
 export * from '../../components/SectionHeading/SectionHeadingSchema';
-export * from './Service';
+export * from '../../components/Service/ServiceSchema';
 export * from '../../components/Slider/SliderSchema';
 export * from './Social';
 export * from '../../components/Solution/SolutionSchema';
