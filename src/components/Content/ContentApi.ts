@@ -1,6 +1,7 @@
 import { fetchGraphQL } from '../../lib/api';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { PRODUCT_GRAPHQL_FIELDS } from '../Product/ProductApi';
+import { SECTION_HEADING_GRAPHQL_FIELDS } from '../SectionHeading/SectionHeadingApi';
 import type { Content } from '@/components/Content/ContentSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
@@ -32,7 +33,7 @@ export const CONTENT_GRAPHQL_FIELDS = `
       ${PRODUCT_GRAPHQL_FIELDS}
     }
     ... on SectionHeading {
-      ${SYS_FIELDS}
+      ${SECTION_HEADING_GRAPHQL_FIELDS}
     }
     ... on ContentGridItem {
       ${CONTENTGRIDITEM_GRAPHQL_FIELDS}

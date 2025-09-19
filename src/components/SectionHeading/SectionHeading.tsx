@@ -276,7 +276,12 @@ export function SectionHeading(props: SectionHeadingProps) {
   );
 
   const DefaultSectionHeading = () => (
-    <Box cols={cols} gap={gap} {...inspectorProps({ fieldId: 'heading' })}>
+    <Box
+      cols={cols}
+      gap={gap}
+      {...inspectorProps({ fieldId: 'heading' })}
+      className={isDarkMode ? 'dark' : ''}
+    >
       {/* overline and title */}
       <Box
         direction="col"
