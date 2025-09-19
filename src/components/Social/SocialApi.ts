@@ -1,7 +1,7 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 import type { Social, SocialResponse } from '@/types/contentful';
-import { ContentfulError, NetworkError } from '../errors';
-import { SYS_FIELDS } from './graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 
 // Social fields
 export const SOCIAL_GRAPHQL_FIELDS = `

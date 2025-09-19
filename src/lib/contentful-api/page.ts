@@ -8,7 +8,7 @@ import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHer
 import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../components/ImageBetween/ImageBetweenApi';
-import { REGIONS_MAP_GRAPHQL_FIELDS } from './region';
+import { REGIONS_MAP_GRAPHQL_FIELDS } from '../../components/Region/RegionApi';
 import { SYS_FIELDS } from './graphql-fields';
 
 import { getHeaderById } from './header';

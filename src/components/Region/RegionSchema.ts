@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AssetSchema } from './Asset';
+import { AssetSchema } from '@/types/contentful/Asset';
 
 export const RegionSchema = z.object({
   sys: z.object({

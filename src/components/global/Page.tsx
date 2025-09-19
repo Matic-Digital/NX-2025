@@ -37,7 +37,7 @@ import { CtaBanner } from '../CtaBanner/CtaBanner';
 import { CtaGrid } from '../CtaGrid/CtaGrid';
 import { ImageBetween } from '../ImageBetween/ImageBetween';
 import { Slider } from '../Slider/Slider';
-import { RegionsMap } from '../RegionsMap';
+import { RegionsMap } from '../Region/RegionsMap';
 
 interface PageProps {
   sys: {

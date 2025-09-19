@@ -21,7 +21,7 @@ import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadin
 import { getServiceById } from '@/components/Service/ServiceApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getSliderItemById } from '@/components/Slider/SliderItemApi';
-import { getSocialById } from '@/lib/contentful-api/social';
+import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 
 // Content type to API function mapping

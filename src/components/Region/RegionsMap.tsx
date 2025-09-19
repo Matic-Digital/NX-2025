@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { getRegionsMapById } from '@/lib/contentful-api/region';
-import type { RegionsMap } from '@/types/contentful/Region';
-import type { Region } from '@/types/contentful/Region';
+import { getRegionsMapById } from '@/components/Region/RegionApi';
+import type { RegionsMap } from '@/components/Region/RegionSchema';
+import type { Region } from '@/components/Region/RegionSchema';
 import { Box } from '@/components/global/matic-ds';
 import { ArrowUpRight } from 'lucide-react';
-import { RegionsMapImageInteractive } from '@/components/RegionsMapImageInteractive';
+import { RegionsMapImageInteractive } from '@/components/Region/RegionsMapImageInteractive';
 
 export function RegionsMap(props: RegionsMap) {
   const [content, setContent] = useState<RegionsMap | null>(props);

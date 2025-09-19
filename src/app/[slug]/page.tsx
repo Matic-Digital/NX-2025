@@ -26,7 +26,7 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import { RegionsMap } from '@/components/RegionsMap';
+import { RegionsMap } from '@/components/Region/RegionsMap';
 import { PageList } from '@/components/global/PageList';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';

@@ -39,7 +39,7 @@ import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
-import { RegionsMap } from '@/components/RegionsMap';
+import { RegionsMap } from '@/components/Region/RegionsMap';
 import type { Page } from '@/types/contentful/Page';
 import type { PageList as PageListType } from '@/types/contentful/PageList';
 import type { Product } from '@/components/Product/ProductSchema';

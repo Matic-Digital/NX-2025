@@ -6,7 +6,7 @@ import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
 import { ImageBetweenSchema } from '../../components/ImageBetween/ImageBetweenSchema';
 import { ImageSchema } from '../../components/Image/ImageSchema';
 import { ContentSchema } from '../../components/Content/ContentSchema';
-import { RegionsMapSchema } from './Region';
+import { RegionsMapSchema } from '../../components/Region/RegionSchema';
 
 const PageContentUnion = z.union([
   BannerHeroSchema,
