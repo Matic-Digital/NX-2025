@@ -23,7 +23,7 @@ import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { Content } from '@/components/Content/Content';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { ImageBetween } from '@/components/ImageBetween';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { PageList } from '@/components/global/PageList';
 import { Page } from '@/components/global/Page';
@@ -43,7 +43,7 @@ import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
-import { getImageBetweenById } from '@/lib/contentful-api/image-between';
+import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/lib/contentful-api/product';
 

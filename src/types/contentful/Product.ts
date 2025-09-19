@@ -5,7 +5,7 @@ import { ImageSchema } from './Image';
 import { CtaBannerSchema } from '../../components/CtaBanner/CtaBannerSchema';
 import { ContentGridSchema } from '../../components/ContentGrid/ContentGridSchema';
 import { BannerHeroSchema } from '../../components/BannerHero/BannerHeroSchema';
-import { ImageBetweenSchema } from './ImageBetween';
+import { ImageBetweenSchema } from '../../components/ImageBetween/ImageBetweenSchema';
 import { ContentSchema } from '../../components/Content/ContentSchema';
 
 export const ProductSysSchema = z.object({

@@ -10,7 +10,7 @@ import { IMAGE_GRAPHQL_FIELDS } from './image';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from './image-between';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../components/ImageBetween/ImageBetweenApi';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 export const PRODUCT_GRAPHQL_FIELDS = `

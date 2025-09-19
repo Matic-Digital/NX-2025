@@ -37,7 +37,7 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/RegionsMap';
 import type { Page } from '@/types/contentful/Page';

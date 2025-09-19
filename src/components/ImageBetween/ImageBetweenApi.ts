@@ -1,9 +1,9 @@
-import { IMAGE_GRAPHQL_FIELDS } from './image';
-import { VIDEO_GRAPHQL_FIELDS } from './video';
-import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
-import type { ImageBetween } from '@/types/contentful/ImageBetween';
-import { fetchGraphQL } from '../api';
-import { ContentfulError, NetworkError } from '../errors';
+import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { VIDEO_GRAPHQL_FIELDS } from '../../lib/contentful-api/video';
+import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
+import { fetchGraphQL } from '../../lib/api';
+import { ContentfulError, NetworkError } from '../../lib/errors';
 
 // ImageBetween fields
 export const IMAGEBETWEEN_GRAPHQL_FIELDS = `

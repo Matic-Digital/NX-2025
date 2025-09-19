@@ -32,7 +32,7 @@ import { Content } from '../Content/Content';
 import { ContentGrid } from '../ContentGrid/ContentGrid';
 import { CtaBanner } from '../CtaBanner/CtaBanner';
 import { CtaGrid } from '../CtaGrid/CtaGrid';
-import { ImageBetween } from '../ImageBetween';
+import { ImageBetween } from '../ImageBetween/ImageBetween';
 import { Slider } from '../Slider/Slider';
 
 interface PageListProps {

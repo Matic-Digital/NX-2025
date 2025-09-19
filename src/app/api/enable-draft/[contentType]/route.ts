@@ -15,7 +15,7 @@ import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/lib/contentful-api/footer';
 import { getHeaderById } from '@/lib/contentful-api/header';
 import { getImageById } from '@/lib/contentful-api/image';
-import { getImageBetweenById } from '@/lib/contentful-api/image-between';
+import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getProductById } from '@/lib/contentful-api/product';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/lib/contentful-api/service';

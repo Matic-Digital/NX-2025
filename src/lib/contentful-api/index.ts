@@ -7,7 +7,7 @@ export * from '../../components/CtaBanner/CtaBannerApi';
 export * from './footer';
 export * from './graphql-fields';
 export * from './header';
-export * from './image-between';
+export * from '../../components/ImageBetween/ImageBetweenApi';
 export * from './image';
 export * from './page';
 export * from './page-list';

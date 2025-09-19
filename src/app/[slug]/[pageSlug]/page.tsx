@@ -32,7 +32,7 @@ import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
 import type { Metadata } from 'next';

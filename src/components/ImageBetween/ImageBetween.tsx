@@ -11,7 +11,7 @@ import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { AirImage } from '@/components/media/AirImage';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Slider } from '@/components/Slider/Slider';
-import type { ImageBetween } from '@/types/contentful/ImageBetween';
+import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
 import type { Image } from '@/types/contentful/Image';
 import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
 import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';

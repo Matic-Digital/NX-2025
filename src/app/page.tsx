@@ -9,7 +9,7 @@ import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import type { FooterResponse } from '@/types/contentful/Footer';
-import { ImageBetween } from '@/components/ImageBetween';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import type { PageResponse } from '@/types/contentful/Page';
 import type { PageListResponse } from '@/types/contentful/PageList';
 import type { Page } from '@/types/contentful/Page';
