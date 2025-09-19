@@ -5,7 +5,7 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';

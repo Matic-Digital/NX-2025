@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { ImageSchema } from '@/types/contentful/Image';
+import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PostSchema } from '@/components/Post/PostSchema';
 import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
 import { ServiceSchema } from '@/types/contentful/Service';
 import { ContentGridItemSchema } from './ContentGridItemSchema';
 import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
 import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';
-import { VideoSchema } from '@/types/contentful/Video';
+import { VideoSchema } from '@/components/Video/VideoSchema';
 import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/types/contentful/Solution';
 import { ProductSchema } from '@/types/contentful/Product';

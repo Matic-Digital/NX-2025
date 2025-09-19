@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { AssetSchema } from '@/types/contentful/Asset';
-import { ImageSchema } from '@/types/contentful/Image';
+import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
 // Define the ContentGridItem schema

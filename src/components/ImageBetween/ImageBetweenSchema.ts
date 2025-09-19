@@ -1,9 +1,9 @@
 import z from 'zod';
 import { AssetSchema } from '../../types/contentful/Asset';
 import { ContentGridSchema } from '../ContentGrid/ContentGridSchema';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 import { SliderSysSchema } from '../Slider/SliderSchema';
-import { VideoSchema } from '../../types/contentful/Video';
+import { VideoSchema } from '../Video/VideoSchema';
 
 const ContentAssetUnion = z.union([ImageSchema, SliderSysSchema, VideoSchema, ContentGridSchema]);
 export type ContentAsset = z.infer<typeof ContentAssetUnion>;

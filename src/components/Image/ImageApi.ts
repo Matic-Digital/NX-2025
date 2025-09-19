@@ -1,9 +1,9 @@
-import { fetchGraphQL } from '../api';
+import { fetchGraphQL } from '../../lib/api';
 
-import type { Image, ImageResponse } from '@/types/contentful';
+import type { Image, ImageResponse } from '@/components/Image/ImageSchema';
 
-import { SYS_FIELDS } from './graphql-fields';
-import { ContentfulError, NetworkError } from '../errors';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
 
 export const IMAGE_SIMPLE_GRAPHQL_FIELDS = `
   link

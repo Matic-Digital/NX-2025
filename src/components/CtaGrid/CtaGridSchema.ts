@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 import { ContentGridItemSchema } from '../ContentGrid/ContentGridItemSchema';
 

@@ -3,8 +3,8 @@ import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { PRODUCT_GRAPHQL_FIELDS } from '../../lib/contentful-api/product';
 import type { Content } from '@/components/Content/ContentSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
-import { VIDEO_GRAPHQL_FIELDS } from '../../lib/contentful-api/video';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
+import { VIDEO_GRAPHQL_FIELDS } from '../Video/VideoApi';
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../ContentGrid/ContentGridApi';
 
 // Define minimal content fields for references

@@ -8,7 +8,7 @@ import {
 import Link from 'next/link';
 
 // Components
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '../ui/button';
 import { SectionHeading } from '../SectionHeading/SectionHeading';
@@ -26,7 +26,7 @@ import type {
   SectionHeadingVariant
 } from '../SectionHeading/SectionHeadingSchema';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
-import type { Image } from '@/types/contentful/Image';
+import type { Image } from '@/components/Image/ImageSchema';
 
 // Constants
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';

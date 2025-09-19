@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import type { AirImage as AirImageType } from '@/types/contentful/Image';
-import { getImageById } from '@/lib/contentful-api/image';
+import type { AirImage as AirImageType } from '@/components/Image/ImageSchema';
+import { getImageById } from '@/components/Image/ImageApi';
 
 /**
  * Extracts width and height from Air imgix URLs

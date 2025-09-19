@@ -8,11 +8,11 @@ import {
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Slider } from '@/components/Slider/Slider';
 import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
-import type { Image } from '@/types/contentful/Image';
+import type { Image } from '@/components/Image/ImageSchema';
 import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
 import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
 import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';

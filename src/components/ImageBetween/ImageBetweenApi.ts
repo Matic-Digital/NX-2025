@@ -1,5 +1,5 @@
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
-import { VIDEO_GRAPHQL_FIELDS } from '../../lib/contentful-api/video';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
+import { VIDEO_GRAPHQL_FIELDS } from '../Video/VideoApi';
 import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
 import { fetchGraphQL } from '../../lib/api';

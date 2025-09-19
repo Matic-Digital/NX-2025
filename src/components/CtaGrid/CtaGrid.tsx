@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Button } from '@/components/ui/button';
 import { Box, Container } from '@/components/global/matic-ds';
 import { resolveNestedUrls } from '@/lib/page-link-utils';

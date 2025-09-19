@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import MuxVideo from '@mux/mux-video-react';
-import { getVideosByIds } from '@/lib/contentful-api/video';
-import type { Video, VideoSys } from '@/types/contentful';
+import { getVideosByIds } from '@/components/Video/VideoApi';
+import type { Video, VideoSys } from '@/components/Video/VideoSchema';
 
 export function MuxVideoPlayer(props: VideoSys) {
   const [videoData, setVideoData] = useState<Video | null>(null);

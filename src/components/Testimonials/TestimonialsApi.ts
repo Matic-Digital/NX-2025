@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../../lib/api';
 import { TestimonialsSchema, type Testimonials } from './TestimonialsSchema';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 
 // Use centralized GraphQL fields
 export const TESTIMONIALS_GRAPHQL_FIELDS = `

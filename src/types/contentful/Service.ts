@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from './Image';
+import { ImageSchema } from '../../components/Image/ImageSchema';
 
 export const ServiceSchema = z.object({
   sys: z.object({

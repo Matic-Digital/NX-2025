@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 import { TeamMemberSchema } from '../../types/contentful/TeamMember';
 
 // Post category options as defined in the content model

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 // import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import type { Testimonials as TestimonialsType } from './TestimonialsSchema';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { getTestimonialsById } from './TestimonialsApi';

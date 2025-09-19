@@ -24,7 +24,7 @@ import type {
   TeamMember,
   Solution
 } from '@/types/contentful';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
 import {
   useContentfulLiveUpdates,

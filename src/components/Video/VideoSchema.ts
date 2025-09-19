@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from './Image';
+import { ImageSchema } from '../Image/ImageSchema';
 
 // a video from Mux
 

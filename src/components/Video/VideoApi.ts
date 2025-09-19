@@ -1,8 +1,8 @@
-import { fetchGraphQL } from '../api';
-import type { Video } from '@/types/contentful';
-import { SYS_FIELDS } from './graphql-fields';
-import { ContentfulError, NetworkError } from '../errors';
-import { IMAGE_SIMPLE_GRAPHQL_FIELDS } from './image';
+import { fetchGraphQL } from '../../lib/api';
+import type { Video } from '@/components/Video/VideoSchema';
+import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '../../lib/errors';
+import { IMAGE_SIMPLE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 
 // Video fields
 export const VIDEO_GRAPHQL_FIELDS = `

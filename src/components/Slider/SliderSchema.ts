@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 import { SliderItemSchema } from './SliderItemSchema';
 import { TimelineSliderItemSchema } from '../../types/contentful/TimelineSliderItem';
 import { TeamMemberSchema } from '../../types/contentful/TeamMember';

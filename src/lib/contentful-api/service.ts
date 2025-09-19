@@ -3,7 +3,7 @@ import { fetchGraphQL } from '../api';
 import type { Service, ServiceResponse } from '@/types/contentful/Service';
 
 import { ContentfulError, NetworkError } from '../errors';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
+import { IMAGE_GRAPHQL_FIELDS } from '../../components/Image/ImageApi';
 import { SYS_FIELDS } from './graphql-fields';
 
 // Service fields

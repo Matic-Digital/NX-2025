@@ -3,7 +3,7 @@
 import { useEffect, useState, Fragment } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { useServiceCard } from '@/contexts/ServiceCardContext';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Box } from '@/components/global/matic-ds/box';
 import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';

@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../../lib/api';
 
 import type { CtaBanner, CtaBannerResponse } from '@/types/contentful';
 import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 

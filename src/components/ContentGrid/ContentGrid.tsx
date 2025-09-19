@@ -5,7 +5,7 @@ import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import { ContentItemRenderer } from './ContentItemRenderer';
 import useEmblaCarousel from 'embla-carousel-react';

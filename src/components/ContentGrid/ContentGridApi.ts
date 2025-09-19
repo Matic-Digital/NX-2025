@@ -3,7 +3,7 @@ import { fetchGraphQL } from '../../lib/api';
 import type { ContentGrid, ContentGridResponse } from './ContentGridSchema';
 import type { ContentGridItem } from './ContentGridItemSchema';
 
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import {
   INTERNAL_LINK_FIELDS,
   SYS_FIELDS,

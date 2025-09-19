@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../../lib/api';
 
 import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '../ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 

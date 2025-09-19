@@ -27,7 +27,7 @@ import {
 } from '@contentful/live-preview/react';
 import type { Header as HeaderType } from '@/types/contentful/Header';
 import type { Footer as FooterType } from '@/types/contentful/Footer';
-import type { Image as ImageType } from '@/types/contentful/Image';
+import type { Image as ImageType } from '@/components/Image/ImageSchema';
 
 // Import content components for dynamic rendering
 import { BannerHero } from '../BannerHero/BannerHero';

@@ -15,7 +15,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as imageAPI from '@/lib/contentful-api/image';
+import * as imageAPI from '@/components/Image/ImageApi';
 import { fetchGraphQL } from '@/lib/api';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 import type { Image } from '@/types/contentful';

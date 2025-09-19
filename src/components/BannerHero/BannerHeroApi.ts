@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../../lib/api';
 import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../../lib/errors';
-import { IMAGE_GRAPHQL_FIELDS } from '../../lib/contentful-api/image';
+import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '../SectionHeading/SectionHeadingApi';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 

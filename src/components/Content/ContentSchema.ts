@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ProductSchema } from '../../types/contentful/Product';
 import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
-import { ImageSchema } from '../../types/contentful/Image';
-import { VideoSchema } from '../../types/contentful/Video';
+import { ImageSchema } from '../Image/ImageSchema';
+import { VideoSchema } from '../Video/VideoSchema';
 import { ContentGridItemSchema } from '../ContentGrid/ContentGridItemSchema';
 import { ContentVariantEnum } from './ContentVariant';
 

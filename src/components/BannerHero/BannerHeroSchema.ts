@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
 
 export const BannerHeroSchema = z.object({

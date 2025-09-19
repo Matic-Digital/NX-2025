@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { AssetSchema } from '../../types/contentful/Asset';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
-import { ImageSchema } from '../../types/contentful/Image';
+import { ImageSchema } from '../Image/ImageSchema';
 
 export const CtaBannerSchema = z.object({
   sys: z.object({

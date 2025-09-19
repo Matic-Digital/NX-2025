@@ -2,7 +2,7 @@ import { fetchGraphQL } from '../api';
 import type { TeamMember, TeamMemberResponse } from '@/types/contentful';
 import { ContentfulError, NetworkError } from '../errors';
 import { SYS_FIELDS } from './graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
+import { IMAGE_GRAPHQL_FIELDS } from '../../components/Image/ImageApi';
 
 // Team member fields
 export const TEAM_MEMBER_GRAPHQL_FIELDS = `

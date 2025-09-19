@@ -6,7 +6,7 @@ import { ContentfulError, NetworkError } from '../errors';
 import { getHeaderById } from './header';
 import { getFooterById } from './footer';
 import { SYS_FIELDS, ASSET_FIELDS } from './graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from './image';
+import { IMAGE_GRAPHQL_FIELDS } from '../../components/Image/ImageApi';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../components/BannerHero/BannerHeroApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '../../components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '../../components/CtaBanner/CtaBannerApi';
