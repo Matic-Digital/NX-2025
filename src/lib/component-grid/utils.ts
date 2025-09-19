@@ -1,19 +1,17 @@
-import type {
-  Accordion as AccordionType,
-  AirImage as AirImageType,
-  Collection as CollectionType,
-  ContactCard as ContactCardType,
-  ContentGridItem as ContentGridItemType,
-  CtaGrid as CtaGridType,
-  OfficeLocation as OfficeLocationType,
-  PageList as PageListType,
-  Post as PostType,
-  Product as ProductType,
-  Slider as SliderType,
-  Solution as SolutionType,
-  Testimonials as TestimonialsType,
-  Video as VideoType
-} from '@/types/contentful';
+import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
+import type { Image as AirImageType } from '@/components/Image/ImageSchema';
+import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
+import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
+import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { OfficeLocation as OfficeLocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
+import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
+import type { Product as ProductType } from '@/components/Product/ProductSchema';
+import type { Slider as SliderType } from '@/components/Slider/SliderSchema';
+import type { Solution as SolutionType } from '@/components/Solution/SolutionSchema';
+import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
+import type { Video as VideoType } from '@/components/Video/VideoSchema';
 
 export type ContentGridItemUnion =
   | AccordionType

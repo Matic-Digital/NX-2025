@@ -8,11 +8,11 @@ import {
 import Link from 'next/link';
 
 // Components
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '../ui/button';
 import { SectionHeading } from '../SectionHeading/SectionHeading';
-import { RequestAQuoteModal } from '../global/modals/RequestAQuoteModal';
+import { RequestAQuoteModal } from '../Modals/RequestAQuoteModal';
 
 // API
 import { getContentById } from '@/components/Content/ContentApi';
@@ -20,13 +20,13 @@ import { getContentById } from '@/components/Content/ContentApi';
 // Types
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
-import type { Product } from '@/types/contentful/Product';
+import type { Product } from '@/components/Product/ProductSchema';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
 } from '../SectionHeading/SectionHeadingSchema';
-import type { ContentGridItem } from '@/types/contentful/ContentGridItem';
-import type { Image } from '@/types/contentful/Image';
+import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { Image } from '@/components/Image/ImageSchema';
 
 // Constants
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';

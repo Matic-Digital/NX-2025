@@ -3,18 +3,18 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-import { getAllFooters } from '@/lib/contentful-api/footer';
+import { getAllFooters } from '@/components/Footer/FooterApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { BannerHero } from '@/components/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
-import { ContentGrid } from '@/components/ContentGrid';
-import type { FooterResponse } from '@/types/contentful/Footer';
-import { ImageBetween } from '@/components/ImageBetween';
-import type { PageResponse } from '@/types/contentful/Page';
-import type { PageListResponse } from '@/types/contentful/PageList';
-import type { Page } from '@/types/contentful/Page';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import type { FooterResponse } from '@/components/Footer/FooterSchema';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import type { PageResponse } from '@/components/Page/PageSchema';
+import type { PageList } from '@/components/PageList/PageListSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 
 /**
@@ -140,14 +140,16 @@ async function renderContentfulHomePage(page: Page) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
-
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type
@@ -165,7 +167,7 @@ async function renderContentfulHomePage(page: Page) {
 async function renderDefaultHomePage() {
   // Use try-catch blocks to handle potential API errors
   let pages: PageResponse = { items: [], total: 0 };
-  let pageLists: PageListResponse = { items: [], total: 0 };
+  let pageLists: PageList[] = [];
 
   try {
     pages = await getAllPages();
@@ -175,7 +177,8 @@ async function renderDefaultHomePage() {
   }
 
   try {
-    pageLists = await getAllPageLists();
+    const pageListsResponse = await getAllPageLists();
+    pageLists = pageListsResponse.items;
   } catch (error) {
     console.error('Error fetching page lists:', error);
     // Continue with empty pageLists array
@@ -207,11 +210,11 @@ async function renderDefaultHomePage() {
         </div>
       )}
 
-      {pageLists.items.length > 0 && (
+      {pageLists.length > 0 && (
         <div>
           <h2 className="text-headline-xs mb-4 font-semibold">Page Lists</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {pageLists.items.map((pageList) => (
+            {pageLists.map((pageList) => (
               <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
                 <h3 className="text-body-lg mb-2 font-medium">{pageList.title}</h3>
                 <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
@@ -221,7 +224,7 @@ async function renderDefaultHomePage() {
         </div>
       )}
 
-      {pages.items.length === 0 && pageLists.items.length === 0 && (
+      {pages.items.length === 0 && pageLists.length === 0 && (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
           <h2 className="text-body-md mb-2 font-medium">No content found</h2>
           <p>No pages or page lists were found in your Contentful space.</p>

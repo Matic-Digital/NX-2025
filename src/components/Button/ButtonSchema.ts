@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ModalSchema } from '@/types/contentful/Modal';
+import { ModalSchema } from '@/components/Modals/Modal';
 
 // Simple schema for button internal links that matches GraphQL query response
 const ButtonInternalLinkSchema = z.object({

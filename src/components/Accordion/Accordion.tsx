@@ -8,7 +8,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { getAccordionsByIds, getAccordionItemById } from './AccordionApi';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import type {
   Accordion as AccordionType,
   AccordionItem as AccordionItemType
@@ -43,13 +43,16 @@ const getTriggerClasses = (isHovered: boolean, shouldShowExpanded: boolean) => {
 };
 
 const getImageClasses = (variant: string | undefined) => {
-  return cn('col-span-7 h-full overflow-hidden', variant === 'ContentLeft' ? 'order-2' : 'order-1');
+  return cn(
+    'col-span-7 h-full overflow-hidden',
+    variant === 'ContentLeft' ? 'order-1 lg:order-2' : 'order-1'
+  );
 };
 
 const getContentClasses = (variant: string | undefined) => {
   return cn(
     'relative col-span-5 p-12 transition-all duration-500 ease-out',
-    variant === 'ContentLeft' ? 'order-1' : 'order-2'
+    variant === 'ContentLeft' ? 'order-2 lg:order-1' : 'order-2'
   );
 };
 
