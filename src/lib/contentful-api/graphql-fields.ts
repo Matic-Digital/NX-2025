@@ -31,6 +31,27 @@ export const INTERNAL_LINK_FIELDS = `
   }
 `;
 
+export const MENU_ITEM_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  text
+  description
+  internalLink {
+    ... on Page {
+      sys { id }
+      slug
+    }
+    ... on PageList {
+      sys { id }
+      slug
+    }
+  }
+  externalLink
+  icon {
+    ${ASSET_FIELDS}
+  }
+`;
+
 // Define all fragments using lazy initialization pattern
 const fragments = {
   PAGE_BASIC_FIELDS: () => `
@@ -62,6 +83,13 @@ const fragments = {
           }
         }
       }
+    }
+    menu {
+      ${SYS_FIELDS}
+    }
+    search
+    overflow {
+      ${SYS_FIELDS}
     }
   `,
 
