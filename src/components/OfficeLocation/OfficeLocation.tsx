@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/media/AirImage';
-import { getLocationById } from '@/lib/contentful-api/office-location';
+import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import type { OfficeLocation } from '@/types/contentful';
 
 interface LocationProps {

@@ -9,6 +9,7 @@ export * from './graphql-fields';
 export * from './header';
 export * from '../../components/ImageBetween/ImageBetweenApi';
 export * from './image';
+export * from '../../components/OfficeLocation/OfficeLocationApi';
 export * from './page';
 export * from './page-list';
 export * from '../../components/Post/PostApi';

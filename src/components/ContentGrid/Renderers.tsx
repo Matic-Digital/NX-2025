@@ -13,7 +13,7 @@ import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Slider } from '@/components/Slider/Slider';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
 import Collection from '@/components/Collection/Collection';
-import { Location } from '@/components/OfficeLocation';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 
 import type {

@@ -15,7 +15,7 @@ export * from './GraphQLResponse';
 export * from './Header';
 export * from './Image';
 export * from './Modal';
-export * from './OfficeLocation';
+export * from '../../components/OfficeLocation/OfficeLocationSchema';
 export * from './Page';
 export * from '../../components/PageLayout/PageLayoutSchema';
 export * from './PageList';

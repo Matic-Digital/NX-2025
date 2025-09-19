@@ -11,7 +11,7 @@ import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/types/contentful/Solution';
 import { ProductSchema } from '@/types/contentful/Product';
 import { AccordionSchema } from '@/components/Accordion/AccordionSchema';
-import { OfficeLocationSchema } from '@/types/contentful/OfficeLocation';
+import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
 
 // Union type for items
 const ContentGridItemUnion = z.union([
