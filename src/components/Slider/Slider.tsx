@@ -34,7 +34,7 @@ import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { SliderItemType } from '@/components/Slider/SliderSchema';
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { resolveNestedUrls } from '@/lib/page-link-utils';
-import { TeamMemberModal } from '@/components/global/modals/TeamMemberModal';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 
 interface SliderCardProps {
   item: SliderItemType;

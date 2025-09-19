@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { AirImage } from '@/components/Image/AirImage';
 import { ArrowUpRight } from 'lucide-react';
-import type { TeamMember } from '@/types/contentful/TeamMember';
+import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
 import { Box } from '@/components/global/matic-ds';
 
 interface TeamMemberModalProps {

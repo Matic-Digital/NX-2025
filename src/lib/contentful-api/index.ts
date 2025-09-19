@@ -21,5 +21,7 @@ export * from '../../components/Slider/SliderApi';
 export * from '../../components/Slider/SliderItemApi';
 export * from '../../components/Social/SocialApi';
 export * from '../../components/Solution/SolutionApi';
+export * from '../../components/TeamMember/TeamMemberApi';
 export * from '../../components/Testimonials/TestimonialsApi';
+export * from '../../components/TimelineSlider/TimelineSliderItemApi';
 export * from '../../components/Video/VideoApi';

@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ImageSchema } from '../Image/ImageSchema';
 import { SliderItemSchema } from './SliderItemSchema';
-import { TimelineSliderItemSchema } from '../../types/contentful/TimelineSliderItem';
-import { TeamMemberSchema } from '../../types/contentful/TeamMember';
+import { TimelineSliderItemSchema } from '../TimelineSlider/TimelineSliderItemSchema';
+import { TeamMemberSchema } from '../TeamMember/TeamMemberSchema';
 import { PostSliderItemSchema } from '../Post/PostSchema';
 import { SolutionSchema } from '../Solution/SolutionSchema';
 
