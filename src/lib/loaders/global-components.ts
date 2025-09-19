@@ -1,7 +1,7 @@
 // src/lib/loaders/global-components.ts
 import { contentfulConfig } from '../config';
-import { getHeaderById } from '../contentful-api/header';
-import { getFooterById } from '../contentful-api/footer';
+import { getHeaderById } from '../../components/Header/HeaderApi';
+import { getFooterById } from '../../components/Footer/FooterApi';
 
 export async function loadGlobalComponents(options?: {
   headerId?: string;

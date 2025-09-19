@@ -68,14 +68,15 @@ const nextConfig = {
       bodySizeLimit: '2mb'
     },
     // Optimize bundle splitting
-    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react'],
-    // Enable modern bundling optimizations
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js'
-        }
+    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react']
+  },
+
+  // Turbopack configuration (now stable)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js'
       }
     }
   },

@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { getAllPageLists } from '@/lib/contentful-api/page-list';
-import type { PageList } from '@/types/contentful/PageList';
+import { getAllPageLists } from '@/components/PageList/PageListApi';
+import type { PageList } from '@/components/PageList/PageListSchema';
 
 /**
  * Type guard to check if an item has a slug property
@@ -166,7 +166,8 @@ export async function GET(request: NextRequest) {
             const itemSlug = hasSlug(item)
               ? item.slug
               : ((item as { link?: string })?.link ?? 'no-slug');
-            return `${itemSlug} (${item?.__typename})`;
+            const typename = item && '__typename' in item ? item.__typename : 'unknown';
+            return `${itemSlug} (${typename})`;
           }) ?? 'no items'
         );
       });
@@ -179,7 +180,8 @@ export async function GET(request: NextRequest) {
           const itemSlug = hasSlug(item)
             ? item.slug
             : ((item as { link?: string })?.link ?? 'no-slug');
-          console.log(`  [${index}] ${itemSlug} (${item?.__typename}) - ID: ${item?.sys?.id}`);
+          const typename = item && '__typename' in item ? item.__typename : 'unknown';
+          console.log(`  [${index}] ${itemSlug} (${typename}) - ID: ${item?.sys?.id}`);
         });
       }
     } else {

@@ -3,7 +3,7 @@
  * Provides functions for fetching and managing blog articles from Contentful CMS
  */
 
-import type { GraphQLResponse } from '@/types/contentful';
+import type { GraphQLResponse } from '@/types';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
 

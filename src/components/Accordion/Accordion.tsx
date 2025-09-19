@@ -8,7 +8,7 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { getAccordionsByIds, getAccordionItemById } from './AccordionApi';
-import { AirImage } from '@/components/media/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import type {
   Accordion as AccordionType,
   AccordionItem as AccordionItemType
