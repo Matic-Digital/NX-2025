@@ -3,18 +3,18 @@ import type { Metadata } from 'next';
 
 import { Container } from '@/components/global/matic-ds';
 import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-import { getAllFooters } from '@/components/global/Footer/FooterApi';
+import { getAllFooters } from '@/components/Footer/FooterApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import type { FooterResponse } from '@/components/global/Footer/FooterSchema';
+import type { FooterResponse } from '@/components/Footer/FooterSchema';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import type { PageResponse } from '@/components/global/Page/PageSchema';
 import type { PageListResponse } from '@/components/global/PageList/PageListSchema';
 import type { Page } from '@/components/global/Page/PageSchema';
-import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 
 /**

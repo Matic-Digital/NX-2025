@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '../../lib/api';
-import type { Social, SocialResponse } from '@/types/contentful';
+import type { Social, SocialResponse } from '@/types';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 

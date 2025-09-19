@@ -1,10 +1,10 @@
 import { fetchGraphQL } from '../../lib/api';
 import type { Product } from '@/components/Product/ProductSchema';
-import type { Header } from '@/components/global/Header/HeaderSchema';
-import type { Footer } from '@/components/global/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
+import type { Footer } from '@/components/Footer/FooterSchema';
 import { ContentfulError, NetworkError } from '../../lib/errors';
-import { getHeaderById } from '../global/Header/HeaderApi';
-import { getFooterById } from '../global/Footer/FooterApi';
+import { getHeaderById } from '../Header/HeaderApi';
+import { getFooterById } from '../Footer/FooterApi';
 import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../BannerHero/BannerHeroApi';

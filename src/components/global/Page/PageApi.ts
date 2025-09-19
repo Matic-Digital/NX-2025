@@ -1,7 +1,7 @@
 import { fetchGraphQL } from '../../../lib/api';
 import type { Page, PageResponse, PageWithRefs } from '@/components/global/Page/PageSchema';
-import type { Header } from '@/components/global/Header/HeaderSchema';
-import type { Footer } from '@/components/global/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
+import type { Footer } from '@/components/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { ContentfulError, NetworkError } from '../../../lib/errors';
 import { BANNERHERO_GRAPHQL_FIELDS } from '../../BannerHero/BannerHeroApi';
@@ -11,8 +11,8 @@ import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '../../ImageBetween/ImageBetweenApi'
 import { REGIONS_MAP_GRAPHQL_FIELDS } from '../../Region/RegionApi';
 import { SYS_FIELDS } from '../../../lib/contentful-api/graphql-fields';
 
-import { getHeaderById } from '../Header/HeaderApi';
-import { getFooterById } from '../Footer/FooterApi';
+import { getHeaderById } from '../../Header/HeaderApi';
+import { getFooterById } from '../../Footer/FooterApi';
 
 import { getPAGE_WITH_REFS_FIELDS } from '../../../lib/contentful-api/graphql-fields';
 

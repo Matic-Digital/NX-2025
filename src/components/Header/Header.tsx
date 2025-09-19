@@ -27,7 +27,7 @@ import { Menu, Search } from 'lucide-react';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Container, Box } from '@/components/global/matic-ds';
-import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Page } from '@/components/global/Page/PageSchema';
 import type { PageList } from '@/components/global/PageList/PageListSchema';
 

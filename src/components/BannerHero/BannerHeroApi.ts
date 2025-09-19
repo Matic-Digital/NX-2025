@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '../../lib/api';
-import type { BannerHero, BannerHeroResponse } from '@/types/contentful';
+import type { BannerHero, BannerHeroResponse } from '@/types';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '../SectionHeading/SectionHeadingApi';

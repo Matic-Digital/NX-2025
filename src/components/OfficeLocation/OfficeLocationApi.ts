@@ -1,9 +1,6 @@
 import { fetchGraphQL } from '../../lib/api';
 
-import type {
-  OfficeLocation as ContentfulLocation,
-  OfficeLocationResponse
-} from '@/types/contentful';
+import type { OfficeLocation as ContentfulLocation, OfficeLocationResponse } from '@/types';
 
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
 import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';

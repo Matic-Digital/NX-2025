@@ -12,7 +12,7 @@ import { AirImage } from '@/components/Image/AirImage';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '../ui/button';
 import { SectionHeading } from '../SectionHeading/SectionHeading';
-import { RequestAQuoteModal } from '../global/modals/RequestAQuoteModal';
+import { RequestAQuoteModal } from '../Modals/RequestAQuoteModal';
 
 // API
 import { getContentById } from '@/components/Content/ContentApi';

@@ -6,7 +6,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-import type { Modal } from '@/types/contentful/Modal';
+import type { Modal } from '@/components/Modals/Modal';
 
 interface RequestAQuoteModalProps extends Modal {
   isOpen: boolean;

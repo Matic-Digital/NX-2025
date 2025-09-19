@@ -4,8 +4,8 @@ import type {
   PageListResponse,
   PageListWithRefs
 } from '@/components/global/PageList/PageListSchema';
-import type { Header } from '@/components/global/Header/HeaderSchema';
-import type { Footer } from '@/components/global/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
+import type { Footer } from '@/components/Footer/FooterSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
@@ -14,8 +14,8 @@ import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGrid
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 import { SYS_FIELDS } from '@/lib/contentful-api';
 
-import { getHeaderById } from '@/components/global/Header/HeaderApi';
-import { getFooterById } from '@/components/global/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
 
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {

@@ -1,5 +1,5 @@
 import z from 'zod';
-import { AssetSchema } from '../../types/contentful/Asset';
+import { AssetSchema } from '../Asset/AssetSchema';
 import { ContentGridSchema } from '../ContentGrid/ContentGridSchema';
 import { ImageSchema } from '../Image/ImageSchema';
 import { SliderSysSchema } from '../Slider/SliderSchema';

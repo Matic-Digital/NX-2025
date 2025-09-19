@@ -25,8 +25,8 @@ import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
-import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
 
 // Import content components for dynamic rendering

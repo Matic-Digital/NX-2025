@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '../../lib/api';
 import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import type { Slider } from '@/types/contentful';
+import type { Slider } from '@/types';
 import { ContentfulError, NetworkError } from '../../lib/errors';
 import { SLIDERITEM_GRAPHQL_FIELDS_SIMPLE } from './SliderItemApi';
 

@@ -14,12 +14,12 @@ import { getSectionHeadingById } from './SectionHeadingApi';
 // Components
 import { Box } from '@/components/global/matic-ds';
 import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
-import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 
 // Types
 import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
-import type { Modal } from '@/types/contentful/Modal';
+import type { Modal } from '@/components/Modals/Modal';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 interface SectionHeadingProps extends Partial<SectionHeading> {

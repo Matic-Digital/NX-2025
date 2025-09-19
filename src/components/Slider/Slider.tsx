@@ -23,7 +23,7 @@ import type {
   TimelineSliderItem,
   TeamMember,
   Solution
-} from '@/types/contentful';
+} from '@/types';
 import { AirImage } from '@/components/Image/AirImage';
 import { Box, Container } from '@/components/global/matic-ds';
 import {

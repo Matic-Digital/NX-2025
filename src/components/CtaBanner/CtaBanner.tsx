@@ -12,7 +12,7 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { AirImage } from '@/components/Image/AirImage';
 
 export function CtaBanner(props: CtaBanner) {

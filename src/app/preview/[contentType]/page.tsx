@@ -27,8 +27,8 @@ import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { PageList } from '@/components/global/PageList/PageList';
 import { Page } from '@/components/global/Page/Page';
-import { Header } from '@/components/global/Header/Header';
-import { Footer } from '@/components/global/Footer/Footer';
+import { Header } from '@/components/Header/Header';
+import { Footer } from '@/components/Footer/Footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 
 // Import all API functions
@@ -41,8 +41,8 @@ import { getPageListById } from '@/components/global/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
-import { getFooterById } from '@/components/global/Footer/FooterApi';
-import { getHeaderById } from '@/components/global/Header/HeaderApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/components/Product/ProductApi';

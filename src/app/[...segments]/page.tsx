@@ -47,8 +47,8 @@ import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
 import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import {
   extractOpenGraphImage,
   extractSEOTitle,

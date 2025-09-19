@@ -32,8 +32,8 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type { Page } from '@/components/global/Page/PageSchema';
 import type { PageList as PageListType } from '@/components/global/PageList/PageListSchema';
-import type { Header as HeaderType } from '@/components/global/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/global/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { PageListContent } from '@/components/global/PageList/PageListSchema';
 import {
   extractOpenGraphImage,

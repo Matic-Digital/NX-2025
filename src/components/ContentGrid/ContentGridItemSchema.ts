@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AssetSchema } from '@/types/contentful/Asset';
+import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
