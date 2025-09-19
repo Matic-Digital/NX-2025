@@ -5,9 +5,10 @@ import { useMegaMenuContext } from '../../contexts/MegaMenuContext';
 
 interface MenuProps {
   menu: MenuType;
+  variant?: 'default' | 'overflow';
 }
 
-export function Menu({ menu }: MenuProps) {
+export function Menu({ menu, variant = 'default' }: MenuProps) {
   const { itemsCollection } = menu;
   const menuItems = itemsCollection?.items ?? [];
   const { setMegaMenuOpen } = useMegaMenuContext();
@@ -19,7 +20,7 @@ export function Menu({ menu }: MenuProps) {
           // TypeScript now properly discriminates based on __typename
           if (item.__typename === 'MegaMenu') {
             // MegaMenu will lazy load its own items
-            return <MegaMenu key={item.sys.id} megaMenuId={item.sys.id} title={item.title} overflow={item.overflow} />;
+            return <MegaMenu key={item.sys.id} megaMenuId={item.sys.id} title={item.title} overflow={variant === 'overflow' ? true : item.overflow} />;
           } else {
             // Simple link for MenuItem - just show the title as a link
             const linkUrl = item.internalLink ? `/${item.internalLink.slug}` : item.externalLink;

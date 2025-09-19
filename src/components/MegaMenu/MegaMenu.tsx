@@ -16,12 +16,14 @@ interface MegaMenuProps {
   overflow?: boolean;
 }
 
-export function MegaMenu({ megaMenu, megaMenuId, title, overflow: _overflow }: MegaMenuProps) {
+export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProps) {
   const [loadedMegaMenu, setLoadedMegaMenu] = useState<MegaMenuType | null>(null);
   const [loading, setLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-  const { setMegaMenuOpen } = useMegaMenuContext();
+  const { openMegaMenu, closeMegaMenu, setOverflowMenuOpen } = useMegaMenuContext();
+  
+  const menuId = megaMenuId ?? megaMenu?.sys?.id ?? 'unknown';
 
   useEffect(() => {
     if (!megaMenu && megaMenuId) {
@@ -43,7 +45,9 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow: _overflow }: M
       setTimeoutId(null);
     }
     setIsHovered(true);
-    setMegaMenuOpen(true);
+    openMegaMenu(menuId);
+    // Close overflow menu when hovering other mega menus
+    setOverflowMenuOpen(false);
   };
 
   const handleMouseLeave = () => {
@@ -51,7 +55,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow: _overflow }: M
       setIsHovered(false);
       // Use a delayed close for MegaMenu to allow smooth transitions
       setTimeout(() => {
-        setMegaMenuOpen(false);
+        closeMegaMenu(menuId);
       }, 100);
     }, 50); // Reduced to 50ms for faster transitions
     setTimeoutId(id);
@@ -63,6 +67,18 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow: _overflow }: M
 
   if (!currentMegaMenu) {
     return null;
+  }
+
+  // For overflow variant, render as simple menu items without portal
+  if (overflow) {
+    return (
+      <div className="flex flex-col gap-2">
+        <h3 className="text-lg font-semibold text-foreground mb-2">{displayTitle}</h3>
+        {menuItems.map((menuItem) => (
+          <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
+        ))}
+      </div>
+    );
   }
 
   return (
