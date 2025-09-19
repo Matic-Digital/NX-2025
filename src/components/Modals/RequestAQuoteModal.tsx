@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dialog';
 
 import type { Modal } from '@/components/Modals/Modal';
+import { HubspotForm } from '@/components/HubspotForm/HubspotForm';
 
 interface RequestAQuoteModalProps extends Modal {
   isOpen: boolean;
@@ -26,12 +27,13 @@ export function RequestAQuoteModal({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <p>Hubspot form goes here</p>
-        {/* <HubspotForm
-          portalId="12345678"
-          formId="12345678-1234-1234-1234-123456789012"
-          onSubmit={() => onOpenChange(false)}
-        /> */}
+        <HubspotForm 
+          hubspotForm={{
+            sys: { id: 'quote-form' },
+            formLink: 'https://share.hsforms.com/242546672/bc714460-764a-41ca-9cc3-1875f88cb365',
+            __typename: 'HubspotForm'
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
