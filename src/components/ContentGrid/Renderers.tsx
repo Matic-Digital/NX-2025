@@ -1,40 +1,38 @@
 import React from 'react';
 import Link from 'next/link';
 import { Box } from '@/components/global/matic-ds';
-import { ContentGridItem } from '../ContentGridItem';
+import { ContentGridItem } from './ContentGridItem';
 import { Accordion } from '@/components/Accordion/Accordion';
-import { AirImage } from '@/components/media/AirImage';
-import { MuxVideoPlayer } from '@/components/media/MuxVideo';
-import { ProductCard } from '@/components/global/ProductCard';
-import { ServiceCard } from '@/components/global/ServiceCard';
-import { SolutionCard } from '../SolutionCard';
+import { AirImage } from '@/components/Image/AirImage';
+import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
+import { ProductCard } from '@/components/Product/ProductCard';
+import { ServiceCard } from '@/components/Service/ServiceCard';
+import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { PostCard } from '@/components/Post/PostCard';
-import { CtaGrid } from '@/components/CtaGrid';
-import { Slider } from '@/components/Slider';
-import { Testimonials } from '@/components/global/Testimonials';
-import { LazyTestimonials } from '@/components/LazyTestimonials';
-import { LazyCollection } from '@/components/LazyCollection';
-import Collection from '@/components/Collection';
-import { Location } from '@/components/OfficeLocation';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { Slider } from '@/components/Slider/Slider';
+import Collection from '@/components/Collection/Collection';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
 
+import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
+import type { Image as AirImageType } from '@/components/Image/ImageSchema';
+import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
+import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
+import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { OfficeLocation as LocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
 import type {
-  Accordion as AccordionType,
-  AirImage as AirImageType,
-  ContactCard as ContactCardType,
-  Collection as CollectionType,
-  ContentGridItem as ContentGridItemType,
-  CtaGrid as CtaGridType,
-  OfficeLocation as LocationType,
   PageList as PageListType,
-  PageListPages as PageListPagesType,
-  Post as PostType,
-  Product as ProductType,
-  Slider as SliderType,
-  Solution as SolutionType,
-  Testimonials as TestimonialsType,
-  Video as VideoType
-} from '@/types/contentful';
+  PageListPages as PageListPagesType
+} from '@/components/PageList/PageListSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
+import type { Product as ProductType } from '@/components/Product/ProductSchema';
+import type { Slider as SliderType } from '@/components/Slider/SliderSchema';
+import type { Solution as SolutionType } from '@/components/Solution/SolutionSchema';
+import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
+import type { Video as VideoType } from '@/components/Video/VideoSchema';
 
 import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
 
@@ -60,12 +58,15 @@ export const contentRenderers = {
   ),
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), create a LazyCollection component
-    if (item.sys?.id && !item.title && !item.itemsPerPage) {
-      return <LazyCollection key={`lazy-${item.sys.id}`} collectionId={item.sys.id} />;
-    }
-    // If we have full data, render normally
-    return <Collection key={`full-${item.sys?.id ?? context.index}`} {...item} />;
+    // Collection component handles both full data and lazy loading cases
+    return (
+      <Collection
+        key={`collection-${item.sys?.id ?? context.index}`}
+        collectionData={item.title ? item : undefined}
+        sys={item.sys}
+        __typename={item.__typename}
+      />
+    );
   },
 
   renderContentGridItem: (item: ContentGridItemType, context: RenderContext) => (
@@ -133,9 +134,9 @@ export const contentRenderers = {
   },
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), create a LazyTestimonials component
+    // If we only have sys.id (lazy loading case), pass testimonialsId to unified component
     if (item.sys?.id && !item.itemsCollection) {
-      return <LazyTestimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
+      return <Testimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
     }
     // If we have full data, render normally
     return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;

@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { ProductSchema } from '../../types/contentful/Product';
+import { ProductSchema } from '../Product/ProductSchema';
 import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
-import { ImageSchema } from '../../types/contentful/Image';
-import { VideoSchema } from '../../types/contentful/Video';
-import { ContentGridItemSchema } from '../../types/contentful/ContentGridItem';
+import { ImageSchema } from '../Image/ImageSchema';
+import { VideoSchema } from '../Video/VideoSchema';
+import { ContentGridItemSchema } from '../ContentGrid/ContentGridItemSchema';
 import { ContentVariantEnum } from './ContentVariant';
 
 const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema, ContentGridItemSchema]);

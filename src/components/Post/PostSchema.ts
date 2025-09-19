@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { ImageSchema } from '../../types/contentful/Image';
-import { TeamMemberSchema } from '../../types/contentful/TeamMember';
+import { ImageSchema } from '../Image/ImageSchema';
+import { TeamMemberSchema } from '../TeamMember/TeamMemberSchema';
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([

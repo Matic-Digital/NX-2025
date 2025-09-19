@@ -6,7 +6,7 @@ import {
   useContentfulInspectorMode
 } from '@contentful/live-preview/react';
 import { Box } from '@/components/global/matic-ds';
-import AirImage from '@/components/media/AirImage';
+import AirImage from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
 import type { Post } from '@/components/Post/PostSchema';
 import Link from 'next/link';

@@ -11,12 +11,12 @@ import { Phone, Mail, PhoneCall, Headset, Mic } from 'lucide-react';
 import { Box } from '@/components/global/matic-ds';
 import { Button } from '@/components/ui/button';
 import type { ContactCard } from './ContactCardSchema';
-import type { Modal } from '@/types/contentful/Modal';
+import type { Modal } from '@/components/Modals/Modal';
 import { ContactCardSkeleton } from './ContactCardSkeleton';
 import { getContactCardById } from './ContactCardApi';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-import { RequestAQuoteModal } from '@/components/global/modals/RequestAQuoteModal';
-import { RequestSupportModal } from '@/components/global/modals/RequestSupportModal';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { RequestSupportModal } from '@/components/Modals/RequestSupportModal';
 
 interface ContactCardProps extends Partial<ContactCard> {
   contactCardId?: string;

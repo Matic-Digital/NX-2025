@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Modal } from '@/types/contentful/Modal';
+import type { Modal } from '@/components/Modals/Modal';
 import type { Button as ButtonType } from './ButtonSchema';
 
 export type ModalType = 'quote' | 'support';
@@ -13,7 +13,7 @@ const iconMap = {
 
 interface ModalCtaButtonProps {
   cta: ButtonType;
-  variant: 'primary' | 'outline' | 'white';
+  variant: 'primary' | 'outline' | 'white' | 'outlineWhite';
   modalType?: ModalType;
   onModalOpen: (modal: Modal, modalType: ModalType) => void;
   className?: string;
