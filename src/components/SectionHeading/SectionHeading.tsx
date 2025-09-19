@@ -36,7 +36,7 @@ const getValidVariant = (variant: string | undefined): SectionHeadingVariant => 
 };
 
 export function SectionHeading(props: SectionHeadingProps) {
-  const { sectionHeadingId, componentType, hasSolutionItems, ...restProps } = props;
+  const { sectionHeadingId, componentType, hasSolutionItems, isDarkMode, ...restProps } = props;
   const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +73,19 @@ export function SectionHeading(props: SectionHeadingProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: sectionHeading?.sys?.id });
 
   const hasCtaCollection = (sectionHeading?.ctaCollection?.items?.length ?? 0) > 0;
+
+  // Helper function to determine button variant based on context
+  const getButtonVariant = (
+    index: number,
+    totalButtons: number,
+    defaultVariant: string
+  ): 'primary' | 'outline' | 'white' | 'outlineWhite' => {
+    // Use outlineWhite for primary buttons when in dark mode within ImageBetween
+    if (isDarkMode && componentType === 'ImageBetween' && defaultVariant === 'primary') {
+      return 'outlineWhite';
+    }
+    return defaultVariant as 'primary' | 'outline' | 'white' | 'outlineWhite';
+  };
 
   if (loading) {
     return (
@@ -140,20 +153,20 @@ export function SectionHeading(props: SectionHeadingProps) {
           className="col-span-1 items-end xl:ml-auto"
         >
           {hasCtaCollection &&
-            sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <ModalCtaButton
-                key={cta.sys?.id || index}
-                cta={cta}
-                variant={
-                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                    ? 'primary'
-                    : index === 0
-                      ? 'white'
-                      : 'primary'
-                }
-                onModalOpen={handleModalOpen}
-              />
-            ))}
+            sectionHeading.ctaCollection?.items?.map((cta, index) => {
+              const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
+              const defaultVariant =
+                totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
+
+              return (
+                <ModalCtaButton
+                  key={cta.sys?.id || index}
+                  cta={cta}
+                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                  onModalOpen={handleModalOpen}
+                />
+              );
+            })}
         </Box>
       </Box>
     </Box>
@@ -187,20 +200,20 @@ export function SectionHeading(props: SectionHeadingProps) {
 
         <Box gap={3} {...inspectorProps({ fieldId: 'heading' })} className="items-end lg:ml-auto">
           {hasCtaCollection &&
-            sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <ModalCtaButton
-                key={cta.sys?.id || index}
-                cta={cta}
-                variant={
-                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                    ? 'primary'
-                    : index === 0
-                      ? 'white'
-                      : 'primary'
-                }
-                onModalOpen={handleModalOpen}
-              />
-            ))}
+            sectionHeading.ctaCollection?.items?.map((cta, index) => {
+              const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
+              const defaultVariant =
+                totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
+
+              return (
+                <ModalCtaButton
+                  key={cta.sys?.id || index}
+                  cta={cta}
+                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                  onModalOpen={handleModalOpen}
+                />
+              );
+            })}
         </Box>
       </Box>
     </Box>
@@ -243,20 +256,20 @@ export function SectionHeading(props: SectionHeadingProps) {
           className="items-center justify-center"
         >
           {hasCtaCollection &&
-            sectionHeading.ctaCollection?.items?.map((cta, index) => (
-              <ModalCtaButton
-                key={cta.sys?.id || index}
-                cta={cta}
-                variant={
-                  (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                    ? 'primary'
-                    : index === 0
-                      ? 'white'
-                      : 'primary'
-                }
-                onModalOpen={handleModalOpen}
-              />
-            ))}
+            sectionHeading.ctaCollection?.items?.map((cta, index) => {
+              const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
+              const defaultVariant =
+                totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
+
+              return (
+                <ModalCtaButton
+                  key={cta.sys?.id || index}
+                  cta={cta}
+                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                  onModalOpen={handleModalOpen}
+                />
+              );
+            })}
         </Box>
       </Box>
     </Box>
@@ -304,20 +317,20 @@ export function SectionHeading(props: SectionHeadingProps) {
         })}
       >
         {hasCtaCollection &&
-          sectionHeading.ctaCollection?.items?.map((cta, index) => (
-            <ModalCtaButton
-              key={cta.sys?.id || index}
-              cta={cta}
-              variant={
-                (sectionHeading.ctaCollection?.items?.length ?? 0) === 1
-                  ? 'primary'
-                  : index === 0
-                    ? 'primary'
-                    : 'outline'
-              }
-              onModalOpen={handleModalOpen}
-            />
-          ))}
+          sectionHeading.ctaCollection?.items?.map((cta, index) => {
+            const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
+            const defaultVariant =
+              totalButtons === 1 ? 'primary' : index === 0 ? 'primary' : 'outline';
+
+            return (
+              <ModalCtaButton
+                key={cta.sys?.id || index}
+                cta={cta}
+                variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                onModalOpen={handleModalOpen}
+              />
+            );
+          })}
       </Box>
     </Box>
   );

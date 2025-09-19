@@ -13,7 +13,7 @@ const iconMap = {
 
 interface ModalCtaButtonProps {
   cta: ButtonType;
-  variant: 'primary' | 'outline' | 'white';
+  variant: 'primary' | 'outline' | 'white' | 'outlineWhite';
   modalType?: ModalType;
   onModalOpen: (modal: Modal, modalType: ModalType) => void;
   className?: string;

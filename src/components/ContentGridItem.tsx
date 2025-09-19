@@ -178,7 +178,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     );
   };
 
-  const BackgroundImageItem = () => ( 
+  const BackgroundImageItem = () => (
     <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[500px]">
       {/* Background image */}
       <AirImage
