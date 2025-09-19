@@ -18,31 +18,34 @@ import {
 } from '@contentful/live-preview/react';
 
 // Import all components
-import { BannerHero } from '@/components/BannerHero';
-import { ContentGrid } from '@/components/ContentGrid';
-import { ContentGridItem } from '@/components/ContentGridItem';
-import { Content } from '@/components/Content';
-import { CtaBanner } from '@/components/CtaBanner';
-import { ImageBetween } from '@/components/ImageBetween';
-import { Slider } from '@/components/Slider';
-import { PageList } from '@/components/global/PageList';
-import { Page } from '@/components/global/Page';
-import { Header } from '@/components/global/Header';
-import { Footer } from '@/components/global/Footer';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { Content } from '@/components/Content/Content';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { Slider } from '@/components/Slider/Slider';
+import { PageList } from '@/components/PageList/PageList';
+import { Page } from '@/components/Page/Page';
+import { Header } from '@/components/Header/Header';
+import { Footer } from '@/components/Footer/Footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 
 // Import all API functions
-import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
-import { getPageById } from '@/lib/contentful-api/page';
-import { getPageListById } from '@/lib/contentful-api/page-list';
-import { getBannerHero } from '@/lib/contentful-api/banner-hero';
-import { getContentById } from '@/lib/contentful-api/content';
-import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
-import { getFooterById } from '@/lib/contentful-api/footer';
-import { getHeaderById } from '@/lib/contentful-api/header';
-import { getImageBetweenById } from '@/lib/contentful-api/image-between';
-import { getSliderById } from '@/lib/contentful-api/slider';
-import { getProductById } from '@/lib/contentful-api/product';
+import {
+  getContentGridById,
+  getContentGridItemById
+} from '@/components/ContentGrid/ContentGridApi';
+import { getPageById } from '@/components/Page/PageApi';
+import { getPageListById } from '@/components/PageList/PageListApi';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
+import { getContentById } from '@/components/Content/ContentApi';
+import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { getSliderById } from '@/components/Slider/SliderApi';
+import { getProductById } from '@/components/Product/ProductApi';
 
 // Content type configuration
 interface ContentTypeConfig {

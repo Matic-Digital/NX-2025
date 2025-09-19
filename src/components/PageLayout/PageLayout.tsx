@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Header as HeaderType, Footer as FooterType } from '@/types/contentful';
-import { Header } from '@/components/global/Header';
-import { Footer } from '@/components/global/Footer';
+import type { Header as HeaderType, Footer as FooterType } from '@/types';
+import { Header } from '@/components/Header/Header';
+import { Footer } from '@/components/Footer/Footer';
 import { Main } from '@/components/global/matic-ds';
 // Import the layout CSS
 import '@/styles/layout.css';
-import { getHeaderById } from '@/lib/contentful-api/header';
-import { getFooterById } from '@/lib/contentful-api/footer';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
 import { Box } from '@/components/global/matic-ds';
 
 interface PageLayoutProps {

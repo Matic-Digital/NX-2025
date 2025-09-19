@@ -2,24 +2,27 @@ import { draftMode, cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Import all the API functions
-import { getContentGridById, getContentGridItemById } from '@/lib/contentful-api/content-grid';
-import { getPageById } from '@/lib/contentful-api/page';
-import { getPageListById } from '@/lib/contentful-api/page-list';
-import { getBannerHero } from '@/lib/contentful-api/banner-hero';
+import {
+  getContentGridById,
+  getContentGridItemById
+} from '@/components/ContentGrid/ContentGridApi';
+import { getPageById } from '@/components/Page/PageApi';
+import { getPageListById } from '@/components/PageList/PageListApi';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
-import { getContentById } from '@/lib/contentful-api/content';
-import { getCtaBannerById } from '@/lib/contentful-api/cta-banner';
-import { getFooterById } from '@/lib/contentful-api/footer';
-import { getHeaderById } from '@/lib/contentful-api/header';
-import { getImageById } from '@/lib/contentful-api/image';
-import { getImageBetweenById } from '@/lib/contentful-api/image-between';
-import { getProductById } from '@/lib/contentful-api/product';
+import { getContentById } from '@/components/Content/ContentApi';
+import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { getImageById } from '@/components/Image/ImageApi';
+import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { getProductById } from '@/components/Product/ProductApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { getServiceById } from '@/lib/contentful-api/service';
-import { getSliderById } from '@/lib/contentful-api/slider';
-import { getSliderItemById } from '@/lib/contentful-api/slider-item';
-import { getSocialById } from '@/lib/contentful-api/social';
-import { getSolutionById } from '@/lib/contentful-api/solution';
+import { getServiceById } from '@/components/Service/ServiceApi';
+import { getSliderById } from '@/components/Slider/SliderApi';
+import { getSliderItemById } from '@/components/Slider/SliderItemApi';
+import { getSocialById } from '@/components/Social/SocialApi';
+import { getSolutionById } from '@/components/Solution/SolutionApi';
 
 // Content type to API function mapping
 const contentTypeMap = {

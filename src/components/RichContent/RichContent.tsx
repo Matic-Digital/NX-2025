@@ -499,7 +499,7 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
   return nodes.map((node: ContentfulNode) => processNode(node));
 };
 
-const RichContent: React.FC<RichContentProps> = ({
+function RichContent({
   sys,
   title,
   tableOfContents,
@@ -508,7 +508,7 @@ const RichContent: React.FC<RichContentProps> = ({
   variant,
   className = '',
   __typename
-}) => {
+}: RichContentProps) {
   console.log('RichContent component received props:', {
     sys,
     title,

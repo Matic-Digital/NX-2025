@@ -25,31 +25,31 @@
 
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPageListBySlug } from '@/lib/contentful-api/page-list';
-import { getProductBySlug } from '@/lib/contentful-api/product';
-import { getServiceBySlug } from '@/lib/contentful-api/service';
-import { getSolutionBySlug } from '@/lib/contentful-api/solution';
+import { getPageListBySlug } from '@/components/PageList/PageListApi';
+import { getProductBySlug } from '@/components/Product/ProductApi';
+import { getServiceBySlug } from '@/components/Service/ServiceApi';
+import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
-import { getPageBySlug } from '@/lib/contentful-api/page';
+import { getPageBySlug } from '@/components/Page/PageApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { BannerHero } from '@/components/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
-import { CtaGrid } from '@/components/CtaGrid';
-import { Content } from '@/components/Content';
-import { ContentGrid } from '@/components/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import RichContent from '@/components/RichContent/RichContent';
-import { Slider } from '@/components/Slider';
-import { RegionsMap } from '@/components/RegionsMap';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { Product } from '@/types/contentful/Product';
-import type { Service } from '@/types/contentful/Service';
-import type { Solution } from '@/types/contentful/Solution';
+import { Slider } from '@/components/Slider/Slider';
+import { RegionsMap } from '@/components/Region/RegionsMap';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
+import type { Product } from '@/components/Product/ProductSchema';
+import type { Service } from '@/components/Service/ServiceSchema';
+import type { Solution } from '@/components/Solution/SolutionSchema';
 import type { Post } from '@/components/Post/PostSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import {
   extractOpenGraphImage,
   extractSEOTitle,
@@ -69,6 +69,13 @@ const componentMap = {
   Slider,
   RegionsMap
 } as const;
+
+console.log('🔍 Component map initialized:', {
+  hasRichContent: !!RichContent,
+  hasContentTypeRichText: !!componentMap.ContentTypeRichText,
+  richContentName: RichContent?.name,
+  allKeys: Object.keys(componentMap)
+});
 
 // Type-safe component map with explicit typing
 type _ComponentMapType = {
@@ -439,6 +446,20 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
   console.log(
     `Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`
   );
+  console.log('Full component data:', JSON.stringify(component, null, 2));
+  console.log('Available component types:', Object.keys(componentMap));
+  console.log('RichContent component:', RichContent);
+  
+  // Check if this is a RichContent item (has richText or content field)
+  const hasRichText = 'richText' in (component as any) || 'content' in (component as any);
+  console.log('Has richText/content field:', hasRichText);
+  if (hasRichText) {
+    console.log('This appears to be RichContent, checking fields:', {
+      richText: (component as any).richText,
+      content: (component as any).content,
+      tableOfContents: (component as any).tableOfContents
+    });
+  }
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {

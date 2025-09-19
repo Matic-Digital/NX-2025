@@ -21,20 +21,21 @@
 import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/contentful-api';
-import { BannerHero } from '@/components/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
-import { Content } from '@/components/Content';
-import { ContentGrid } from '@/components/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween';
-import { RegionsMap } from '@/components/RegionsMap';
-import { PageList } from '@/components/global/PageList';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { RegionsMap } from '@/components/Region/RegionsMap';
+import RichContent from '@/components/RichContent/RichContent';
+import { PageList } from '@/components/PageList/PageList';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList as PageListType } from '@/types/contentful/PageList';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
-import type { PageListContent } from '@/types/contentful/PageList';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { PageListContent } from '@/components/PageList/PageListSchema';
 import {
   extractOpenGraphImage,
   extractSEOTitle,
@@ -48,8 +49,9 @@ const componentMap = {
   ContentGrid: ContentGrid,
   CtaBanner: CtaBanner,
   ImageBetween: ImageBetween,
-  RegionsMap: RegionsMap
-  // Add other component types here as they are created
+  RegionsMap: RegionsMap,
+  RichContent: RichContent,
+  ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };
 
 // Define props for the content component
@@ -61,7 +63,8 @@ interface ContentPageProps {
 // Helper function to check if a slug should be redirected to nested path
 async function checkForNestedRedirect(slug: string): Promise<string | null> {
   try {
-    const pageLists = await getAllPageLists(false);
+    const pageListsResponse = await getAllPageLists(false);
+    const pageLists = pageListsResponse.items;
 
     // Type guard to check if an item has a slug property
     const hasSlug = (item: unknown): item is { slug: string; sys: { id: string } } => {
@@ -73,7 +76,7 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       if (visited.has(itemId)) return []; // Prevent infinite loops
       visited.add(itemId);
 
-      for (const pageList of pageLists.items) {
+      for (const pageList of pageLists) {
         if (!pageList.pagesCollection?.items?.length) continue;
 
         const foundItem = pageList.pagesCollection.items.find((item) => item?.sys?.id === itemId);
@@ -86,32 +89,33 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       return [];
     };
 
-    // First, check if the slug itself is a PageList
-    const targetPageList = pageLists.items.find((pageList) => pageList.slug === slug);
-    if (targetPageList) {
-      const parentPath = buildRoutingPath(targetPageList.sys.id);
-      if (parentPath.length > 0) {
-        const fullPath = [...parentPath, slug].join('/');
-        return fullPath;
-      }
+    // Find the PageList that matches slug
+    const targetPageList = pageLists.find((pageList) => pageList.slug === slug);
+    if (!targetPageList) return null;
+
+    // Check if this PageList has parents
+    const parentPath = buildRoutingPath(targetPageList.sys.id);
+    if (parentPath.length > 0) {
+      const fullPath = [...parentPath, slug].join('/');
+      return fullPath;
     }
 
-    // If not a PageList, search for the slug in all PageList items (Pages, Products, etc.)
-    for (const pageList of pageLists.items) {
+    // Check if slug is a content item within any PageList
+    for (const pageList of pageLists) {
       if (!pageList.pagesCollection?.items?.length) continue;
 
       const foundItem = pageList.pagesCollection.items.find(
         (item) => hasSlug(item) && item.slug === slug
       );
 
-      if (foundItem) {
-        // Build the full path including this item's parents
+      if (foundItem && hasSlug(foundItem)) {
         const parentPath = buildRoutingPath(pageList.sys.id);
-        const fullPath = [...parentPath, pageList.slug, slug].join('/');
-        return fullPath;
+        if (parentPath.length > 0) {
+          const fullPath = [...parentPath, pageList.slug].join('/');
+          return fullPath;
+        }
       }
     }
-
     return null;
   } catch (error) {
     console.error('Error checking for nested redirect:', error);
@@ -357,13 +361,16 @@ function renderPage(page: Page) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type
@@ -398,13 +405,16 @@ function renderPageList(pageList: PageListType) {
           return null;
         }
 
-        const typeName = component.__typename!; // Using non-null assertion as we've checked it exists
+        // Use type assertion to access __typename safely
+        const typeName = (component as { __typename: string }).__typename;
 
         // Check if we have a component for this type
         if (typeName && typeName in componentMap) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
+          // Use type assertion to access sys.id safely
+          const componentWithSys = component as { sys: { id: string } };
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={component.sys.id} {...(component as any)} />;
+          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
         // Log a warning if we don't have a component for this type

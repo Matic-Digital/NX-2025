@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ContactForm } from '@/components/forms/ContactForm';
+import { ContactForm } from '@/components/Forms/ContactForm';
 import { z } from 'zod';
 
 // Mock the dependencies
