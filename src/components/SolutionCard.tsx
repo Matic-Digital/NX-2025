@@ -85,20 +85,20 @@ export function SolutionCard(props: SolutionCardProps) {
         <Box
           direction="col"
           gap={4}
-          className="md:group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 md:transition-all md:duration-300"
+          className="lg:group-hover:bg-primary relative z-20 h-full cursor-pointer p-6 lg:transition-all lg:duration-300"
         >
           {/* Text Content */}
           <Box direction="col" gap={4} className="h-full justify-between">
             <Box direction="col" gap={3}>
               <h3
-                className="text-headline-sm line-clamp-2 md:transition-colors md:duration-300 md:group-hover:text-white"
+                className="text-headline-sm line-clamp-2 lg:transition-colors lg:duration-300 lg:group-hover:text-white"
                 {...inspectorProps({ fieldId: 'heading' })}
               >
                 {title}
               </h3>
               {description && (
                 <p
-                  className="text-body-sm text-text-subtle line-clamp-4 opacity-100 md:opacity-0 md:transition-all md:duration-300 md:group-hover:text-white md:group-hover:opacity-100"
+                  className="text-body-sm text-text-subtle line-clamp-4 opacity-100 lg:opacity-0 lg:transition-all lg:duration-300 lg:group-hover:text-white lg:group-hover:opacity-100"
                   {...inspectorProps({ fieldId: 'description' })}
                 >
                   {description}
@@ -108,7 +108,7 @@ export function SolutionCard(props: SolutionCardProps) {
             <Link href={`/solutions/${slug}`}>
               <Button
                 variant="outline"
-                className="md:group-hover:bg-background md:group-hover:text-foreground mt-auto md:transition-colors md:group-hover:border-transparent"
+                className="lg:group-hover:bg-background lg:group-hover:text-foreground mt-auto lg:transition-colors lg:group-hover:border-transparent"
               >
                 See Details
               </Button>
