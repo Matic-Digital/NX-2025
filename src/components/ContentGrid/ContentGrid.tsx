@@ -180,7 +180,7 @@ export function ContentGrid(props: ContentGridProps) {
   return (
     <ErrorBoundary>
       <div className={shouldUseDarkMode ? 'dark bg-background' : ''}>
-        <Section className="relative">
+        <Section className="relative overflow-hidden">
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage
               link={contentGrid.backgroundImage?.link}
