@@ -3,7 +3,7 @@
  * Provides functions for fetching and managing blog articles from Contentful CMS
  */
 
-import type { GraphQLResponse } from '@/types/contentful';
+import type { GraphQLResponse } from '@/types';
 
 import { ContentfulError, NetworkError, GraphQLError } from './errors';
 
@@ -22,11 +22,6 @@ export async function fetchGraphQL<T>(
   cacheConfig?: { next: { revalidate: number } }
 ): Promise<GraphQLResponse<T>> {
   try {
-    console.log(
-      `[fetchGraphQL] query: ${query.substring(0, 100)}${query.length > 100 ? '...' : ''}`
-    );
-    console.log('[fetchGraphQL] variables:', variables);
-
     // Use explicit cache settings based on preview mode
     // For preview content, use no-store to ensure fresh content
     // For production content, use force-cache when not explicitly configured
@@ -37,9 +32,7 @@ export async function fetchGraphQL<T>(
         : { cache: 'force-cache' as const };
 
     // Debug: Log the environment variable value
-    console.log('CONTENTFUL_ENVIRONMENT:', process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT);
     const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'development';
-    console.log('Using environment:', environment);
 
     const response = await fetch(
       `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/environments/${environment}`,
@@ -74,8 +67,6 @@ export async function fetchGraphQL<T>(
     }
 
     const json = (await response.json()) as GraphQLResponse<T>;
-
-    console.log('[fetchGraphQL] response:', json.data);
 
     // Check for GraphQL errors - ensure we're checking the array length
     if (json.errors && json.errors.length > 0) {

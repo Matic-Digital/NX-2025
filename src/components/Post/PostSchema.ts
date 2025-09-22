@@ -1,0 +1,65 @@
+import { z } from 'zod';
+import { ImageSchema } from '../Image/ImageSchema';
+import { TeamMemberSchema } from '../TeamMember/TeamMemberSchema';
+
+// Post category options as defined in the content model
+const PostCategorySchema = z.enum([
+  'Blog',
+  'Case Study',
+  'Data Sheet',
+  'Featured',
+  'In The News',
+  'Press Release',
+  'Resources',
+  'Shug Speaks',
+  'Video'
+]);
+
+// Rich text content schema (simplified for the content field)
+const RichTextSchema = z.object({
+  json: z.any(), // The actual rich text content returned by Contentful
+  nodeType: z.string().optional(),
+  data: z.record(z.any()).optional(),
+  content: z.array(z.any()).optional()
+});
+
+export const PostSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  slug: z.string(),
+  excerpt: z.string().optional(),
+  datePublished: z.string().optional(),
+  mainImage: ImageSchema.optional(),
+  content: RichTextSchema,
+  authors: z.array(TeamMemberSchema),
+  categories: z.array(PostCategorySchema),
+  tags: z.array(z.string()).optional(),
+  openGraphImage: ImageSchema.optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  seoFocusKeyword: z.string().optional(),
+  __typename: z.string().optional()
+});
+
+export const PostSliderItemSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string(),
+  slug: z.string(),
+  excerpt: z.string().optional(),
+  mainImage: ImageSchema.optional(),
+  content: RichTextSchema,
+  categories: z.array(PostCategorySchema),
+  __typename: z.string().optional()
+});
+
+export type Post = z.infer<typeof PostSchema>;
+export type PostCategory = z.infer<typeof PostCategorySchema>;
+export type PostSliderItem = z.infer<typeof PostSliderItemSchema>;
+
+export interface PostResponse {
+  items: Post[];
+}

@@ -123,8 +123,5 @@ export const Box = ({
     className
   );
 
-  console.log('Box props:', { cols, rows });
-  console.log('Generated classes:', stackClasses);
-
   return <div className={stackClasses}>{children}</div>;
 };

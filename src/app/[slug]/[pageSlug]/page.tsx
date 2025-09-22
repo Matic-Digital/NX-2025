@@ -14,27 +14,28 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
-import { getPageBySlug } from '@/lib/contentful-api/page';
-import { getPageListBySlug, getAllPageLists } from '@/lib/contentful-api/page-list';
-import { getProductBySlug } from '@/lib/contentful-api/product';
-import { getServiceBySlug } from '@/lib/contentful-api/service';
-import { getSolutionBySlug } from '@/lib/contentful-api/solution';
-import { getPostBySlug } from '@/lib/contentful-api/post';
-import { PageLayout } from '@/components/layout/PageLayout';
-import type { Page } from '@/types/contentful/Page';
-import type { PageList, PageListContent } from '@/types/contentful/PageList';
-import type { Product } from '@/types/contentful/Product';
-import type { Service } from '@/types/contentful/Service';
-import type { Solution } from '@/types/contentful/Solution';
-import type { Post } from '@/types/contentful/Post';
-import type { PageLayout as PageLayoutType } from '@/types/contentful/PageLayout';
-import { BannerHero } from '@/components/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner';
-import { Content } from '@/components/Content';
-import { ContentGrid } from '@/components/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween';
-import type { Header as HeaderType } from '@/types/contentful/Header';
-import type { Footer as FooterType } from '@/types/contentful/Footer';
+import { getPageBySlug } from '@/components/Page/PageApi';
+import { getPageListBySlug, getAllPageLists } from '@/components/PageList/PageListApi';
+import { getProductBySlug } from '@/components/Product/ProductApi';
+import { getServiceBySlug } from '@/components/Service/ServiceApi';
+import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
+import { getPostBySlug } from '@/components/Post/PostApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList, PageListContent } from '@/components/PageList/PageListSchema';
+import type { Product } from '@/components/Product/ProductSchema';
+import type { Service } from '@/components/Service/ServiceSchema';
+import type { Solution } from '@/components/Solution/SolutionSchema';
+import type { Post } from '@/components/Post/PostSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import RichContent from '@/components/RichContent/RichContent';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Metadata } from 'next';
 import {
   extractOpenGraphImage,
@@ -48,7 +49,9 @@ const componentMap = {
   Content,
   ContentGrid,
   CtaBanner,
-  ImageBetween
+  ImageBetween,
+  RichContent,
+  ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };
 
 // Define props for the nested page component
@@ -63,14 +66,15 @@ async function checkForPartialPathRedirect(
   pageSlug: string
 ): Promise<string | null> {
   try {
-    const pageLists = await getAllPageLists(false);
+    const pageListsResponse = await getAllPageLists(false);
+    const pageLists = pageListsResponse.items;
 
     // Build routing path by finding parent PageLists
     const buildRoutingPath = (itemId: string, visited = new Set<string>()): string[] => {
       if (visited.has(itemId)) return []; // Prevent infinite loops
       visited.add(itemId);
 
-      for (const pageList of pageLists.items) {
+      for (const pageList of pageLists) {
         if (!pageList.pagesCollection?.items?.length) continue;
 
         const foundItem = pageList.pagesCollection.items.find((item) => item?.sys?.id === itemId);
@@ -84,7 +88,7 @@ async function checkForPartialPathRedirect(
     };
 
     // Find the PageList that matches pageListSlug
-    const targetPageList = pageLists.items.find((pl) => pl.slug === pageListSlug);
+    const targetPageList = pageLists.find((pl) => pl.slug === pageListSlug);
     if (!targetPageList) return null;
 
     // Check if this PageList has parents
@@ -153,7 +157,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
     // Check if the content item is in the PageList
     const itemInList = pageList.pagesCollection.items.some(
-      (item) => item.sys.id === contentItem!.sys.id
+      (item) => item?.sys?.id === contentItem!.sys.id
     );
 
     if (!itemInList) {
@@ -390,9 +394,9 @@ function renderContentByType(
 
         {contentType === 'Solution' && (
           <div>
-            <h2>{(contentItem as Solution).cardHeading}</h2>
-            <h3>{(contentItem as Solution).cardSubheading}</h3>
-            <p>{(contentItem as Solution).cardDescription}</p>
+            <h2>{(contentItem as Solution).heading}</h2>
+            <h3>{(contentItem as Solution).subheading}</h3>
+            <p>{(contentItem as Solution).description}</p>
             {/* Add more Solution-specific rendering here */}
           </div>
         )}
@@ -514,7 +518,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
     // Check if the content item is in the PageList
     const itemInList = pageList.pagesCollection.items.some(
-      (item) => item.sys.id === contentItem!.sys.id
+      (item) => item?.sys?.id === contentItem!.sys.id
     );
 
     if (!itemInList) {

@@ -16,6 +16,15 @@ const inter = Inter({
 });
 
 /**
+ * Viewport configuration for the application
+ * @see https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ */
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1
+};
+
+/**
  * Metadata for the application
  * This will be used by Next.js for SEO and browser tab information
  * @see https://nextjs.org/docs/app/api-reference/functions/generate-metadata
@@ -24,7 +33,6 @@ export const metadata: Metadata = {
   title: 'Nextracker',
   description: 'Modern content management and digital experiences',
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   openGraph: {
     siteName: 'Nextracker',

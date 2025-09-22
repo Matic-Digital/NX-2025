@@ -19,28 +19,40 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderAccordion
   },
   {
+    detector: contentTypeDetectors.isCollection,
+    renderer: contentRenderers.renderCollection
+  },
+  {
+    detector: contentTypeDetectors.isContactCard,
+    renderer: contentRenderers.renderContactCard
+  },
+  {
     detector: contentTypeDetectors.isContentGridItem,
     renderer: contentRenderers.renderContentGridItem
   },
   {
-    detector: contentTypeDetectors.isPost,
-    renderer: contentRenderers.renderPost
-  },
-  {
-    detector: contentTypeDetectors.isVideo,
-    renderer: contentRenderers.renderVideo
+    detector: contentTypeDetectors.isCtaGrid,
+    renderer: contentRenderers.renderCtaGrid
   },
   {
     detector: contentTypeDetectors.isImage,
     renderer: contentRenderers.renderImage
   },
   {
-    detector: contentTypeDetectors.isProduct,
-    renderer: contentRenderers.renderProduct
+    detector: contentTypeDetectors.isLocation,
+    renderer: contentRenderers.renderLocation
   },
   {
-    detector: contentTypeDetectors.isSolution,
-    renderer: contentRenderers.renderSolution
+    detector: contentTypeDetectors.isPageList,
+    renderer: contentRenderers.renderPageList
+  },
+  {
+    detector: contentTypeDetectors.isPost,
+    renderer: contentRenderers.renderPost
+  },
+  {
+    detector: contentTypeDetectors.isProduct,
+    renderer: contentRenderers.renderProduct
   },
   {
     detector: contentTypeDetectors.isService,
@@ -51,20 +63,16 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderSlider
   },
   {
-    detector: contentTypeDetectors.isCtaGrid,
-    renderer: contentRenderers.renderCtaGrid
-  },
-  {
-    detector: contentTypeDetectors.isPageList,
-    renderer: contentRenderers.renderPageList
+    detector: contentTypeDetectors.isSolution,
+    renderer: contentRenderers.renderSolution
   },
   {
     detector: contentTypeDetectors.isTestimonials,
     renderer: contentRenderers.renderTestimonials
   },
   {
-    detector: contentTypeDetectors.isCollection,
-    renderer: contentRenderers.renderCollection
+    detector: contentTypeDetectors.isVideo,
+    renderer: contentRenderers.renderVideo
   }
 ];
 
@@ -79,6 +87,12 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   currentPath,
   variant
 }) => {
+  // Early return if item is null/undefined
+  if (!item) {
+    console.warn('ContentItemRenderer received null/undefined item');
+    return null;
+  }
+
   const context = {
     index,
     validItems,
@@ -87,22 +101,15 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
     variant
   };
 
-  console.log('ContentItemRenderer processing item:', { 
-    typename: item.__typename, 
-    sysId: item.sys?.id,
-    hasTitle: !!item.title 
-  });
-
   // Find the appropriate renderer for this content type
   for (const { detector, renderer } of contentTypeRegistry) {
     if (detector(item)) {
-      console.log(`Found renderer for ${item.__typename}`);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
       return renderer(item as any, context);
     }
   }
 
   // Fallback: skip unrecognized items
-  console.warn(`Unrecognized content type: ${item.__typename}`);
+  console.warn(`Unrecognized content type: ${item?.__typename}`);
   return null;
 };
