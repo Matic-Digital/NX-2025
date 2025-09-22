@@ -1,5 +1,5 @@
-// tailwind.config.js
-module.exports = {
+// tailwind.config.ts
+const config = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
@@ -177,3 +177,5 @@ module.exports = {
     }
   }
 };
+
+export default config;

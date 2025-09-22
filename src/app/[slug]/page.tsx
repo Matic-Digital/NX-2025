@@ -27,6 +27,7 @@ import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { RegionsMap } from '@/components/Region/RegionsMap';
+import RichContent from '@/components/RichContent/RichContent';
 import { PageList } from '@/components/PageList/PageList';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
@@ -48,8 +49,9 @@ const componentMap = {
   ContentGrid: ContentGrid,
   CtaBanner: CtaBanner,
   ImageBetween: ImageBetween,
-  RegionsMap: RegionsMap
-  // Add other component types here as they are created
+  RegionsMap: RegionsMap,
+  RichContent: RichContent,
+  ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };
 
 // Define props for the content component
