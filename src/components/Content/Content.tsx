@@ -134,7 +134,7 @@ export function Content(props: ContentProps) {
   };
 
   // ===== EARLY RETURNS =====
-  if (!loading) {
+  if (loading) {
     return <ContentSkeleton variant={fetchedData?.variant} />;
   }
 
