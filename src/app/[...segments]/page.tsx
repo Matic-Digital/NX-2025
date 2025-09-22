@@ -38,6 +38,7 @@ import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import RichContent from '@/components/RichContent/RichContent';
 import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/Region/RegionsMap';
 import type { Page } from '@/components/Page/PageSchema';
@@ -63,8 +64,22 @@ const componentMap = {
   CtaBanner,
   CtaGrid,
   ImageBetween,
+  RichContent,
+  ContentTypeRichText: RichContent, // Map Contentful's ContentTypeRichText to RichContent component
   Slider,
   RegionsMap
+} as const;
+
+console.log('🔍 Component map initialized:', {
+  hasRichContent: !!RichContent,
+  hasContentTypeRichText: !!componentMap.ContentTypeRichText,
+  richContentName: RichContent?.name,
+  allKeys: Object.keys(componentMap)
+});
+
+// Type-safe component map with explicit typing
+type _ComponentMapType = {
+  [K in keyof typeof componentMap]: (typeof componentMap)[K];
 };
 
 // Define props for the nested component
@@ -431,9 +446,24 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
   console.log(
     `Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`
   );
+  console.log('Full component data:', JSON.stringify(component, null, 2));
+  console.log('Available component types:', Object.keys(componentMap));
+  console.log('RichContent component:', RichContent);
+  
+  // Check if this is a RichContent item (has richText or content field)
+  const hasRichText = 'richText' in (component as any) || 'content' in (component as any);
+  console.log('Has richText/content field:', hasRichText);
+  if (hasRichText) {
+    console.log('This appears to be RichContent, checking fields:', {
+      richText: (component as any).richText,
+      content: (component as any).content,
+      tableOfContents: (component as any).tableOfContents
+    });
+  }
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
+    console.log(`Found ComponentType for ${typedComponent.__typename}:`, ComponentType.name);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }

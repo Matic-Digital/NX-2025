@@ -5,8 +5,8 @@ import { ImageSchema } from '../Image/ImageSchema';
 import { SliderSysSchema } from '../Slider/SliderSchema';
 import { VideoSchema } from '../Video/VideoSchema';
 
-const ContentAssetUnion = z.union([ImageSchema, SliderSysSchema, VideoSchema, ContentGridSchema]);
-export type ContentAsset = z.infer<typeof ContentAssetUnion>;
+const ImageBetweenAssetUnion = z.union([ImageSchema, SliderSysSchema, VideoSchema, ContentGridSchema]);
+export type ImageBetweenAsset = z.infer<typeof ImageBetweenAssetUnion>;
 
 export const ImageBetweenSchema = z.object({
   sys: z.object({
@@ -14,7 +14,7 @@ export const ImageBetweenSchema = z.object({
   }),
   title: z.string(),
   contentTop: ContentGridSchema,
-  asset: ContentAssetUnion,
+  asset: ImageBetweenAssetUnion,
   backgroundMedia: AssetSchema,
   contentBottom: ContentGridSchema,
   __typename: z.string().optional()
