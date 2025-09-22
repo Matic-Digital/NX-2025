@@ -112,7 +112,7 @@ function HeaderContent(props: HeaderProps) {
 
   // Load overflow menu if header has overflow reference
   React.useEffect(() => {
-    if (header?.overflow?.sys?.id) {
+    if (header?.overflow?.sys?.id && !overflowMenu && !overflowMenuLoading) {
       console.log('Loading overflow menu with ID:', header.overflow.sys.id);
       console.log('Overflow typename:', header.overflow.__typename);
       setOverflowMenuLoading(true);
@@ -159,7 +159,7 @@ function HeaderContent(props: HeaderProps) {
           .finally(() => setOverflowMenuLoading(false));
       }
     }
-  }, [header?.overflow?.sys?.id, header?.overflow, overflowMenu]);
+  }, [header?.overflow?.sys?.id]);
 
   // Handle scroll events to add frosted glass effect to header
   React.useEffect(() => {
