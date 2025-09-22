@@ -63,8 +63,11 @@ interface ContentPageProps {
 // Helper function to check if a slug should be redirected to nested path
 async function checkForNestedRedirect(slug: string): Promise<string | null> {
   try {
+    console.log(`Starting checkForNestedRedirect for: ${slug}`);
     const pageListsResponse = await getAllPageLists(false);
+    console.log(`getAllPageLists returned:`, pageListsResponse ? 'Success' : 'Failed');
     const pageLists = pageListsResponse.items;
+    console.log(`Found ${pageLists?.length || 0} PageLists`);
 
     // Type guard to check if an item has a slug property
     const hasSlug = (item: unknown): item is { slug: string; sys: { id: string } } => {
@@ -90,17 +93,25 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     };
 
     // Find the PageList that matches slug
+    console.log(`Looking for PageList with slug: ${slug}`);
     const targetPageList = pageLists.find((pageList) => pageList.slug === slug);
-    if (!targetPageList) return null;
-
-    // Check if this PageList has parents
-    const parentPath = buildRoutingPath(targetPageList.sys.id);
-    if (parentPath.length > 0) {
-      const fullPath = [...parentPath, slug].join('/');
-      return fullPath;
+    console.log(`Direct PageList match:`, targetPageList ? `Found: ${targetPageList.title}` : 'Not found');
+    if (!targetPageList) {
+      console.log(`No direct PageList match, continuing to check for content items...`);
+    } else {
+      console.log(`Found direct PageList match, checking for parents...`);
     }
 
-    // Check if slug is a content item within any PageList
+    // Check if this PageList has parents
+    if (targetPageList) {
+      const parentPath = buildRoutingPath(targetPageList.sys.id);
+      if (parentPath.length > 0) {
+        const fullPath = [...parentPath, slug].join('/');
+        return fullPath;
+      }
+    }
+
+    // Check if slug is a content item within any PageList (including nested PageLists)
     for (const pageList of pageLists) {
       if (!pageList.pagesCollection?.items?.length) continue;
 
@@ -110,10 +121,76 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
 
       if (foundItem && hasSlug(foundItem)) {
         const parentPath = buildRoutingPath(pageList.sys.id);
-        if (parentPath.length > 0) {
-          const fullPath = [...parentPath, pageList.slug].join('/');
-          return fullPath;
+        const fullPath = [...parentPath, pageList.slug, foundItem.slug].join('/');
+        return fullPath;
+      }
+    }
+
+    // Also check if slug is a product/content item that should be nested deeper
+    // This handles cases like individual products within trackers
+    console.log(`Checking if ${slug} is a content item that needs nested redirect...`);
+    const allContentTypes = ['Product', 'Service', 'Solution', 'Post', 'Page'];
+    
+    for (const contentType of allContentTypes) {
+      try {
+        console.log(`Trying to fetch ${slug} as ${contentType}...`);
+        let contentItem = null;
+        
+        // Try to fetch the content item by slug using the appropriate API
+        if (contentType === 'Product') {
+          const { getProductBySlug } = await import('@/components/Product/ProductApi');
+          contentItem = await getProductBySlug(slug, false);
+        } else if (contentType === 'Service') {
+          const { getServiceBySlug } = await import('@/components/Service/ServiceApi');
+          contentItem = await getServiceBySlug(slug, false);
+        } else if (contentType === 'Solution') {
+          const { getSolutionBySlug } = await import('@/components/Solution/SolutionApi');
+          contentItem = await getSolutionBySlug(slug, false);
+        } else if (contentType === 'Post') {
+          const { getPostBySlug } = await import('@/components/Post/PostApi');
+          contentItem = await getPostBySlug(slug, false);
+        } else if (contentType === 'Page') {
+          const { getPageBySlug } = await import('@/components/Page/PageApi');
+          contentItem = await getPageBySlug(slug, false);
         }
+
+        console.log(`${contentType} fetch result for ${slug}:`, contentItem ? 'Found' : 'Not found');
+
+        if (contentItem) {
+          console.log(`Found ${contentType}: ${contentItem.title} (${contentItem.sys.id})`);
+          console.log(`Searching through ${pageLists.length} PageLists to find container...`);
+          
+          // Find which PageList contains this content item
+          for (const pageList of pageLists) {
+            if (!pageList.pagesCollection?.items?.length) continue;
+
+            console.log(`Checking PageList: ${pageList.title} (${pageList.slug}) with ${pageList.pagesCollection.items.length} items`);
+
+            const isInPageList = pageList.pagesCollection.items.some(
+              (item) => {
+                const match = item?.sys?.id === contentItem.sys.id;
+                if (match) {
+                  console.log(`Found match in PageList ${pageList.title}: ${item.sys.id}`);
+                }
+                return match;
+              }
+            );
+
+            if (isInPageList) {
+              console.log(`Content item ${slug} found in PageList: ${pageList.title}`);
+              const parentPath = buildRoutingPath(pageList.sys.id);
+              console.log(`Parent path for ${pageList.title}:`, parentPath);
+              const fullPath = [...parentPath, pageList.slug, contentItem.slug].join('/');
+              console.log(`Redirecting ${slug} to: ${fullPath}`);
+              return fullPath;
+            }
+          }
+          console.log(`Content item ${slug} not found in any PageList`);
+        }
+      } catch (error) {
+        // Continue to next content type if this one fails
+        console.log(`Failed to fetch ${contentType} with slug ${slug}:`, error);
+        continue;
       }
     }
     return null;
