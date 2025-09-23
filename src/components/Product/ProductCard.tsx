@@ -9,6 +9,7 @@ import { Box } from '@/components/global/matic-ds';
 
 import { checkPageBelongsToPageList } from '@/components/PageList/PageListApi';
 import { getProductsByIds } from '@/components/Product/ProductApi';
+import { ProductCardSkeleton } from '@/components/Product/ProductCardSkeleton';
 
 import type { Product, ProductSys } from '@/components/Product/ProductSchema';
 
@@ -62,8 +63,8 @@ export const ProductCard = (props: ProductSys) => {
     void generateProductUrl();
   }, [productData]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!loading) {
+    return <ProductCardSkeleton />;
   }
 
   if (!productData) {
