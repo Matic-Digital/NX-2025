@@ -1,5 +1,5 @@
 // Legacy exports - most types have been moved to component-specific schemas
-export * from './RichContent';
+export * from '../../components/RichContent/RichContentSchema';
 
 // Re-export from new component locations for backward compatibility
 export * from '../../components/Accordion/AccordionSchema';

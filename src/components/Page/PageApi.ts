@@ -9,7 +9,7 @@ import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from '@/components/Region/RegionApi';
-import { RICHCONTENT_GRAPHQL_FIELDS } from '@/lib/contentful-api/rich-content';
+import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 
 import { getHeaderById } from '@/components/Header/HeaderApi';
