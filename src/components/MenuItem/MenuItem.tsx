@@ -10,16 +10,14 @@ export function MenuItem({ menuItem }: MenuItemProps) {
   const { title, text, description, icon } = menuItem;
 
   // Determine the link URL and target
-  const linkUrl = menuItem.internalLink
-    ? `/${menuItem.internalLink.slug}`
-    : (menuItem.externalLink ?? '#');
+  const linkUrl = menuItem.internalLink ? `/${menuItem.internalLink.slug}` : menuItem.externalLink ?? '#';
   const linkTarget = menuItem.externalLink ? '_blank' : '_self';
   const linkRel = menuItem.externalLink ? 'noopener noreferrer' : undefined;
 
   const content = (
-    <div className="cursor-pointer min-w-[17.9rem] hover:bg-[#FFFFFF14] p-[0.75rem] w-fit flex flex-col gap-[0.5rem]">
+    <div className="flex w-fit min-w-[17.9rem] cursor-pointer flex-col gap-[0.5rem] p-[0.75rem] hover:bg-[#FFFFFF14]">
       {icon && (
-        <div className="bg-white w-fit p-[0.25rem]">
+        <div className="w-fit bg-white p-[0.25rem]">
           <Image
             src={icon.url}
             alt={icon.title ?? title}

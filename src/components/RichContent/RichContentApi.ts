@@ -7,7 +7,7 @@
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 
-import type { RichContent, RichContentResponse } from '@/types/contentful/RichContent';
+import type { RichContent, RichContentResponse } from '@/components/RichContent/RichContentSchema';
 
 export const RICHCONTENTS_PER_PAGE = 10;
 

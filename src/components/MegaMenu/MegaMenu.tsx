@@ -78,7 +78,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   if (overflow) {
     return (
       <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold text-foreground mb-2">{displayTitle}</h3>
+        <h3 className="text-foreground mb-2 text-lg font-semibold">{displayTitle}</h3>
         {menuItems.map((menuItem) => (
           <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
         ))}
@@ -89,7 +89,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   return (
     <div className="relative">
       <div
-        className="cursor-pointer px-4 py-2 text-white hover:text-gray-300 transition-colors"
+        className="cursor-pointer px-4 py-2 text-white transition-colors hover:text-gray-300"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -102,13 +102,13 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
         typeof document !== 'undefined' &&
         createPortal(
           <div
-            className="fixed top-0 left-0 w-screen h-auto min-h-fit z-30 bg-black/[0.72] shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px] p-8 pt-24"
+            className="fixed top-0 left-0 z-30 h-auto min-h-fit w-screen bg-black/[0.72] p-8 pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px]"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
             <Container className="mx-auto flex">
               <h2 className="mb-4 flex-grow text-[1.5rem] text-white">{displayTitle}</h2>
-              <div className="grid grid-cols-3 gap-4 auto-rows-min">
+              <div className="grid auto-rows-min grid-cols-3 gap-4">
                 {menuItems.map((menuItem) => (
                   <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
                 ))}

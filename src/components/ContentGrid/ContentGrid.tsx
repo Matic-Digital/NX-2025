@@ -166,9 +166,11 @@ export function ContentGrid(props: ContentGridProps) {
   const gridConfig = calculateGridConfig(validItems, contentGrid.variant);
   const { direction, gap, analysis, variant: gridVariant } = gridConfig;
 
-  // Check if this is a 3-item post layout that needs special handling
+  // Check if this is a 3-item post layout that needs special handling (but not if variant is ThreeColumn)
   const isThreeItemPostLayout =
-    validItems.length === 3 && validItems.every((item) => item.__typename === 'Post');
+    validItems.length === 3 &&
+    validItems.every((item) => item.__typename === 'Post') &&
+    contentGrid.variant !== 'ThreeColumn';
 
   // Check if this is a location layout that needs featured grid handling
   const isLocationLayout =
