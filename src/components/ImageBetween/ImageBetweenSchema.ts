@@ -1,10 +1,17 @@
 import z from 'zod';
-import { AssetSchema } from '../Asset/AssetSchema';
-import { ContentGridSchema } from '../ContentGrid/ContentGridSchema';
-import { ImageSchema } from '../Image/ImageSchema';
-import { SliderSysSchema } from '../Slider/SliderSchema';
-import { VideoSchema } from '../Video/VideoSchema';
 
+import { AssetSchema } from '@/components/Asset/AssetSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { SliderSysSchema } from '@/components/Slider/SliderSchema';
+import { VideoSchema } from '@/components/Video/VideoSchema';
+
+const ImageBetweenAssetUnion = z.union([
+  ImageSchema,
+  SliderSysSchema,
+  VideoSchema,
+  ContentGridSchema
+]);
 const ImageBetweenAssetUnion = z.union([
   ImageSchema,
   SliderSysSchema,

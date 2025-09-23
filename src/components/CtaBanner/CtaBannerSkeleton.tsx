@@ -1,7 +1,8 @@
 'use client';
 
-import { Box, Container, Section } from '@/components/global/matic-ds';
 import { cn } from '@/lib/utils';
+
+import { Box, Container, Section } from '@/components/global/matic-ds';
 
 export function CtaBannerSkeleton() {
   const SkeletonBox = ({ className, ...props }: { className?: string }) => (

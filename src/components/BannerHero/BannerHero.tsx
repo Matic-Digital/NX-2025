@@ -1,16 +1,19 @@
 'use client';
 
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { AirImage } from '@/components/Image/AirImage';
-import { Section } from '@/components/global/matic-ds';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';
+
 import { cn } from '@/lib/utils';
+
 import { BannerHeroSkeleton } from '@/components/BannerHero/BannerHeroSkeleton';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Section } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+
+import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';
 
 interface BannerHeroProps extends BannerHero {
   productContext?: {

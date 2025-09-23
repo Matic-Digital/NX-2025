@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-dynamic-require, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
+import { ExternalPageSchema } from './ExternalPageSchema';
 import { z } from 'zod';
-import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+
 import { BannerHeroSchema } from '@/components/BannerHero/BannerHeroSchema';
+import { ContentSchema } from '@/components/Content/ContentSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
 import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
 import { PageSchema } from '@/components/Page/PageSchema';
-import { ExternalPageSchema } from './ExternalPageSchema';
-import { ContentSchema } from '@/components/Content/ContentSchema';
+import { PostSchema } from '@/components/Post/PostSchema';
 import { ProductSchema } from '@/components/Product/ProductSchema';
 import { ServiceSchema } from '@/components/Service/ServiceSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
-import { PostSchema } from '@/components/Post/PostSchema';
 
 // Define non-recursive unions first
 const PageListContentUnion = z.union([

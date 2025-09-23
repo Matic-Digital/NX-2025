@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 import { Container } from '@/components/global/matic-ds';
 
-import type { RichContent as RichContentType } from '@/components/RichContent/RichContentSchema';
+import type { RichContent as RichContentType } from '@/types/contentful/RichContent';
 import type { Block, Document, Inline } from '@contentful/rich-text-types';
 
 // Type definitions for Contentful rich text nodes
@@ -159,6 +159,8 @@ const extractTocItems = (document: Document): TocItem[] => {
 
   return tocItems;
 };
+
+// Use simpler types to avoid TypeScript complexity
 
 // Custom rendering options for rich text
 const renderOptions = {
@@ -491,7 +493,7 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
   return nodes.map((node: ContentfulNode) => processNode(node));
 };
 
-function RichContent({
+const RichContent: React.FC<RichContentProps> = ({
   sys,
   title,
   tableOfContents,
@@ -500,7 +502,7 @@ function RichContent({
   variant,
   className = '',
   __typename
-}: RichContentProps) {
+}) => {
   console.log('RichContent component received props:', {
     sys,
     title,
@@ -755,6 +757,6 @@ function RichContent({
       </Container>
     </div>
   );
-}
+};
 
 export default RichContent;

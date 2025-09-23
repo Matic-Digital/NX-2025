@@ -1,40 +1,46 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSlidersByIds } from '@/components/Slider/SliderApi';
+
+import { ArrowUpRight, Plus } from 'lucide-react';
+
+import { resolveNestedUrls } from '@/lib/page-link-utils';
 import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious,
-  type CarouselApi
+  CarouselPrevious
 } from '@/components/ui/carousel';
-import type {
-  Slider,
-  SliderSys,
-  SliderItem,
-  PostSliderItem,
-  Image as ImageType,
-  TimelineSliderItem,
-  TeamMember,
-  Solution
-} from '@/types';
-import { AirImage } from '@/components/Image/AirImage';
+
 import { Box, Container } from '@/components/global/matic-ds';
-import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
-} from '@contentful/live-preview/react';
+
+import { AirImage } from '@/components/Image/AirImage';
+import { getSlidersByIds } from '@/components/Slider/SliderApi';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { SliderItemType } from '@/components/Slider/SliderSchema';
-import { ArrowUpRight, Plus } from 'lucide-react';
-import { resolveNestedUrls } from '@/lib/page-link-utils';
-import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import type { CarouselApi } from '@/components/ui/carousel';
+import type {
+  Image as ImageType,
+  PostSliderItem,
+  Slider,
+  SliderItem,
+  SliderSys,
+  Solution,
+  TeamMember,
+  TimelineSliderItem
+} from '@/types';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -645,6 +651,7 @@ const GenericSlider = ({
                       .map((item, timelineIndex) => {
                         const timelineItemData = item as TimelineSliderItem;
                         const isActive = current === timelineIndex + 1;
+
 
                         return (
                           <button

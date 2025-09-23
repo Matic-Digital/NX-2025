@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { ImageSchema } from '@/components/Image/ImageSchema';
+
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
 
 export const SolutionSysSchema = z.object({
   sys: z.object({

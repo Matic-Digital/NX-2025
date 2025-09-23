@@ -2,15 +2,15 @@
 
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Solution } from '@/components/Solution/SolutionSchema';
-
-import { ContentfulError, NetworkError } from '@/lib/errors';
 
 // Basic Solution fields for use in sliders and lists
 export const SOLUTION_GRAPHQL_FIELDS = `

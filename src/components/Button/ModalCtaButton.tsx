@@ -1,8 +1,11 @@
 import Link from 'next/link';
+
 import { Mail } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
+
+import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
 import type { Modal } from '@/components/Modals/Modal';
-import type { Button as ButtonType } from './ButtonSchema';
 
 export type ModalType = 'quote' | 'support';
 

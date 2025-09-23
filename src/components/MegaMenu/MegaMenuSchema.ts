@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { MenuItemSchema } from '../MenuItem/MenuItemSchema';
+
+import { MenuItemSchema } from '@/components/MenuItem/MenuItemSchema';
 
 export const MegaMenuSchema = z.object({
   sys: z.object({

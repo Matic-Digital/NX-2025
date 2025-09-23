@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { ProductSchema } from '../Product/ProductSchema';
-import { SectionHeadingSchema } from '../SectionHeading/SectionHeadingSchema';
-import { ImageSchema } from '../Image/ImageSchema';
-import { VideoSchema } from '../Video/VideoSchema';
-import { ContentGridItemSchema } from '../ContentGrid/ContentGridItemSchema';
-import { ContentVariantEnum } from './ContentVariant';
+
+import { ContentVariantEnum } from '@/components/Content/ContentVariant';
+import { ContentGridItemSchema } from '@/components/ContentGrid/ContentGridItemSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { ProductSchema } from '@/components/Product/ProductSchema';
+import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
+import { VideoSchema } from '@/components/Video/VideoSchema';
 
 const ContentItemUnion = z.union([ProductSchema, SectionHeadingSchema, ContentGridItemSchema]);
 export type ContentItem = z.infer<typeof ContentItemUnion>;

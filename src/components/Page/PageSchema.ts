@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-dynamic-require, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return */
 import { z } from 'zod';
-import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+
 import { BannerHeroSchema } from '@/components/BannerHero/BannerHeroSchema';
-import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
-import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ContentSchema } from '@/components/Content/ContentSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
 import { RegionsMapSchema } from '@/components/Region/RegionSchema';
 import { RichContentSchema } from '@/components/RichContent/RichContentSchema';
 

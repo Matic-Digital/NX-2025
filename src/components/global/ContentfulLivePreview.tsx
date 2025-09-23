@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
-import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
 import { ContentfulLivePreview } from '@contentful/live-preview';
+import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
+
+import type { ReactNode } from 'react';
 
 interface ContentfulPreviewProps {
   children: ReactNode;

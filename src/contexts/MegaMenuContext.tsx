@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useState, useRef, type ReactNode } from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
+
+import type { ReactNode } from 'react';
 
 interface MegaMenuContextType {
   isAnyMegaMenuOpen: boolean;

@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { getSolutionsByIds } from '@/components/Solution/SolutionApi';
-import { Box } from '@/components/global/matic-ds';
-import type { Solution } from '@/components/Solution/SolutionSchema';
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
+
+import { Box } from '@/components/global/matic-ds';
+
+import { getSolutionsByIds } from '@/components/Solution/SolutionApi';
+
+import type { Solution } from '@/components/Solution/SolutionSchema';
 
 interface SolutionCardProps extends Partial<Solution> {
   solutionId?: string;

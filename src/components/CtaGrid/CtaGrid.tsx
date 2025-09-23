@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
-import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
-import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { AirImage } from '@/components/Image/AirImage';
-import { Button } from '@/components/ui/button';
-import { Box, Container } from '@/components/global/matic-ds';
+
 import { resolveNestedUrls } from '@/lib/page-link-utils';
+
+import { Button } from '@/components/ui/button';
+
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+
+import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 
 export function CtaGrid(props: CtaGrid) {
   const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);

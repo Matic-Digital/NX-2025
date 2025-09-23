@@ -1,8 +1,9 @@
 'use client';
 
+import { cn } from '@/lib/utils';
+
 import { Section } from '@/components/global/matic-ds';
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
-import { cn } from '@/lib/utils';
 
 interface BannerHeroSkeletonProps {
   variant?: 'Horizontal' | 'Stacked' | 'Centered' | 'Default';

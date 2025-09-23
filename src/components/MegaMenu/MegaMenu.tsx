@@ -2,12 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { MenuItem } from '../MenuItem/MenuItem';
-import { getMegaMenuById } from './MegaMenuApi';
-import type { MegaMenu as MegaMenuType } from './MegaMenuSchema';
-import { Container, Text } from '../global/matic-ds';
+
 import { ChevronDown } from 'lucide-react';
-import { useMegaMenuContext } from '../../contexts/MegaMenuContext';
+
+import { useMegaMenuContext } from '@/contexts/MegaMenuContext';
+
+import { Container, Text } from '@/components/global/matic-ds';
+
+import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
+import { MenuItem } from '@/components/MenuItem/MenuItem';
+
+import type { MegaMenu as MegaMenuType } from '@/components/MegaMenu/MegaMenuSchema';
 
 interface MegaMenuProps {
   megaMenu?: MegaMenuType;

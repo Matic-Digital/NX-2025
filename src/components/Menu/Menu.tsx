@@ -1,7 +1,10 @@
-import { MegaMenu } from '../MegaMenu/MegaMenu';
-import type { Menu as MenuType } from './MenuSchema';
-import { Text } from '../global/matic-ds';
-import { useMegaMenuContext } from '../../contexts/MegaMenuContext';
+import { useMegaMenuContext } from '@/contexts/MegaMenuContext';
+
+import { Text } from '@/components/global/matic-ds';
+
+import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
+
+import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 
 interface MenuProps {
   menu: MenuType;
