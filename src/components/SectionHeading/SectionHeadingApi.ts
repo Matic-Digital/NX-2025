@@ -1,7 +1,8 @@
-import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { fetchGraphQL } from '../../lib/api';
-import type { SectionHeading } from './SectionHeadingSchema';
-import { ContentfulError, NetworkError } from '../../lib/errors';
+import { fetchGraphQL } from '@/lib/api';
+import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import type { SectionHeading } from '@/components/SectionHeading/SectionHeadingSchema';
 
 // SectionHeading fields
 export const SECTION_HEADING_GRAPHQL_FIELDS = `

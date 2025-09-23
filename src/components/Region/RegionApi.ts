@@ -1,7 +1,8 @@
 import { fetchGraphQL } from '@/lib/api';
-import { ContentfulError, NetworkError } from '@/lib/errors';
-import type { Region, RegionResponse, RegionsMap } from '@/components/Region/RegionSchema';
 import { ASSET_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import type { Region, RegionResponse, RegionsMap } from '@/components/Region/RegionSchema';
 
 const REGION_GRAPHQL_FIELDS = `
   sys {

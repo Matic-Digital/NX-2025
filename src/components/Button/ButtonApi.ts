@@ -1,6 +1,7 @@
-import { fetchGraphQL } from '../../lib/api';
-import { ContentfulError, NetworkError } from '../../lib/errors';
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
 import type { Button } from './ButtonSchema';
 
 // Button fields

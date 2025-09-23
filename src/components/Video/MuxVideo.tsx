@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import MuxVideo from '@mux/mux-video-react';
+
 import { getVideosByIds } from '@/components/Video/VideoApi';
+
 import type { Video, VideoSys } from '@/components/Video/VideoSchema';
 
 export function MuxVideoPlayer(props: VideoSys) {

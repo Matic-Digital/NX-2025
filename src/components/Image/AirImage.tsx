@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import type { AirImage as AirImageType } from '@/components/Image/ImageSchema';
+
 import { getImageById } from '@/components/Image/ImageApi';
+
+import type { AirImage as AirImageType } from '@/components/Image/ImageSchema';
 
 /**
  * Extracts width and height from Air imgix URLs

@@ -1,15 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { Header as HeaderType, Footer as FooterType } from '@/types';
-import { Header } from '@/components/Header/Header';
-import { Footer } from '@/components/Footer/Footer';
-import { Main } from '@/components/global/matic-ds';
+
 // Import the layout CSS
 import '@/styles/layout.css';
-import { getHeaderById } from '@/components/Header/HeaderApi';
+
+import { Box, Main } from '@/components/global/matic-ds';
+
+import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
-import { Box } from '@/components/global/matic-ds';
+import { Header } from '@/components/Header/Header';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+
+import type { Footer as FooterType, Header as HeaderType } from '@/types';
 
 interface PageLayoutProps {
   header?: HeaderType | null;

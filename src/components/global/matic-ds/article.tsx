@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
-import type { ArticleProps } from './types';
+
+import type { ArticleProps } from '@/components/global/matic-ds/types';
 
 /**
  * Article component for rendering article content with optional HTML injection

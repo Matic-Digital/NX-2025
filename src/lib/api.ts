@@ -3,9 +3,9 @@
  * Provides functions for fetching and managing blog articles from Contentful CMS
  */
 
-import type { GraphQLResponse } from '@/types';
+import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 
-import { ContentfulError, NetworkError, GraphQLError } from './errors';
+import type { GraphQLResponse } from '@/types';
 
 /**
  * Executes GraphQL queries against Contentful's API with caching

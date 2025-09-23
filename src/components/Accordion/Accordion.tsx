@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+
+import { cn } from '@/lib/utils';
+
 import {
-  Accordion as AccordionPrimitive,
   AccordionItem,
+  Accordion as AccordionPrimitive,
   AccordionTrigger
 } from '@/components/ui/accordion';
-import { getAccordionsByIds, getAccordionItemById } from './AccordionApi';
-import { AirImage } from '@/components/Image/AirImage';
-import type {
-  Accordion as AccordionType,
-  AccordionItem as AccordionItemType
-} from './AccordionSchema';
+
+import { getAccordionItemById, getAccordionsByIds } from '@/components/Accordion/AccordionApi';
+import { AccordionSkeleton } from '@/components/Accordion/AccordionSkeleton';
 import { Box } from '@/components/global/matic-ds';
-import { cn } from '@/lib/utils';
-import { AccordionSkeleton } from './AccordionSkeleton';
+import { AirImage } from '@/components/Image/AirImage';
+
+import type {
+  AccordionItem as AccordionItemType,
+  Accordion as AccordionType
+} from '@/components/Accordion/AccordionSchema';
 
 // Types
 interface AccordionProps {

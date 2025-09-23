@@ -1,9 +1,13 @@
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { AirImage } from '@/components/Image/AirImage';
 import { ArrowUpRight } from 'lucide-react';
-import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
+
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+
 import { Box } from '@/components/global/matic-ds';
+
+import { AirImage } from '@/components/Image/AirImage';
+
+import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
 
 interface TeamMemberModalProps {
   isOpen: boolean;

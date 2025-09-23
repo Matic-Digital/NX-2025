@@ -1,5 +1,6 @@
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+import type { NextRequest } from 'next/server';
 
 // Note: We can't import directly from @/lib/api in middleware
 // because middleware runs in a different environment

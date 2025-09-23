@@ -2,23 +2,26 @@
 
 import * as React from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { Box, Container, Section } from '@/components/global/matic-ds';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import { AirImage } from '@/components/Image/AirImage';
-import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
-import { ContentItemRenderer } from './ContentItemRenderer';
 import useEmblaCarousel from 'embla-carousel-react';
+
 import {
   calculateGridConfig,
   collectionAnalyzers,
-  contentTypeDetectors,
-  type ContentGridItemUnion
+  contentTypeDetectors
 } from '@/lib/component-grid/utils';
-import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
 import { cn } from '@/lib/utils';
 
+import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
+
+import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
+import { ContentItemRenderer } from '@/components/ContentGrid/ContentItemRenderer';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container, Section } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+
 import type { ContentGrid as ContentGridType } from './ContentGridSchema';
+import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 
 interface ContentGridProps extends ContentGridType {
   isDarkMode?: boolean;

@@ -3,24 +3,25 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
 // Utils
 import { cn } from '@/lib/utils';
-import { getSectionHeadingById } from './SectionHeadingApi';
 
 // Components
 import { Box } from '@/components/global/matic-ds';
-import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 // Types
 import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
 import type { Modal } from '@/components/Modals/Modal';
-import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 interface SectionHeadingProps extends Partial<SectionHeading> {
   sectionHeadingId?: string;

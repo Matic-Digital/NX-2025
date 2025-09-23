@@ -1,20 +1,23 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { Button } from '@/components/ui/button';
-import { Box, Container, Section } from '@/components/global/matic-ds';
-import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
-import { AirImage } from '@/components/Image/AirImage';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+
 import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container, Section } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+
+import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 
 export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);

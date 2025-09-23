@@ -1,14 +1,19 @@
 'use client';
 
-import { useEffect, useState, Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { useServiceCard } from '@/contexts/ServiceCardContext';
-import { AirImage } from '@/components/Image/AirImage';
-import { Box } from '@/components/global/matic-ds/box';
-import { Button } from '@/components/ui/button';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { getServiceById } from '@/components/Service/ServiceApi';
 import Link from 'next/link';
+
+import { useServiceCard } from '@/contexts/ServiceCardContext';
+
+import { Button } from '@/components/ui/button';
+
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box } from '@/components/global/matic-ds/box';
+
+import { AirImage } from '@/components/Image/AirImage';
+import { getServiceById } from '@/components/Service/ServiceApi';
+
 import type { Service } from '@/components/Service/ServiceSchema';
 
 interface ServiceCardProps {

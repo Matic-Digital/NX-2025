@@ -1,40 +1,46 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getSlidersByIds } from '@/components/Slider/SliderApi';
+
+import { ArrowUpRight, Plus } from 'lucide-react';
+
+import { resolveNestedUrls } from '@/lib/page-link-utils';
 import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
-  CarouselPrevious,
-  type CarouselApi
+  CarouselPrevious
 } from '@/components/ui/carousel';
-import type {
-  Slider,
-  SliderSys,
-  SliderItem,
-  PostSliderItem,
-  Image as ImageType,
-  TimelineSliderItem,
-  TeamMember,
-  Solution
-} from '@/types';
-import { AirImage } from '@/components/Image/AirImage';
+
 import { Box, Container } from '@/components/global/matic-ds';
-import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
-} from '@contentful/live-preview/react';
+
+import { AirImage } from '@/components/Image/AirImage';
+import { getSlidersByIds } from '@/components/Slider/SliderApi';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { SliderItemType } from '@/components/Slider/SliderSchema';
-import { ArrowUpRight, Plus } from 'lucide-react';
-import { resolveNestedUrls } from '@/lib/page-link-utils';
-import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import type { CarouselApi } from '@/components/ui/carousel';
+import type {
+  Image as ImageType,
+  PostSliderItem,
+  Slider,
+  SliderItem,
+  SliderSys,
+  Solution,
+  TeamMember,
+  TimelineSliderItem
+} from '@/types';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -621,7 +627,10 @@ const GenericSlider = ({
 
       {/* Separate Timeline Component - Only for Timeline Sliders */}
       {isTimelineSlider && (
-        <div className="absolute right-6 left-6 z-10 flex gap-4 lg:right-6 lg:left-1/4" style={{ top: '420px' }}>
+        <div
+          className="absolute right-6 left-6 z-10 flex gap-4 lg:right-6 lg:left-1/4"
+          style={{ top: '420px' }}
+        >
           <div className="w-full">
             {/* Timeline Bar positioned under the asset */}
             <div className="mb-8 pt-6">
@@ -634,7 +643,7 @@ const GenericSlider = ({
                   <div
                     className="relative z-10 flex transition-transform duration-500 ease-in-out"
                     style={{
-                      transform: `translateX(calc(50% - ${((current - 1) * 60)}px))`
+                      transform: `translateX(calc(50% - ${(current - 1) * 60}px))`
                     }}
                   >
                     {sliderData.itemsCollection.items
@@ -642,19 +651,24 @@ const GenericSlider = ({
                       .map((item, timelineIndex) => {
                         const timelineItemData = item as TimelineSliderItem;
                         const isActive = current === timelineIndex + 1;
-                        
+
                         return (
                           <button
                             key={item.sys.id}
                             onClick={() => api?.scrollTo(timelineIndex)}
                             className={cn(
                               'relative z-10 h-3 w-3 rounded-full transition-colors duration-300 flex-shrink-0',
-                              isActive
-                                ? 'bg-gray-400'
-                                : 'bg-gray-200 hover:bg-gray-300'
+                              isActive ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'
                             )}
                             style={{
-                              marginRight: timelineIndex < sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1 ? '48px' : '0'
+                              marginRight:
+                                timelineIndex <
+                                sliderData.itemsCollection.items.filter(
+                                  (i) => i.__typename === 'TimelineSliderItem'
+                                ).length -
+                                  1
+                                  ? '48px'
+                                  : '0'
                             }}
                             aria-label={`Go to ${timelineItemData.year}`}
                           />
@@ -665,8 +679,7 @@ const GenericSlider = ({
               </div>
 
               {/* Desktop Timeline Bar - Static */}
-              <div className="relative hidden h-0.5 w-full bg-gray-200 lg:block"
-              >
+              <div className="relative hidden h-0.5 w-full bg-gray-200 lg:block">
                 {/* Individual Timeline Segments */}
                 {sliderData.itemsCollection.items
                   .filter((item) => item.__typename === 'TimelineSliderItem')
@@ -724,7 +737,10 @@ const GenericSlider = ({
               <div
                 className="flex gap-0 transition-transform duration-500 ease-in-out"
                 style={{
-                  transform: window.innerWidth >= 1024 ? `translateX(-${(current - 1) * 33.33}%)` : `translateX(-${(current - 1) * 100}%)`,
+                  transform:
+                    window.innerWidth >= 1024
+                      ? `translateX(-${(current - 1) * 33.33}%)`
+                      : `translateX(-${(current - 1) * 100}%)`,
                   width: `100%`
                 }}
               >
@@ -737,7 +753,10 @@ const GenericSlider = ({
                     ).length;
                     const isActive = (current - 1) % totalItems === timelineIndex;
                     return (
-                      <div key={item.sys.id} className="flex min-w-0 flex-[0_0_100%] flex-col lg:flex-[0_0_33.33%]">
+                      <div
+                        key={item.sys.id}
+                        className="flex min-w-0 flex-[0_0_100%] flex-col lg:flex-[0_0_33.33%]"
+                      >
                         {/* Year */}
                         <div className="mb-4 flex h-[60px] items-start">
                           <span

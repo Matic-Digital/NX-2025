@@ -1,38 +1,39 @@
 import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api';
+import {
+  getEXTERNAL_PAGE_FIELDS,
+  getPAGELIST_BASIC_FIELDS,
+  getPAGELIST_WITH_REFS_FIELDS,
+  getPOST_BASIC_FIELDS,
+  getPRODUCT_BASIC_FIELDS,
+  getSERVICE_BASIC_FIELDS,
+  getSOLUTION_BASIC_FIELDS
+} from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
+
+import type { Footer } from '@/components/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type {
   PageList,
-  PageListResponse,
-  PageListWithRefs,
   PageListBySlugResponse,
-  PageListCollectionResponse
+  PageListCollectionResponse,
+  PageListResponse,
+  PageListWithRefs
 } from '@/components/PageList/PageListSchema';
-import type { Header } from '@/components/Header/HeaderSchema';
-import type { Footer } from '@/components/Footer/FooterSchema';
-import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import { ContentfulError, NetworkError } from '@/lib/errors';
-import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
-import { SYS_FIELDS } from '@/lib/contentful-api';
-
-import { getHeaderById } from '@/components/Header/HeaderApi';
-import { getFooterById } from '@/components/Footer/FooterApi';
 
 // Define a new interface that extends PageList with header and footer
 interface PageListWithHeaderFooter extends PageList {
   header: Header | null;
   footer: Footer | null;
 }
-import {
-  getEXTERNAL_PAGE_FIELDS,
-  getPRODUCT_BASIC_FIELDS,
-  getSERVICE_BASIC_FIELDS,
-  getSOLUTION_BASIC_FIELDS,
-  getPOST_BASIC_FIELDS,
-  getPAGELIST_BASIC_FIELDS,
-  getPAGELIST_WITH_REFS_FIELDS
-} from '@/lib/contentful-api/graphql-fields';
 
 // Minimal PageList fields for initial fetch
 export const PAGELIST_MINIMAL_FIELDS = `

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { AssetSchema } from '@/components/Asset/AssetSchema';
 
 export const RegionSchema = z.object({

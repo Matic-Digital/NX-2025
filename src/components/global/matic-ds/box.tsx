@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { cn } from '@/lib/utils';
-import type { BoxProps } from './types';
+
+import type { BoxProps } from '@/components/global/matic-ds/types';
 
 /**
  * Box component for creating flexible layouts using either Flexbox or Grid

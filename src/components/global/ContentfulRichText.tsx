@@ -1,8 +1,9 @@
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
-import type { Document } from '@contentful/rich-text-types';
 import Link from 'next/link';
+
+import type { Document } from '@contentful/rich-text-types';
 
 interface ContentfulRichTextProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

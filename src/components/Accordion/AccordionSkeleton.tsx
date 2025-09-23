@@ -1,7 +1,8 @@
 'use client';
 
-import { Box } from '@/components/global/matic-ds';
 import { cn } from '@/lib/utils';
+
+import { Box } from '@/components/global/matic-ds';
 
 interface AccordionSkeletonProps {
   itemCount?: number;

@@ -2,40 +2,36 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 
-// Components
-import { AirImage } from '@/components/Image/AirImage';
-import { Box } from '@/components/global/matic-ds';
-import { Button } from '../ui/button';
-import { SectionHeading } from '../SectionHeading/SectionHeading';
-import { RequestAQuoteModal } from '../Modals/RequestAQuoteModal';
-import { ModalCtaButton, type ModalType } from '../Button/ModalCtaButton';
-import type { Modal } from '../Modals/Modal';
+import { cn } from '@/lib/utils';
 
-// API
+import { Button } from '@/components/ui/button';
+
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
+import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
+import { Box } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-// Types
-import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
-import type { ContentVariant } from '@/components/Content/ContentVariant';
-import type { Product } from '@/components/Product/ProductSchema';
+import type { ModalType } from '../Button/ModalCtaButton';
+import type { Modal } from '../Modals/Modal';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
 } from '../SectionHeading/SectionHeadingSchema';
+// Types
+import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
+import type { ContentVariant } from '@/components/Content/ContentVariant';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { Image } from '@/components/Image/ImageSchema';
-
-// Constants
-import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
-
-// Utils
-import { cn } from '@/lib/utils';
-import { ContentSkeleton } from './ContentSkeleton';
+import type { Product } from '@/components/Product/ProductSchema';
 
 // ===== TYPES & INTERFACES =====
 
