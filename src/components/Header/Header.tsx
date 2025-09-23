@@ -156,7 +156,7 @@ function HeaderContent(props: HeaderProps) {
           .finally(() => setOverflowMenuLoading(false));
       }
     }
-  }, [header?.overflow?.sys?.id]);
+  }, [header?.overflow?.sys?.id, header?.overflow, overflowMenu, overflowMenuLoading]);
 
   // Handle scroll events to add frosted glass effect to header
   useEffect(() => {
