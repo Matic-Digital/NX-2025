@@ -16,19 +16,23 @@ export const HeaderSchema = z.object({
       items: z.array(NavLinksUnion)
     })
     .optional(),
-  menu: z.object({
-    sys: z.object({
-      id: z.string()
-    }),
-    __typename: z.string()
-  }).optional(),
+  menu: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      __typename: z.string()
+    })
+    .optional(),
   search: z.boolean().optional(),
-  overflow: z.object({
-    sys: z.object({
-      id: z.string()
-    }),
-    __typename: z.string()
-  }).optional(),
+  overflow: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      __typename: z.string()
+    })
+    .optional(),
   __typename: z.string().optional()
 });
 

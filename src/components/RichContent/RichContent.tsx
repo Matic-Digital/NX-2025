@@ -106,11 +106,7 @@ const extractTocItems = (document: Document): TocItem[] => {
 
   const traverseNodes = (nodes: ContentfulNode[]) => {
     nodes.forEach((node) => {
-      if (
-        isHeading2(node) ||
-        isHeading3(node) ||
-        isHeading4(node)
-      ) {
+      if (isHeading2(node) || isHeading3(node) || isHeading4(node)) {
         const text = extractTextFromNode(node);
 
         // Update appendix context during TOC extraction
@@ -128,10 +124,8 @@ const extractTocItems = (document: Document): TocItem[] => {
         // Also include roman numerals when we're in an appendix section
         const hasNumber = /\d+(\.\d+)?/.test(text);
         const isAppendix = /appendix/i.test(text);
-        const hasH2RomanNumeral =
-          isHeading2(node) && /^[IVXLCDM]+\./i.test(text.trim());
-        const hasH3RomanNumeral =
-          isHeading3(node) && /[A-Z]\.[ivxlcdm]+/i.test(text);
+        const hasH2RomanNumeral = isHeading2(node) && /^[IVXLCDM]+\./i.test(text.trim());
+        const hasH3RomanNumeral = isHeading3(node) && /[A-Z]\.[ivxlcdm]+/i.test(text);
         const isRomanInAppendix = inAppendixSection && /^[IVXLCDM]+\./i.test(text.trim());
 
         if (
@@ -142,8 +136,7 @@ const extractTocItems = (document: Document): TocItem[] => {
           isRomanInAppendix
         ) {
           const id = generateId(text);
-          const level =
-            isHeading2(node) ? 2 : isHeading3(node) ? 3 : 4;
+          const level = isHeading2(node) ? 2 : isHeading3(node) ? 3 : 4;
           tocItems.push({
             id,
             text,
@@ -458,16 +451,13 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
         if (isOlList(childNode)) {
           return {
             ...childNode,
-            content: childNode.content?.map(
-              (listItem: ContentfulNode) =>
-                ({
-                  ...listItem,
-                  data: {
-                    ...listItem.data,
-                    isInOrderedList: true
-                  }
-                })
-            )
+            content: childNode.content?.map((listItem: ContentfulNode) => ({
+              ...listItem,
+              data: {
+                ...listItem.data,
+                isInOrderedList: true
+              }
+            }))
           };
         }
         return childNode;
@@ -628,14 +618,16 @@ function RichContent({
                     const hasTableStructure = React.Children.toArray(children).some((child) => {
                       const reactChild = child as React.ReactElement;
                       if (!reactChild?.type || !reactChild?.props) return false;
-                      
+
                       const className = (reactChild.props as { className?: string }).className;
-                      return reactChild.type === 'thead' || 
-                             reactChild.type === 'tbody' ||
-                             (className?.includes('table-head') ?? false) ||
-                             (className?.includes('table-body') ?? false);
+                      return (
+                        reactChild.type === 'thead' ||
+                        reactChild.type === 'tbody' ||
+                        (className?.includes('table-head') ?? false) ||
+                        (className?.includes('table-body') ?? false)
+                      );
                     });
-                    
+
                     return (
                       <div className="flex flex-1 flex-col lg:mb-0">
                         <table className="h-full w-full flex-1">
@@ -645,7 +637,11 @@ function RichContent({
                             />
                             <col />
                           </colgroup>
-                          {hasTableStructure ? children : <tbody className="h-full">{children}</tbody>}
+                          {hasTableStructure ? (
+                            children
+                          ) : (
+                            <tbody className="h-full">{children}</tbody>
+                          )}
                         </table>
                       </div>
                     );
@@ -757,6 +753,6 @@ function RichContent({
       </Container>
     </div>
   );
-};
+}
 
 export default RichContent;

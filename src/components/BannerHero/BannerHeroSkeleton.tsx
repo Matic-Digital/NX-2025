@@ -9,10 +9,7 @@ interface BannerHeroSkeletonProps {
   contentType?: string;
 }
 
-export function BannerHeroSkeleton({ 
-  variant = 'Default', 
-  contentType 
-}: BannerHeroSkeletonProps) {
+export function BannerHeroSkeleton({ variant = 'Default', contentType }: BannerHeroSkeletonProps) {
   const isCenteredSectionHeading = variant === 'Centered';
   const isImageBetween = contentType === 'ImageBetween';
 
@@ -32,7 +29,7 @@ export function BannerHeroSkeleton({
       <SkeletonBox className="absolute inset-0 h-[789px] w-full rounded-none" />
 
       {/* Content Overlay */}
-      <div className="container relative z-10 mx-auto w-full px-6 lg:px-8">
+      <div className="relative z-10 container mx-auto w-full px-6 lg:px-8">
         <SectionHeadingSkeleton
           variant={variant}
           componentType="banner-hero"

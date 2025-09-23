@@ -449,7 +449,7 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
   console.log('Full component data:', JSON.stringify(component, null, 2));
   console.log('Available component types:', Object.keys(componentMap));
   console.log('RichContent component:', RichContent);
-  
+
   // Check if this is a RichContent item (has richText or content field)
   const hasRichText = 'richText' in (component as any) || 'content' in (component as any);
   console.log('Has richText/content field:', hasRichText);

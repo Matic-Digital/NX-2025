@@ -20,7 +20,14 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
           // TypeScript now properly discriminates based on __typename
           if (item.__typename === 'MegaMenu') {
             // MegaMenu will lazy load its own items
-            return <MegaMenu key={item.sys.id} megaMenuId={item.sys.id} title={item.title} overflow={variant === 'overflow' ? true : item.overflow} />;
+            return (
+              <MegaMenu
+                key={item.sys.id}
+                megaMenuId={item.sys.id}
+                title={item.title}
+                overflow={variant === 'overflow' ? true : item.overflow}
+              />
+            );
           } else {
             // Simple link for MenuItem - just show the title as a link
             const linkUrl = item.internalLink ? `/${item.internalLink.slug}` : item.externalLink;
@@ -28,16 +35,16 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
             const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
             return (
-                <a 
-                  key={item.sys.id}
-                  href={linkUrl}
-                  target={linkTarget}
-                  rel={linkRel}
-                  className="cursor-pointer px-[0.75rem] py-[0.38rem]"
-                  onMouseEnter={() => setMegaMenuOpen(false)}
-                >
-                  <Text className="text-white">{item.text}</Text>
-                </a>
+              <a
+                key={item.sys.id}
+                href={linkUrl}
+                target={linkTarget}
+                rel={linkRel}
+                className="cursor-pointer px-[0.75rem] py-[0.38rem]"
+                onMouseEnter={() => setMegaMenuOpen(false)}
+              >
+                <Text className="text-white">{item.text}</Text>
+              </a>
             );
           }
         })}

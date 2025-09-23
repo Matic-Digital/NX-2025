@@ -621,7 +621,10 @@ const GenericSlider = ({
 
       {/* Separate Timeline Component - Only for Timeline Sliders */}
       {isTimelineSlider && (
-        <div className="absolute right-6 left-6 z-10 flex gap-4 lg:right-6 lg:left-1/4" style={{ top: '420px' }}>
+        <div
+          className="absolute right-6 left-6 z-10 flex gap-4 lg:right-6 lg:left-1/4"
+          style={{ top: '420px' }}
+        >
           <div className="w-full">
             {/* Timeline Bar positioned under the asset */}
             <div className="mb-8 pt-6">
@@ -630,11 +633,11 @@ const GenericSlider = ({
                 {/* Timeline Bullets - Mobile - Show only visible ones, center active */}
                 <div className="relative mx-10 overflow-hidden">
                   {/* Timeline line behind bullets - with fade out effect */}
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                   <div
                     className="relative z-10 flex transition-transform duration-500 ease-in-out"
                     style={{
-                      transform: `translateX(calc(50% - ${((current - 1) * 60)}px))`
+                      transform: `translateX(calc(50% - ${(current - 1) * 60}px))`
                     }}
                   >
                     {sliderData.itemsCollection.items
@@ -642,19 +645,24 @@ const GenericSlider = ({
                       .map((item, timelineIndex) => {
                         const timelineItemData = item as TimelineSliderItem;
                         const isActive = current === timelineIndex + 1;
-                        
+
                         return (
                           <button
                             key={item.sys.id}
                             onClick={() => api?.scrollTo(timelineIndex)}
                             className={cn(
-                              'relative z-10 h-3 w-3 rounded-full transition-colors duration-300 flex-shrink-0',
-                              isActive
-                                ? 'bg-gray-400'
-                                : 'bg-gray-200 hover:bg-gray-300'
+                              'relative z-10 h-3 w-3 flex-shrink-0 rounded-full transition-colors duration-300',
+                              isActive ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'
                             )}
                             style={{
-                              marginRight: timelineIndex < sliderData.itemsCollection.items.filter((i) => i.__typename === 'TimelineSliderItem').length - 1 ? '48px' : '0'
+                              marginRight:
+                                timelineIndex <
+                                sliderData.itemsCollection.items.filter(
+                                  (i) => i.__typename === 'TimelineSliderItem'
+                                ).length -
+                                  1
+                                  ? '48px'
+                                  : '0'
                             }}
                             aria-label={`Go to ${timelineItemData.year}`}
                           />
@@ -665,8 +673,7 @@ const GenericSlider = ({
               </div>
 
               {/* Desktop Timeline Bar - Static */}
-              <div className="relative hidden h-0.5 w-full bg-gray-200 lg:block"
-              >
+              <div className="relative hidden h-0.5 w-full bg-gray-200 lg:block">
                 {/* Individual Timeline Segments */}
                 {sliderData.itemsCollection.items
                   .filter((item) => item.__typename === 'TimelineSliderItem')
@@ -724,7 +731,10 @@ const GenericSlider = ({
               <div
                 className="flex gap-0 transition-transform duration-500 ease-in-out"
                 style={{
-                  transform: window.innerWidth >= 1024 ? `translateX(-${(current - 1) * 33.33}%)` : `translateX(-${(current - 1) * 100}%)`,
+                  transform:
+                    window.innerWidth >= 1024
+                      ? `translateX(-${(current - 1) * 33.33}%)`
+                      : `translateX(-${(current - 1) * 100}%)`,
                   width: `100%`
                 }}
               >
@@ -737,7 +747,10 @@ const GenericSlider = ({
                     ).length;
                     const isActive = (current - 1) % totalItems === timelineIndex;
                     return (
-                      <div key={item.sys.id} className="flex min-w-0 flex-[0_0_100%] flex-col lg:flex-[0_0_33.33%]">
+                      <div
+                        key={item.sys.id}
+                        className="flex min-w-0 flex-[0_0_100%] flex-col lg:flex-[0_0_33.33%]"
+                      >
                         {/* Year */}
                         <div className="mb-4 flex h-[60px] items-start">
                           <span

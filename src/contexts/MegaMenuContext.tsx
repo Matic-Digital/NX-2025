@@ -50,11 +50,11 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
   }, [isAnyMenuOpen]);
 
   const openMegaMenu = (menuId: string) => {
-    setOpenMegaMenus(prev => new Set(prev).add(menuId));
+    setOpenMegaMenus((prev) => new Set(prev).add(menuId));
   };
 
   const closeMegaMenu = (menuId: string) => {
-    setOpenMegaMenus(prev => {
+    setOpenMegaMenus((prev) => {
       const newSet = new Set(prev);
       newSet.delete(menuId);
       return newSet;
@@ -75,15 +75,17 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <MegaMenuContext.Provider value={{ 
-      isAnyMegaMenuOpen, 
-      isOverflowMenuOpen,
-      isHeaderBlurVisible,
-      openMegaMenu, 
-      closeMegaMenu,
-      setOverflowMenuOpen: setOverflowMenuOpenHandler,
-      setMegaMenuOpen 
-    }}>
+    <MegaMenuContext.Provider
+      value={{
+        isAnyMegaMenuOpen,
+        isOverflowMenuOpen,
+        isHeaderBlurVisible,
+        openMegaMenu,
+        closeMegaMenu,
+        setOverflowMenuOpen: setOverflowMenuOpenHandler,
+        setMegaMenuOpen
+      }}
+    >
       {children}
     </MegaMenuContext.Provider>
   );

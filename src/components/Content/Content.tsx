@@ -163,7 +163,7 @@ export function Content(props: ContentProps) {
   const ContentContainer = ({ children }: ContentContainerProps) => (
     <div
       className={cn(
-        'relative container mx-auto mt-12 mb-20 h-[502px] overflow-hidden px-6 sm:px-6 md:px-9'
+        'relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9'
       )}
     >
       {children}
@@ -172,7 +172,7 @@ export function Content(props: ContentProps) {
 
   const ContentOverlay = ({ children }: ContentOverlay) => (
     <div
-      className="flex h-full w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:p-10"
+      className="flex h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10"
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -225,96 +225,100 @@ export function Content(props: ContentProps) {
       return (
         <>
           <ContentContainer>
-            <div className="relative h-full overflow-hidden px-6 sm:px-6 md:px-9">
+            {/* Image container - ensure it fills the container properly */}
+            <div className="absolute inset-0 overflow-hidden px-6 sm:px-6 md:px-9">
               <AirImage
                 link={data.image?.link}
                 altText={data.image?.altText ?? data.image?.title}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
-            <div className="absolute inset-0 flex items-center px-6 sm:px-6 md:px-9">
-              <ContentOverlay>
-                <Box
-                  direction="col"
-                  gap={12}
-                  className="w-full items-center justify-center text-center"
-                >
-                  <Box direction="col" gap={5}>
-                    <Box direction="col" gap={1.5}>
-                      {isProductData(data) && data.tags && (
-                        <p
-                          className="text-body-sm text-text-on-invert uppercase"
-                          {...inspectorProps({ fieldId: 'categories' })}
-                        >
-                          {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
-                        </p>
-                      )}
-                      {isContentGridItemData(data) && data.heading && (
-                        <p
-                          className="text-body-sm text-text-on-invert uppercase"
-                          {...inspectorProps({ fieldId: 'heading' })}
-                        >
-                          {data.heading}
-                        </p>
-                      )}
-                      {isSectionHeadingData(data) && data.title && (
-                        <>
+            {/* Mobile: Content at bottom, Desktop: Content on left */}
+            <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:items-center md:px-9">
+              <div className="w-full md:h-full md:w-auto">
+                <ContentOverlay>
+                  <Box
+                    direction="col"
+                    gap={12}
+                    className="w-full items-center justify-center text-center"
+                  >
+                    <Box direction="col" gap={5}>
+                      <Box direction="col" gap={1.5}>
+                        {isProductData(data) && data.tags && (
                           <p
-                            className="text-text-on-invert uppercase"
-                            {...inspectorProps({ fieldId: 'heading.overline' })}
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'categories' })}
                           >
-                            {data.overline}
+                            {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
                           </p>
-                          <h2
-                            className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
-                            {...inspectorProps({ fieldId: 'title' })}
+                        )}
+                        {isContentGridItemData(data) && data.heading && (
+                          <p
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'heading' })}
                           >
-                            {data.title}
-                          </h2>
-                        </>
+                            {data.heading}
+                          </p>
+                        )}
+                        {isSectionHeadingData(data) && data.title && (
+                          <>
+                            <p
+                              className="text-text-on-invert uppercase"
+                              {...inspectorProps({ fieldId: 'heading.overline' })}
+                            >
+                              {data.overline}
+                            </p>
+                            <h2
+                              className="text-headline-sm md:text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
+                              {...inspectorProps({ fieldId: 'title' })}
+                            >
+                              {data.title}
+                            </h2>
+                          </>
+                        )}
+                      </Box>
+                      {data.description && (
+                        <p
+                          className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                          {...inspectorProps({ fieldId: 'excerpt' })}
+                        >
+                          {data.description}
+                        </p>
                       )}
                     </Box>
-                    {data.description && (
-                      <p
-                        className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                        {...inspectorProps({ fieldId: 'excerpt' })}
+
+                    {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+                    {isProductData(data) && (
+                      <Button
+                        variant="white"
+                        {...inspectorProps({ fieldId: 'button' })}
+                        className="w-fit"
+                        asChild
                       >
-                        {data.description}
-                      </p>
+                        <Link href={data.slug}>Explore {data.title}</Link>
+                      </Button>
+                    )}
+                    {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
+                      <ModalCtaButton
+                        cta={data.ctaCollection.items[0]}
+                        variant="white"
+                        modalType="quote"
+                        onModalOpen={handleModalOpen}
+                        className="w-fit"
+                      />
+                    )}
+                    {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
+                      <ModalCtaButton
+                        cta={data.ctaCollection.items[0]}
+                        variant="white"
+                        modalType="quote"
+                        onModalOpen={handleModalOpen}
+                        className="w-fit"
+                      />
                     )}
                   </Box>
-
-                  {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
-                  {isProductData(data) && (
-                    <Button
-                      variant="white"
-                      {...inspectorProps({ fieldId: 'button' })}
-                      className="w-fit"
-                      asChild
-                    >
-                      <Link href={data.slug}>Explore {data.title}</Link>
-                    </Button>
-                  )}
-                  {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
-                    <ModalCtaButton
-                      cta={data.ctaCollection.items[0]}
-                      variant="white"
-                      modalType="quote"
-                      onModalOpen={handleModalOpen}
-                      className="w-fit"
-                    />
-                  )}
-                  {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
-                    <ModalCtaButton
-                      cta={data.ctaCollection.items[0]}
-                      variant="white"
-                      modalType="quote"
-                      onModalOpen={handleModalOpen}
-                      className="w-fit"
-                    />
-                  )}
-                </Box>
-              </ContentOverlay>
+                </ContentOverlay>
+              </div>
             </div>
           </ContentContainer>
         </>
