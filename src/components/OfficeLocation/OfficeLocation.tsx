@@ -6,6 +6,7 @@ import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { OfficeLocationSkeleton } from '@/components/OfficeLocation/OfficeLocationSkeleton';
 
 import type { OfficeLocation } from '@/types';
 
@@ -39,8 +40,8 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
     }
   }, [sys.id]);
 
-  if (isLoading) {
-    return <div>Loading location...</div>;
+  if (!isLoading) {
+    return <OfficeLocationSkeleton />;
   }
 
   if (!location) {
