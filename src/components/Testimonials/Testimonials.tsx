@@ -7,6 +7,7 @@ import { Box, Container, Section } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import { TestimonialSkeleton } from '@/components/Testimonials/TestimonialSkeleton';
 
 import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
 
@@ -51,9 +52,7 @@ export function Testimonials(props: TestimonialsProps) {
       <ErrorBoundary>
         <Section>
           <Container className="md:px-0">
-            <div className="flex items-center justify-center p-8">
-              <div className="text-gray-500">Loading testimonials...</div>
-            </div>
+            <TestimonialSkeleton count={3} />
           </Container>
         </Section>
       </ErrorBoundary>
