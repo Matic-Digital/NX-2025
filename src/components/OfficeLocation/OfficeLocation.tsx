@@ -40,7 +40,7 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
     }
   }, [sys.id]);
 
-  if (!isLoading) {
+  if (isLoading) {
     return <OfficeLocationSkeleton />;
   }
 

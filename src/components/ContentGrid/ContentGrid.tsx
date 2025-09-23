@@ -13,10 +13,11 @@ import { cn } from '@/lib/utils';
 
 import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 
-import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
-import { ContentItemRenderer } from '@/components/ContentGrid/ContentItemRenderer';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
+
+import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
+import { ContentItemRenderer } from '@/components/ContentGrid/ContentItemRenderer';
 import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 
@@ -37,6 +38,8 @@ export function ContentGrid(props: ContentGridProps) {
   const [_isLoadingCollections, setIsLoadingCollections] = React.useState(false);
 
   const rawItems = contentGrid.itemsCollection?.items;
+
+  console.log('props', props);
 
   // Enhanced items processing with Collection detection and fetching
   React.useEffect(() => {
@@ -180,9 +183,17 @@ export function ContentGrid(props: ContentGridProps) {
   // Auto-enable dark mode if all items are accordions
   const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
 
+  // Check if this is an ImageBetween component
+  const isImageBetweenComponent = props.componentType === 'ImageBetween';
+
   return (
     <ErrorBoundary>
-      <div className={shouldUseDarkMode ? 'dark bg-background' : ''}>
+      <div
+        className={cn(
+          shouldUseDarkMode ? 'dark' : '',
+          isImageBetweenComponent ? '' : 'bg-background'
+        )}
+      >
         <Section className="relative overflow-hidden">
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage
