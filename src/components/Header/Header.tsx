@@ -238,7 +238,7 @@ function HeaderContent(props: HeaderProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  if (!menuLoading || overflowMenuLoading) {
+  if (menuLoading || overflowMenuLoading) {
     return <HeaderSkeleton />;
   }
 
