@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { NavigationMenuLink } from '@/components/ui/navigation-menu';
-import { navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+
+import { NavigationMenuLink, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 
 interface PageLinkResolverProps {
   slug: string | undefined;

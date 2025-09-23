@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { AssetSchema } from '../Asset/AssetSchema';
+
+import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
 export const SliderItemSchema = z.object({

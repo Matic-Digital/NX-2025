@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { ModalSchema } from '@/components/Modals/Modal';
 
 // Simple schema for button internal links that matches GraphQL query response

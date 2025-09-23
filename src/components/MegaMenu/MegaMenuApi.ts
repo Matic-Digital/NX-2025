@@ -1,7 +1,8 @@
 import { fetchGraphQL } from '@/lib/api';
+import { MENU_ITEM_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
-import { SYS_FIELDS, MENU_ITEM_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import type { MegaMenu } from './MegaMenuSchema';
+
+import type { MegaMenu } from '@/components/MegaMenu/MegaMenuSchema';
 
 export const MEGA_MENU_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}

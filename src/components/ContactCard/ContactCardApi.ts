@@ -1,8 +1,10 @@
 import { fetchGraphQL } from '@/lib/api';
-import type { ContactCard } from './ContactCardSchema';
-import { ContentfulError, NetworkError } from '@/lib/errors';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
+
+import type { ContactCard } from '@/components/ContactCard/ContactCardSchema';
 
 // ContactCard GraphQL fields
 export const CONTACT_CARD_GRAPHQL_FIELDS = `

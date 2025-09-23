@@ -1,9 +1,12 @@
 'use client';
 
-import { Container, Box } from '@/components/global/matic-ds';
-import { cn } from '@/lib/utils';
 import { Menu, Search } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
+
+import { Box, Container } from '@/components/global/matic-ds';
 
 export function HeaderSkeleton() {
   const SkeletonBox = ({ className, ...props }: { className?: string }) => (

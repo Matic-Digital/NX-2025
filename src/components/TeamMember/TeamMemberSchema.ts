@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { ImageSchema } from '../Image/ImageSchema';
+
+import { ImageSchema } from '@/components/Image/ImageSchema';
 
 // Team member schema (referenced by authors)
 export const TeamMemberSchema = z.object({

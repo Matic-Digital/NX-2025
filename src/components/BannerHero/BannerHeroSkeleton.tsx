@@ -1,18 +1,16 @@
 'use client';
 
+import { cn } from '@/lib/utils';
+
 import { Section } from '@/components/global/matic-ds';
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
-import { cn } from '@/lib/utils';
 
 interface BannerHeroSkeletonProps {
   variant?: 'Horizontal' | 'Stacked' | 'Centered' | 'Default';
   contentType?: string;
 }
 
-export function BannerHeroSkeleton({ 
-  variant = 'Default', 
-  contentType 
-}: BannerHeroSkeletonProps) {
+export function BannerHeroSkeleton({ variant = 'Default', contentType }: BannerHeroSkeletonProps) {
   const isCenteredSectionHeading = variant === 'Centered';
   const isImageBetween = contentType === 'ImageBetween';
 

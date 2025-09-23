@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
 export const ContactCardSchema = z.object({

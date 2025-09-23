@@ -2,18 +2,22 @@
 'use client';
 
 // Next.js imports
-import Link from 'next/link';
-import Image from 'next/image';
-
 // Contentful Live Preview imports
-import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { useContentfulInspectorMode } from '@contentful/live-preview/react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { Box, Container } from '@/components/global/matic-ds';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { useThemeSync } from '@/hooks/useThemeSync';
+
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Logo } from '@/components/global/Logo';
+import { Box, Container } from '@/components/global/matic-ds';
+
 import { SvgIcon } from '@/components/ui/svg-icon';
+
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 
 /**
