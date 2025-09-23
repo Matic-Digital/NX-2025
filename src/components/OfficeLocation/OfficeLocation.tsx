@@ -1,9 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
 import { Box } from '@/components/global/matic-ds';
+
 import { AirImage } from '@/components/Image/AirImage';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+
 import type { OfficeLocation } from '@/types';
 
 interface LocationProps {

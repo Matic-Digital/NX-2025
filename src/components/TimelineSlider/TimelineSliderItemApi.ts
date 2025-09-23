@@ -1,9 +1,11 @@
-import { fetchGraphQL } from '../../lib/api';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
+
 import type { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItemSchema';
-import { ContentfulError, NetworkError } from '../../lib/errors';
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { VIDEO_GRAPHQL_FIELDS } from '../Video/VideoApi';
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 
 // Simplified Product fields for individual Product queries (to stay within Contentful query size limit)
 export const TIMELINE_SLIDERITEM_GRAPHQL_FIELDS = `

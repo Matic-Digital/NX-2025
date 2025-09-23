@@ -1,5 +1,8 @@
-import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
-import { contentRenderers } from './Renderers';
+import { contentTypeDetectors } from '@/lib/component-grid/utils';
+
+import { contentRenderers } from '@/components/ContentGrid/Renderers';
+
+import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 
 interface ContentItemRendererProps {
   item: ContentGridItemUnion;

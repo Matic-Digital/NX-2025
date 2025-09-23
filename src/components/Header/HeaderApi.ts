@@ -1,9 +1,11 @@
 import { cache } from 'react';
-import { fetchGraphQL } from '@/lib/api';
-import type { Header, HeaderResponse } from '@/components/Header/HeaderSchema';
-import { ContentfulError, NetworkError, GraphQLError } from '@/lib/errors';
 
+import { fetchGraphQL } from '@/lib/api';
 import { getHEADER_GRAPHQL_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
+
+import type { Header, HeaderResponse } from '@/components/Header/HeaderSchema';
+
 /**
  * Fetches all Headers from Contentful
  * @param preview - Whether to fetch draft content

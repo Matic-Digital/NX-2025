@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-// import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { Box, Container, Section } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/Image/AirImage';
-import type { Testimonials as TestimonialsType } from './TestimonialsSchema';
+
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { getTestimonialsById } from './TestimonialsApi';
+import { Box, Container, Section } from '@/components/global/matic-ds';
+
+import { AirImage } from '@/components/Image/AirImage';
+import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+
+import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
 
 type TestimonialsProps = TestimonialsType | { testimonialsId: string };
 

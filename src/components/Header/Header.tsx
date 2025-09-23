@@ -15,34 +15,44 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Search, ChevronDown } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { getMegaMenuById } from '../MegaMenu/MegaMenuApi';
-import { getMenuById } from '../Menu/MenuApi';
-import type { Menu as MenuType } from '../Menu/MenuSchema';
-import { Menu as MenuComponent } from '../Menu/Menu';
-import { MegaMenuProvider, useMegaMenuContext } from '../../contexts/MegaMenuContext';
-import { Container, Box } from '@/components/global/matic-ds';
-import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Page } from '@/components/Page/PageSchema';
-import { HeaderSkeleton } from './HeaderSkeleton';
 
-// Sheet components for mobile menu from shadcn
-import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { ChevronDown, Menu, Search } from 'lucide-react';
+
+import { MegaMenuProvider, useMegaMenuContext } from '@/contexts/MegaMenuContext';
+
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-
 // Collapsible components for mobile mega menus
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+// Sheet components for mobile menu from shadcn
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet';
+
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container } from '@/components/global/matic-ds';
+
+import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
+import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
+import { Menu as MenuComponent } from '@/components/Menu/Menu';
+import { getMenuById } from '@/components/Menu/MenuApi';
+
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
+import type { Page } from '@/components/Page/PageSchema';
 
 // No need for an empty interface, just use the HeaderType directly
 type HeaderProps = HeaderType;

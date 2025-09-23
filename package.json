@@ -102,6 +102,7 @@
     "@eslint/config-array": "^0.20.0",
     "@eslint/object-schema": "^2.1.6",
     "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
     "@next/bundle-analyzer": "^15.5.1",
     "@tailwindcss/postcss": "^4.1.6",
     "@tailwindcss/typography": "^0.5.16",

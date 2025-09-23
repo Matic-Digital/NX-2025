@@ -1,21 +1,25 @@
 'use client';
 
-import * as React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useContentfulInspectorMode } from '@contentful/live-preview/react';
-import { Box } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/Image/AirImage';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { ArrowUpRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import { SvgIcon } from '@/components/ui/svg-icon';
-import { cn } from '@/lib/utils';
-import type { ContentGridItem as ContentGridItemType } from './ContentGridItemSchema';
+
 import {
   getContentGridItemById,
   getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
-import { useState, useEffect } from 'react';
+import { Box } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+
+import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 
 interface ContentGridItemProps extends ContentGridItemType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing

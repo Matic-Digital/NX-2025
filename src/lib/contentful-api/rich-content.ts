@@ -4,8 +4,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import { fetchGraphQL } from '../api';
-import { SYS_FIELDS } from './graphql-fields';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+
 import type { RichContent, RichContentResponse } from '@/types/contentful/RichContent';
 
 export const RICHCONTENTS_PER_PAGE = 10;

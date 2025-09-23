@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { getRegionsMapById } from '@/components/Region/RegionApi';
-import type { RegionsMap } from '@/components/Region/RegionSchema';
-import type { Region } from '@/components/Region/RegionSchema';
-import { Box } from '@/components/global/matic-ds';
+
 import { ArrowUpRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
+import { Box } from '@/components/global/matic-ds';
+
+import { getRegionsMapById } from '@/components/Region/RegionApi';
 import { RegionsMapImageInteractive } from '@/components/Region/RegionsMapImageInteractive';
+
+import type { Region, RegionsMap } from '@/components/Region/RegionSchema';
 
 export function RegionsMap(props: RegionsMap) {
   const [content, setContent] = useState<RegionsMap | null>(props);

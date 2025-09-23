@@ -7,7 +7,33 @@ const config = {
   printWidth: 100,
   tabWidth: 2,
   bracketSpacing: true,
-  plugins: ['prettier-plugin-tailwindcss']
+  plugins: ['prettier-plugin-tailwindcss', '@ianvs/prettier-plugin-sort-imports'],
+  importOrder: [
+    '^react$',
+    '^next$',
+    '<THIRD_PARTY_MODULES>',
+    '',
+    'lucide-react',
+    '',
+    '@/styles/*',
+    '',
+    '^@/lib/*',
+    '',
+    '@/hooks/*',
+    '',
+    '@/contexts/*',
+    '',
+    '@/components/ui',
+    '',
+    '@/components/global',
+    '',
+    '^@/components/*',
+    '',
+    '<TYPES>'
+  ],
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
+  importOrderTypeScriptVersion: '5.0.0',
+  importOrderCaseSensitive: false
 };
 
 export default config;

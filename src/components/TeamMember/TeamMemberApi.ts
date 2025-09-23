@@ -1,8 +1,10 @@
-import { fetchGraphQL } from '../../lib/api';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+
 import type { TeamMember, TeamMemberResponse } from '@/components/TeamMember/TeamMemberSchema';
-import { ContentfulError, NetworkError } from '../../lib/errors';
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
 
 // Team member fields
 export const TEAM_MEMBER_GRAPHQL_FIELDS = `

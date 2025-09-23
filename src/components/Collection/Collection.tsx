@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
-import { getAllPagesMinimal } from '@/components/Page/PageApi';
+
 import { getCollectionById } from '@/components/Collection/CollectionApi';
-import type { Collection } from '@/components/Collection/CollectionSchema';
-import type { Post as PostType } from '@/components/Post/PostSchema';
-import type { Page } from '@/components/Page/PageSchema';
-import { PostCard } from '@/components/Post/PostCard';
+import { getAllPagesMinimal } from '@/components/Page/PageApi';
 import { PageCard } from '@/components/Page/PageCard';
+import { getAllPostsMinimal } from '@/components/Post/PostApi';
+import { PostCard } from '@/components/Post/PostCard';
+
+import type { Collection } from '@/components/Collection/CollectionSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
 
 interface CollectionProps {
   collectionData?: Collection;

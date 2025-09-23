@@ -1,18 +1,19 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 
+import { LaptopMinimalCheck, Moon, Sun } from 'lucide-react';
+
+import { useThemeSync } from '@/hooks/useThemeSync';
+
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-
-import { Moon, Sun, LaptopMinimalCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useThemeSync } from '@/hooks/useThemeSync';
 
 export function ThemeToggle() {
   const { theme, resolvedTheme, setTheme } = useTheme();

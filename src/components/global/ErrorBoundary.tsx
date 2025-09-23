@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect, type ReactNode } from 'react';
-// import { useRouter } from "next/navigation";
+import React, { useEffect } from 'react';
+
+import { AlertCircle } from 'lucide-react';
 
 import { Box } from '@/components/global/matic-ds';
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
+
+import type { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
