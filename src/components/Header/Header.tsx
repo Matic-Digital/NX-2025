@@ -15,7 +15,7 @@
 
 'use client';
 
-import * as React from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   useContentfulLiveUpdates,
   useContentfulInspectorMode
@@ -34,7 +34,7 @@ import { MegaMenuProvider, useMegaMenuContext } from '../../contexts/MegaMenuCon
 import { Container, Box } from '@/components/global/matic-ds';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Page } from '@/components/Page/PageSchema';
-
+import { HeaderSkeleton } from './HeaderSkeleton';
 
 // Sheet components for mobile menu from shadcn
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
@@ -42,11 +42,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 // Collapsible components for mobile mega menus
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 // No need for an empty interface, just use the HeaderType directly
 type HeaderProps = HeaderType;
@@ -62,16 +58,16 @@ type HeaderProps = HeaderType;
  */
 function HeaderContent(props: HeaderProps) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = React.useState(false);
-  const [menu, setMenu] = React.useState<MenuType | null>(null);
-  const [menuLoading, setMenuLoading] = React.useState(false);
-  const [overflowMenu, setOverflowMenu] = React.useState<MenuType | null>(null);
-  const [overflowMenuLoading, setOverflowMenuLoading] = React.useState(false);
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [loadedMegaMenus, setLoadedMegaMenus] = React.useState<Record<string, MenuType>>({});
-  const [openCollapsible, setOpenCollapsible] = React.useState<string | null>(null);
-  const overflowButtonRef = React.useRef<HTMLButtonElement>(null);
-  const overflowMenuRef = React.useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [menu, setMenu] = useState<MenuType | null>(null);
+  const [menuLoading, setMenuLoading] = useState(false);
+  const [overflowMenu, setOverflowMenu] = useState<MenuType | null>(null);
+  const [overflowMenuLoading, setOverflowMenuLoading] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [loadedMegaMenus, setLoadedMegaMenus] = useState<Record<string, MenuType>>({});
+  const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
+  const overflowButtonRef = useRef<HTMLButtonElement>(null);
+  const overflowMenuRef = useRef<HTMLDivElement>(null);
   const { isHeaderBlurVisible, setOverflowMenuOpen, isOverflowMenuOpen } = useMegaMenuContext();
 
   // Important: We'll use CSS-only dark mode with the 'dark:' variant
@@ -83,14 +79,14 @@ function HeaderContent(props: HeaderProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: header?.sys?.id });
 
   // Debug: Log header data
-  React.useEffect(() => {
+  useEffect(() => {
     console.log('Header data:', header);
     console.log('Header menu:', header?.menu);
     console.log('Header overflow:', header?.overflow);
   }, [header]);
 
   // Load menu if header has menu reference
-  React.useEffect(() => {
+  useEffect(() => {
     if (header?.menu?.sys?.id && !menu) {
       console.log('Loading menu with ID:', header.menu.sys.id);
       setMenuLoading(true);
@@ -111,39 +107,40 @@ function HeaderContent(props: HeaderProps) {
   }, [header?.menu?.sys?.id, menu]);
 
   // Load overflow menu if header has overflow reference
-  React.useEffect(() => {
+  useEffect(() => {
     if (header?.overflow?.sys?.id && !overflowMenu && !overflowMenuLoading) {
       console.log('Loading overflow menu with ID:', header.overflow.sys.id);
       console.log('Overflow typename:', header.overflow.__typename);
       setOverflowMenuLoading(true);
-      
+
       // Since overflow links to MegaMenu, not Menu, we need to use MegaMenu API
       if (header.overflow.__typename === 'MegaMenu') {
-        import('../MegaMenu/MegaMenuApi').then(({ getMegaMenuById }) => {
-          return getMegaMenuById(header.overflow!.sys.id);
-        })
-        .then((loadedMegaMenu) => {
-          console.log('Overflow MegaMenu loaded:', loadedMegaMenu);
-          // Convert MegaMenu to Menu format for compatibility
-          if (loadedMegaMenu?.itemsCollection) {
-            const menuFormat = {
-              sys: loadedMegaMenu.sys,
-              __typename: 'Menu' as const,
-              title: loadedMegaMenu.title,
-              itemsCollection: {
-                items: loadedMegaMenu.itemsCollection.items.map(item => ({
-                  ...item,
-                  __typename: 'MenuItem' as const
-                }))
-              }
-            };
-            setOverflowMenu(menuFormat);
-          }
-        })
-        .catch((error: unknown) => {
-          console.error('Failed to load overflow MegaMenu:', error);
-        })
-        .finally(() => setOverflowMenuLoading(false));
+        import('../MegaMenu/MegaMenuApi')
+          .then(({ getMegaMenuById }) => {
+            return getMegaMenuById(header.overflow!.sys.id);
+          })
+          .then((loadedMegaMenu) => {
+            console.log('Overflow MegaMenu loaded:', loadedMegaMenu);
+            // Convert MegaMenu to Menu format for compatibility
+            if (loadedMegaMenu?.itemsCollection) {
+              const menuFormat = {
+                sys: loadedMegaMenu.sys,
+                __typename: 'Menu' as const,
+                title: loadedMegaMenu.title,
+                itemsCollection: {
+                  items: loadedMegaMenu.itemsCollection.items.map((item) => ({
+                    ...item,
+                    __typename: 'MenuItem' as const
+                  }))
+                }
+              };
+              setOverflowMenu(menuFormat);
+            }
+          })
+          .catch((error: unknown) => {
+            console.error('Failed to load overflow MegaMenu:', error);
+          })
+          .finally(() => setOverflowMenuLoading(false));
       } else {
         // Fallback to Menu API
         getMenuById(header.overflow.sys.id)
@@ -159,10 +156,10 @@ function HeaderContent(props: HeaderProps) {
           .finally(() => setOverflowMenuLoading(false));
       }
     }
-  }, [header?.overflow?.sys?.id]);
+  }, [header?.overflow?.sys?.id, header?.overflow, overflowMenu, overflowMenuLoading]);
 
   // Handle scroll events to add frosted glass effect to header
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       setIsScrolled(scrollPosition > 10);
@@ -179,7 +176,7 @@ function HeaderContent(props: HeaderProps) {
   }, []);
 
   // Handle clicks outside overflow menu to close it
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isOverflowMenuOpen &&
@@ -199,7 +196,7 @@ function HeaderContent(props: HeaderProps) {
   }, [isOverflowMenuOpen, setOverflowMenuOpen]);
 
   // Handle escape key to close overflow menu
-  React.useEffect(() => {
+  useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOverflowMenuOpen) {
         setOverflowMenuOpen(false);
@@ -213,7 +210,7 @@ function HeaderContent(props: HeaderProps) {
   }, [isOverflowMenuOpen, setOverflowMenuOpen]);
 
   // Handle scroll detection
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 50;
       setIsScrolled(scrolled);
@@ -221,7 +218,8 @@ function HeaderContent(props: HeaderProps) {
 
     window.addEventListener('scroll', handleScroll);
     const handleResize = () => {
-      if (window.innerWidth >= 768 && isSheetOpen) { // md breakpoint is 768px
+      if (window.innerWidth >= 768 && isSheetOpen) {
+        // md breakpoint is 768px
         setIsSheetOpen(false);
       }
     };
@@ -240,6 +238,10 @@ function HeaderContent(props: HeaderProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  if (menuLoading || overflowMenuLoading) {
+    return <HeaderSkeleton />;
+  }
+
   if (!header) {
     return (
       <header className="bg-background/95 px-6 py-4">
@@ -254,10 +256,10 @@ function HeaderContent(props: HeaderProps) {
 
   return (
     <Container
-      className={`sticky top-0 z-[100] max-md:z-[40] pt-0 md:pt-6 transition-all duration-300`}
+      className={`sticky top-0 z-[100] pt-0 transition-all duration-300 max-md:z-[40] md:pt-6`}
     >
       <header
-        className={`relative z-[100] max-md:z-[40] px-6 max-md:py-1.5 lg:w-full transition-all duration-300 ${
+        className={`relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full ${
           isScrolled && isHeaderBlurVisible ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
         }`}
         {...inspectorProps({ fieldId: 'name' })}
@@ -284,9 +286,11 @@ function HeaderContent(props: HeaderProps) {
 
           {/* Desktop Navigation */}
           <div className="hidden items-center md:flex" data-testid="desktop-nav">
-            <div className={`rounded-xxs mr-4 transition-all duration-300 ${
-              isHeaderBlurVisible && !isScrolled ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
-            }`}>
+            <div
+              className={`rounded-xxs mr-4 transition-all duration-300 ${
+                isHeaderBlurVisible && !isScrolled ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
+              }`}
+            >
               {menuLoading ? (
                 <div className="px-4 py-2 text-white">Loading menu...</div>
               ) : menu ? (
@@ -299,7 +303,7 @@ function HeaderContent(props: HeaderProps) {
             </div>
 
             <Search className="text-white" />
-            
+
             {/* Desktop Overflow Menu (Hamburger) */}
             {header?.overflow && (
               <div className="relative">
@@ -315,55 +319,61 @@ function HeaderContent(props: HeaderProps) {
                   <Menu className="size-5" />
                   <span className="sr-only">Open overflow menu</span>
                 </Button>
-                
-                {/* Portal-based dropdown menu */}
-                {isOverflowMenuOpen && typeof window !== 'undefined' && createPortal(
-                  <div 
-                    ref={overflowMenuRef}
-                    className="fixed top-0 left-0 w-screen h-auto min-h-fit z-[99] bg-black/[0.72] shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px] p-8 pt-24"
-                    onClick={() => setOverflowMenuOpen(false)}
-                  >
-                    <div className="mx-auto max-w-7xl">
-                      <div className="mb-4">
-                        <h2 className="text-[1.5rem] text-white font-semibold">More</h2>
-                        <p className="text-sm text-white/70">Additional navigation options</p>
-                      </div>
-                      <nav onClick={(e) => e.stopPropagation()}>
-                        {overflowMenuLoading ? (
-                          <div className="text-white">Loading overflow menu...</div>
-                        ) : overflowMenu ? (
-                          <div className="flex flex-col gap-2">
-                            {overflowMenu.itemsCollection?.items?.map((item) => {
-                              // Only render MenuItem types as simple links, skip MegaMenu types
-                              if (item.__typename === 'MenuItem') {
-                                const linkUrl = item.internalLink ? `/${item.internalLink.slug}` : item.externalLink;
-                                const linkTarget = item.externalLink ? '_blank' : '_self';
-                                const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
-                                return (
-                                  <a
-                                    key={item.sys.id}
-                                    href={linkUrl}
-                                    target={linkTarget}
-                                    rel={linkRel}
-                                    className="block px-3 py-2 text-sm text-white hover:bg-white/10 rounded-md transition-colors"
-                                    onClick={() => setOverflowMenuOpen(false)}
-                                  >
-                                    {item.text}
-                                  </a>
-                                );
-                              }
-                              return null; // Skip MegaMenu items for now
-                            })}
-                          </div>
-                        ) : (
-                          <div className="text-white">No overflow menu available</div>
-                        )}
-                      </nav>
-                    </div>
-                  </div>,
-                  document.body
-                )}
+                {/* Portal-based dropdown menu */}
+                {isOverflowMenuOpen &&
+                  typeof window !== 'undefined' &&
+                  createPortal(
+                    <div
+                      ref={overflowMenuRef}
+                      className="fixed top-0 left-0 z-[99] h-auto min-h-fit w-screen bg-black/[0.72] p-8 pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px]"
+                      onClick={() => setOverflowMenuOpen(false)}
+                    >
+                      <div className="mx-auto max-w-7xl">
+                        <div className="mb-4">
+                          <h2 className="text-[1.5rem] font-semibold text-white">More</h2>
+                          <p className="text-sm text-white/70">Additional navigation options</p>
+                        </div>
+                        <nav onClick={(e) => e.stopPropagation()}>
+                          {overflowMenuLoading ? (
+                            <div className="text-white">Loading overflow menu...</div>
+                          ) : overflowMenu ? (
+                            <div className="flex flex-col gap-2">
+                              {overflowMenu.itemsCollection?.items?.map((item) => {
+                                // Only render MenuItem types as simple links, skip MegaMenu types
+                                if (item.__typename === 'MenuItem') {
+                                  const linkUrl = item.internalLink
+                                    ? `/${item.internalLink.slug}`
+                                    : item.externalLink;
+                                  const linkTarget = item.externalLink ? '_blank' : '_self';
+                                  const linkRel = item.externalLink
+                                    ? 'noopener noreferrer'
+                                    : undefined;
+
+                                  return (
+                                    <a
+                                      key={item.sys.id}
+                                      href={linkUrl}
+                                      target={linkTarget}
+                                      rel={linkRel}
+                                      className="block rounded-md px-3 py-2 text-sm text-white transition-colors hover:bg-white/10"
+                                      onClick={() => setOverflowMenuOpen(false)}
+                                    >
+                                      {item.text}
+                                    </a>
+                                  );
+                                }
+                                return null; // Skip MegaMenu items for now
+                              })}
+                            </div>
+                          ) : (
+                            <div className="text-white">No overflow menu available</div>
+                          )}
+                        </nav>
+                      </div>
+                    </div>,
+                    document.body
+                  )}
               </div>
             )}
           </div>
@@ -401,11 +411,15 @@ function HeaderContent(props: HeaderProps) {
                     <div className="text-foreground">Loading menu...</div>
                   ) : menu ? (
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-3">Navigation</h3>
+                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">
+                        Navigation
+                      </h3>
                       <div className="space-y-2">
                         {menu.itemsCollection?.items?.map((item) => {
                           if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug ? `/${item.internalLink.slug}` : item.externalLink ?? '#';
+                            const linkUrl = item.internalLink?.slug
+                              ? `/${item.internalLink.slug}`
+                              : (item.externalLink ?? '#');
                             const linkTarget = item.externalLink ? '_blank' : '_self';
                             const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
@@ -415,7 +429,7 @@ function HeaderContent(props: HeaderProps) {
                                 href={linkUrl}
                                 target={linkTarget}
                                 rel={linkRel}
-                                className="block px-3 py-2 text-sm text-foreground hover:bg-accent rounded-md transition-colors"
+                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
                                 onClick={() => setIsSheetOpen(false)}
                               >
                                 {item.text}
@@ -424,42 +438,46 @@ function HeaderContent(props: HeaderProps) {
                           } else if (item.__typename === 'MegaMenu') {
                             const megaMenuData = loadedMegaMenus[item.sys.id];
                             const isOpen = openCollapsible === `main-${item.sys.id}`;
-                            
+
                             return (
-                              <Collapsible key={item.sys.id} open={isOpen} onOpenChange={(open) => {
-                                if (open) {
-                                  setOpenCollapsible(`main-${item.sys.id}`);
-                                  if (!megaMenuData) {
-                                    getMegaMenuById(item.sys.id)
-                                      .then((loadedMenu) => {
-                                        if (loadedMenu?.itemsCollection) {
-                                          const itemsCollection = loadedMenu.itemsCollection;
-                                          setLoadedMegaMenus(prev => ({
-                                            ...prev,
-                                            [item.sys.id]: {
-                                              ...loadedMenu,
-                                              itemsCollection: {
-                                                items: itemsCollection.items.map(menuItem => ({
-                                                  ...menuItem,
-                                                  __typename: 'MenuItem' as const
-                                                }))
+                              <Collapsible
+                                key={item.sys.id}
+                                open={isOpen}
+                                onOpenChange={(open) => {
+                                  if (open) {
+                                    setOpenCollapsible(`main-${item.sys.id}`);
+                                    if (!megaMenuData) {
+                                      getMegaMenuById(item.sys.id)
+                                        .then((loadedMenu) => {
+                                          if (loadedMenu?.itemsCollection) {
+                                            const itemsCollection = loadedMenu.itemsCollection;
+                                            setLoadedMegaMenus((prev) => ({
+                                              ...prev,
+                                              [item.sys.id]: {
+                                                ...loadedMenu,
+                                                itemsCollection: {
+                                                  items: itemsCollection.items.map((menuItem) => ({
+                                                    ...menuItem,
+                                                    __typename: 'MenuItem' as const
+                                                  }))
+                                                }
                                               }
-                                            }
-                                          }));
-                                        }
-                                      })
-                                      .catch((error: unknown) => {
-                                        console.error('Failed to load mega menu:', error);
-                                      });
+                                            }));
+                                          }
+                                        })
+                                        .catch((error: unknown) => {
+                                          console.error('Failed to load mega menu:', error);
+                                        });
+                                    }
+                                  } else {
+                                    setOpenCollapsible(null);
                                   }
-                                } else {
-                                  setOpenCollapsible(null);
-                                }
-                              }}>
+                                }}
+                              >
                                 <CollapsibleTrigger asChild>
                                   <Button
                                     variant="ghost"
-                                    className="w-full justify-between px-3 py-2 text-sm text-foreground hover:bg-accent rounded-md transition-colors"
+                                    className="text-foreground hover:bg-accent w-full justify-between rounded-md px-3 py-2 text-sm transition-colors"
                                   >
                                     {item.title}
                                     <ChevronDown className="h-4 w-4" />
@@ -468,9 +486,15 @@ function HeaderContent(props: HeaderProps) {
                                 <CollapsibleContent className="space-y-1 pl-4">
                                   {megaMenuData?.itemsCollection?.items?.map((subItem) => {
                                     if (subItem.__typename === 'MenuItem') {
-                                      const subLinkUrl = subItem.internalLink?.slug ? `/${subItem.internalLink.slug}` : subItem.externalLink ?? '#';
-                                      const subLinkTarget = subItem.externalLink ? '_blank' : '_self';
-                                      const subLinkRel = subItem.externalLink ? 'noopener noreferrer' : undefined;
+                                      const subLinkUrl = subItem.internalLink?.slug
+                                        ? `/${subItem.internalLink.slug}`
+                                        : (subItem.externalLink ?? '#');
+                                      const subLinkTarget = subItem.externalLink
+                                        ? '_blank'
+                                        : '_self';
+                                      const subLinkRel = subItem.externalLink
+                                        ? 'noopener noreferrer'
+                                        : undefined;
 
                                       return (
                                         <a
@@ -478,7 +502,7 @@ function HeaderContent(props: HeaderProps) {
                                           href={subLinkUrl}
                                           target={subLinkTarget}
                                           rel={subLinkRel}
-                                          className="block px-3 py-2 text-sm text-muted-foreground hover:bg-accent rounded-md transition-colors"
+                                          className="text-muted-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
                                           onClick={() => setIsSheetOpen(false)}
                                         >
                                           {subItem.text}
@@ -487,7 +511,7 @@ function HeaderContent(props: HeaderProps) {
                                     }
                                     return null;
                                   }) ?? (
-                                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                                    <div className="text-muted-foreground px-3 py-2 text-sm">
                                       {megaMenuData ? 'No items available' : 'Loading...'}
                                     </div>
                                   )}
@@ -508,11 +532,13 @@ function HeaderContent(props: HeaderProps) {
                     <div className="text-foreground">Loading overflow menu...</div>
                   ) : overflowMenu ? (
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-3">More</h3>
+                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">More</h3>
                       <div className="space-y-2">
                         {overflowMenu.itemsCollection?.items?.map((item) => {
                           if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug ? `/${item.internalLink.slug}` : item.externalLink ?? '#';
+                            const linkUrl = item.internalLink?.slug
+                              ? `/${item.internalLink.slug}`
+                              : (item.externalLink ?? '#');
                             const linkTarget = item.externalLink ? '_blank' : '_self';
                             const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
@@ -522,7 +548,7 @@ function HeaderContent(props: HeaderProps) {
                                 href={linkUrl}
                                 target={linkTarget}
                                 rel={linkRel}
-                                className="block px-3 py-2 text-sm text-foreground hover:bg-accent rounded-md transition-colors"
+                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
                                 onClick={() => setIsSheetOpen(false)}
                               >
                                 {item.text}
@@ -531,42 +557,49 @@ function HeaderContent(props: HeaderProps) {
                           } else if (item.__typename === 'MegaMenu') {
                             const megaMenuData = loadedMegaMenus[item.sys.id];
                             const isOpen = openCollapsible === `overflow-${item.sys.id}`;
-                            
+
                             return (
-                              <Collapsible key={item.sys.id} open={isOpen} onOpenChange={(open) => {
-                                if (open) {
-                                  setOpenCollapsible(`overflow-${item.sys.id}`);
-                                  if (!megaMenuData) {
-                                    getMegaMenuById(item.sys.id)
-                                      .then((loadedMenu) => {
-                                        if (loadedMenu?.itemsCollection) {
-                                          const itemsCollection = loadedMenu.itemsCollection;
-                                          setLoadedMegaMenus(prev => ({
-                                            ...prev,
-                                            [item.sys.id]: {
-                                              ...loadedMenu,
-                                              itemsCollection: {
-                                                items: itemsCollection.items.map(menuItem => ({
-                                                  ...menuItem,
-                                                  __typename: 'MenuItem' as const
-                                                }))
+                              <Collapsible
+                                key={item.sys.id}
+                                open={isOpen}
+                                onOpenChange={(open) => {
+                                  if (open) {
+                                    setOpenCollapsible(`overflow-${item.sys.id}`);
+                                    if (!megaMenuData) {
+                                      getMegaMenuById(item.sys.id)
+                                        .then((loadedMenu) => {
+                                          if (loadedMenu?.itemsCollection) {
+                                            const itemsCollection = loadedMenu.itemsCollection;
+                                            setLoadedMegaMenus((prev) => ({
+                                              ...prev,
+                                              [item.sys.id]: {
+                                                ...loadedMenu,
+                                                itemsCollection: {
+                                                  items: itemsCollection.items.map((menuItem) => ({
+                                                    ...menuItem,
+                                                    __typename: 'MenuItem' as const
+                                                  }))
+                                                }
                                               }
-                                            }
-                                          }));
-                                        }
-                                      })
-                                      .catch((error: unknown) => {
-                                        console.error('Failed to load overflow mega menu:', error);
-                                      });
+                                            }));
+                                          }
+                                        })
+                                        .catch((error: unknown) => {
+                                          console.error(
+                                            'Failed to load overflow mega menu:',
+                                            error
+                                          );
+                                        });
+                                    }
+                                  } else {
+                                    setOpenCollapsible(null);
                                   }
-                                } else {
-                                  setOpenCollapsible(null);
-                                }
-                              }}>
+                                }}
+                              >
                                 <CollapsibleTrigger asChild>
                                   <Button
                                     variant="ghost"
-                                    className="w-full justify-between px-3 py-2 text-sm text-foreground hover:bg-accent rounded-md transition-colors"
+                                    className="text-foreground hover:bg-accent w-full justify-between rounded-md px-3 py-2 text-sm transition-colors"
                                   >
                                     {item.title}
                                     <ChevronDown className="h-4 w-4" />
@@ -575,9 +608,15 @@ function HeaderContent(props: HeaderProps) {
                                 <CollapsibleContent className="space-y-1 pl-4">
                                   {megaMenuData?.itemsCollection?.items?.map((subItem) => {
                                     if (subItem.__typename === 'MenuItem') {
-                                      const subLinkUrl = subItem.internalLink?.slug ? `/${subItem.internalLink.slug}` : subItem.externalLink ?? '#';
-                                      const subLinkTarget = subItem.externalLink ? '_blank' : '_self';
-                                      const subLinkRel = subItem.externalLink ? 'noopener noreferrer' : undefined;
+                                      const subLinkUrl = subItem.internalLink?.slug
+                                        ? `/${subItem.internalLink.slug}`
+                                        : (subItem.externalLink ?? '#');
+                                      const subLinkTarget = subItem.externalLink
+                                        ? '_blank'
+                                        : '_self';
+                                      const subLinkRel = subItem.externalLink
+                                        ? 'noopener noreferrer'
+                                        : undefined;
 
                                       return (
                                         <a
@@ -585,7 +624,7 @@ function HeaderContent(props: HeaderProps) {
                                           href={subLinkUrl}
                                           target={subLinkTarget}
                                           rel={subLinkRel}
-                                          className="block px-3 py-2 text-sm text-muted-foreground hover:bg-accent rounded-md transition-colors"
+                                          className="text-muted-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
                                           onClick={() => setIsSheetOpen(false)}
                                         >
                                           {subItem.text}
@@ -594,7 +633,7 @@ function HeaderContent(props: HeaderProps) {
                                     }
                                     return null;
                                   }) ?? (
-                                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                                    <div className="text-muted-foreground px-3 py-2 text-sm">
                                       {megaMenuData ? 'No items available' : 'Loading...'}
                                     </div>
                                   )}

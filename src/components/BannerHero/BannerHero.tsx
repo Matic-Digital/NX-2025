@@ -10,6 +10,7 @@ import { Section } from '@/components/global/matic-ds';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';
 import { cn } from '@/lib/utils';
+import { BannerHeroSkeleton } from '@/components/BannerHero/BannerHeroSkeleton';
 
 interface BannerHeroProps extends BannerHero {
   productContext?: {
@@ -23,6 +24,10 @@ export function BannerHero(props: BannerHeroProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: bannerHero?.sys?.id });
   const isCenteredSectionHeading = bannerHero.heading.variant === 'Centered';
   const isImageBetween = props.contentType === 'ImageBetween';
+
+  if (!bannerHero) {
+    return <BannerHeroSkeleton />;
+  }
 
   return (
     <ErrorBoundary>

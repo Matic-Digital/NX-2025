@@ -15,6 +15,7 @@ import type {
 } from './AccordionSchema';
 import { Box } from '@/components/global/matic-ds';
 import { cn } from '@/lib/utils';
+import { AccordionSkeleton } from './AccordionSkeleton';
 
 // Types
 interface AccordionProps {
@@ -183,11 +184,7 @@ const AccordionItemContent = ({
   );
 };
 
-const LoadingState = () => (
-  <div className="flex items-center justify-center p-4">
-    <div className="text-lg">Loading accordion...</div>
-  </div>
-);
+const LoadingState = () => <AccordionSkeleton />;
 
 const ErrorState = ({ message }: { message: string }) => (
   <div className="flex items-center justify-center p-4">
