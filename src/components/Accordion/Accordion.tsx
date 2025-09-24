@@ -1,15 +1,17 @@
 'use client';
 
-import {
-  Accordion as AccordionPrimitive,
-} from '@/components/ui/accordion';
+import { Accordion as AccordionPrimitive } from '@/components/ui/accordion';
 
 import { Box } from '@/components/global/matic-ds';
 
+import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState
+} from '@/components/Accordion/components/AccordionStates';
 import { useAccordionData } from '@/components/Accordion/hooks/UseAccordionData';
 import { useAccordionLogic } from '@/components/Accordion/hooks/UseAccordionLogic';
-import { AccordionItemComponent } from '@/components/Accordion/components/AccordionItem';
-import { LoadingState, ErrorState, EmptyState } from '@/components/Accordion/components/AccordionStates';
 
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
 
@@ -52,7 +54,7 @@ export function Accordion({ sys }: AccordionProps) {
             const displayState = getItemDisplayState(index, `item-${index}`);
 
             return (
-              <AccordionItemComponent
+              <AccordionItem
                 key={`accordion-${index}-item-${item.sys.id}`}
                 item={item}
                 index={index}

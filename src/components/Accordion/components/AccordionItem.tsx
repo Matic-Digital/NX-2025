@@ -3,14 +3,14 @@
 import Image from 'next/image';
 
 import {
-  AccordionItem,
+  AccordionItem as AccordionItemPrimitive,
   AccordionTrigger
 } from '@/components/ui/accordion';
 
 import { Box } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/Image/AirImage';
 
 import { accordionStyles } from '@/components/Accordion/styles/AccordionStyles';
+import { AirImage } from '@/components/Image/AirImage';
 
 import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
@@ -26,7 +26,7 @@ interface AccordionItemProps {
  * Pure presentation component for accordion items
  * Handles only UI rendering, no business logic or data fetching
  */
-export const AccordionItemComponent = ({
+export const AccordionItem = ({
   item,
   index,
   isHovered,
@@ -36,7 +36,7 @@ export const AccordionItemComponent = ({
   const itemValue = `item-${index}`;
 
   return (
-    <AccordionItem
+    <AccordionItemPrimitive
       key={`accordion-${index}-item-${item.sys.id}`}
       value={itemValue}
       className={accordionStyles.getItemClasses(isHovered, shouldShowExpanded)}
@@ -91,6 +91,6 @@ export const AccordionItemComponent = ({
           </Box>
         </Box>
       </AccordionTrigger>
-    </AccordionItem>
+    </AccordionItemPrimitive>
   );
 };
