@@ -16,9 +16,6 @@ export const useBannerHeroLogic = (props: BannerHeroProps, bannerHero: BannerHer
   const isCenteredSectionHeading = bannerHero?.heading.variant === 'Centered';
   const isImageBetween = props.contentType === 'ImageBetween';
 
-  console.log('isCenteredSectionHeading', isCenteredSectionHeading);
-  console.log('isImageBetween', isImageBetween);
-
   return {
     isCenteredSectionHeading,
     isImageBetween
