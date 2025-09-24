@@ -15,6 +15,7 @@ import { Box } from '@/components/global/matic-ds';
 
 import AirImage from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { categoryColorMap } from '@/components/Post/PostCategories';
 
 import type { Post } from '@/components/Post/PostSchema';
@@ -67,11 +68,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
   if (loading) {
-    return (
-      <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Loading post...</div>
-      </div>
-    );
+    return <PostCardSkeleton />;
   }
 
   if (!post) {

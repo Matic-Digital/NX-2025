@@ -11,10 +11,11 @@ import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 
+import { Box } from '@/components/global/matic-ds';
+
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -90,10 +91,6 @@ export function Content(props: ContentProps) {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalData | null>(null);
-
-  console.log('🤩contentId', contentId);
-  console.log('🤩restProps', restProps);
-  console.log('🤩fetchedData', fetchedData);
 
   // Fetch data if contentId is provided
   useEffect(() => {

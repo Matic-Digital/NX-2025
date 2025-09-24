@@ -26,6 +26,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
+import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
@@ -942,11 +943,7 @@ export function Slider(props: SliderSys) {
   }, [sliderData?.itemsCollection?.items]);
 
   if (loading) {
-    return (
-      <div className="flex h-[669px] items-center justify-center">
-        <div className="text-lg">Loading slider...</div>
-      </div>
-    );
+    return <SliderSkeleton itemCount={3} />;
   }
 
   if (!sliderData?.itemsCollection?.items?.length) {

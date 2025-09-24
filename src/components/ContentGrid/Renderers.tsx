@@ -3,12 +3,13 @@ import Link from 'next/link';
 
 import { contentTypeDetectors } from '@/lib/component-grid/utils';
 
+import { Box } from '@/components/global/matic-ds';
+
 import { Accordion } from '@/components/Accordion/Accordion';
 import Collection from '@/components/Collection/Collection';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
-import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PostCard } from '@/components/Post/PostCard';
@@ -122,27 +123,13 @@ export const contentRenderers = {
     <Slider key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderSolution: (item: SolutionType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), use solutionId prop
-    if (item.sys?.id && !item.title && !item.heading) {
-      return (
-        <SolutionCard key={`lazy-${item.sys.id}`} solutionId={item.sys.id} index={context.index} />
-      );
-    }
-    // If we have full data, render normally
-    return (
-      <SolutionCard key={`full-${item.sys?.id ?? context.index}`} {...item} index={context.index} />
-    );
-  },
+  renderSolution: (item: SolutionType, context: RenderContext) => (
+    <SolutionCard key={item.sys?.id ?? context.index} {...item} index={context.index} />
+  ),
 
-  renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), pass testimonialsId to unified component
-    if (item.sys?.id && !item.itemsCollection) {
-      return <Testimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
-    }
-    // If we have full data, render normally
-    return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;
-  },
+  renderTestimonials: (item: TestimonialsType, context: RenderContext) => (
+    <Testimonials key={item.sys?.id ?? context.index} {...item} />
+  ),
 
   renderVideo: (item: VideoType, context: RenderContext) => (
     <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />
