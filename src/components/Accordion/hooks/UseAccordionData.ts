@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { getAccordionItemById, getAccordionsByIds } from '@/components/Accordion/AccordionApi';
+
 import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
 /**
