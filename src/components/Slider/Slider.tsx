@@ -640,7 +640,7 @@ const GenericSlider = ({
                 {/* Timeline Bullets - Mobile - Show only visible ones, center active */}
                 <div className="relative mx-10 overflow-hidden">
                   {/* Timeline line behind bullets - with fade out effect */}
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                  <div className="absolute top-1/2 right-0 left-0 h-0.5 -translate-y-1/2 bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
                   <div
                     className="relative z-10 flex transition-transform duration-500 ease-in-out"
                     style={{
@@ -653,12 +653,13 @@ const GenericSlider = ({
                         const timelineItemData = item as TimelineSliderItem;
                         const isActive = current === timelineIndex + 1;
 
+
                         return (
                           <button
                             key={item.sys.id}
                             onClick={() => api?.scrollTo(timelineIndex)}
                             className={cn(
-                              'relative z-10 h-3 w-3 rounded-full transition-colors duration-300 flex-shrink-0',
+                              'relative z-10 h-3 w-3 flex-shrink-0 rounded-full transition-colors duration-300',
                               isActive ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'
                             )}
                             style={{

@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '@/lib/api';
 import { getPAGE_WITH_REFS_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import { RICHCONTENT_GRAPHQL_FIELDS } from '@/lib/contentful-api/rich-content';
+import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';

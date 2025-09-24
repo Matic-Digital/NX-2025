@@ -21,3 +21,8 @@ export const RichContentSchema = z.object({
 });
 
 export type RichContent = z.infer<typeof RichContentSchema>;
+
+export interface RichContentResponse {
+  items: Array<RichContent>;
+  total: number;
+}
