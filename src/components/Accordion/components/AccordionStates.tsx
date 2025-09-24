@@ -1,4 +1,4 @@
-import { AccordionSkeleton } from '@/components/Accordion/AccordionSkeleton';
+import { AccordionSkeleton } from '@/components/Accordion/components/AccordionSkeleton';
 
 /**
  * Pure presentation components for accordion states
