@@ -12,7 +12,7 @@ export const bannerHeroStyles = {
   getSectionClasses: (isCenteredSectionHeading: boolean, isImageBetween: boolean) => {
     return cn(
       'relative flex h-[789px]',
-      isCenteredSectionHeading || isImageBetween ? 'items-center' : 'items-end',
+      isCenteredSectionHeading || isImageBetween ? 'items-center justify-center' : 'items-end',
       'dark'
     );
   },
