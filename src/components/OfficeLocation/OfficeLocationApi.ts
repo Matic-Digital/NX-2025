@@ -4,7 +4,10 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
-import type { OfficeLocation as ContentfulLocation, OfficeLocationResponse } from '@/types';
+import type {
+  OfficeLocation as ContentfulLocation,
+  OfficeLocationResponse
+} from '@/components/OfficeLocation/OfficeLocationSchema';
 
 // Location fields
 export const LOCATION_GRAPHQL_FIELDS = `

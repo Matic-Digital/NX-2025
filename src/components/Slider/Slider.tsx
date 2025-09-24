@@ -30,18 +30,14 @@ import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
-import type { SliderItemType } from '@/components/Slider/SliderSchema';
+import type { Image as ImageType } from '@/components/Image/ImageSchema';
+import type { PostSliderItem } from '@/components/Post/PostSchema';
+import type { SliderItem } from '@/components/Slider/SliderItemSchema';
+import type { Slider, SliderItemType, SliderSys } from '@/components/Slider/SliderSchema';
+import type { Solution } from '@/components/Solution/SolutionSchema';
+import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
+import type { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 import type { CarouselApi } from '@/components/ui/carousel';
-import type {
-  Image as ImageType,
-  PostSliderItem,
-  Slider,
-  SliderItem,
-  SliderSys,
-  Solution,
-  TeamMember,
-  TimelineSliderItem
-} from '@/types';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -652,7 +648,6 @@ const GenericSlider = ({
                       .map((item, timelineIndex) => {
                         const timelineItemData = item as TimelineSliderItem;
                         const isActive = current === timelineIndex + 1;
-
 
                         return (
                           <button

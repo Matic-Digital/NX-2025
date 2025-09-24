@@ -12,7 +12,8 @@ import { getFooterById } from '@/components/Footer/FooterApi';
 import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 
-import type { Footer as FooterType, Header as HeaderType } from '@/types';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 
 interface PageLayoutProps {
   header?: HeaderType | null;

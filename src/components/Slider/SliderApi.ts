@@ -4,7 +4,7 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { SLIDERITEM_GRAPHQL_FIELDS_SIMPLE } from '@/components/Slider/SliderItemApi';
 
-import type { Slider } from '@/types';
+import type { Slider } from '@/components/Slider/SliderSchema';
 
 // Minimal slider fields for ContentGrid queries
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
