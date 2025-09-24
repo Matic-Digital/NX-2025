@@ -7,7 +7,7 @@ import {
 import { Box } from '@/components/global/matic-ds';
 
 import { useAccordionData } from '@/components/Accordion/hooks/UseAccordionData';
-import { useAccordionLogic } from '@/components/Accordion/logic/AccordionLogic';
+import { useAccordionLogic } from '@/components/Accordion/hooks/UseAccordionLogic';
 import { AccordionItemComponent } from '@/components/Accordion/components/AccordionItem';
 import { LoadingState, ErrorState, EmptyState } from '@/components/Accordion/components/AccordionStates';
 
