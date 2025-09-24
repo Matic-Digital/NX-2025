@@ -5,7 +5,7 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '@/components/SectionHeading/SectionHeadingApi';
 
-import type { BannerHero, BannerHeroResponse } from '@/types';
+import type { BannerHero, BannerHeroResponse } from '@/components/BannerHero/BannerHeroSchema';
 
 // BannerHero fields
 export const BANNERHERO_GRAPHQL_FIELDS = `

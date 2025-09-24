@@ -13,9 +13,13 @@
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
 import { Header } from '@/components/Header/Header';
-import type { Header as HeaderType, Page, PageList } from '@/types';
+
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageList } from '@/components/PageList/PageListSchema';
 
 /**
  * Mock Next.js hooks

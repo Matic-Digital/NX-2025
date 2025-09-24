@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import type { Social, SocialResponse } from '@/types';
+import type { Social, SocialResponse } from '@/components/Social/SocialSchema';
 
 // Social fields
 export const SOCIAL_GRAPHQL_FIELDS = `

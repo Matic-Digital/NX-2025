@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import type { Button } from './ButtonSchema';
+import type { Button } from '@/components/Button/ButtonSchema';
 
 // Button fields
 export const BUTTON_GRAPHQL_FIELDS = `

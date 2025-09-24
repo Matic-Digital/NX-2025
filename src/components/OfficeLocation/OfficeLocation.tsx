@@ -8,7 +8,7 @@ import { AirImage } from '@/components/Image/AirImage';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import { OfficeLocationSkeleton } from '@/components/OfficeLocation/OfficeLocationSkeleton';
 
-import type { OfficeLocation } from '@/types';
+import type { OfficeLocation } from '@/components/OfficeLocation/OfficeLocationSchema';
 
 interface LocationProps {
   sys: {
