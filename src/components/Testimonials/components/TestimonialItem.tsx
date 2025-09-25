@@ -10,16 +10,15 @@ interface TestimonialItemProps {
 
 /**
  * Individual testimonial item component
- * Pure presentation component for a single testimonial
  */
 export const TestimonialItem = ({ item }: TestimonialItemProps) => {
   return (
     <Box key={item.sys?.id} direction="row" className="w-full">
-      <Box className="bg-blue relative overflow-hidden">
+      <Box className="bg-blue relative overflow-hidden aspect-square w-20 flex-shrink-0 sm:w-24 md:w-28">
         <AirImage
           {...item.headshot}
           altText={item.headshot?.altText ?? undefined}
-          className=""
+          className="w-full h-full object-cover"
         />
       </Box>
       <Box direction="col" className="bg-subtle h-full justify-between p-[1.5rem]">
