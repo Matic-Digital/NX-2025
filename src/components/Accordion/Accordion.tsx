@@ -12,6 +12,7 @@ import {
 } from '@/components/Accordion/components/AccordionStates';
 import { useAccordionData } from '@/components/Accordion/hooks/UseAccordionData';
 import { useAccordionLogic } from '@/components/Accordion/hooks/UseAccordionLogic';
+import { useAccordionState } from '@/components/Accordion/hooks/UseAccordionState';
 
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
 
@@ -31,18 +32,19 @@ export function Accordion({ sys }: AccordionProps) {
   // Business logic layer
   const { handleHover, handleMouseLeave, getItemDisplayState } = useAccordionLogic(accordionItems);
 
-  // Loading state
-  if (loading) {
+  // State layer
+  const { currentState } = useAccordionState(accordionItems, loading, error);
+
+  // Presentation layer
+  if (currentState.type === 'loading') {
     return <LoadingState />;
   }
 
-  // Error state
-  if (error) {
-    return <ErrorState message={error} />;
+  if (currentState.type === 'error') {
+    return <ErrorState message={currentState.message} />;
   }
 
-  // Empty state
-  if (!accordionItems.length) {
+  if (currentState.type === 'empty') {
     return <EmptyState />;
   }
 

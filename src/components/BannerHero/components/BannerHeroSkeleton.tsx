@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 
 import { Section } from '@/components/global/matic-ds';
+
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 
 interface BannerHeroSkeletonProps {
