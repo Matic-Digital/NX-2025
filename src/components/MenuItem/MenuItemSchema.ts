@@ -27,7 +27,7 @@ export const MenuItemSchema = z.object({
   text: z.string(),
   description: z.string(),
   internalLink: MenuItemInternalLinkSchema.optional(),
-  externalLink: z.optional(z.string().url()),
+  externalLink: z.optional(z.string().url())
 });
 
 export type MenuItem = z.infer<typeof MenuItemSchema>;

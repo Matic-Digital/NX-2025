@@ -22,8 +22,8 @@
 'use client';
 
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
 // Import content components for dynamic rendering

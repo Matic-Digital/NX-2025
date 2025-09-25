@@ -2,21 +2,25 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { Phone, Mail, PhoneCall, Headset, Mic } from 'lucide-react';
-import { Box } from '@/components/global/matic-ds';
+import Link from 'next/link';
+
+import { Headset, Mail, Mic, Phone, PhoneCall } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
-import type { ContactCard } from './ContactCardSchema';
-import type { Modal } from '@/components/Modals/Modal';
-import { ContactCardSkeleton } from './ContactCardSkeleton';
-import { getContactCardById } from './ContactCardApi';
+
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { ContactCardSkeleton } from '@/components/ContactCard/ContactCardSkeleton';
+import { Box } from '@/components/global/matic-ds';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { RequestSupportModal } from '@/components/Modals/RequestSupportModal';
+
+import type { ContactCard } from '@/components/ContactCard/ContactCardSchema';
+import type { Modal } from '@/components/Modals/Modal';
 
 interface ContactCardProps extends Partial<ContactCard> {
   contactCardId?: string;

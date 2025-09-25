@@ -1,4 +1,4 @@
-import type { TextProps, TextLineHeight } from './types';
+import type { TextLineHeight, TextProps } from './types';
 
 /**
  * Text Component Examples:

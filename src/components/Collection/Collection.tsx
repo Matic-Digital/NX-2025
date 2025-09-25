@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
-import { getAllPagesMinimal } from '@/components/Page/PageApi';
+
 import { getCollectionById } from '@/components/Collection/CollectionApi';
-import type { Collection } from '@/components/Collection/CollectionSchema';
-import type { Post as PostType } from '@/components/Post/PostSchema';
-import type { Page } from '@/components/Page/PageSchema';
-import { PostCard } from '@/components/Post/PostCard';
+import { getAllPagesMinimal } from '@/components/Page/PageApi';
 import { PageCard } from '@/components/Page/PageCard';
+import { getAllPostsMinimal } from '@/components/Post/PostApi';
+import { PostCard } from '@/components/Post/PostCard';
+
+import type { Collection } from '@/components/Collection/CollectionSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { Post as PostType } from '@/components/Post/PostSchema';
 
 interface CollectionProps {
   collectionData?: Collection;
@@ -238,11 +240,62 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
         )}
 
         <div className="mb-8 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {currentPosts.map((post) => (
-            <div key={post.sys.id} className="flex">
-              <PostCard sys={post.sys} />
+          {currentPosts.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+              <div className="mb-4">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">No posts found</h3>
+              <p className="mb-4 text-gray-500">
+                {activeFilter && searchQuery
+                  ? `No posts match "${searchQuery}" in the "${activeFilter}" category.`
+                  : activeFilter
+                    ? `No posts found in the "${activeFilter}" category.`
+                    : searchQuery
+                      ? `No posts match "${searchQuery}".`
+                      : 'No posts are currently available.'}
+              </p>
+              {Boolean(activeFilter ?? searchQuery) && (
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  {activeFilter && (
+                    <button
+                      onClick={() => handleFilterChange(null)}
+                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      Clear Category Filter
+                    </button>
+                  )}
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    >
+                      Clear Search
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-          ))}
+          ) : (
+            currentPosts.map((post) => (
+              <div key={post.sys.id}>
+                <PostCard sys={post.sys} />
+              </div>
+            ))
+          )}
         </div>
 
         {totalPages > 1 && (

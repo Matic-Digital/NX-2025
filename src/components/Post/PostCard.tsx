@@ -2,17 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import Link from 'next/link';
+
+import { ArrowUpRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { Box } from '@/components/global/matic-ds';
+
 import AirImage from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
-import type { Post } from '@/components/Post/PostSchema';
-import Link from 'next/link';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { categoryColorMap } from '@/components/Post/PostCategories';
-import { cn } from '@/lib/utils';
-import { ArrowUpRight } from 'lucide-react';
+
+import type { Post } from '@/components/Post/PostSchema';
 
 // Helper function to format date as "Month Day, Year"
 const formatDate = (dateString?: string): string => {
@@ -62,11 +68,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
   if (loading) {
-    return (
-      <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Loading post...</div>
-      </div>
-    );
+    return <PostCardSkeleton />;
   }
 
   if (!post) {

@@ -1,10 +1,13 @@
-import { fetchGraphQL } from '../../lib/api';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import type { OfficeLocation as ContentfulLocation, OfficeLocationResponse } from '@/types';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
-import { ContentfulError, NetworkError } from '../../lib/errors';
+import type {
+  OfficeLocation as ContentfulLocation,
+  OfficeLocationResponse
+} from '@/components/OfficeLocation/OfficeLocationSchema';
 
 // Location fields
 export const LOCATION_GRAPHQL_FIELDS = `

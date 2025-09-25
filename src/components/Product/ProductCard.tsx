@@ -1,13 +1,17 @@
 'use client';
 
-import { useContentfulInspectorMode } from '@contentful/live-preview/react';
-import { Box } from '@/components/global/matic-ds';
-import Image from 'next/image';
-import type { Product, ProductSys } from '@/components/Product/ProductSchema';
-import Link from 'next/link';
-import { getProductsByIds } from '@/components/Product/ProductApi';
-import { checkPageBelongsToPageList } from '@/components/PageList/PageListApi';
 import { useEffect, useState } from 'react';
+import { useContentfulInspectorMode } from '@contentful/live-preview/react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { Box } from '@/components/global/matic-ds';
+
+import { checkPageBelongsToPageList } from '@/components/PageList/PageListApi';
+import { getProductsByIds } from '@/components/Product/ProductApi';
+import { ProductCardSkeleton } from '@/components/Product/ProductCardSkeleton';
+
+import type { Product, ProductSys } from '@/components/Product/ProductSchema';
 
 export const ProductCard = (props: ProductSys) => {
   const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
@@ -59,8 +63,8 @@ export const ProductCard = (props: ProductSys) => {
     void generateProductUrl();
   }, [productData]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!loading) {
+    return <ProductCardSkeleton />;
   }
 
   if (!productData) {

@@ -1,21 +1,20 @@
 import { fetchGraphQL } from '@/lib/api';
-import type { Page, PageResponse, PageWithRefs } from '@/components/Page/PageSchema';
-import type { Header } from '@/components/Header/HeaderSchema';
-import type { Footer } from '@/components/Footer/FooterSchema';
-import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
+import { getPAGE_WITH_REFS_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 import { ContentfulError, NetworkError } from '@/lib/errors';
+
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from '@/components/Region/RegionApi';
-import { RICHCONTENT_GRAPHQL_FIELDS } from '@/lib/contentful-api/rich-content';
-import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 
-import { getHeaderById } from '@/components/Header/HeaderApi';
-import { getFooterById } from '@/components/Footer/FooterApi';
-
-import { getPAGE_WITH_REFS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import type { Footer } from '@/components/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
+import type { Page, PageResponse, PageWithRefs } from '@/components/Page/PageSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 
 // Define a new interface that extends Page with header and footer
 interface PageWithHeaderFooter extends Page {

@@ -95,7 +95,10 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     // Find the PageList that matches slug
     console.log(`Looking for PageList with slug: ${slug}`);
     const targetPageList = pageLists.find((pageList) => pageList.slug === slug);
-    console.log(`Direct PageList match:`, targetPageList ? `Found: ${targetPageList.title}` : 'Not found');
+    console.log(
+      `Direct PageList match:`,
+      targetPageList ? `Found: ${targetPageList.title}` : 'Not found'
+    );
     if (!targetPageList) {
       console.log(`No direct PageList match, continuing to check for content items...`);
     } else {
@@ -130,12 +133,12 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     // This handles cases like individual products within trackers
     console.log(`Checking if ${slug} is a content item that needs nested redirect...`);
     const allContentTypes = ['Product', 'Service', 'Solution', 'Post', 'Page'];
-    
+
     for (const contentType of allContentTypes) {
       try {
         console.log(`Trying to fetch ${slug} as ${contentType}...`);
         let contentItem = null;
-        
+
         // Try to fetch the content item by slug using the appropriate API
         if (contentType === 'Product') {
           const { getProductBySlug } = await import('@/components/Product/ProductApi');
@@ -154,27 +157,30 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
           contentItem = await getPageBySlug(slug, false);
         }
 
-        console.log(`${contentType} fetch result for ${slug}:`, contentItem ? 'Found' : 'Not found');
+        console.log(
+          `${contentType} fetch result for ${slug}:`,
+          contentItem ? 'Found' : 'Not found'
+        );
 
         if (contentItem) {
           console.log(`Found ${contentType}: ${contentItem.title} (${contentItem.sys.id})`);
           console.log(`Searching through ${pageLists.length} PageLists to find container...`);
-          
+
           // Find which PageList contains this content item
           for (const pageList of pageLists) {
             if (!pageList.pagesCollection?.items?.length) continue;
 
-            console.log(`Checking PageList: ${pageList.title} (${pageList.slug}) with ${pageList.pagesCollection.items.length} items`);
-
-            const isInPageList = pageList.pagesCollection.items.some(
-              (item) => {
-                const match = item?.sys?.id === contentItem.sys.id;
-                if (match) {
-                  console.log(`Found match in PageList ${pageList.title}: ${item.sys.id}`);
-                }
-                return match;
-              }
+            console.log(
+              `Checking PageList: ${pageList.title} (${pageList.slug}) with ${pageList.pagesCollection.items.length} items`
             );
+
+            const isInPageList = pageList.pagesCollection.items.some((item) => {
+              const match = item?.sys?.id === contentItem.sys.id;
+              if (match) {
+                console.log(`Found match in PageList ${pageList.title}: ${item.sys.id}`);
+              }
+              return match;
+            });
 
             if (isInPageList) {
               console.log(`Content item ${slug} found in PageList: ${pageList.title}`);

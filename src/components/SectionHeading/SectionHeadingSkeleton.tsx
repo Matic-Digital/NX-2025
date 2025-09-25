@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { Box } from '@/components/global/matic-ds';
+
 import { cn } from '@/lib/utils';
+
+import { Box } from '@/components/global/matic-ds';
 
 interface SectionHeadingSkeletonProps {
   variant?: 'Horizontal' | 'Stacked' | 'Centered' | 'Default';

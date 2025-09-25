@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { MenuItemSchema } from '../MenuItem/MenuItemSchema';
+
+import { MenuItemSchema } from '@/components/MenuItem/MenuItemSchema';
 
 export const MegaMenuSchema = z.object({
   sys: z.object({
@@ -8,9 +9,11 @@ export const MegaMenuSchema = z.object({
   __typename: z.string(),
   overflow: z.boolean().optional(),
   title: z.string(),
-  itemsCollection: z.object({
-    items: z.array(MenuItemSchema)
-  }).optional(),
+  itemsCollection: z
+    .object({
+      items: z.array(MenuItemSchema)
+    })
+    .optional()
 });
 
 export type MegaMenu = z.infer<typeof MegaMenuSchema>;

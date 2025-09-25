@@ -2,16 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import Link from 'next/link';
+
+import { ArrowUpRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { Box } from '@/components/global/matic-ds';
+
 import AirImage from '@/components/Image/AirImage';
 import { getPageById } from '@/components/Page/PageApi';
+
 import type { Page } from '@/components/Page/PageSchema';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { ArrowUpRight } from 'lucide-react';
 
 interface PageCardProps extends Partial<Page> {
   sys: {

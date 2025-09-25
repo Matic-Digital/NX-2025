@@ -2,22 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+
+import { cn } from '@/lib/utils';
+
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { AirImage } from '@/components/Image/AirImage';
+
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { Slider } from '@/components/Slider/Slider';
-import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
-import type { Image } from '@/components/Image/ImageSchema';
-import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
-import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
-import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { cn } from '@/lib/utils';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
+import { AirImage } from '@/components/Image/AirImage';
+import { Slider } from '@/components/Slider/Slider';
+
+import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
+import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
+import type { Image } from '@/components/Image/ImageSchema';
+import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
 
 export function ImageBetween(props: ImageBetween) {
   const imageBetween = useContentfulLiveUpdates(props);

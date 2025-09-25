@@ -1,9 +1,9 @@
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
-import type { Image as AirImageType } from '@/components/Image/ImageSchema';
 import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { Image as AirImageType } from '@/components/Image/ImageSchema';
 import type { OfficeLocation as OfficeLocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
 import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';

@@ -1,7 +1,8 @@
 import { fetchGraphQL } from '@/lib/api';
+import { MENU_ITEM_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
-import { SYS_FIELDS, MENU_ITEM_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import type { Menu } from './MenuSchema';
+
+import type { Menu } from '@/components/Menu/MenuSchema';
 
 export const MENU_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}

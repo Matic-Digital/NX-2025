@@ -2,23 +2,27 @@
 
 import * as React from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { Box, Container, Section } from '@/components/global/matic-ds';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import { AirImage } from '@/components/Image/AirImage';
-import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
-import { ContentItemRenderer } from './ContentItemRenderer';
 import useEmblaCarousel from 'embla-carousel-react';
+
 import {
   calculateGridConfig,
   collectionAnalyzers,
-  contentTypeDetectors,
-  type ContentGridItemUnion
+  contentTypeDetectors
 } from '@/lib/component-grid/utils';
-import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
 import { cn } from '@/lib/utils';
 
+import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
+
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container, Section } from '@/components/global/matic-ds';
+
+import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
+import { ContentItemRenderer } from '@/components/ContentGrid/ContentItemRenderer';
+import { AirImage } from '@/components/Image/AirImage';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+
 import type { ContentGrid as ContentGridType } from './ContentGridSchema';
+import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 
 interface ContentGridProps extends ContentGridType {
   isDarkMode?: boolean;
@@ -34,6 +38,8 @@ export function ContentGrid(props: ContentGridProps) {
   const [_isLoadingCollections, setIsLoadingCollections] = React.useState(false);
 
   const rawItems = contentGrid.itemsCollection?.items;
+
+  console.log('props', props);
 
   // Enhanced items processing with Collection detection and fetching
   React.useEffect(() => {
@@ -163,9 +169,11 @@ export function ContentGrid(props: ContentGridProps) {
   const gridConfig = calculateGridConfig(validItems, contentGrid.variant);
   const { direction, gap, analysis, variant: gridVariant } = gridConfig;
 
-  // Check if this is a 3-item post layout that needs special handling
+  // Check if this is a 3-item post layout that needs special handling (but not if variant is ThreeColumn)
   const isThreeItemPostLayout =
-    validItems.length === 3 && validItems.every((item) => item.__typename === 'Post');
+    validItems.length === 3 &&
+    validItems.every((item) => item.__typename === 'Post') &&
+    contentGrid.variant !== 'ThreeColumn';
 
   // Check if this is a location layout that needs featured grid handling
   const isLocationLayout =
@@ -177,9 +185,17 @@ export function ContentGrid(props: ContentGridProps) {
   // Auto-enable dark mode if all items are accordions
   const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
 
+  // Check if this is an ImageBetween component
+  const isImageBetweenComponent = props.componentType === 'ImageBetween';
+
   return (
     <ErrorBoundary>
-      <div className={shouldUseDarkMode ? 'dark bg-background' : ''}>
+      <div
+        className={cn(
+          shouldUseDarkMode ? 'dark' : '',
+          isImageBetweenComponent ? '' : 'bg-background'
+        )}
+      >
         <Section className="relative overflow-hidden">
           <Box className="absolute top-0 left-0 h-full w-full">
             <AirImage

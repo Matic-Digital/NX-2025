@@ -1,19 +1,23 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { Button } from '@/components/ui/button';
-import { Box, Container, Section } from '@/components/global/matic-ds';
-import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+
+import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container, Section } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+
+import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 
 export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
@@ -21,6 +25,8 @@ export function CtaBanner(props: CtaBanner) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch nested URL for primary CTA if it has an internal link
   // PageList Nesting Integration: Dynamically resolve CTA URLs to respect nesting hierarchy
@@ -30,6 +36,7 @@ export function CtaBanner(props: CtaBanner) {
       const primaryCta = ctaBanner.primaryCta;
       if (primaryCta?.internalLink?.slug) {
         try {
+          setLoading(true);
           // Query the check-page-parent API to detect if the linked content has parent PageLists
           const response = await fetch(
             `/api/check-page-parent?slug=${primaryCta.internalLink.slug}`
@@ -47,7 +54,9 @@ export function CtaBanner(props: CtaBanner) {
             // Fallback to flat URL on API failure
             setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
           }
+          setLoading(false);
         } catch (error) {
+          setError(error as string);
           console.error('Error fetching nested URL for primary CTA:', error);
           // Fallback to flat URL on error
           setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
@@ -63,6 +72,18 @@ export function CtaBanner(props: CtaBanner) {
   const handleModalTrigger = () => {
     setIsModalOpen(true);
   };
+
+  if (loading) {
+    return <CtaBannerSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>

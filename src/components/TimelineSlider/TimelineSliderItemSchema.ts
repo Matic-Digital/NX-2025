@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { ImageSchema } from '../Image/ImageSchema';
-import { VideoSchema } from '../Video/VideoSchema';
+
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { VideoSchema } from '@/components/Video/VideoSchema';
 
 export const TimelineSliderItemSchema = z.object({
   sys: z.object({
