@@ -27,7 +27,7 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
 
   // Fetch form data from our API
   useEffect(() => {
-    const _fetchFormData = async () => {
+    const fetchFormData = async () => {
       try {
         setLoading(true);
         const response = await fetch(`/api/hubspot/form/${formId}`);
@@ -42,6 +42,8 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
         setLoading(false);
       }
     };
+
+    void fetchFormData();
   }, [formId]);
 
   // Create form with TanStack Form

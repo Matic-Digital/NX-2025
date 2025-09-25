@@ -108,6 +108,66 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
         </CardContent>
       </Card>
 
+      {/* Field Groups/Steps */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Field Groups & Steps ({hubspotData.steps.length})</CardTitle>
+          <CardDescription>Detailed breakdown of form structure</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {hubspotData.steps.map((step, stepIndex) => (
+              <div key={stepIndex} className="border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-medium">
+                    Step {step.stepNumber}
+                    {step.stepName && `: ${step.stepName}`}
+                  </h4>
+                  <div className="flex gap-2">
+                    {step.isPageBreak && (
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                        Page Break
+                      </span>
+                    )}
+                    {step.hasConditionalLogic && (
+                      <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                        Conditional Logic
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {step.fields.map((field, fieldIndex) => (
+                    <div key={fieldIndex} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
+                      <div>
+                        <span className="font-medium">{field.label}</span>
+                        <span className="text-gray-500 ml-2">({field.name})</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-200 text-gray-700">
+                          {field.fieldType}
+                        </span>
+                        {field.required && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-red-100 text-red-700">
+                            Required
+                          </span>
+                        )}
+                        {field.hidden && (
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-yellow-100 text-yellow-700">
+                            Hidden
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Required Fields */}
       <Card>
         <CardHeader>
@@ -126,6 +186,19 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
           ) : (
             <p className="text-sm text-muted-foreground">No required fields</p>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Raw API Response */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Raw API Response</CardTitle>
+          <CardDescription>Complete JSON response from HubSpot API</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <pre className="bg-gray-100 p-4 rounded-lg text-xs overflow-auto max-h-96">
+            {JSON.stringify(hubspotData, null, 2)}
+          </pre>
         </CardContent>
       </Card>
     </div>
