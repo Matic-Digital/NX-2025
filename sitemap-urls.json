@@ -1,0 +1,638 @@
+[
+  {
+    "loc": "https://nextracker.com",
+    "changefreq": "daily",
+    "priority": 1,
+    "lastmod": "2025-09-25"
+  },
+  {
+    "loc": "https://nextracker.com/400-mw-mammoth-north-solar-project",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/a-non-categorized-solution",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/about",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/accelerate-deployment",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/accelerate-deployment-case-study-title-here",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/acwa-power-and-larsen-toubro-select-nextrackers-all-terrain-solar-trackers-for-al-kahfah-solar-park",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/busting-the-myth-renewables-can-power-the-data-center-surge",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/californias-clean-energy-transformation-cec-chair-hochschilds-legacy",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/careers",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/case-study-title-here",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/company",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/contact",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/controls",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/controls/controls-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/deploy",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/design",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/digital",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/digital/digital-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/ebos",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/ebos/ebos-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/energy-and-ai",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/foundations",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/honoring-service-beyond-the-battlefield-from-defending-freedom-to-powering-a-clean-energy-future",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/investors",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/legal",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/legal/cookie-policy",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/legal/global-data-protection-policy",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/legal/legal-disclaimer",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/mammoth-north-solar-project-celebrates-upcoming-commercial-operations",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/maximize-energy",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/maximize-energy-case-study-title-here",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/mitigate-risk",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/mitigate-risk-case-study-slider-title-here",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/module-mounting",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/module-mounting/module-mounting-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/newsroom",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-achieves-10-gw-solar-tracker-milestone-in-india",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-achieves-significant-milestone-in-the-middle-east-with-a-new-1-gw-project-win",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-acquires-ojjo-inc",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-acquires-ojjo-to-expand-utility-scale-solar-tracker-foundations-business",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-agrivoltaics-a-win-win-for-all",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-and-jennmar-jm-steel-bolster-u-s-supply-chain-with-new-facility-expansion-to-triple-capacity-for-solar-energy-projects",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-and-orrcon-steel-to-deliver-sovereign-capability-in-australia",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-and-university-of-california-berkeley-engineering-partner-to-establish-the-calnext-center-for-solar-energy-research",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-announces-chuck-boynton-as-new-chief-financial-officer",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-announces-completion-of-its-separation-from-flex",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-announces-two-major-new-strategic-value-added-reseller-agreements",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-appoints-two-new-members-to-board-of-directors",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-celebrates-its-first-100-gw-milestone",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-delivers-first-100-domestic-content-solar-trackers-to-u-s-market",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-expands-board-of-directors",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-expands-solar-technology-platform-with-ebos-portfolio",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-extends-leadership-in-distributed-generation-dg-surpasses-5-gw-milestone-with-over-600-dg-projects-and-enters-into-new-strategic-agreements",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-goes-electric-with-forum-mobility-and-hight-logistics",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-journey-from-a-startup-to-an-independent-public-company",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-launches-industrys-first-low-carbon-solar-tracker-solution",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-launches-low-carbon-tracker-variant",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-releases-inaugural-sustainability-report",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-reports-q1-fy25-financial-results",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-reports-q2-fy25-financial-results",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-reports-q2-fy25-financial-results-2",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-reports-q4-and-fy24-financial-results",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-selected-for-landmark-european-solar-power-project",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-to-inaugurate-indias-rd-center-for-solar-excellence-in-hyderabad",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-unimacts-dedicate-second-nevada-factory-to-serve-solar-power-demand",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextracker-unveils-nx-foundation-solutions-enabling-solar-anywhere",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/nextrackers-truecapture-software-optimizing-solar-energy-production-with-advanced-technology",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/placeholder-service",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/products",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/products/foundations",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/products/foundations/foundations-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/products/trackers",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/products/trackers/nx-horizon",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/products/trackers/nx-horizon-hall-pro",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/products/trackers/nx-horizon-low-carbon",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/products/trackers/nx-horizon-xtr",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/pv-magazine-acwa-power-lt-select-nextracker-for-1-17-gw-solar-plant-in-saudi-arabia",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/quarterly-earnings-video-series-q3-2023",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/recent-visit-to-india",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/regions",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/regions/americas",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/regions/asia-pacific",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/regions/europe",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/regions/middle-east-africa-and-india",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/renewables-now-nextracker-teams-up-with-orrcon-steel-for-australian-components",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/resources",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/services",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/challenging-terrain",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/design-optimization",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/diverse-soil-conditions",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/efficient-installation",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/land-use-and-permitting",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/accelerate-deployment/localized-supply-chain",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai/ai-and-energy-transition",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai/decarbonization-lever",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai/dual-land-use",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai/ppa-partnerships",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/energy-and-ai/speed-to-deploy",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy/enable-dual-value",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy/harnessing-diffuse-light",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy/maximizing-uptime",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy/optimizing-module-technology",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/maximize-energy/solving-for-complex-terrain",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk/bankability",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk/cold-climates",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk/desert-climates",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk/high-winds",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/solutions/mitigate-risk/severe-hail",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nextracker.com/sterling-wilson-renewable-energy-selects-nextracker-nx-horizon-solar-trackers-for-nearly-two-gigawatts-in-india",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/the-economic-times-sterling-and-wilson-places-orders-with-nextracker-for-solar-trackers",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/the-solar-industry-is-getting-smarter-about-storm-defense",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/through-decades-of-technological-innovation-solar-has-achieved-excellent-efficiency-and-cost-reduction-where-solar-is-the-lowest-cost-way-to-generate-electricity-at-many-places-in-the-world",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/trackers",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report-2",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/truecapture-supera-las-proyecciones-de-rendimiento-energetico-modeladas-en-el-analisis-de-icf",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nextracker.com/useful-links",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/what-we-do",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/what-we-do/services",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nextracker.com/what-we-do/services/operate",
+    "changefreq": "monthly",
+    "priority": 0.6
+  }
+]
