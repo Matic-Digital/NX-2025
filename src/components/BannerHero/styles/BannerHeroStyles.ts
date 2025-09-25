@@ -35,6 +35,6 @@ export const bannerHeroStyles = {
    * Get CSS classes for the overlay content
    */
   getOverlayClasses: () => {
-    return 'relative z-10';
+    return 'relative z-10 w-full flex justify-center';
   }
 };

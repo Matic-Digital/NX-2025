@@ -13,6 +13,7 @@ export const TESTIMONIALS_GRAPHQL_FIELDS = `
   itemsCollection {
     items {
       ${SYS_FIELDS}
+      title
       quote
       authorName
       authorTitle
