@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import useEmblaCarousel from 'embla-carousel-react';
 
@@ -182,8 +183,8 @@ export function ContentGrid(props: ContentGridProps) {
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
-  // Auto-enable dark mode if all items are accordions
-  const shouldUseDarkMode = props.isDarkMode ?? analysis.allItemsAreAccordions;
+  // Auto-enable dark mode if all items are accordions OR if backgroundAsset is present
+  const shouldUseDarkMode = props.isDarkMode ?? (analysis.allItemsAreAccordions || !!contentGrid.backgroundAsset);
 
   // Check if this is an ImageBetween component
   const isImageBetweenComponent = props.componentType === 'ImageBetween';
@@ -197,13 +198,26 @@ export function ContentGrid(props: ContentGridProps) {
         )}
       >
         <Section className="relative overflow-hidden">
-          <Box className="absolute top-0 left-0 h-full w-full">
-            <AirImage
-              link={contentGrid.backgroundImage?.link}
-              altText={contentGrid.backgroundImage?.altText}
-              className="h-full w-full object-cover"
-            />
-          </Box>
+          {/* Background Asset or Background Image */}
+          {(contentGrid.backgroundAsset ?? contentGrid.backgroundImage) && (
+            <Box className="absolute top-0 left-0 h-full w-full z-0">
+              {contentGrid.backgroundAsset ? (
+                <Image
+                  src={contentGrid.backgroundAsset.url}
+                  alt={contentGrid.backgroundAsset.title ?? contentGrid.backgroundAsset.description ?? ''}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                />
+              ) : (
+                <AirImage
+                  link={contentGrid.backgroundImage?.link}
+                  altText={contentGrid.backgroundImage?.altText}
+                  className="h-full w-full object-cover"
+                />
+              )}
+            </Box>
+          )}
           <Container>
             <Box
               direction={direction}

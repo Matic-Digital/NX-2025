@@ -52,6 +52,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
+  backgroundAsset {
+    ${ASSET_FIELDS}
+  }
   itemsCollection(limit: 20) {
     items {
       ... on Accordion {

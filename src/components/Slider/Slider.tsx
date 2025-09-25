@@ -419,7 +419,7 @@ const GenericSlider = ({
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
   const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
   const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
-  const hasOnePostSlide =
+  const _hasOnePostSlide =
     sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
   const hasOnlyOneSlide = sliderData.itemsCollection.items.length === 1;
 
