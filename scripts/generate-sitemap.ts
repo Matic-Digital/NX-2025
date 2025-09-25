@@ -22,7 +22,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
 const CONTENTFUL_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
 const CONTENTFUL_ENVIRONMENT = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'staging';
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://nextracker.com';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://nx-2025.vercel.app';
 
 if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
   console.error('Missing required Contentful environment variables:');
