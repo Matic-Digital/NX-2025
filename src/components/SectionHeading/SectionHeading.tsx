@@ -18,6 +18,7 @@ import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
+import { MarkdownRenderer, hasMarkdown } from './utils/MarkdownRenderer';
 
 // Types
 import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
@@ -125,12 +126,21 @@ export function SectionHeading(props: SectionHeadingProps) {
       {...inspectorProps({ fieldId: 'heading' })}
     >
       {/* title */}
-      <h2
-        className="text-foreground lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+      {componentType === 'banner-hero' ? (
+        <h1
+          className="text-foreground lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h1>
+      ) : (
+        <h2
+          className="text-foreground lg:text-headline-md col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h2>
+      )}
 
       {/* cta */}
       <Box
@@ -140,12 +150,21 @@ export function SectionHeading(props: SectionHeadingProps) {
         className="col-span-2 w-full max-w-sm lg:max-w-md xl:col-span-1 xl:ml-auto xl:max-w-lg xl:items-end"
       >
         {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
-          >
-            {sectionHeading.description}
-          </p>
+          hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p
+              {...inspectorProps({ fieldId: 'heading.description' })}
+              className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+            >
+              {sectionHeading.description}
+            </p>
+          )
         )}
 
         <Box
@@ -176,12 +195,21 @@ export function SectionHeading(props: SectionHeadingProps) {
   const StackedSectionHeading = () => (
     <Box direction="col" gap={12} {...inspectorProps({ fieldId: 'heading' })}>
       {/* title */}
-      <h2
-        className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+      {componentType === 'banner-hero' ? (
+        <h1
+          className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h1>
+      ) : (
+        <h2
+          className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h2>
+      )}
 
       {/* cta */}
       <Box
@@ -191,12 +219,21 @@ export function SectionHeading(props: SectionHeadingProps) {
         className="w-full"
       >
         {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
-          >
-            {sectionHeading.description}
-          </p>
+          hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p
+              {...inspectorProps({ fieldId: 'heading.description' })}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+            >
+              {sectionHeading.description}
+            </p>
+          )
         )}
 
         <Box gap={3} {...inspectorProps({ fieldId: 'heading' })} className="items-end lg:ml-auto">
@@ -228,12 +265,21 @@ export function SectionHeading(props: SectionHeadingProps) {
       {...inspectorProps({ fieldId: 'heading' })}
     >
       {/* title */}
-      <h2
-        className="text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+      {componentType === 'banner-hero' ? (
+        <h1
+          className="text-foreground lg:text-display-lg col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h1>
+      ) : (
+        <h2
+          className="text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h2>
+      )}
 
       {/* cta */}
       <Box
@@ -243,12 +289,21 @@ export function SectionHeading(props: SectionHeadingProps) {
         className="col-span-full w-full items-center"
       >
         {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
-          >
-            {sectionHeading.description}
-          </p>
+          hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p
+              {...inspectorProps({ fieldId: 'heading.description' })}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+            >
+              {sectionHeading.description}
+            </p>
+          )
         )}
 
         <Box
@@ -301,16 +356,34 @@ export function SectionHeading(props: SectionHeadingProps) {
             {sectionHeading.overline}
           </p>
         )}
-        <h2
-          className="text-headline-md text-foreground leading-tight"
-          {...inspectorProps({ fieldId: 'heading.title' })}
-        >
-          {sectionHeading.title}
-        </h2>
+        {componentType === 'banner-hero' ? (
+          <h1
+            className="text-display-lg text-foreground leading-tight"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h1>
+        ) : (
+          <h2
+            className="text-headline-md text-foreground leading-tight"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h2>
+        )}
         {sectionHeading.description && (
-          <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
-            {sectionHeading.description}
-          </p>
+          hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-foreground"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
+              {sectionHeading.description}
+            </p>
+          )
         )}
       </Box>
 
