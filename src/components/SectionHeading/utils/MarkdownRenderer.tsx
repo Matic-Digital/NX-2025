@@ -27,7 +27,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
         elements.push(
           <h3
             key={`h3-${index}`}
-            className="text-[1.25rem] font-normal leading-[160%] mb-0 mt-0"
+            className="text-[1.25rem] font-normal leading-[160%] mb-0 mt-0 text-foreground"
             style={{
               fontSize: '1.25rem',
               fontStyle: 'normal',
@@ -51,9 +51,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
               height="2"
               viewBox="0 0 560 2"
               fill="none"
-              className="w-full max-w-[560px]"
+              className="w-full max-w-[560px] text-foreground"
             >
-              <path d="M0 1H560" stroke="#3F3F46" />
+              <path d="M0 1H560" stroke="currentColor" />
             </svg>
           </div>
         );
@@ -63,7 +63,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
       // Handle regular text (skip empty lines) - style as paragraphs
       if (trimmedLine) {
         elements.push(
-          <p key={`text-${index}`} className="mb-0 mt-0">
+          <p key={`text-${index}`} className="mb-0 mt-0 text-foreground">
             {trimmedLine}
           </p>
         );

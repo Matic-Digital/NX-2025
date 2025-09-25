@@ -117,30 +117,49 @@ export function SectionHeading(props: SectionHeadingProps) {
   const gap = hasCtaCollection ? 12 : 0;
   const cols = { base: 1, md: 2, xl: hasCtaCollection ? 3 : 2 };
 
-  const HorizontalSectionHeading = () => (
-    <Box
-      gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
-      direction={{ base: 'col', md: 'row' }}
-      cols={{ base: 1, md: 2, xl: 3 }}
-      className="items-end"
-      {...inspectorProps({ fieldId: 'heading' })}
-    >
-      {/* title */}
-      {componentType === 'banner-hero' ? (
-        <h1
-          className="text-foreground lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
-          {...inspectorProps({ fieldId: 'heading.title' })}
-        >
-          {sectionHeading.title}
-        </h1>
-      ) : (
-        <h2
-          className="text-foreground lg:text-headline-md col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
-          {...inspectorProps({ fieldId: 'heading.title' })}
-        >
-          {sectionHeading.title}
-        </h2>
-      )}
+  const HorizontalSectionHeading = () => {
+    // Check if description contains markdown to adjust alignment
+    const hasMarkdownContent = sectionHeading.description && hasMarkdown(sectionHeading.description);
+    
+    return (
+      <Box
+        gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
+        direction={{ base: 'col', md: 'row' }}
+        cols={{ base: 1, md: 2, xl: 3 }}
+        className={hasMarkdownContent ? "items-start" : "items-end"}
+        {...inspectorProps({ fieldId: 'heading' })}
+      >
+      {/* overline and title */}
+      <Box
+        direction="col"
+        gap={{ base: 2, md: 4 }}
+        className="col-span-2 w-full max-w-sm md:max-w-lg lg:max-w-3xl"
+      >
+        {sectionHeading.overline && (
+          <p
+            className="text-foreground uppercase"
+            {...inspectorProps({ fieldId: 'heading.overline' })}
+          >
+            {sectionHeading.overline}
+          </p>
+        )}
+        {/* title */}
+        {componentType === 'banner-hero' ? (
+          <h1
+            className="text-foreground lg:text-display-lg text-[56px] leading-[100%] tracking-[-1.1px]"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h1>
+        ) : (
+          <h2
+            className="text-foreground lg:text-headline-md text-[56px] leading-[100%] tracking-[-1.1px]"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h2>
+        )}
+      </Box>
 
       {/* cta */}
       <Box
@@ -190,7 +209,8 @@ export function SectionHeading(props: SectionHeadingProps) {
         </Box>
       </Box>
     </Box>
-  );
+    );
+  };
 
   const StackedSectionHeading = () => (
     <Box direction="col" gap={12} {...inspectorProps({ fieldId: 'heading' })}>

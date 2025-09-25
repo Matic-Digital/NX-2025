@@ -14,6 +14,19 @@ import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
 import { VideoSchema } from '@/components/Video/VideoSchema';
 
+// Schema for Contentful Asset (for backgroundAsset field)
+const AssetSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  url: z.string(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+  contentType: z.string().optional()
+});
+
 // Union type for items
 const ContentGridItemUnion = z.union([
   AccordionSchema,
@@ -38,6 +51,7 @@ export const ContentGridSchema = z.object({
   title: z.string(),
   heading: SectionHeadingSchema.optional(),
   backgroundImage: ImageSchema.optional(),
+  backgroundAsset: AssetSchema.optional(),
   itemsCollection: z.object({
     items: z.array(ContentGridItemUnion)
   }),
