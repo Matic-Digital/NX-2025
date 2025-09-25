@@ -7,16 +7,15 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { useThemeSync } from '@/hooks/useThemeSync';
 
+import { SvgIcon } from '@/components/ui/svg-icon';
+
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
-
-import { SvgIcon } from '@/components/ui/svg-icon';
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 
@@ -64,22 +63,7 @@ export function Footer(props: FooterType) {
             >
               {/* Company information */}
               <Box direction="col" gap={8}>
-                {footer.logo ? (
-                  <Link href="/">
-                    <Box direction="row" gap={4} className="items-center">
-                      <Image
-                        src={footer.logo.url}
-                        alt={footer.logo.title ?? 'Logo'}
-                        width={footer.logo.width ?? 150}
-                        height={footer.logo.height ?? 50}
-                        className="h-8 w-auto rounded-full border-none"
-                      />
-                      <p className="text-headline-sm text-white">NextPower</p>
-                    </Box>
-                  </Link>
-                ) : (
-                  <Logo />
-                )}
+                <Logo logo={footer.logo} />
                 {footer.description && (
                   <p
                     className="text-muted-foreground text-body-sm max-w-xs"
