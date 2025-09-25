@@ -1,0 +1,45 @@
+import React from 'react';
+import type { FieldRendererProps } from './types';
+import { TextField } from './TextField/TextField';
+import { EmailField } from './EmailField/EmailField';
+import { PhoneField } from './PhoneField/PhoneField';
+import { NumberField } from './NumberField/NumberField';
+import { SelectField } from './SelectField/SelectField';
+import { TextAreaField } from './TextAreaField/TextAreaField';
+import { CheckboxField } from './CheckboxField/CheckboxField';
+
+export const FieldRenderer: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
+  switch (field.fieldType) {
+    case 'single_line_text':
+    case 'text':
+    case 'string':
+      return <TextField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'email':
+      return <EmailField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'number':
+      return <NumberField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'mobile_phone':
+    case 'phone':
+      return <PhoneField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'select':
+    case 'radio':
+      return <SelectField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'textarea':
+      return <TextAreaField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'checkbox':
+      return <CheckboxField field={field} value={value} onChange={onChange} error={error} />;
+
+    case 'url':
+      return <TextField field={field} value={value} onChange={onChange} error={error} />;
+
+    default:
+      // Fallback to text field for unknown types
+      return <TextField field={field} value={value} onChange={onChange} error={error} />;
+  }
+};

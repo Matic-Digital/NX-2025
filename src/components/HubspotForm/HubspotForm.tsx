@@ -1,178 +1,212 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
-} from '@contentful/live-preview/react';
-
-// API
-import { getHubspotFormById } from '@/components/HubspotForm/HubspotFormApi';
-
-// Types
-import type { HubspotForm as HubspotFormType } from '@/components/HubspotForm/HubspotFormSchema';
-
-// Utils
-import { cn } from '@/lib/utils';
-
-// ===== TYPES & INTERFACES =====
+import React, { useState, useEffect } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { FieldRenderer, validateField, type HubSpotFormData } from './fields';
 
 interface HubspotFormProps {
-  hubspotForm: HubspotFormType;
+  formId: string;
+  onSubmit?: (data: Record<string, unknown>) => void;
   className?: string;
 }
 
-interface HubspotFormByIdProps {
-  id: string;
-  className?: string;
-}
-
-// ===== MAIN COMPONENT =====
-
-export function HubspotForm({ hubspotForm, className }: HubspotFormProps) {
-  const inspectorProps = useContentfulInspectorMode({
-    entryId: hubspotForm.sys.id
-  });
-
-  const updatedHubspotForm = useContentfulLiveUpdates(hubspotForm);
-
-  useEffect(() => {
-    const targetId = `hubspot-form-${updatedHubspotForm.sys.id}`;
-    
-    if (!updatedHubspotForm.formLink) {
-      return;
-    }
-
-    // Extract portal ID and form ID from the form link
-    const regex = /\/(\d+)\/([a-f0-9-]+)/;
-    const match = regex.exec(updatedHubspotForm.formLink);
-    if (!match?.[1] || !match?.[2]) {
-      return;
-    }
-
-    const portalId = match[1];
-    const formId = match[2];
-
-    // Use a timeout to delay form creation and avoid React Strict Mode issues
-    const timeoutId = setTimeout(() => {
-      const targetElement = document.getElementById(targetId);
-      
-      if (!targetElement) {
-        return;
-      }
-
-      // Check if form already exists
-      const existingForm = targetElement.querySelector('form, iframe, .hs-form');
-      if (existingForm) {
-        return;
-      }
-
-      // Clear any existing content
-      targetElement.innerHTML = '';
-
-      // Load HubSpot script if not already loaded
-      if (!window.hbspt) {
-        const script = document.createElement('script');
-        script.src = '//js.hsforms.net/forms/embed/v2.js';
-        script.async = true;
-        script.onload = () => {
-          createForm();
-        };
-        document.body.appendChild(script);
-      } else {
-        createForm();
-      }
-
-      function createForm() {
-        // Final check before creating
-        const finalCheck = document.getElementById(targetId);
-        if (window.hbspt && finalCheck && !finalCheck.querySelector('form, iframe, .hs-form')) {
-          window.hbspt.forms.create({
-            region: "na1",
-            portalId: portalId,
-            formId: formId,
-            target: `#${targetId}`
-          });
-        }
-      }
-    }, 100); // Small delay to let React Strict Mode settle
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [updatedHubspotForm.formLink, updatedHubspotForm.sys.id]);
-
-  return (
-    <div className={cn('hubspot-form-container', className)} {...inspectorProps}>
-      {updatedHubspotForm.title && (
-        <h3 className="mb-4 text-xl font-semibold">{updatedHubspotForm.title}</h3>
-      )}
-      <div id={`hubspot-form-${updatedHubspotForm.sys.id}`} />
-    </div>
-  );
-}
-
-// ===== BY ID COMPONENT =====
-
-export function HubspotFormById({ id, className }: HubspotFormByIdProps) {
-  const [hubspotForm, setHubspotForm] = useState<HubspotFormType | null>(null);
+const HubspotForm: React.FC<HubspotFormProps> = ({
+  formId,
+  onSubmit,
+  className = ''
+}) => {
+  const [formData, setFormData] = useState<HubSpotFormData | null>(null);
+  const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch form data from our API
   useEffect(() => {
-    const fetchHubspotForm = async () => {
+    const _fetchFormData = async () => {
       try {
         setLoading(true);
-        setError(null);
-        const response = await getHubspotFormById(id);
-        if (response.item) {
-          setHubspotForm(response.item);
-        } else {
-          setError('HubSpot form not found');
+        const response = await fetch(`/api/hubspot/form/${formId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch form data');
         }
+        const data = await response.json() as HubSpotFormData;
+        setFormData(data);
       } catch (err) {
-        console.error('Error fetching HubSpot form:', err);
-        setError('Failed to load HubSpot form');
+        setError(err instanceof Error ? err.message : 'Failed to load form');
       } finally {
         setLoading(false);
       }
     };
+  }, [formId]);
 
-    void fetchHubspotForm();
-  }, [id]);
+  // Create form with TanStack Form
+  const form = useForm({
+    defaultValues: {},
+    onSubmit: async ({ value }) => {
+      setSubmitting(true);
+      try {
+        // Submit to HubSpot
+        const response = await fetch(`/api/hubspot/form/${formId}/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(value),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit form');
+        }
+
+        // Call custom onSubmit if provided
+        if (onSubmit) {
+          onSubmit(value);
+        }
+
+        // Reset form or show success message
+        alert('Form submitted successfully!');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to submit form');
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   if (loading) {
     return (
-      <div className={cn('flex items-center justify-center p-8', className)}>
-        <div className="text-muted-foreground">Loading form...</div>
-      </div>
+      <Card className={className}>
+        <CardContent className="flex items-center justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+          <span className="ml-2">Loading form...</span>
+        </CardContent>
+      </Card>
     );
   }
 
-  if (error || !hubspotForm) {
+  if (error || !formData) {
     return (
-      <div className={cn('flex items-center justify-center p-8', className)}>
-        <div className="text-destructive">{error ?? 'Form not found'}</div>
-      </div>
+      <Card className={className}>
+        <CardContent className="p-8">
+          <div className="text-center text-red-600">
+            <p>Error: {error ?? 'Failed to load form'}</p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
-  return <HubspotForm hubspotForm={hubspotForm} className={className} />;
-}
+  const currentStepData = formData.steps[currentStep];
+  const isLastStep = currentStep === formData.steps.length - 1;
+  const isFirstStep = currentStep === 0;
+  const progress = ((currentStep + 1) / formData.steps.length) * 100;
 
-// ===== TYPE DECLARATIONS =====
+  return (
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>{(formData.formData as Record<string, unknown>)?.name as string ?? 'HubSpot Form'}</CardTitle>
+        {formData.metadata.isMultiStep && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Step {currentStep + 1} of {formData.steps.length}</span>
+              <span>{Math.round(progress)}% Complete</span>
+            </div>
+            <Progress value={progress} className="w-full" />
+          </div>
+        )}
+      </CardHeader>
 
-declare global {
-  interface Window {
-    hbspt: {
-      forms: {
-        create: (options: {
-          region: string;
-          portalId: string;
-          formId: string;
-          target: string;
-        }) => void;
-      };
-    };
-  }
-}
+      <CardContent>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            void form.handleSubmit();
+          }}
+          className="space-y-6"
+        >
+          {/* Current Step Fields */}
+          <div className="space-y-4">
+            {currentStepData?.stepName && (
+              <h3 className="text-lg font-semibold">{currentStepData.stepName}</h3>
+            )}
+            
+            {currentStepData?.fields
+              .filter(field => !field.hidden)
+              .map((field) => (
+                <form.Field
+                  key={field.name}
+                  name={field.name}
+                  validators={{
+                    onChange: validateField(field),
+                  }}
+                >
+                  {(fieldApi) => (
+                    <FieldRenderer
+                      field={field}
+                      value={fieldApi.state.value as string | number | boolean | null | undefined}
+                      onChange={fieldApi.handleChange}
+                      error={fieldApi.state.meta.errors?.[0]}
+                    />
+                  )}
+                </form.Field>
+              ))}
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+              disabled={isFirstStep}
+              className="flex items-center"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Previous
+            </Button>
+
+            {isLastStep ? (
+              <form.Subscribe
+                selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+              >
+                {({ canSubmit, isSubmitting: _isSubmitting }) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || submitting}
+                    className="flex items-center"
+                  >
+                    {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Submit Form
+                  </Button>
+                )}
+              </form.Subscribe>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => setCurrentStep(prev => Math.min(formData.steps.length - 1, prev + 1))}
+                className="flex items-center"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            )}
+          </div>
+        </form>
+
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default HubspotForm;
