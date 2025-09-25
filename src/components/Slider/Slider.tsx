@@ -421,22 +421,31 @@ const GenericSlider = ({
   const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
   const hasOnePostSlide =
     sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
+  const hasOnlyOneSlide = sliderData.itemsCollection.items.length === 1;
 
   return (
     <div
-      className={cn(isFullWidth ? 'relative w-screen' : 'relative')}
+      className={cn(
+        hasOnlyOneSlide 
+          ? 'relative w-full' 
+          : isFullWidth 
+            ? 'relative w-screen' 
+            : 'relative'
+      )}
       style={{
-        marginLeft: isFullWidth && !hasOnePostSlide ? 'calc(-50vw + 50%)' : ''
+        marginLeft: isFullWidth && !hasOnlyOneSlide ? 'calc(-50vw + 50%)' : ''
       }}
     >
       <Carousel
         setApi={setApi}
         className={cn(
-          isFullWidth
-            ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
-            : isTeamMemberSlider
-              ? 'w-full max-w-none'
-              : 'w-full'
+          hasOnlyOneSlide
+            ? 'w-full'
+            : isFullWidth && !hasOnlyOneSlide
+              ? 'relative w-screen lg:right-1/2 lg:left-1/2 lg:-mr-[50vw] lg:-ml-[50vw]'
+              : isTeamMemberSlider
+                ? 'w-full max-w-none'
+                : 'w-full'
         )}
         opts={{
           loop: sliderData.itemsCollection.items.length > 1,
@@ -463,17 +472,20 @@ const GenericSlider = ({
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
                 className={cn(
-                  isSlider
-                    ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                    : isTeamMemberSlider
-                      ? 'basis-[300px]'
-                      : isTimelineSlider
-                        ? 'basis-[calc(100vw-4rem)] lg:basis-full'
-                        : isFullWidth
-                          ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
-                          : isSolutionSlider
-                            ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                            : 'basis-full'
+                  // If there's only one slide, always use full width
+                  hasOnlyOneSlide
+                    ? 'basis-full'
+                    : isSlider
+                      ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                      : isTeamMemberSlider
+                        ? 'basis-[300px]'
+                        : isTimelineSlider
+                          ? 'basis-[calc(100vw-4rem)] lg:basis-full'
+                          : isFullWidth
+                            ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
+                            : isSolutionSlider
+                              ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                              : 'basis-full'
                 )}
               >
                 <SliderCard
