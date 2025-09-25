@@ -23,7 +23,6 @@ interface PostCollectionProps {
 }
 
 export function PostCollection({
-  filteredPosts,
   currentPosts,
   currentPage,
   totalPages,
@@ -38,10 +37,6 @@ export function PostCollection({
 }: PostCollectionProps) {
   if (isLoading) {
     return <div>Loading posts...</div>;
-  }
-
-  if (filteredPosts.length === 0) {
-    return <div>No posts found</div>;
   }
 
   return (
