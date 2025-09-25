@@ -20,8 +20,6 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
@@ -43,6 +41,7 @@ import {
 } from '@/components/ui/sheet';
 
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
 
 import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
@@ -276,23 +275,7 @@ function HeaderContent(props: HeaderProps) {
       >
         <Box className="items-center justify-between">
           {/* Logo Section */}
-          {header?.logo?.url && (
-            <Link href="/" className="flex items-center gap-2 py-4">
-              <Box gap={4}>
-                <div {...inspectorProps({ fieldId: 'logo' })}>
-                  <Image
-                    src={header.logo.url}
-                    alt={header.logo.description ?? header.logo.title ?? 'Logo'}
-                    width={header.logo.width ?? 40}
-                    height={header.logo.height ?? 40}
-                    className="h-10 w-auto rounded-full object-contain"
-                    priority
-                  />
-                </div>
-                <span className="text-headline-xs text-white">{header.name}</span>
-              </Box>
-            </Link>
-          )}
+          <Logo logo={header.logo} className="flex items-center gap-2 py-4" />
 
           {/* Desktop Navigation */}
           <div className="hidden items-center md:flex" data-testid="desktop-nav">

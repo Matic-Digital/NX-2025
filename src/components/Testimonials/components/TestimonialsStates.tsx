@@ -1,7 +1,7 @@
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Container, Section } from '@/components/global/matic-ds';
 
-import { TestimonialSkeleton } from '@/components/Testimonials/TestimonialSkeleton';
+import { TestimonialSkeleton } from '@/components/Testimonials/components/TestimonialSkeleton';
 
 /**
  * Pure presentation components for testimonials states
