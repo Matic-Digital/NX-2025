@@ -12,10 +12,11 @@ import { Headset, Mail, Mic, Phone, PhoneCall } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
-import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
-import { ContactCardSkeleton } from '@/components/ContactCard/ContactCardSkeleton';
 import { Box } from '@/components/global/matic-ds';
+
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+import { ContactCardSkeleton } from '@/components/ContactCard/components/ContactCardSkeleton';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { RequestSupportModal } from '@/components/Modals/RequestSupportModal';
 
