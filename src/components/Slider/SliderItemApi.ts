@@ -7,6 +7,7 @@ import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { POST_SLIDER_GRAPHQL_FIELDS } from '@/components/Post/PostApi';
 import { SOLUTION_GRAPHQL_FIELDS } from '@/components/Solution/SolutionApi';
 import { TEAM_MEMBER_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
+import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
 import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from '@/components/TimelineSlider/TimelineSliderItemApi';
 
 import type { SliderItem } from '@/components/Slider/SliderItemSchema';
@@ -44,6 +45,9 @@ export const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
   }
   ... on TeamMember {
     ${TEAM_MEMBER_GRAPHQL_FIELDS}
+  }
+  ... on TestimonialItem {
+    ${TESTIMONIALITEM_GRAPHQL_FIELDS}
   }
 `;
 

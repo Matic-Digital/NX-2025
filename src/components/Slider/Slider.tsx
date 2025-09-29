@@ -28,6 +28,7 @@ import { AirImage } from '@/components/Image/AirImage';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
 
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
@@ -36,6 +37,7 @@ import type { SliderItem } from '@/components/Slider/SliderItemSchema';
 import type { Slider, SliderItemType, SliderSys } from '@/components/Slider/SliderSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
 import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
+import type { TestimonialItem as TestimonialItemType } from '@/components/Testimonials/TestimonialsSchema';
 import type { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 import type { CarouselApi } from '@/components/ui/carousel';
 
@@ -323,7 +325,6 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
   if (updatedItem.__typename === 'Solution') {
     const solution = updatedItem as Solution;
     const isCurrentSlide = current === index + 1;
-    console.log('✅ Slider solution', solution);
     return (
       <Box
         direction="col"
@@ -377,6 +378,10 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
     );
   }
 
+  if (updatedItem.__typename === 'TestimonialItem') {
+    return <TestimonialItem key={item.sys?.id} item={updatedItem as TestimonialItemType} />;
+  }
+
   // Fallback for unknown types
   return (
     <div className={baseCardClasses}>
@@ -419,6 +424,7 @@ const GenericSlider = ({
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
   const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
   const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
+  const isTestimonialSlider = sliderData.itemsCollection.items[0]?.__typename === 'TestimonialItem';
   // const hasOnePostSlide =
   //   sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
   const hasOnlyOneSlide = sliderData.itemsCollection.items.length === 1;
@@ -454,6 +460,11 @@ const GenericSlider = ({
             sliderData.itemsCollection.items.length > 1 && {
               align: 'start',
               containScroll: 'trimSnaps'
+            }),
+          ...(isTestimonialSlider &&
+            sliderData.itemsCollection.items.length > 1 && {
+              align: 'start',
+              containScroll: 'trimSnaps'
             })
         }}
       >
@@ -481,7 +492,9 @@ const GenericSlider = ({
                             ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
                             : isSolutionSlider
                               ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                              : 'basis-full'
+                              : isTestimonialSlider
+                                ? 'basis-1/3'
+                                : 'basis-full'
                 )}
               >
                 <SliderCard
@@ -571,25 +584,48 @@ const GenericSlider = ({
                   : 'max-w-md flex-1'
               )}
             >
-              {sliderData.itemsCollection.items.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => api?.scrollTo(index)}
-                  className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
-                    'bg-surface-invert': current === index + 1
-                  })}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
+              {(isTestimonialSlider
+                ? Array.from({ length: Math.ceil(sliderData.itemsCollection.items.length / 3) })
+                : sliderData.itemsCollection.items
+              ).map((_, index) => {
+                // For testimonial sliders, calculate which group is active
+                const isActive = isTestimonialSlider
+                  ? Math.floor((current - 1) / 3) === index
+                  : current === index + 1;
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      if (isTestimonialSlider) {
+                        // For testimonial sliders, scroll to the first item in the group
+                        api?.scrollTo(index * 3);
+                      } else {
+                        api?.scrollTo(index);
+                      }
+                    }}
+                    className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
+                      'bg-surface-invert': isActive
+                    })}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                );
+              })}
             </div>
-            {(isTeamMemberSlider ||
-              isSlider ||
-              isSolutionSlider ||
-              isPostSlider ||
-              isServiceSlider) && (
+            {showAltIndicators && (
               <div className="ml-8 flex items-center gap-4">
                 <button
-                  onClick={() => api?.scrollPrev()}
+                  onClick={() => {
+                    if (isTestimonialSlider) {
+                      const currentSnap = api?.selectedScrollSnap() ?? 0;
+                      const totalSlides = sliderData.itemsCollection.items.length;
+                      const targetSnap = currentSnap - 3;
+                      const loopedSnap = targetSnap < 0 ? totalSlides - 3 : targetSnap;
+                      api?.scrollTo(loopedSnap);
+                    } else {
+                      api?.scrollPrev();
+                    }
+                  }}
                   className="relative left-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                   aria-label="Previous slide"
                 >
@@ -607,7 +643,17 @@ const GenericSlider = ({
                   </svg>
                 </button>
                 <button
-                  onClick={() => api?.scrollNext()}
+                  onClick={() => {
+                    if (isTestimonialSlider) {
+                      const currentSnap = api?.selectedScrollSnap() ?? 0;
+                      const totalSlides = sliderData.itemsCollection.items.length;
+                      const targetSnap = currentSnap + 3;
+                      const loopedSnap = targetSnap >= totalSlides ? 0 : targetSnap;
+                      api?.scrollTo(loopedSnap);
+                    } else {
+                      api?.scrollNext();
+                    }
+                  }}
                   className="relative right-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                   aria-label="Next slide"
                 >
@@ -974,6 +1020,7 @@ export function Slider(props: SliderSys) {
   const isSliderItemSlider = firstItem.__typename === 'SliderItem';
   const isSolutionSlider = firstItem.__typename === 'Solution';
   const isServiceSlider = firstItem.__typename === 'Service';
+  const isTestimonialSlider = firstItem.__typename === 'TestimonialItem';
 
   // Check if there's only one item to hide navigation
   const hasOnlyOneItem = sliderData.itemsCollection.items.length === 1;
@@ -994,7 +1041,8 @@ export function Slider(props: SliderSys) {
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||
-            isServiceSlider)
+            isServiceSlider ||
+            isTestimonialSlider)
         }
         showNavigation={
           !hasOnlyOneItem &&
@@ -1003,7 +1051,8 @@ export function Slider(props: SliderSys) {
           !isTimelineSliderItemSlider &&
           !isTeamMemberSlider &&
           !isSolutionSlider &&
-          !isServiceSlider
+          !isServiceSlider &&
+          !isTestimonialSlider
         }
         showAltNavigation={
           !hasOnlyOneItem &&
@@ -1012,10 +1061,15 @@ export function Slider(props: SliderSys) {
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||
-            isServiceSlider)
+            isServiceSlider ||
+            isTestimonialSlider)
         }
         isFullWidth={
-          isPostSlider && !isImageSlider && !isTeamMemberSlider && !isTimelineSliderItemSlider
+          isPostSlider &&
+          !isImageSlider &&
+          !isTeamMemberSlider &&
+          !isTimelineSliderItemSlider &&
+          !isTestimonialSlider
         }
         onTeamMemberClick={handleTeamMemberClick}
       />
