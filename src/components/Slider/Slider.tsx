@@ -419,18 +419,14 @@ const GenericSlider = ({
   const isTimelineSlider = sliderData.itemsCollection.items[0]?.__typename === 'TimelineSliderItem';
   const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
   const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
-  const _hasOnePostSlide =
-    sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
+  // const hasOnePostSlide =
+  //   sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
   const hasOnlyOneSlide = sliderData.itemsCollection.items.length === 1;
 
   return (
     <div
       className={cn(
-        hasOnlyOneSlide 
-          ? 'relative w-full' 
-          : isFullWidth 
-            ? 'relative w-screen' 
-            : 'relative'
+        hasOnlyOneSlide ? 'relative w-full' : isFullWidth ? 'relative w-screen' : 'relative'
       )}
       style={{
         marginLeft: isFullWidth && !hasOnlyOneSlide ? 'calc(-50vw + 50%)' : ''

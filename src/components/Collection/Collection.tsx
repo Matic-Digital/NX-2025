@@ -1,20 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { getCollectionById } from '@/components/Collection/CollectionApi';
-import { getAllPagesMinimal } from '@/components/Page/PageApi';
-import { PageCard } from '@/components/Page/PageCard';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
-import { PostCard } from '@/components/Post/PostCard';
+import { PageCollection } from '@/components/Collection/components/PageCollection';
+import { PostCollection } from '@/components/Collection/components/PostCollection';
+import { useCollectionData } from '@/components/Collection/hooks/UseCollectionData';
+import { useCollectionFiltering } from '@/components/Collection/hooks/UseCollectionFiltering';
+import { usePagesData } from '@/components/Collection/hooks/UsePagesData';
+import { usePostsData } from '@/components/Collection/hooks/UsePostsData';
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
-import type { Page } from '@/components/Page/PageSchema';
-import type { Post as PostType } from '@/components/Post/PostSchema';
 
 interface CollectionProps {
   collectionData?: Collection;
@@ -24,113 +22,38 @@ interface CollectionProps {
   __typename?: string;
 }
 
-export default function Collection({ collectionData, sys, __typename }: CollectionProps) {
-  const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
-  const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
-  const [error, setError] = useState<string | null>(null);
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [pages, setPages] = useState<Page[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(false);
-  const [loadingPages, setLoadingPages] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+export default function Collection({ collectionData, sys }: CollectionProps) {
+  // Custom hooks for data fetching
+  const { collection, isLoading, error } = useCollectionData({ collectionData, sys });
+  const { posts, isLoading: postsLoading } = usePostsData({ collection, collectionData });
+  const { pages, isLoading: pagesLoading } = usePagesData({ collection, collectionData });
+
+  // Custom hook for filtering and pagination
+  const {
+    currentPage,
+    setCurrentPage,
+    activeFilter,
+    searchQuery,
+    setSearchQuery,
+    handleFilterChange,
+    postTagCategories,
+    filteredPosts,
+    currentPosts,
+    totalPages,
+    currentPages,
+    totalPagesForPages
+  } = useCollectionFiltering({
+    posts,
+    pages,
+    collection,
+    collectionData
+  });
 
   // Contentful Live Preview integration
   const updatedCollection = useContentfulLiveUpdates(collection);
   const inspectorProps = useContentfulInspectorMode({
     entryId: collection?.sys?.id
   });
-
-  // Read URL hash on mount to set initial filter
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const hash = window.location.hash.slice(1); // Remove the # symbol
-      if (hash) {
-        setActiveFilter(decodeURIComponent(hash));
-      }
-    }
-  }, []);
-
-  // Function to update URL hash and filter
-  const handleFilterChange = (filterValue: string | null) => {
-    setActiveFilter(filterValue);
-
-    if (typeof window !== 'undefined') {
-      if (filterValue) {
-        window.location.hash = encodeURIComponent(filterValue);
-      } else {
-        // Remove hash when showing all posts
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
-      }
-    }
-  };
-
-  // Fetch collection data if not provided but sys.id is available
-  useEffect(() => {
-    if (!collectionData && sys?.id) {
-      const fetchCollection = async () => {
-        try {
-          setIsLoading(true);
-          setError(null);
-          const fetchedCollection = await getCollectionById(sys.id);
-          setCollection(fetchedCollection);
-        } catch (err) {
-          console.error('Failed to fetch collection:', err);
-          setError('Failed to load collection');
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      void fetchCollection();
-    }
-  }, [collectionData, sys?.id]);
-
-  // Fetch posts when collection content type is "Post"
-  useEffect(() => {
-    const finalCollection = collection ?? collectionData;
-    if (finalCollection?.contentType?.includes('Post')) {
-      const fetchPosts = async () => {
-        try {
-          setLoadingPosts(true);
-          const postsResponse = await getAllPostsMinimal();
-          setPosts(postsResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching posts:', error);
-        } finally {
-          setLoadingPosts(false);
-        }
-      };
-
-      void fetchPosts();
-    }
-  }, [collection, collectionData]);
-
-  // Fetch pages when collection content type is "Page"
-  useEffect(() => {
-    const finalCollection = collection ?? collectionData;
-    if (finalCollection?.contentType?.includes('Page')) {
-      const fetchPages = async () => {
-        try {
-          setLoadingPages(true);
-          const pagesResponse = await getAllPagesMinimal();
-          setPages(pagesResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching pages:', error);
-        } finally {
-          setLoadingPages(false);
-        }
-      };
-
-      void fetchPages();
-    }
-  }, [collection, collectionData]);
-
-  // Reset to page 1 when filter or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [activeFilter, searchQuery]);
 
   const finalCollection = updatedCollection ?? collection;
 
@@ -150,231 +73,39 @@ export default function Collection({ collectionData, sys, __typename }: Collecti
     );
   }
 
-  // If Collection content type includes "Post", render PostCards
+  // If Collection content type includes "Post", render PostCollection
   if (finalCollection?.contentType?.includes('Post')) {
-    if (loadingPosts) {
-      return <div>Loading posts...</div>;
-    }
-
-    if (posts.length === 0) {
-      return <div>No posts found</div>;
-    }
-
-    // Extract category names from Collection tags with group "Post"
-    const postTagCategories =
-      finalCollection?.contentfulMetadata?.tags
-        ?.filter(
-          (tag) =>
-            tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
-        )
-        ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
-
-    // Filter posts by search query and active filter
-    const filteredPosts = posts.filter((post) => {
-      // Search filter: check if title contains search query
-      const matchesSearch =
-        !searchQuery || post.title?.toLowerCase().includes(searchQuery.toLowerCase());
-
-      // Category filter: check if post has matching category
-      const matchesCategory =
-        !activeFilter ||
-        post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase());
-
-      return matchesSearch && matchesCategory;
-    });
-
-    // Calculate pagination
-    const itemsPerPage = finalCollection.itemsPerPage ?? 6; // Default to 6 if not set
-    const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPosts = filteredPosts.slice(startIndex, endIndex);
-
     return (
       <div {...inspectorProps}>
-        {/* Search bar - only show if searchBar is enabled */}
-        {finalCollection.searchBar && (
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Search posts by title..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="focus:ring-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
-            />
-          </div>
-        )}
-
-        {/* Display clickable tag filters above the list */}
-        {postTagCategories.length > 0 && (
-          <div className="mb-6">
-            <div className="flex flex-wrap gap-2">
-              {/* "All" button */}
-              <button
-                onClick={() => handleFilterChange(null)}
-                className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                  activeFilter === null
-                    ? 'bg-primary border-primary text-white'
-                    : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                }`}
-              >
-                All
-              </button>
-
-              {/* Category filter buttons */}
-              {postTagCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleFilterChange(category)}
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
-                    activeFilter === category
-                      ? 'bg-primary border-primary text-white'
-                      : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="mb-8 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {currentPosts.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-              <div className="mb-4">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-medium text-gray-900">No posts found</h3>
-              <p className="mb-4 text-gray-500">
-                {activeFilter && searchQuery
-                  ? `No posts match "${searchQuery}" in the "${activeFilter}" category.`
-                  : activeFilter
-                    ? `No posts found in the "${activeFilter}" category.`
-                    : searchQuery
-                      ? `No posts match "${searchQuery}".`
-                      : 'No posts are currently available.'}
-              </p>
-              {Boolean(activeFilter ?? searchQuery) && (
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  {activeFilter && (
-                    <button
-                      onClick={() => handleFilterChange(null)}
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    >
-                      Clear Category Filter
-                    </button>
-                  )}
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                    >
-                      Clear Search
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          ) : (
-            currentPosts.map((post) => (
-              <div key={post.sys.id}>
-                <PostCard sys={post.sys} />
-              </div>
-            ))
-          )}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Previous
-            </button>
-
-            <span className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <PostCollection
+          filteredPosts={filteredPosts}
+          currentPosts={currentPosts}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          activeFilter={activeFilter}
+          searchQuery={searchQuery}
+          postTagCategories={postTagCategories}
+          onFilterChange={handleFilterChange}
+          onSearchChange={setSearchQuery}
+          onPageChange={setCurrentPage}
+          isLoading={postsLoading}
+          searchBarEnabled={finalCollection.searchBar ?? false}
+        />
       </div>
     );
   }
 
-  // If Collection content type includes "Page", render PageCards
+  // If Collection content type includes "Page", render PageCollection
   if (finalCollection?.contentType?.includes('Page')) {
-    if (loadingPages) {
-      return <div>Loading pages...</div>;
-    }
-
-    if (pages.length === 0) {
-      return <div>No pages found</div>;
-    }
-
-    // Calculate pagination
-    const itemsPerPage = finalCollection.itemsPerPage ?? 6; // Default to 6 if not set
-    const totalPages = Math.ceil(pages.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentPages = pages.slice(startIndex, endIndex);
-
     return (
       <div {...inspectorProps}>
-        <div className="mb-8 grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {currentPages.map((page) => (
-            <div key={page.sys.id} className="flex">
-              <PageCard {...page} />
-            </div>
-          ))}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Previous
-            </button>
-
-            <span className="text-sm text-gray-600">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <PageCollection
+          currentPages={currentPages}
+          currentPage={currentPage}
+          totalPages={totalPagesForPages}
+          onPageChange={setCurrentPage}
+          isLoading={pagesLoading}
+        />
       </div>
     );
   }
