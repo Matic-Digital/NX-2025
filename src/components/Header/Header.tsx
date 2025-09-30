@@ -315,54 +315,25 @@ function HeaderContent(props: HeaderProps) {
 
                 {/* Portal-based dropdown menu */}
                 {isOverflowMenuOpen &&
-                  typeof window !== 'undefined' &&
+                  typeof window !== 'undefined' && document.body &&
                   createPortal(
                     <div
                       ref={overflowMenuRef}
-                      className="fixed top-0 left-0 z-[99] h-auto min-h-fit w-screen bg-black/[0.72] p-8 pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px]"
+                      className="fixed top-0 left-0 z-[99] h-auto min-h-fit w-screen bg-black/[0.72] pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px]"
                       onClick={() => setOverflowMenuOpen(false)}
                     >
-                      <div className="mx-auto max-w-7xl">
-                        <div className="mb-4">
-                          <h2 className="text-[1.5rem] font-semibold text-white">More</h2>
-                          <p className="text-sm text-white/70">Additional navigation options</p>
-                        </div>
-                        <nav onClick={(e) => e.stopPropagation()}>
-                          {overflowMenuLoading ? (
-                            <div className="text-white">Loading overflow menu...</div>
-                          ) : overflowMenu ? (
-                            <div className="flex flex-col gap-2">
-                              {overflowMenu.itemsCollection?.items?.map((item) => {
-                                // Only render MenuItem types as simple links, skip MegaMenu types
-                                if (item.__typename === 'MenuItem') {
-                                  const linkUrl = item.internalLink
-                                    ? `/${item.internalLink.slug}`
-                                    : item.externalLink;
-                                  const linkTarget = item.externalLink ? '_blank' : '_self';
-                                  const linkRel = item.externalLink
-                                    ? 'noopener noreferrer'
-                                    : undefined;
-
-                                  return (
-                                    <a
-                                      key={item.sys.id}
-                                      href={linkUrl}
-                                      target={linkTarget}
-                                      rel={linkRel}
-                                      className="block rounded-md px-3 py-2 text-sm text-white transition-colors hover:bg-white/10"
-                                      onClick={() => setOverflowMenuOpen(false)}
-                                    >
-                                      {item.text}
-                                    </a>
-                                  );
-                                }
-                                return null; // Skip MegaMenu items for now
-                              })}
-                            </div>
-                          ) : (
-                            <div className="text-white">No overflow menu available</div>
-                          )}
-                        </nav>
+                      <div className="px-6 py-8">
+                        <Container>
+                          <nav onClick={(e) => e.stopPropagation()}>
+                            {overflowMenuLoading ? (
+                              <div className="text-white">Loading overflow menu...</div>
+                            ) : overflowMenu ? (
+                              <MenuComponent menu={overflowMenu} variant="overflow" />
+                            ) : (
+                              <div className="text-white">No overflow menu available</div>
+                            )}
+                          </nav>
+                        </Container>
                       </div>
                     </div>,
                     document.body
