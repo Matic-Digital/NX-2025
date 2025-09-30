@@ -2,11 +2,19 @@ import { useEffect, useState } from 'react';
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Page } from '@/components/Page/PageSchema';
+import type { PageList } from '@/components/PageList/PageListSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
+import type { Product } from '@/components/Product/ProductSchema';
+import type { Service } from '@/components/Service/ServiceSchema';
+import type { Solution } from '@/components/Solution/SolutionSchema';
 
 interface UseCollectionFilteringProps {
   posts: PostType[];
   pages: Page[];
+  pageLists: PageList[];
+  products: Product[];
+  solutions: Solution[];
+  services: Service[];
   collection: Collection | null;
   collectionData?: Collection;
 }
@@ -14,6 +22,10 @@ interface UseCollectionFilteringProps {
 export function useCollectionFiltering({
   posts,
   pages,
+  pageLists,
+  products,
+  solutions,
+  services,
   collection,
   collectionData
 }: UseCollectionFilteringProps) {
@@ -82,11 +94,77 @@ export function useCollectionFiltering({
   const endIndex = startIndex + itemsPerPage;
   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
+  // Filter pages by search query
+  const filteredPages = pages.filter((page) => {
+    // Search filter: check if title or description contains search query
+    const matchesSearch =
+      !searchQuery || 
+      page.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      page.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+  });
+
   // Calculate pagination for pages
-  const totalPagesForPages = Math.ceil(pages.length / itemsPerPage);
+  const totalPagesForPages = Math.ceil(filteredPages.length / itemsPerPage);
   const startIndexForPages = (currentPage - 1) * itemsPerPage;
   const endIndexForPages = startIndexForPages + itemsPerPage;
-  const currentPages = pages.slice(startIndexForPages, endIndexForPages);
+  const currentPages = filteredPages.slice(startIndexForPages, endIndexForPages);
+
+  // Filter products by search query
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      !searchQuery || 
+      product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+  });
+
+  // Filter solutions by search query
+  const filteredSolutions = solutions.filter((solution) => {
+    const matchesSearch =
+      !searchQuery || 
+      solution.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      solution.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+  });
+
+  // Filter services by search query
+  const filteredServices = services.filter((service) => {
+    const matchesSearch =
+      !searchQuery || 
+      service.title?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+  });
+
+  // Filter page lists by search query
+  const filteredPageLists = pageLists.filter((pageList) => {
+    const matchesSearch =
+      !searchQuery || 
+      pageList.title?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
+  });
+
+  // Combined content for unified pagination when search bar is enabled
+  const allFilteredItems = [...filteredPosts, ...filteredPages, ...filteredPageLists, ...filteredProducts, ...filteredSolutions, ...filteredServices];
+  
+  // Shuffle items deterministically based on their IDs to mix all content types together
+  // This ensures consistent ordering across renders while mixing content types
+  const shuffledItems = [...allFilteredItems].sort((a, b) => {
+    // Create a simple hash from the ID to ensure consistent but mixed ordering
+    const hashA = a.sys.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hashB = b.sys.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return hashA - hashB;
+  });
+  
+  const totalUnifiedPages = Math.ceil(shuffledItems.length / itemsPerPage);
+  const startIndexUnified = (currentPage - 1) * itemsPerPage;
+  const endIndexUnified = startIndexUnified + itemsPerPage;
+  const currentUnifiedItems = shuffledItems.slice(startIndexUnified, endIndexUnified);
 
   return {
     currentPage,
@@ -101,7 +179,17 @@ export function useCollectionFiltering({
     currentPosts,
     totalPages,
     itemsPerPage,
+    filteredPages,
     currentPages,
-    totalPagesForPages
+    totalPagesForPages,
+    // New content types
+    filteredProducts,
+    filteredSolutions,
+    filteredServices,
+    filteredPageLists,
+    // Unified pagination for mixed content
+    allFilteredItems,
+    currentUnifiedItems,
+    totalUnifiedPages
   };
 }

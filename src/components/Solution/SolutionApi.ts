@@ -222,6 +222,42 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
   }
 }
 
+export async function getAllSolutions(preview = false): Promise<Solution[]> {
+  try {
+    const response = await fetchGraphQL<Solution>(
+      `query GetAllSolutions($preview: Boolean!) {
+        solutionCollection(preview: $preview, order: sys_publishedAt_DESC) {
+          items {
+            ${SOLUTION_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { solutionCollection?: { items?: Solution[] } };
+
+    if (!data.solutionCollection?.items?.length) {
+      return [];
+    }
+
+    return data.solutionCollection.items;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Solutions: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Solutions');
+  }
+}
+
 export async function getSolutionsByIds(
   solutionsIds: string[],
   preview = false

@@ -23,7 +23,7 @@ export async function getAllServices(preview = false): Promise<ServiceResponse> 
   try {
     const response = await fetchGraphQL<Service>(
       `query GetAllServices($preview: Boolean!) {
-        serviceCollection(preview: $preview, order: datePublished_DESC) {
+        serviceCollection(preview: $preview, order: sys_publishedAt_DESC) {
           items {
             ${SERVICE_GRAPHQL_FIELDS}
           }

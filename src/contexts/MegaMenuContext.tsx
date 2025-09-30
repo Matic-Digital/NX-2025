@@ -65,7 +65,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
     setActiveMegaMenuId(menuId);
   };
 
-  const closeMegaMenu = (menuId: string) => {
+  const closeMegaMenu = React.useCallback((menuId: string) => {
     setOpenMegaMenus((prev) => {
       const newSet = new Set(prev);
       newSet.delete(menuId);
@@ -75,7 +75,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       setActiveMegaMenuId(null);
       setActiveMegaMenuContent(null);
     }
-  };
+  }, [activeMegaMenuId]);
 
   const setOverflowMenuOpenHandler = (isOpen: boolean) => {
     setIsOverflowMenuOpen(isOpen);

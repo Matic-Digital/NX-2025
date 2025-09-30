@@ -13,18 +13,16 @@
  * - Contentful Live Preview integration for real-time updates
  */
 
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 import { ChevronDown, Menu, Search } from 'lucide-react';
-
 import { MegaMenuProvider, useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
 import { Button } from '@/components/ui/button';
@@ -295,7 +293,9 @@ function HeaderContent(props: HeaderProps) {
               )}
             </div>
 
-            <Search className="text-white" />
+            <Link href="/search" aria-label="Search">
+              <Search className="text-white hover:text-white/80 transition-colors cursor-pointer" />
+            </Link>
 
             {/* Desktop Overflow Menu (Hamburger) */}
             {header?.overflow && (
@@ -344,14 +344,16 @@ function HeaderContent(props: HeaderProps) {
 
           {/* Mobile Navigation */}
           <Box direction="row" gap={2} className="items-center md:hidden" data-testid="mobile-nav">
-            <Button
-              variant="ghost"
-              className={`rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
-              aria-label="Open search"
-            >
-              <Search className="size-5" />
-              <span className="sr-only">Open search</span>
-            </Button>
+            <Link href="/search">
+              <Button
+                variant="ghost"
+                className={`rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
+                aria-label="Open search"
+              >
+                <Search className="size-5" />
+                <span className="sr-only">Open search</span>
+              </Button>
+            </Link>
 
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
