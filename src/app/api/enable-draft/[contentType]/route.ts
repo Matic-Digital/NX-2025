@@ -41,6 +41,11 @@ const contentTypeMap = {
     previewPath: '/preview/content',
     entityName: 'Content'
   },
+  'content-block': {
+    fetchFn: getContentById,
+    previewPath: '/preview/content-block',
+    entityName: 'Content'
+  },
   'content-grid': {
     fetchFn: getContentGridById,
     previewPath: '/preview/content-grid',
