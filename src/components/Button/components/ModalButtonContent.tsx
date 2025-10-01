@@ -17,6 +17,7 @@ interface ModalButtonContentProps {
     rel?: 'noopener noreferrer';
   };
   onModalClick: () => void;
+  inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
 }
 
 /**
@@ -29,7 +30,8 @@ export const ModalButtonContent = ({
   className,
   isModalButton,
   linkProps,
-  onModalClick
+  onModalClick,
+  inspectorProps
 }: ModalButtonContentProps) => {
   // Modal button rendering
   if (isModalButton) {
@@ -38,6 +40,7 @@ export const ModalButtonContent = ({
         variant={variant}
         className={className}
         onClick={onModalClick}
+        {...inspectorProps({ fieldId: 'text' })}
       >
         {cta.text}
       </Button>
@@ -47,7 +50,11 @@ export const ModalButtonContent = ({
   // Link button rendering
   return (
     <Link href={linkProps.href} {...(linkProps.target ? { target: linkProps.target, rel: linkProps.rel } : {})}>
-      <Button variant={variant} className={className}>
+      <Button 
+        variant={variant} 
+        className={className}
+        {...inspectorProps({ fieldId: 'text' })}
+      >
         {cta.text}
         {renderIcon(cta.icon)}
       </Button>

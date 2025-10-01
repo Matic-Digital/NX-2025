@@ -198,12 +198,13 @@ export function SectionHeading(props: SectionHeadingProps) {
                 totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
 
               return (
-                <ModalCtaButton
-                  key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
+                <div key={cta.sys?.id || index} {...inspectorProps({ fieldId: `ctaCollection.${index}` })}>
+                  <ModalCtaButton
+                    cta={cta}
+                    variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                    onModalOpen={handleModalOpen}
+                  />
+                </div>
               );
             })}
         </Box>
@@ -264,12 +265,13 @@ export function SectionHeading(props: SectionHeadingProps) {
                 totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
 
               return (
-                <ModalCtaButton
-                  key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
+                <div key={cta.sys?.id || index} {...inspectorProps({ fieldId: `ctaCollection.${index}` })}>
+                  <ModalCtaButton
+                    cta={cta}
+                    variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                    onModalOpen={handleModalOpen}
+                  />
+                </div>
               );
             })}
         </Box>
@@ -338,12 +340,13 @@ export function SectionHeading(props: SectionHeadingProps) {
                 totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
 
               return (
-                <ModalCtaButton
-                  key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
+                <div key={cta.sys?.id || index} {...inspectorProps({ fieldId: `ctaCollection.${index}` })}>
+                  <ModalCtaButton
+                    cta={cta}
+                    variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                    onModalOpen={handleModalOpen}
+                  />
+                </div>
               );
             })}
         </Box>
@@ -422,12 +425,13 @@ export function SectionHeading(props: SectionHeadingProps) {
               totalButtons === 1 ? 'primary' : index === 0 ? 'primary' : 'outline';
 
             return (
-              <ModalCtaButton
-                key={cta.sys?.id || index}
-                cta={cta}
-                variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                onModalOpen={handleModalOpen}
-              />
+              <div key={cta.sys?.id || index} {...inspectorProps({ fieldId: `ctaCollection.${index}` })}>
+                <ModalCtaButton
+                  cta={cta}
+                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                  onModalOpen={handleModalOpen}
+                />
+              </div>
             );
           })}
       </Box>
