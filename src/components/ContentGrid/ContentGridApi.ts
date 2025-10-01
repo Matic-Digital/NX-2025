@@ -112,6 +112,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Video {
         ${SYS_FIELDS}
       }
+      ... on Event {
+        ${SYS_FIELDS}
+      }
     }
   }
   variant

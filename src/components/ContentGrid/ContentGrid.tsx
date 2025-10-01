@@ -40,8 +40,6 @@ export function ContentGrid(props: ContentGridProps) {
 
   const rawItems = contentGrid.itemsCollection?.items;
 
-  console.log('props', props);
-
   // Enhanced items processing with Collection detection and fetching
   React.useEffect(() => {
     const processItems = async () => {
@@ -133,6 +131,7 @@ export function ContentGrid(props: ContentGridProps) {
   // Check if content grid contains only services for mobile carousel
   const serviceItems = validItems.filter(contentTypeDetectors.isService);
   const isServiceOnlyGrid = validItems.length > 0 && serviceItems.length === validItems.length;
+  const isEventOnlyGrid = validItems.length > 0 && validItems.every(contentTypeDetectors.isEvent);
 
   // Embla carousel for service-only grids
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -547,7 +546,12 @@ export function ContentGrid(props: ContentGridProps) {
                     <div className="hidden lg:block"></div>
                   </Box>
                 ) : gridVariant === 'FullWidth' ? (
-                  <Box cols={1} gap={gridConfig.gap} wrap={true}>
+                  <Box
+                    cols={1}
+                    gap={gridConfig.gap}
+                    wrap={true}
+                    className={cn(isEventOnlyGrid && 'gap-4 lg:gap-0')}
+                  >
                     {validItems.filter(Boolean).map((item, index) => (
                       <ContentItemRenderer
                         key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}

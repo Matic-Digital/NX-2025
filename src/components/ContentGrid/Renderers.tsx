@@ -10,6 +10,7 @@ import Collection from '@/components/Collection/Collection';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { Event } from '@/components/Event/Event';
 import { AirImage } from '@/components/Image/AirImage';
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PostCard } from '@/components/Post/PostCard';
@@ -25,6 +26,7 @@ import type { Collection as CollectionType } from '@/components/Collection/Colle
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { Event as EventType } from '@/components/Event/EventSchema';
 import type { Image as AirImageType } from '@/components/Image/ImageSchema';
 import type { OfficeLocation as LocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
 import type {
@@ -83,6 +85,15 @@ export const contentRenderers = {
 
   renderCtaGrid: (item: CtaGridType, context: RenderContext) => (
     <CtaGrid key={item.sys?.id ?? context.index} {...item} />
+  ),
+
+  renderEvent: (item: EventType, context: RenderContext) => (
+    <Event
+      key={item.sys?.id ?? context.index}
+      eventId={item.sys?.id ?? context.index}
+      {...item}
+      {...context}
+    />
   ),
 
   renderImage: (item: AirImageType, context: RenderContext) => (

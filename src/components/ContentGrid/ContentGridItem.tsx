@@ -35,7 +35,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
   const { sys, title, heading, description, variant, icon, image } = contentData;
-  console.log('ContentGridItem', contentData);
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -56,7 +55,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
         if (linkData?.link?.slug) {
           // Default to flat URL structure
           let href = `/${linkData.link.slug}`;
-          console.log('linkData', linkData.link.slug);
 
           // PageList Nesting Integration: Check if the linked PageList has a parent
           // This ensures URLs like /products/trackers instead of just /trackers
@@ -94,10 +92,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
             // Use the parent PageList slug to construct nested URLs
             href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
           }
-
-          console.log(
-            `ContentGridItem link constructed: ${href} (type: ${linkData.link.__typename})`
-          );
           setLinkHref(href);
         }
       } catch (error) {

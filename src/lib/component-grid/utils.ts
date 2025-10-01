@@ -3,6 +3,7 @@ import type { Collection as CollectionType } from '@/components/Collection/Colle
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { Event as EventType } from '@/components/Event/EventSchema';
 import type { Image as AirImageType } from '@/components/Image/ImageSchema';
 import type { OfficeLocation as OfficeLocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
 import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
@@ -20,6 +21,7 @@ export type ContentGridItemUnion =
   | ContactCardType
   | ContentGridItemType
   | CtaGridType
+  | EventType
   | OfficeLocationType
   | PageListType
   | PostType
@@ -46,6 +48,8 @@ export const contentTypeDetectors = {
     item?.__typename === 'ContentGridItem',
 
   isCtaGrid: (item: ContentGridItemUnion): item is CtaGridType => item?.__typename === 'CtaGrid',
+
+  isEvent: (item: ContentGridItemUnion): item is EventType => item?.__typename === 'Event',
 
   isImage: (item: ContentGridItemUnion): item is AirImageType => item?.__typename === 'Image',
 
@@ -93,6 +97,9 @@ export const collectionAnalyzers = {
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),
 
+  allItemsAreEvents: (items: ContentGridItemUnion[]): boolean =>
+    items.length > 0 && items.every(contentTypeDetectors.isEvent),
+
   allItemsAreExpandingHoverCards: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 &&
     items.every(
@@ -135,6 +142,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
   const analysis = {
     allItemsAreAccordions: collectionAnalyzers.allItemsAreAccordions(items),
     allItemsAreSolutions: collectionAnalyzers.allItemsAreSolutions(items),
+    allItemsAreEvents: collectionAnalyzers.allItemsAreEvents(items),
     allItemsAreExpandingHoverCards: collectionAnalyzers.allItemsAreExpandingHoverCards(items),
     allItemsArePosts: collectionAnalyzers.allItemsArePosts(items),
     allItemsAreServices: collectionAnalyzers.allItemsAreServices(items),

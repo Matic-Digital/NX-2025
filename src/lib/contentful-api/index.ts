@@ -4,6 +4,7 @@ export * from '@/components/Button/ButtonApi';
 export * from '@/components/ContactCard/ContactCardApi';
 export * from '@/components/ContentGrid/ContentGridApi';
 export * from '@/components/CtaBanner/CtaBannerApi';
+export * from '@/components/Event/EventApi';
 export * from '@/components/Footer/FooterApi';
 export * from './graphql-fields';
 export * from '@/components/Header/HeaderApi';

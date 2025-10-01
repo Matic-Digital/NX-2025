@@ -38,6 +38,10 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderCtaGrid
   },
   {
+    detector: contentTypeDetectors.isEvent,
+    renderer: contentRenderers.renderEvent
+  },
+  {
     detector: contentTypeDetectors.isImage,
     renderer: contentRenderers.renderImage
   },

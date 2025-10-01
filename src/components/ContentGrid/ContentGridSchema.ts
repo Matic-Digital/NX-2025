@@ -4,6 +4,7 @@ import { AccordionSchema } from '@/components/Accordion/AccordionSchema';
 import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
 import { ContentGridItemSchema } from '@/components/ContentGrid/ContentGridItemSchema';
 import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';
+import { EventSchema } from '@/components/Event/EventSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
 import { PostSchema } from '@/components/Post/PostSchema';
@@ -33,6 +34,7 @@ const ContentGridItemUnion = z.union([
   ContentGridItemSchema,
   CtaGridSchema,
   ContactCardSchema,
+  EventSchema,
   ImageSchema,
   OfficeLocationSchema,
   PostSchema,
