@@ -25,11 +25,24 @@ import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
  * Features:
  * - Responsive grid layout (2 columns on mobile, 4 on desktop)
  * - Company branding and description
- * - Organized link sections from Contentful
- * - Copyright notice
+ * - Organized menu sections from Contentful
+ * - Social media links
+ * - Copyright notice and legal links
  */
 export function Footer(props: FooterType) {
   console.log('Footer props:', props);
+  console.log('Footer menusCollection:', props.menusCollection);
+  console.log('Footer menus items:', props.menusCollection?.items);
+  
+  // Detailed menu logging
+  if (props.menusCollection?.items) {
+    props.menusCollection.items.forEach((menu, index) => {
+      console.log(`Menu ${index}:`, menu);
+      console.log(`Menu ${index} title:`, menu?.title);
+      console.log(`Menu ${index} itemsCollection:`, menu?.itemsCollection);
+      console.log(`Menu ${index} items:`, menu?.itemsCollection?.items);
+    });
+  }
   // Use our custom hook to ensure theme changes are properly applied
   useThemeSync();
 
@@ -92,68 +105,57 @@ export function Footer(props: FooterType) {
                 </Box>
               </Box>
 
-              {/* Page Navigation Menu */}
+              {/* Menu Navigation */}
               <Box
                 direction={{ base: 'col', lg: 'row' }}
                 cols={{ base: 1, sm: 2, lg: 4 }}
                 gap={{ base: 12, lg: 4 }}
                 className="justify-start lg:justify-between"
-                {...inspectorProps({
-                  entryId: footer.sys.id,
-                  fieldId: 'pageListsCollection'
-                })}
               >
-                {/* Footer sections with links from Contentful */}
-                {footer.pageListsCollection?.items.map((pageList) => (
-                  <Box direction="col" gap={4} key={pageList.sys.id}>
+                {/* Footer sections with links from Menus */}
+                {footer.menusCollection?.items && footer.menusCollection.items.length > 0 ? (
+                  footer.menusCollection.items.map((menu) => (
+                  <Box direction="col" gap={4} key={menu.sys.id}>
                     <h3
                       className="text-body-sm leading-[160%] tracking-wide text-[#A3A3A3] uppercase"
-                      {...inspectorProps({ entryId: pageList.sys.id, fieldId: 'title' })}
+                      {...inspectorProps({ entryId: menu.sys.id, fieldId: 'title' })}
                     >
-                      {pageList.slug && pageList.pageLayout ? (
-                        <Link href={`/${pageList.slug}`} className="hover:text-text-primary">
-                          {pageList.title}
-                        </Link>
-                      ) : (
-                        <span>{pageList.title}</span>
-                      )}
+                      <span>{menu.title}</span>
                     </h3>
 
                     <nav>
                       <ul
                         className="flex flex-col gap-5"
                         {...inspectorProps({
-                          entryId: pageList.sys.id,
-                          fieldId: 'pagesCollection'
+                          entryId: menu.sys.id,
+                          fieldId: 'itemsCollection'
                         })}
                       >
-                        {pageList.pagesCollection?.items
-                          .filter((page): page is NonNullable<typeof page> => page != null)
-                          .map((page, index) => {
-                            // Debug logging
-                            console.log('Page object:', page);
-                            console.log('Page type:', page.__typename);
-                            console.log('Page Has link property:', 'link' in page);
-
-                            // Use type assertions to fix TypeScript errors
+                        {menu.itemsCollection?.items
+                          .filter((item): item is NonNullable<typeof item> => item != null)
+                          .map((item, index) => {
+                            // Handle different menu item types
                             let href = '/';
                             let isExternal = false;
+                            let displayText = item.title; // Default to title
+                            let fieldId = 'title'; // Default field for inspector
 
-                            if (page.__typename === 'ExternalPage' && 'link' in page) {
-                              href = page.link;
-                              isExternal = true;
-                              console.log('Using external link:', href);
-                            } else if ('slug' in page && page.slug) {
-                              href = `/${page.slug}`;
-                              console.log('Using slug link:', href);
-                            } else {
-                              console.log('Using fallback link: /');
+                            if (item.__typename === 'MenuItem') {
+                              displayText = item.text || item.title;
+                              fieldId = 'text';
+                              
+                              if (item.externalLink) {
+                                href = item.externalLink;
+                                isExternal = true;
+                              } else if (item.internalLink?.slug) {
+                                href = `/${item.internalLink.slug}`;
+                              }
                             }
 
                             return (
                               <li
-                                key={page.sys?.id || `page-${index}`}
-                                {...inspectorProps({ entryId: page.sys?.id, fieldId: 'title' })}
+                                key={item.sys?.id || `menu-item-${index}`}
+                                {...inspectorProps({ entryId: item.sys?.id, fieldId })}
                               >
                                 <Link
                                   href={href}
@@ -163,7 +165,7 @@ export function Footer(props: FooterType) {
                                     rel: 'noopener noreferrer'
                                   })}
                                 >
-                                  {page.title}
+                                  {displayText}
                                 </Link>
                               </li>
                             );
@@ -171,7 +173,14 @@ export function Footer(props: FooterType) {
                       </ul>
                     </nav>
                   </Box>
-                ))}
+                  ))
+                ) : (
+                  <Box direction="col" gap={4}>
+                    <p className="text-body-sm text-[#A3A3A3]">
+                      No menus configured. Please add menus in Contentful.
+                    </p>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Container>
