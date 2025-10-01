@@ -37,13 +37,6 @@ import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadin
 import { BannerHeroPreview } from '@/components/BannerHero/BannerHeroPreview';
 import { ContentPreview } from '@/components/Content/ContentPreview';
 import { CtaBannerPreview } from '@/components/CtaBanner/CtaBannerPreview';
-import { ContentGridPreview } from '@/components/ContentGrid/ContentGridPreview';
-import { ImageBetweenPreview } from '@/components/ImageBetween/ImageBetweenPreview';
-import { SliderPreview } from '@/components/Slider/SliderPreview';
-import { ButtonPreview } from '@/components/Button/ButtonPreview';
-import { ServicePreview } from '@/components/Service/ServicePreview';
-import { SolutionPreview } from '@/components/Solution/SolutionPreview';
-import { SocialPreview } from '@/components/Social/SocialPreview';
 
 // Import all API functions
 import {
@@ -61,10 +54,6 @@ import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/components/Product/ProductApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { getButtonById } from '@/components/Button/ButtonApi';
-import { getServiceById } from '@/components/Service/ServiceApi';
-import { getSolutionById } from '@/components/Solution/SolutionApi';
-import { getSocialById } from '@/components/Social/SocialApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -94,7 +83,6 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'content-grid': {
     fetchFn: getContentGridById,
     component: ContentGrid,
-    previewComponent: ContentGridPreview,
     entityName: 'ContentGrid',
     containerClass: 'min-h-screen bg-white'
   },
@@ -111,13 +99,6 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'Content',
     containerClass: 'min-h-screen bg-white p-8'
   },
-  'content-block': {
-    fetchFn: getContentById,
-    component: Content,
-    previewComponent: ContentPreview,
-    entityName: 'Content',
-    containerClass: 'min-h-screen bg-white p-8'
-  },
   'cta-banner': {
     fetchFn: getCtaBannerById,
     component: CtaBanner,
@@ -128,44 +109,14 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'image-between': {
     fetchFn: getImageBetweenById,
     component: ImageBetween,
-    previewComponent: ImageBetweenPreview,
     entityName: 'ImageBetween',
     containerClass: 'min-h-screen bg-white'
   },
   slider: {
     fetchFn: getSliderById,
     component: Slider,
-    previewComponent: SliderPreview,
     entityName: 'Slider',
     containerClass: 'min-h-screen bg-white'
-  },
-  button: {
-    fetchFn: getButtonById,
-    component: () => null, // No main Button component
-    previewComponent: ButtonPreview,
-    entityName: 'Button',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  service: {
-    fetchFn: getServiceById,
-    component: () => null, // Uses ServiceCard instead
-    previewComponent: ServicePreview,
-    entityName: 'Service',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  solution: {
-    fetchFn: getSolutionById,
-    component: () => null, // Uses SolutionCard instead
-    previewComponent: SolutionPreview,
-    entityName: 'Solution',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  social: {
-    fetchFn: getSocialById,
-    component: () => null, // No main Social component
-    previewComponent: SocialPreview,
-    entityName: 'Social',
-    containerClass: 'min-h-screen bg-gray-50'
   },
   'page-list': {
     fetchFn: getPageListById,
