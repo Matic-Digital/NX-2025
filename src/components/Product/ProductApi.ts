@@ -258,6 +258,42 @@ export async function getProductBySlug(slug: string, preview = false): Promise<P
   }
 }
 
+export async function getAllProducts(preview = false): Promise<Product[]> {
+  try {
+    const response = await fetchGraphQL<Product>(
+      `query GetAllProducts($preview: Boolean!) {
+        productCollection(preview: $preview, order: sys_publishedAt_DESC) {
+          items {
+            ${PRODUCT_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { productCollection?: { items?: Product[] } };
+
+    if (!data.productCollection?.items?.length) {
+      return [];
+    }
+
+    return data.productCollection.items;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Products: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Products');
+  }
+}
+
 export async function getProductsByIds(productsIds: string[], preview = false): Promise<Product[]> {
   if (productsIds.length === 0) {
     return [];

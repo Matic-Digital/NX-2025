@@ -30,6 +30,7 @@ export function PageCard(props: PageCardProps) {
   const [loading, setLoading] = useState(!props.title); // Only load if we don't have title data
   const isRowVariant = props.variant === 'row';
   const isFeaturedVariant = props.variant === 'featured';
+  const isSearchVariant = props.variant === 'search';
 
   useEffect(() => {
     // Only fetch if we don't have the required data
@@ -69,6 +70,60 @@ export function PageCard(props: PageCardProps) {
       <div className="flex h-full items-center justify-center p-4">
         <div className="text-lg">Page not found</div>
       </div>
+    );
+  }
+
+  // Search variant - compact horizontal layout
+  if (isSearchVariant) {
+    return (
+      <Link
+        href={`/${page?.slug}`}
+        {...inspectorProps({ fieldId: 'slug' })}
+        className="group block w-full"
+      >
+        <div className="flex items-start gap-4 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+          {/* Thumbnail */}
+          <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded overflow-hidden">
+            <AirImage
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+              link={(page?.openGraphImage as any)?.link}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+              altText={(page?.openGraphImage as any)?.altText ?? page?.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs text-primary uppercase font-medium">Page</span>
+              <span className="text-xs text-gray-500">•</span>
+              <span className="text-xs text-gray-500">/{page?.slug}</span>
+            </div>
+            
+            <h3 
+              className="text-lg font-semibold text-gray-900 group-hover:text-primary line-clamp-1 mb-2"
+              {...inspectorProps({ fieldId: 'title' })}
+            >
+              {page?.title}
+            </h3>
+            
+            {page?.description && (
+              <p 
+                className="text-sm text-gray-600 line-clamp-2"
+                {...inspectorProps({ fieldId: 'description' })}
+              >
+                {page.description}
+              </p>
+            )}
+          </div>
+          
+          {/* Arrow */}
+          <div className="flex-shrink-0">
+            <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
+          </div>
+        </div>
+      </Link>
     );
   }
 
