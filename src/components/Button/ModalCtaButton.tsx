@@ -1,3 +1,4 @@
+import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import { useModalButtonLogic } from '@/components/Button/hooks/UseModalButtonLogic';
 import { ModalButtonContent } from '@/components/Button/components/ModalButtonContent';
 
@@ -27,6 +28,9 @@ export function ModalCtaButton({
 }: ModalCtaButtonProps) {
   // Business logic layer
   const { isModalButton, linkProps, handleModalClick } = useModalButtonLogic(cta, modalType);
+  
+  // Contentful Live Preview inspector props
+  const inspectorProps = useContentfulInspectorMode({ entryId: cta.sys?.id });
 
   // Handle modal click
   const onClick = () => handleModalClick(onModalOpen);
@@ -39,6 +43,7 @@ export function ModalCtaButton({
       isModalButton={isModalButton}
       linkProps={linkProps}
       onModalClick={onClick}
+      inspectorProps={inspectorProps}
     />
   );
 }

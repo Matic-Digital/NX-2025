@@ -23,6 +23,8 @@ import { getSliderById } from '@/components/Slider/SliderApi';
 import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
+import { getMenuById } from '@/components/Menu/MenuApi';
+import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
@@ -120,6 +122,16 @@ const contentTypeMap = {
     fetchFn: getSolutionById,
     previewPath: '/preview/solution',
     entityName: 'Solution'
+  },
+  menu: {
+    fetchFn: getMenuById,
+    previewPath: '/preview/menu',
+    entityName: 'Menu'
+  },
+  'menu-item': {
+    fetchFn: getMenuItemById,
+    previewPath: '/preview/menu-item',
+    entityName: 'MenuItem'
   }
 } as const;
 

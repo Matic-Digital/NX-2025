@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   // Redirect to Section Heading preview
   if (sectionHeadingId) {
     return NextResponse.redirect(
-      new URL(`/section-heading-preview?id=${sectionHeadingId}`, request.url)
+      new URL(`/preview/section-heading?id=${sectionHeadingId}`, request.url)
     );
   }
 
