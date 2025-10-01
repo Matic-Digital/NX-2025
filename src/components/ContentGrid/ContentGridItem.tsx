@@ -12,11 +12,12 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SvgIcon } from '@/components/ui/svg-icon';
 
+import { Box } from '@/components/global/matic-ds';
+
 import {
   getContentGridItemById,
   getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
-import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
@@ -55,6 +56,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         if (linkData?.link?.slug) {
           // Default to flat URL structure
           let href = `/${linkData.link.slug}`;
+          console.log('linkData', linkData.link.slug);
 
           // PageList Nesting Integration: Check if the linked PageList has a parent
           // This ensures URLs like /products/trackers instead of just /trackers
@@ -333,6 +335,48 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
+  const BackgroundGradientHoverItemWithLinkItem = () => (
+    <div className="group rounded-xxs bg-subtle relative overflow-hidden">
+      {/* Card Image */}
+      {image && (
+        <div className="absolute z-10 h-full w-full opacity-0 transition-opacity group-hover:opacity-100">
+          <AirImage
+            link={image.link ?? ''}
+            altText={image.altText ?? ''}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Card Content */}
+      <Box direction="col" gap={4} className="relative z-20 h-full p-6">
+        {/* Text Content */}
+        <Box direction="col" gap={2}>
+          <h3
+            className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+            {...inspectorProps({ fieldId: 'heading' })}
+          >
+            {heading}
+          </h3>
+          {description && (
+            <p
+              className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 transition-colors"
+              {...inspectorProps({ fieldId: 'description' })}
+            >
+              {description}
+            </p>
+          )}
+        </Box>
+        {/* Arrow Icon in Bottom Right */}
+        <Link href={getHref()} className="ml-auto mt-auto">
+          <div className="absolute bottom-0 right-0 flex size-10 items-center justify-center bg-background">
+            <ArrowUpRight className="size-8 text-text-body" />
+          </div>
+        </Link>
+      </Box>
+    </div>
+  );
+
   const ExpandingHoverCardItem = () => {
     // Get index from ContentGrid context - for now using a placeholder
     const index = 0; // This will need to be passed from ContentGrid
@@ -399,6 +443,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundPrimaryHoverItem />;
     case 'BackgroundGradientHover':
       return <BackgroundGradientHoverItem />;
+    case 'BackgroundGradientHoverWithLink':
+      return <BackgroundGradientHoverItemWithLinkItem />;
     case 'ExpandingHoverCard':
       return <ExpandingHoverCardItem />;
     case 'Link':

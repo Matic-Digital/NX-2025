@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import Image from 'next/image';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import useEmblaCarousel from 'embla-carousel-react';
+import Image from 'next/image';
 
 import {
   calculateGridConfig,
@@ -184,7 +184,8 @@ export function ContentGrid(props: ContentGridProps) {
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
   // Auto-enable dark mode if all items are accordions OR if backgroundAsset is present
-  const shouldUseDarkMode = props.isDarkMode ?? (analysis.allItemsAreAccordions || !!contentGrid.backgroundAsset);
+  const shouldUseDarkMode =
+    props.isDarkMode ?? (analysis.allItemsAreAccordions || !!contentGrid.backgroundAsset);
 
   // Check if this is an ImageBetween component
   const isImageBetweenComponent = props.componentType === 'ImageBetween';
@@ -204,7 +205,11 @@ export function ContentGrid(props: ContentGridProps) {
               {contentGrid.backgroundAsset ? (
                 <Image
                   src={contentGrid.backgroundAsset.url}
-                  alt={contentGrid.backgroundAsset.title ?? contentGrid.backgroundAsset.description ?? ''}
+                  alt={
+                    contentGrid.backgroundAsset.title ??
+                    contentGrid.backgroundAsset.description ??
+                    ''
+                  }
                   fill
                   className="object-cover"
                   sizes="100vw"
@@ -434,7 +439,7 @@ export function ContentGrid(props: ContentGridProps) {
                       </div>
                     )}
                   </div>
-                ) : gridVariant === 'Offset' ? (
+                ) : gridVariant === 'OffsetStart' ? (
                   // Custom 4-item staggered grid using Box
                   <Box
                     cols={gridConfig.cols}
@@ -488,6 +493,58 @@ export function ContentGrid(props: ContentGridProps) {
                         currentPath={props.currentPath}
                       />
                     )}
+                  </Box>
+                ) : gridVariant === 'OffsetEnd' ? (
+                  <Box
+                    cols={gridConfig.cols}
+                    gap={gridConfig.gap}
+                    className="[&>*]:min-h-[22.5rem]"
+                  >
+                    {/* Empty space in column 3 for top row */}
+                    <div className="hidden lg:block"></div>
+                    {/* Top row - items in columns 1 and 2 */}
+                    {validItems[0] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-0-${validItems[0].sys?.id ?? 0}`}
+                        item={validItems[0]}
+                        index={0}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                    {validItems[1] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-1-${validItems[1].sys?.id ?? 1}`}
+                        item={validItems[1]}
+                        index={1}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                    {validItems[2] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-2-${validItems[2].sys?.id ?? 2}`}
+                        item={validItems[2]}
+                        index={2}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                    {validItems[3] && (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-3-${validItems[3].sys?.id ?? 3}`}
+                        item={validItems[3]}
+                        index={3}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                      />
+                    )}
+                    {/* Bottom row - empty column 1, items in columns 2 and 3 */}
+                    <div className="hidden lg:block"></div>
                   </Box>
                 ) : gridVariant === 'FullWidth' ? (
                   <Box cols={1} gap={gridConfig.gap} wrap={true}>

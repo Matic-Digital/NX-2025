@@ -325,6 +325,15 @@ export async function getContentGridItemLink(
             ... on Product {
               slug
             }
+            ... on Service {
+              slug
+            }
+            ... on Solution {
+              slug
+            }
+            ... on Post {
+              slug
+            }
           }
         }
       }`,
