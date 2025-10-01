@@ -22,3 +22,33 @@ import type { ClassValue } from 'clsx';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const formatDate = (dateString?: string, includeTime?: boolean): string => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+
+  if (!includeTime) {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  // Format date and time separately to avoid "at"
+  const datePart = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  const timePart = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short'
+  });
+
+  return `${datePart} • ${timePart} `;
+};

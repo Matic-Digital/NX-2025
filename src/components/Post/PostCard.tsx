@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn, formatDate } from '@/lib/utils';
 
 import { Box } from '@/components/global/matic-ds';
 
@@ -19,18 +19,6 @@ import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { categoryColorMap } from '@/components/Post/PostCategories';
 
 import type { Post } from '@/components/Post/PostSchema';
-
-// Helper function to format date as "Month Day, Year"
-const formatDate = (dateString?: string): string => {
-  if (!dateString) return '';
-
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
 
 interface PostCardProps {
   sys: {

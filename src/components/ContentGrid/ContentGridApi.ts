@@ -112,6 +112,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Video {
         ${SYS_FIELDS}
       }
+      ... on Event {
+        ${SYS_FIELDS}
+      }
     }
   }
   variant
@@ -323,6 +326,15 @@ export async function getContentGridItemLink(
               slug
             }
             ... on Product {
+              slug
+            }
+            ... on Service {
+              slug
+            }
+            ... on Solution {
+              slug
+            }
+            ... on Post {
               slug
             }
           }

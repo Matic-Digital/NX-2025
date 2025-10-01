@@ -12,6 +12,7 @@ export * from '../../components/ContentGrid/ContentGridSchema';
 export * from '../../components/ContentGrid/ContentGridItemSchema';
 export * from '../../components/CtaBanner/CtaBannerSchema';
 export * from '../../components/CtaGrid/CtaGridSchema';
+export * from '../../components/Event/EventSchema';
 export * from '../../components/Footer/FooterSchema';
 export * from '../../components/Header/HeaderSchema';
 export * from '../../components/Image/ImageSchema';

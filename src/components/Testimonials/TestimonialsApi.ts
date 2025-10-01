@@ -6,20 +6,24 @@ import { TestimonialsSchema } from '@/components/Testimonials/TestimonialsSchema
 
 import type { Testimonials } from '@/components/Testimonials/TestimonialsSchema';
 
+export const TESTIMONIALITEM_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  quote
+  authorName
+  authorTitle
+  headshot {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+`;
+
 // Use centralized GraphQL fields
 export const TESTIMONIALS_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   itemsCollection {
     items {
-      ${SYS_FIELDS}
-      title
-      quote
-      authorName
-      authorTitle
-      headshot {
-        ${IMAGE_GRAPHQL_FIELDS}
-      }
+      ${TESTIMONIALITEM_GRAPHQL_FIELDS}
     }
   }
 `;

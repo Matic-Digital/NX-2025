@@ -5,6 +5,7 @@ import { PostSliderItemSchema } from '@/components/Post/PostSchema';
 import { SliderItemSchema } from '@/components/Slider/SliderItemSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
 import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
+import { TestimonialItemSchema } from '@/components/Testimonials/TestimonialsSchema';
 import { TimelineSliderItemSchema } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 
 // Union type for slider items
@@ -15,6 +16,7 @@ const SliderItemUnion = z.union([
   SliderItemSchema,
   TimelineSliderItemSchema,
   TeamMemberSchema,
+  TestimonialItemSchema,
   SolutionSchema
 ]);
 
