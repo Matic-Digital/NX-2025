@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
+import { Search } from 'lucide-react';
 
 import { collectionStyles } from '../utils/CollectionStyles';
 
@@ -50,6 +51,12 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
     wasActiveRef.current = false;
   };
 
+  const handleSearchClick = () => {
+    // Force an update by triggering the search change with current value
+    // This will cause the search results to refresh
+    onSearchChange(searchQuery);
+  };
+
   // Generate dynamic placeholder text based on content types
   const getPlaceholderText = () => {
     if (!contentTypes || contentTypes.length === 0) {
@@ -80,17 +87,27 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
 
   return (
     <div className="mb-6">
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder={getPlaceholderText()}
-        value={searchQuery}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={collectionStyles.getSearchInputClasses()}
-        autoComplete="off"
-      />
+      <div className="relative max-w-[42.25rem]">
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder={getPlaceholderText()}
+          value={searchQuery}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`${collectionStyles.getSearchInputClasses()} pr-12`}
+          autoComplete="off"
+        />
+        <button
+          type="button"
+          onClick={handleSearchClick}
+          className="absolute top-0 right-0 h-full bg-primary px-[1.75rem] border border-primary flex items-center justify-center"
+          aria-label="Search"
+        >
+          <Search className="h-5 w-5 text-white" />
+        </button>
+      </div>
     </div>
   );
 }

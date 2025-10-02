@@ -32,6 +32,7 @@ export function useCollectionFiltering({
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [activeSortOption, setActiveSortOption] = useState<string>('newest');
 
   const finalCollection = collection ?? collectionData;
 
@@ -59,10 +60,56 @@ export function useCollectionFiltering({
     }
   };
 
-  // Reset to page 1 when filter or search changes
+  // Reset to page 1 when filter, search, or sort changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilter, searchQuery]);
+  }, [activeFilter, searchQuery, activeSortOption]);
+
+  // Sort options for posts
+  const sortOptions = [
+    { value: 'newest', label: 'Newest First' },
+    { value: 'oldest', label: 'Oldest First' },
+    { value: 'title-asc', label: 'Title A-Z' },
+    { value: 'title-desc', label: 'Title Z-A' }
+  ];
+
+  // Function to sort posts
+  const sortPosts = (posts: PostType[], sortOption: string): PostType[] => {
+    const sortedPosts = [...posts];
+    
+    switch (sortOption) {
+      case 'newest':
+        return sortedPosts.sort((a, b) => {
+          // Handle missing or invalid dates by treating them as very old dates
+          const dateA = a.datePublished ? new Date(a.datePublished) : new Date(0);
+          const dateB = b.datePublished ? new Date(b.datePublished) : new Date(0);
+          
+          // Check for invalid dates
+          const timeA = isNaN(dateA.getTime()) ? 0 : dateA.getTime();
+          const timeB = isNaN(dateB.getTime()) ? 0 : dateB.getTime();
+          
+          return timeB - timeA; // Newest first (larger timestamp first)
+        });
+      case 'oldest':
+        return sortedPosts.sort((a, b) => {
+          // Handle missing or invalid dates by treating them as very new dates for oldest-first sorting
+          const dateA = a.datePublished ? new Date(a.datePublished) : new Date();
+          const dateB = b.datePublished ? new Date(b.datePublished) : new Date();
+          
+          // Check for invalid dates
+          const timeA = isNaN(dateA.getTime()) ? Date.now() : dateA.getTime();
+          const timeB = isNaN(dateB.getTime()) ? Date.now() : dateB.getTime();
+          
+          return timeA - timeB; // Oldest first (smaller timestamp first)
+        });
+      case 'title-asc':
+        return sortedPosts.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      case 'title-desc':
+        return sortedPosts.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+      default:
+        return sortedPosts;
+    }
+  };
 
   // Extract category names from Collection tags with group "Post"
   const postTagCategories =
@@ -73,19 +120,28 @@ export function useCollectionFiltering({
       )
       ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
 
-  // Filter posts by search query and active filter
-  const filteredPosts = posts.filter((post) => {
-    // Search filter: check if title contains search query
-    const matchesSearch =
-      !searchQuery || post.title?.toLowerCase().includes(searchQuery.toLowerCase());
+  // Filter and sort posts by search query, active filter, and sort option
+  const filteredAndSortedPosts = (() => {
+    // First filter posts
+    const filtered = posts.filter((post) => {
+      // Search filter: check if title contains search query
+      const matchesSearch =
+        !searchQuery || post.title?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    // Category filter: check if post has matching category
-    const matchesCategory =
-      !activeFilter ||
-      post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase());
+      // Category filter: check if post has matching category
+      const matchesCategory =
+        !activeFilter ||
+        post.categories?.some((category) => category.toLowerCase() === activeFilter.toLowerCase());
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    });
+
+    // Then sort the filtered posts
+    return sortPosts(filtered, activeSortOption);
+  })();
+
+  // Keep the old name for backward compatibility
+  const filteredPosts = filteredAndSortedPosts;
 
   // Calculate pagination for posts
   const itemsPerPage = finalCollection?.itemsPerPage ?? 6; // Default to 6 if not set
@@ -173,6 +229,9 @@ export function useCollectionFiltering({
     setActiveFilter,
     searchQuery,
     setSearchQuery,
+    activeSortOption,
+    setActiveSortOption,
+    sortOptions,
     handleFilterChange,
     postTagCategories,
     filteredPosts,

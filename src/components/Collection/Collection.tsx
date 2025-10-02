@@ -7,9 +7,11 @@ import {
 
 import { PageCollection } from '@/components/Collection/components/PageCollection';
 import { PostCollection } from '@/components/Collection/components/PostCollection';
-import { SearchBar } from '@/components/Collection/components/SearchBar';
 import { SearchCard } from '@/components/Collection/components/SearchCard';
 import { Pagination } from '@/components/Collection/components/Pagination';
+import { CollectionSearchBar } from '@/components/Collection/components/CollectionSearchBar';
+import { CollectionFilterButtons } from '@/components/Collection/components/CollectionFilterButtons';
+import { CollectionSortDropdown } from '@/components/Collection/components/CollectionSortDropdown';
 import { detectContentType } from '@/components/Collection/utils/ContentTypeDetection';
 // State components are now handled inline for better performance
 import { useCollectionData } from '@/components/Collection/hooks/UseCollectionData';
@@ -55,6 +57,9 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
     activeFilter,
     searchQuery,
     setSearchQuery,
+    activeSortOption,
+    setActiveSortOption,
+    sortOptions,
     handleFilterChange,
     postTagCategories,
     filteredPosts,
@@ -105,15 +110,35 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
 
   return (
     <div {...inspectorProps}>
-      {/* Always render search bar if enabled - outside of state/content toggle */}
-      {(finalCollection?.searchBar ?? false) && (
-        <SearchBar 
-          key="collection-search-bar"
-          searchQuery={searchQuery} 
-          onSearchChange={setSearchQuery}
-          contentTypes={finalCollection?.contentType ?? []}
-        />
-      )}
+      {/* Search and Sort in horizontal flex layout */}
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6">
+        <div className="flex-1">
+          <CollectionSearchBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            contentTypes={finalCollection?.contentType ?? []}
+            isEnabled={finalCollection?.searchBar ?? false}
+            className="mb-0"
+          />
+        </div>
+        <div className="flex-shrink-0">
+          <CollectionSortDropdown
+            sortOptions={sortOptions}
+            activeSortOption={activeSortOption}
+            onSortChange={setActiveSortOption}
+            isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
+            className="mb-0"
+          />
+        </div>
+      </div>
+
+      {/* Always render filter buttons for Posts collections - outside of state/content toggle */}
+      <CollectionFilterButtons
+        categories={postTagCategories}
+        activeFilter={activeFilter}
+        onFilterChange={handleFilterChange}
+        isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
+      />
 
       {/* Render state components with CSS visibility toggle */}
       <div className={shouldRenderContent ? 'hidden' : 'block'}>
@@ -143,31 +168,52 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
       {/* Render content with CSS visibility toggle */}
       <div className={shouldRenderContent ? 'block' : 'hidden'}>
 
-        {/* When search bar is enabled, use unified SearchCard layout */}
+        {/* When search bar is enabled, check if it's Posts only or mixed content */}
         {(finalCollection?.searchBar ?? false) ? (
           <div>
-            <div className="space-y-0">
-              {/* Render unified items as SearchCards */}
-              {currentUnifiedItems.map((item) => {
-                const contentType = detectContentType(item);
-                
-                return (
-                  <SearchCard 
-                    key={`${contentType}-${item.sys.id}`}
-                    {...item} 
-                    contentType={contentType} 
-                  />
-                );
-              })}
-            </div>
-
-            {/* Single unified pagination */}
-            {totalUnifiedPages > 1 && (
-              <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalUnifiedPages} 
-                onPageChange={setCurrentPage} 
+            {/* If collection is Posts only, use PostCard with filtering */}
+            {finalCollection && finalCollection.contentType?.includes('Post') && !finalCollection.contentType?.includes('Page') ? (
+              <PostCollection
+                filteredPosts={filteredPosts}
+                currentPosts={currentPosts}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                activeFilter={activeFilter}
+                searchQuery={searchQuery}
+                postTagCategories={postTagCategories}
+                onFilterChange={handleFilterChange}
+                onSearchChange={setSearchQuery}
+                onPageChange={setCurrentPage}
+                isLoading={postsLoading}
+                searchBarEnabled={false} // Search bar is rendered above
               />
+            ) : (
+              /* For mixed content, use SearchCards */
+              <>
+                <div className="space-y-0">
+                  {/* Render unified items as SearchCards */}
+                  {currentUnifiedItems.map((item) => {
+                    const contentType = detectContentType(item);
+                    
+                    return (
+                      <SearchCard 
+                        key={`${contentType}-${item.sys.id}`}
+                        {...item} 
+                        contentType={contentType} 
+                      />
+                    );
+                  })}
+                </div>
+
+                {/* Single unified pagination */}
+                {totalUnifiedPages > 1 && (
+                  <Pagination 
+                    currentPage={currentPage} 
+                    totalPages={totalUnifiedPages} 
+                    onPageChange={setCurrentPage} 
+                  />
+                )}
+              </>
             )}
           </div>
         ) : (
