@@ -23,8 +23,6 @@ export function Event(props: EventProps) {
   const { eventId } = props;
   const { event, loading, error, inspectorProps } = useEventData(eventId);
 
-  console.log('dateTime', event?.dateTime);
-
   if (loading) {
     return <LoadingState />;
   }

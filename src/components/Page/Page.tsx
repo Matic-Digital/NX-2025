@@ -34,6 +34,7 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { RegionsMap } from '@/components/Region/RegionsMap';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { Slider } from '@/components/Slider/Slider';
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
@@ -149,6 +150,9 @@ export function Page(props: PageProps) {
 
                   case 'RegionsMap':
                     return <RegionsMap key={key} {...(content as any)} />;
+
+                  case 'RegionStats':
+                    return <RegionStats key={key} {...(content as any)} />;
 
                   default:
                     return (

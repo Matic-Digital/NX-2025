@@ -12,6 +12,7 @@ export const ASSET_FIELDS = `
   url
   width
   height
+  contentType
   __typename
 `;
 
