@@ -8,6 +8,7 @@ import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
 import { RegionsMapSchema } from '@/components/Region/RegionSchema';
+import { RegionStatsSchema } from '@/components/RegionStats/RegionStatsSchema';
 import { RichContentSchema } from '@/components/RichContent/RichContentSchema';
 
 const PageContentUnion = z.union([
@@ -18,6 +19,7 @@ const PageContentUnion = z.union([
   ImageSchema,
   ImageBetweenSchema,
   RegionsMapSchema,
+  RegionStatsSchema,
   RichContentSchema
 ]);
 export type PageContent = z.infer<typeof PageContentUnion>;

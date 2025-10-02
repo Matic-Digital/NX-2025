@@ -1,6 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
 import { getPAGE_WITH_REFS_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
@@ -10,6 +9,8 @@ import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from '@/components/Region/RegionApi';
+import { REGION_STATS_GRAPHQL_FIELDS } from '@/components/RegionStats/RegionStatsApi';
+import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
@@ -194,6 +195,9 @@ export async function getPageBySlug(
                 ... on RegionsMap {
                   ${SYS_FIELDS}
                 }
+                ... on RegionStats {
+                  ${SYS_FIELDS}
+                }
                 ... on ContentTypeRichText {
                   ${RICHCONTENT_GRAPHQL_FIELDS}
                 }
@@ -312,6 +316,9 @@ export async function getPageById(
                 }
                 ... on RegionsMap {
                   ${REGIONS_MAP_GRAPHQL_FIELDS}
+                }
+                ... on RegionStats {
+                  ${REGION_STATS_GRAPHQL_FIELDS}
                 }
                 ... on ContentTypeRichText {
                   ${RICHCONTENT_GRAPHQL_FIELDS}

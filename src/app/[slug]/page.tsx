@@ -19,28 +19,34 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
-import type { Metadata } from 'next';
-import { getPageBySlug, getPageListBySlug, getAllPageLists } from '@/lib/contentful-api';
-import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { Content } from '@/components/Content/Content';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import { RegionsMap } from '@/components/Region/RegionsMap';
-import RichContent from '@/components/RichContent/RichContent';
-import { PageList } from '@/components/PageList/PageList';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
-import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Page } from '@/components/Page/PageSchema';
-import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
-import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
-import type { PageListContent } from '@/components/PageList/PageListSchema';
+
+import { getAllPageLists, getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
 import {
   extractOpenGraphImage,
-  extractSEOTitle,
-  extractSEODescription
+  extractSEODescription,
+  extractSEOTitle
 } from '@/lib/metadata-utils';
+
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { PageList } from '@/components/PageList/PageList';
+import { RegionsMap } from '@/components/Region/RegionsMap';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
+import RichContent from '@/components/RichContent/RichContent';
+
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Page } from '@/components/Page/PageSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
+import type {
+  PageListContent,
+  PageList as PageListType
+} from '@/components/PageList/PageListSchema';
+import type { Metadata } from 'next';
 
 // Define the component mapping for pageContent items
 const componentMap = {
@@ -50,6 +56,7 @@ const componentMap = {
   CtaBanner: CtaBanner,
   ImageBetween: ImageBetween,
   RegionsMap: RegionsMap,
+  RegionStats: RegionStats,
   RichContent: RichContent,
   ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };
