@@ -184,7 +184,11 @@ export function ContentGrid(props: ContentGridProps) {
 
   // Auto-enable dark mode if all items are accordions OR if backgroundAsset is present
   const shouldUseDarkMode =
-    props.isDarkMode ?? (analysis.allItemsAreAccordions || !!contentGrid.backgroundAsset);
+    props.isDarkMode ??
+    (analysis.allItemsAreAccordions ||
+      contentGrid.itemsCollection?.items[0]?.__typename === 'Video');
+
+  console.log('shouldUseDarkMode', contentGrid.backgroundAsset);
 
   // Check if this is an ImageBetween component
   const isImageBetweenComponent = props.componentType === 'ImageBetween';
