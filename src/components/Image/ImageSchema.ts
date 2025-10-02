@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// an image from AIR DAM
 export const ImageSchema = z.object({
   sys: z.object({
     id: z.string()

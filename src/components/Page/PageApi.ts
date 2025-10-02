@@ -9,7 +9,7 @@ import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 import { REGIONS_MAP_GRAPHQL_FIELDS } from '@/components/Region/RegionApi';
-import { REGION_STATS_GRAPHQL_FIELDS } from '@/components/RegionStats/RegionStatsApi';
+import { REGIONSTATS_GRAPHQL_FIELDS } from '@/components/RegionStats/RegionStatsApi';
 import { RICHCONTENT_GRAPHQL_FIELDS } from '@/components/RichContent/RichContentApi';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
@@ -196,7 +196,7 @@ export async function getPageBySlug(
                   ${SYS_FIELDS}
                 }
                 ... on RegionStats {
-                  ${SYS_FIELDS}
+                  ${REGIONSTATS_GRAPHQL_FIELDS}
                 }
                 ... on ContentTypeRichText {
                   ${RICHCONTENT_GRAPHQL_FIELDS}
@@ -318,7 +318,7 @@ export async function getPageById(
                   ${REGIONS_MAP_GRAPHQL_FIELDS}
                 }
                 ... on RegionStats {
-                  ${REGION_STATS_GRAPHQL_FIELDS}
+                  ${REGIONSTATS_GRAPHQL_FIELDS}
                 }
                 ... on ContentTypeRichText {
                   ${RICHCONTENT_GRAPHQL_FIELDS}

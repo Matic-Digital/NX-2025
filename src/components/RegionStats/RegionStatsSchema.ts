@@ -1,14 +1,14 @@
 import { z } from 'zod';
 
+import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
-import { ImageSchema } from '@/components/Image/ImageSchema';
 import { RegionStatItemSchema } from '@/components/RegionStats/RegionStatItem/RegionStatItemSchema';
 
 export const RegionStatsSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  image: ImageSchema,
+  image: AssetSchema,
   title: z.string(),
   itemsCollection: z.object({
     items: z.array(RegionStatItemSchema)
