@@ -188,8 +188,6 @@ export function ContentGrid(props: ContentGridProps) {
     (analysis.allItemsAreAccordions ||
       contentGrid.itemsCollection?.items[0]?.__typename === 'Video');
 
-  console.log('shouldUseDarkMode', contentGrid.backgroundAsset);
-
   // Check if this is an ImageBetween component
   const isImageBetweenComponent = props.componentType === 'ImageBetween';
 
