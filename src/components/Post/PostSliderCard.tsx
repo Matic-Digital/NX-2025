@@ -103,7 +103,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
   if (context === 'ImageBetween') {
     return (
       <Link
-        href={`/post/${post.slug}`}
+        href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
         {...inspectorProps({ fieldId: 'slug' })}
         className="group flex h-[35rem] mt-26 flex-col"
       >
@@ -207,7 +207,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
             </p>
           )}
 
-          <Link href={`/post/${post.slug}`} className="">
+          <Link href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`} className="">
             <Button
               variant="outline"
               size="lg"

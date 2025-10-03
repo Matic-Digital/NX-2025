@@ -77,36 +77,65 @@ export function useCollectionFiltering({
   const sortPosts = (posts: PostType[], sortOption: string): PostType[] => {
     const sortedPosts = [...posts];
     
+    console.log(`🔄 Sorting ${posts.length} posts by: ${sortOption}`);
+    
+    // Debug: Show first few posts' datePublished values (same as PostCard uses)
+    console.log('📅 Sample datePublished values (same field as PostCard):');
+    posts.slice(0, 3).forEach(post => {
+      console.log(`  "${post.title}": datePublished = "${post.datePublished}"`);
+      if (post.datePublished) {
+        const parsed = new Date(post.datePublished);
+        console.log(`    → ${parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} (timestamp: ${parsed.getTime()})`);
+      }
+    });
+    
     switch (sortOption) {
       case 'newest':
         return sortedPosts.sort((a, b) => {
-          // Handle missing or invalid dates by treating them as very old dates
-          const dateA = a.datePublished ? new Date(a.datePublished) : new Date(0);
-          const dateB = b.datePublished ? new Date(b.datePublished) : new Date(0);
+          // Handle missing dates - put posts without dates at the end
+          if (!a.datePublished && !b.datePublished) return 0;
+          if (!a.datePublished) return 1; // a goes to end
+          if (!b.datePublished) return -1; // b goes to end
           
-          // Check for invalid dates
-          const timeA = isNaN(dateA.getTime()) ? 0 : dateA.getTime();
-          const timeB = isNaN(dateB.getTime()) ? 0 : dateB.getTime();
+          const dateA = new Date(a.datePublished);
+          const dateB = new Date(b.datePublished);
           
-          return timeB - timeA; // Newest first (larger timestamp first)
+          // Handle invalid dates - put invalid dates at the end
+          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+          if (isNaN(dateA.getTime())) return 1;
+          if (isNaN(dateB.getTime())) return -1;
+          
+          const result = dateB.getTime() - dateA.getTime(); // Newest first
+          console.log(`  Newest: "${a.title}" (${a.datePublished} → ${dateA.toISOString()}) vs "${b.title}" (${b.datePublished} → ${dateB.toISOString()}) = ${result}`);
+          return result;
         });
       case 'oldest':
         return sortedPosts.sort((a, b) => {
-          // Handle missing or invalid dates by treating them as very new dates for oldest-first sorting
-          const dateA = a.datePublished ? new Date(a.datePublished) : new Date();
-          const dateB = b.datePublished ? new Date(b.datePublished) : new Date();
+          // Handle missing dates - put posts without dates at the end
+          if (!a.datePublished && !b.datePublished) return 0;
+          if (!a.datePublished) return 1; // a goes to end
+          if (!b.datePublished) return -1; // b goes to end
           
-          // Check for invalid dates
-          const timeA = isNaN(dateA.getTime()) ? Date.now() : dateA.getTime();
-          const timeB = isNaN(dateB.getTime()) ? Date.now() : dateB.getTime();
+          const dateA = new Date(a.datePublished);
+          const dateB = new Date(b.datePublished);
           
-          return timeA - timeB; // Oldest first (smaller timestamp first)
+          // Handle invalid dates - put invalid dates at the end
+          if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+          if (isNaN(dateA.getTime())) return 1;
+          if (isNaN(dateB.getTime())) return -1;
+          
+          const result = dateA.getTime() - dateB.getTime(); // Oldest first
+          console.log(`  Oldest: "${a.title}" (${a.datePublished} → ${dateA.toISOString()}) vs "${b.title}" (${b.datePublished} → ${dateB.toISOString()}) = ${result}`);
+          return result;
         });
       case 'title-asc':
+        console.log('  Sorting by title A-Z');
         return sortedPosts.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
       case 'title-desc':
+        console.log('  Sorting by title Z-A');
         return sortedPosts.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
       default:
+        console.log('  No sorting applied');
         return sortedPosts;
     }
   };
@@ -122,12 +151,45 @@ export function useCollectionFiltering({
 
   // Filter and sort posts by search query, active filter, and sort option
   const filteredAndSortedPosts = (() => {
-    // First filter posts
-    const filtered = posts.filter((post) => {
+    // First apply global filter: only show posts whose categories match Collection's Contentful tag names
+    let postsToFilter = posts;
+    
+    // Debug logging
+    console.log('🔍 Collection filtering debug:');
+    console.log('- Total posts:', posts.length);
+    console.log('- Collection:', finalCollection?.title);
+    console.log('- Collection tags:', finalCollection?.contentfulMetadata?.tags);
+    
+    // Extract category names from Collection's Contentful tags and remove "post: " prefix
+    const collectionTagNames = finalCollection?.contentfulMetadata?.tags
+      ?.map(tag => tag.name.toLowerCase().replace(/^post:\s*/, '')) ?? [];
+    console.log('- Collection tag names (lowercase, cleaned):', collectionTagNames);
+    
+    if (collectionTagNames.length > 0) {
+      console.log('- Applying tag-based filtering...');
+      postsToFilter = posts.filter((post) => {
+        // Check if post has any categories that match the collection's tag names
+        const postCategories = post.categories?.map(category => category.toLowerCase()) ?? [];
+        const hasMatch = postCategories.some(category => collectionTagNames.includes(category));
+        
+        if (hasMatch) {
+          console.log(`  ✅ "${post.title}" matches - categories:`, post.categories, 'matches:', postCategories.filter(cat => collectionTagNames.includes(cat)));
+        } else {
+          console.log(`  ❌ "${post.title}" no match - categories:`, post.categories);
+        }
+        
+        return hasMatch;
+      });
+      console.log('- Posts after tag filtering:', postsToFilter.length);
+    } else {
+      console.log('- No collection tags found, showing all posts');
+    }
+    
+    // Then apply search and category filters
+    const filtered = postsToFilter.filter((post) => {
       // Search filter: check if title contains search query
       const matchesSearch =
         !searchQuery || post.title?.toLowerCase().includes(searchQuery.toLowerCase());
-
       // Category filter: check if post has matching category
       const matchesCategory =
         !activeFilter ||
@@ -136,14 +198,19 @@ export function useCollectionFiltering({
       return matchesSearch && matchesCategory;
     });
 
+    console.log('Final filtered posts:', filtered.length);
+    console.log('Active sort option:', activeSortOption);
+    
     // Then sort the filtered posts
-    return sortPosts(filtered, activeSortOption);
+    const sortedResult = sortPosts(filtered, activeSortOption);
+    console.log('Posts after sorting:', sortedResult.length);
+    console.log('First 3 post titles after sorting:', sortedResult.slice(0, 3).map(p => `${p.title} (${p.datePublished})`));
+    
+    return sortedResult;
   })();
 
   // Keep the old name for backward compatibility
   const filteredPosts = filteredAndSortedPosts;
-
-  // Calculate pagination for posts
   const itemsPerPage = finalCollection?.itemsPerPage ?? 6; // Default to 6 if not set
   const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

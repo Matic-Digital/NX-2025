@@ -69,7 +69,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
 
   return (
     <Link
-      href={`/post/${post.slug}`}
+      href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex h-full flex-col"
     >

@@ -72,7 +72,7 @@ export const POST_GRAPHQL_FIELDS = `
       }
     }
   }
-  authorsCollection(limit: 5) {
+  authorsCollection {
     items {
       ${TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS}
     }
@@ -85,6 +85,22 @@ export const POST_GRAPHQL_FIELDS = `
   seoTitle
   seoDescription
   seoFocusKeyword
+  pageLayout {
+    sys {
+      id
+    }
+    title
+    header {
+      sys {
+        id
+      }
+    }
+    footer {
+      sys {
+        id
+      }
+    }
+  }
 `;
 
 /**
@@ -98,7 +114,10 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
       `query GetAllPosts($preview: Boolean!) {
         postCollection(preview: $preview, order: datePublished_DESC) {
           items {
-            ${POST_GRAPHQL_FIELDS}
+            ${SYS_FIELDS}
+            title
+            slug
+            categories
           }
         }
       }`,
@@ -240,6 +259,7 @@ export async function getAllPostsMinimal(preview = false): Promise<PostResponse>
             ${SYS_FIELDS}
             title
             slug
+            datePublished
             categories
             mainImage {
               link
@@ -343,6 +363,68 @@ export const POST_MEGAMENU_GRAPHQL_FIELDS = `
   }
   categories
 `;
+
+/**
+ * Fetches related Posts based on shared categories
+ * @param categories - Array of categories to match
+ * @param excludeId - ID of current post to exclude from results
+ * @param limit - Number of posts to fetch (default 3)
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to Posts response with related posts
+ */
+export async function getRelatedPosts(
+  categories: string[], 
+  excludeId: string, 
+  limit = 3, 
+  preview = false
+): Promise<PostResponse> {
+  try {
+    const response = await fetchGraphQL<Post>(
+      `query GetRelatedPosts($categories: [String!]!, $excludeId: String!, $limit: Int!, $preview: Boolean!) {
+        postCollection(
+          where: { 
+            categories_contains_some: $categories,
+            sys: { id_not: $excludeId }
+          }, 
+          preview: $preview, 
+          order: datePublished_DESC, 
+          limit: $limit
+        ) {
+          items {
+            ${POST_GRAPHQL_FIELDS_SIMPLE}
+          }
+        }
+      }`,
+      { categories, excludeId, limit, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+
+    // Return empty array if no posts found
+    if (!data.postCollection?.items) {
+      return { items: [] };
+    }
+
+    return {
+      items: data.postCollection.items
+    };
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching related Posts: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching related Posts');
+  }
+}
 
 /**
  * Fetches recent Posts for MegaMenu display
