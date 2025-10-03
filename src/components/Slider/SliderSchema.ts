@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PostSliderItemSchema } from '@/components/Post/PostSchema';
+import { ContentSliderItemSchema } from '@/components/Slider/components/ContentSliderItemSchema';
 import { SliderItemSchema } from '@/components/Slider/SliderItemSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
 import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
@@ -10,6 +11,7 @@ import { TimelineSliderItemSchema } from '@/components/TimelineSlider/TimelineSl
 
 // Union type for slider items
 const SliderItemUnion = z.union([
+  ContentSliderItemSchema,
   SliderItemSchema,
   PostSliderItemSchema,
   ImageSchema,

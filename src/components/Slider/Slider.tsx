@@ -25,6 +25,7 @@ import {
 import { Box, Container } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
+import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
@@ -33,6 +34,7 @@ import { TestimonialItem } from '@/components/Testimonials/components/Testimonia
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
 import type { PostSliderItem } from '@/components/Post/PostSchema';
+import type { ContentSliderItem as ContentSliderItemType } from '@/components/Slider/components/ContentSliderItemSchema';
 import type { SliderItem } from '@/components/Slider/SliderItemSchema';
 import type { Slider, SliderItemType, SliderSys } from '@/components/Slider/SliderSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
@@ -382,6 +384,16 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
     return <TestimonialItem key={item.sys?.id} item={updatedItem as TestimonialItemType} />;
   }
 
+  if (updatedItem.__typename === 'ContentSliderItem') {
+    return (
+      <ContentSliderItem
+        key={item.sys?.id}
+        item={updatedItem as ContentSliderItemType}
+        className={baseCardClasses}
+      />
+    );
+  }
+
   // Fallback for unknown types
   return (
     <div className={baseCardClasses}>
@@ -418,6 +430,7 @@ const GenericSlider = ({
   isFullWidth = true,
   onTeamMemberClick
 }: GenericSliderProps) => {
+  const isContentSlider = sliderData.itemsCollection.items[0]?.__typename === 'ContentSliderItem';
   const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
   const isSolutionSlider = sliderData.itemsCollection.items[0]?.__typename === 'Solution';
   const isTeamMemberSlider = sliderData.itemsCollection.items[0]?.__typename === 'TeamMember';
@@ -494,7 +507,9 @@ const GenericSlider = ({
                               ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                               : isTestimonialSlider
                                 ? 'basis-1/3'
-                                : 'basis-full'
+                                : isContentSlider
+                                  ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                                  : 'basis-full'
                 )}
               >
                 <SliderCard
@@ -567,7 +582,12 @@ const GenericSlider = ({
           <div
             className={cn(
               'mx-auto mt-12 flex',
-              isTeamMemberSlider || isSlider || isSolutionSlider || isPostSlider || isServiceSlider
+              isTeamMemberSlider ||
+                isSlider ||
+                isSolutionSlider ||
+                isPostSlider ||
+                isServiceSlider ||
+                isContentSlider
                 ? 'w-full items-center justify-between'
                 : 'justify-center'
             )}
@@ -579,7 +599,8 @@ const GenericSlider = ({
                   isSlider ||
                   isSolutionSlider ||
                   isPostSlider ||
-                  isServiceSlider
+                  isServiceSlider ||
+                  isContentSlider
                   ? 'flex-1'
                   : 'max-w-md flex-1'
               )}
@@ -1013,6 +1034,7 @@ export function Slider(props: SliderSys) {
     );
   }
 
+  const isContentSlider = firstItem.__typename === 'ContentSliderItem';
   const isPostSlider = firstItem.__typename === 'Post';
   const isImageSlider = firstItem.__typename === 'Image';
   const isTeamMemberSlider = firstItem.__typename === 'TeamMember';
@@ -1042,7 +1064,8 @@ export function Slider(props: SliderSys) {
             isSolutionSlider ||
             isPostSlider ||
             isServiceSlider ||
-            isTestimonialSlider)
+            isTestimonialSlider ||
+            isContentSlider)
         }
         showNavigation={
           !hasOnlyOneItem &&

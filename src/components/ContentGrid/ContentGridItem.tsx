@@ -34,7 +34,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, title, heading, description, variant, icon, image } = contentData;
+  const { sys, title, heading, description, variant, icon, image, ctaCollection } = contentData;
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -227,7 +227,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                   variant="outlineTrasparentWhite"
                   className="hover:bg-background hover:text-foreground w-full transition-colors"
                 >
-                  Learn More
+                  {ctaCollection?.items?.[0]?.text}
                 </Button>
               </Link>
             </div>
