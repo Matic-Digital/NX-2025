@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { cn } from '@/lib/utils';
+
 interface MarkdownRendererProps {
   content: string;
   className?: string;
@@ -7,44 +9,58 @@ interface MarkdownRendererProps {
 }
 
 /**
- * Simple markdown renderer for SectionHeading descriptions
- * Supports:
- * - ### for h3 headings with specific styles
- * - --- for horizontal dividers
- * - Regular text as paragraphs
+ * Markdown renderer that:
+ * - Groups `### Heading` + following lines into sections
+ * - Displays sections in a responsive grid (2–4 cols)
+ * - Supports --- dividers for linear text
  */
-export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, className, forceLeftAlign = false }) => {
-  const parseMarkdown = (text: string) => {
+export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
+  content,
+  className,
+  forceLeftAlign = false
+}) => {
+  // Parse markdown into sections
+  const parseSections = (text: string) => {
     const lines = text.split('\n');
-    const elements: React.ReactNode[] = [];
+    const sections: { heading: string; body: string[] }[] = [];
+    let current: { heading: string; body: string[] } | null = null;
 
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
+    lines.forEach((line) => {
+      const trimmed = line.trim();
 
-      // Handle h3 headings (###)
-      if (trimmedLine.startsWith('###')) {
-        const headingText = trimmedLine.replace(/^###\s*/, '');
-        elements.push(
+      if (trimmed.startsWith('###')) {
+        // Start a new section
+        if (current) sections.push(current);
+        current = { heading: trimmed.replace(/^###\s*/, ''), body: [] };
+      } else if (trimmed && current) {
+        current.body.push(trimmed);
+      }
+    });
+
+    if (current) sections.push(current);
+    return sections;
+  };
+
+  // If no `###`, fall back to simple line renderer
+  const parseFallback = (text: string) => {
+    const lines = text.split('\n');
+    return lines.map((line, i) => {
+      const trimmed = line.trim();
+
+      if (trimmed.startsWith('###')) {
+        return (
           <h3
-            key={`h3-${index}`}
-            className="text-[1.25rem] font-normal leading-[160%] mb-0 mt-0 text-foreground"
-            style={{
-              fontSize: '1.25rem',
-              fontStyle: 'normal',
-              fontWeight: 400,
-              lineHeight: '160%'
-            }}
+            key={`h3-${i}`}
+            className="text-[1.25rem] font-normal leading-[160%] text-foreground mb-2"
           >
-            {headingText}
+            {trimmed.replace(/^###\s*/, '')}
           </h3>
         );
-        return;
       }
 
-      // Handle horizontal dividers (---)
-      if (trimmedLine === '---') {
-        elements.push(
-          <div key={`divider-${index}`} className="my-4">
+      if (trimmed === '---') {
+        return (
+          <div key={`divider-${i}`} className="my-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="560"
@@ -57,41 +73,52 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, cla
             </svg>
           </div>
         );
-        return;
       }
 
-      // Handle regular text (skip empty lines) - style as paragraphs
-      if (trimmedLine) {
-        elements.push(
-          <p key={`text-${index}`} className="mb-0 mt-0 text-foreground">
-            {trimmedLine}
+      if (trimmed) {
+        return (
+          <p key={`p-${i}`} className="text-foreground">
+            {trimmed}
           </p>
         );
       }
-    });
 
-    return elements;
+      return null;
+    });
   };
 
-  const parsedElements = parseMarkdown(content);
-
-  // If no markdown elements found, return original content
-  if (parsedElements.length === 0) {
-    return <span className={className}>{content}</span>;
-  }
+  const sections = parseSections(content);
 
   // Remove text-center and xl:text-right classes if forceLeftAlign is true
-  const alignmentAdjustedClassName = forceLeftAlign 
+  const alignmentAdjustedClassName = forceLeftAlign
     ? className?.replace(/text-center|xl:text-right/g, '').trim()
     : className;
 
+  if (sections.length > 0) {
+    // Grid mode
+    return (
+      <div
+        className={cn('grid grid-cols-1 gap-6 md:grid-cols-2 mt-12', alignmentAdjustedClassName)}
+      >
+        {sections.map((sec, idx) => (
+          <div key={idx} className="flex flex-col">
+            <h3 className="text-[1.25rem] font-normal leading-[160%] text-foreground mb-2">
+              {sec.heading}
+            </h3>
+            <hr className="border-subtle-border" />
+            {sec.body.length > 0 && (
+              <p className="text-body-md text-foreground">{sec.body.join(' ')}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Fallback mode
   return (
-    <div className={`${alignmentAdjustedClassName} text-left [&>*]:mb-0 [&>*]:mt-0`}>
-      {parsedElements.map((element, index) => (
-        <React.Fragment key={index}>
-          {element}
-        </React.Fragment>
-      ))}
+    <div className={cn('[&>*]:mb-0 [&>*]:mt-0', alignmentAdjustedClassName, 'text-left')}>
+      {parseFallback(content)}
     </div>
   );
 };

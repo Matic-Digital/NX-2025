@@ -385,13 +385,7 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
   }
 
   if (updatedItem.__typename === 'ContentSliderItem') {
-    return (
-      <ContentSliderItem
-        key={item.sys?.id}
-        item={updatedItem as ContentSliderItemType}
-        className={baseCardClasses}
-      />
-    );
+    return <ContentSliderItem key={item.sys?.id} item={updatedItem as ContentSliderItemType} />;
   }
 
   // Fallback for unknown types
