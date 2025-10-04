@@ -6,10 +6,9 @@ import type { ContentSliderItem as ContentSliderItemType } from '@/components/Sl
 
 interface ContentSliderItemProps {
   item: ContentSliderItemType;
-  className?: string;
 }
 
-export function ContentSliderItem({ item, className }: ContentSliderItemProps) {
+export function ContentSliderItem({ item }: ContentSliderItemProps) {
   console.log('ContentSliderItem', item);
   return (
     <Box direction="col">
