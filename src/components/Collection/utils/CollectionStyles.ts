@@ -17,7 +17,7 @@ export const collectionStyles = {
    * Get CSS classes for pagination container
    */
   getPaginationClasses: () => {
-    return 'flex items-center justify-center gap-4';
+    return 'flex items-center justify-end gap-4';
   },
 
   /**
@@ -25,7 +25,7 @@ export const collectionStyles = {
    */
   getPaginationButtonClasses: (disabled: boolean) => {
     return cn(
-      'rounded-md border border-gray-300 px-4 py-2 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50',
+      'rounded-none w-[3rem] h-[3rem] bg-subtle disabled:cursor-not-allowed disabled:opacity-50',
       disabled && 'disabled:cursor-not-allowed disabled:opacity-50'
     );
   },
@@ -34,7 +34,7 @@ export const collectionStyles = {
    * Get CSS classes for filter button container
    */
   getFilterContainerClasses: () => {
-    return 'mb-6 flex flex-wrap gap-2';
+    return 'mb-6 flex flex-wrap gap-[1.5rem]';
   },
 
   /**
@@ -42,10 +42,10 @@ export const collectionStyles = {
    */
   getFilterButtonClasses: (isActive: boolean) => {
     return cn(
-      'inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium transition-colors',
+      'uppercase hover:bg-subtle px-[0.75rem] py-[0.5rem]',
       isActive
-        ? 'bg-primary border-primary text-white'
-        : 'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20'
+        ? 'bg-subtle text-primary'
+        : 'bg-white'
     );
   },
 
@@ -53,7 +53,7 @@ export const collectionStyles = {
    * Get CSS classes for search input
    */
   getSearchInputClasses: () => {
-    return 'focus:ring-primary w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:outline-none';
+    return 'w-full max-w-[42.25rem] px-[1.25rem] py-[0.75rem] text-text-muted border border-input ';
   },
 
   /**
