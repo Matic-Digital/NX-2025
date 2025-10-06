@@ -333,7 +333,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
     <div className="group rounded-xxs bg-subtle relative overflow-hidden">
       {/* Card Image */}
       {image && (
-        <div className="absolute z-10 h-full w-full opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute z-10 h-full w-full md:opacity-0 transition-opacity group-hover:opacity-100">
           <AirImage
             link={image.link ?? ''}
             altText={image.altText ?? ''}
@@ -347,14 +347,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
         {/* Text Content */}
         <Box direction="col" gap={2}>
           <h3
-            className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+            className="text-headline-sm text-background md:text-black md:group-hover:text-background line-clamp-2 transition-colors"
             {...inspectorProps({ fieldId: 'heading' })}
           >
             {heading}
           </h3>
           {description && (
             <p
-              className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 transition-colors"
+              className="text-body-sm text-white group-hover:text-background md:text-text-subtle line-clamp-3 transition-colors"
               {...inspectorProps({ fieldId: 'description' })}
             >
               {description}
@@ -392,7 +392,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <div className="relative z-10 h-full">
           <Box direction="col" gap={12}>
             {/* Top content - appears on hover */}
-            <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
+            <div className="transition-opacity duration-300 bg-blue-500 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
                 <h2
                   className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"

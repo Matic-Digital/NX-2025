@@ -635,7 +635,8 @@ function RichContent({
                         <table className="h-full w-full flex-1">
                           <colgroup>
                             <col
-                              style={{ width: '12.5rem', minWidth: '12.5rem', maxWidth: '12.5rem' }}
+                              style={{ width: '7.75rem', minWidth: '7.75rem', maxWidth: '7.75rem' }}
+                              className="lg:!w-[12.5rem] lg:!min-w-[12.5rem] lg:!max-w-[12.5rem]"
                             />
                             <col />
                           </colgroup>
