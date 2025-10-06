@@ -43,6 +43,9 @@ export const POST_GRAPHQL_FIELDS = `
   mainImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
+  bannerBackground {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
   content {
     json
     links {

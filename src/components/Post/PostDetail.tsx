@@ -15,6 +15,7 @@ import { PostCard } from '@/components/Post/PostCard';
 import type { Post } from '@/components/Post/PostSchema';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
+import Link from 'next/link';
 
 interface PostDetailProps {
   post: Post;
@@ -68,6 +69,21 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     });
   };
 
+  // Helper function to determine breadcrumb routing
+  const getBreadcrumbInfo = (category: string) => {
+    const isNewsCategory = category === 'In the News' || category === 'Press Release';
+    const baseRoute = isNewsCategory ? '/newsroom' : '/resources';
+    
+    // Use category name as-is for hash (spaces will be URL-encoded as %20)
+    const categoryHash = category;
+    
+    return {
+      parentRoute: baseRoute,
+      parentLabel: isNewsCategory ? 'Newsroom' : 'Resources',
+      categoryRoute: `${baseRoute}#${categoryHash}`
+    };
+  };
+
   return (
     <PageLayout 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -76,13 +92,33 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
       footer={displayPost.pageLayout?.footer ?? undefined}
     >
       <ImageBetweenWrapper
+        backgroundImage={displayPost.bannerBackground ? {
+          link: displayPost.bannerBackground.link,
+          altText: displayPost.bannerBackground.altText ?? ''
+        } : undefined}
         contentTop={
-        <Container className="h-full">
-          <Box direction="col" className="h-full">
-            <Text>Resources / {displayPost.categories[0]}</Text>
-            <h1 className="text-display-sm md:text-display-md">{displayPost.title}</h1>
-          </Box>
-        </Container>
+          <Container className="h-full">
+            <Box direction="col" className="h-full">
+              {displayPost.categories && displayPost.categories.length > 0 && displayPost.categories[0] && (
+                <div className={`flex items-center gap-2 mb-4 ${displayPost.bannerBackground ? 'text-white' : 'text-gray-600'}`}>
+                  <Link 
+                    href={getBreadcrumbInfo(displayPost.categories[0]).parentRoute}
+                    className={`hover:underline transition-colors ${displayPost.bannerBackground ? 'hover:text-gray-200' : 'hover:text-gray-800'}`}
+                  >
+                    {getBreadcrumbInfo(displayPost.categories[0]).parentLabel}
+                  </Link>
+                  <span>/</span>
+                  <Link 
+                    href={getBreadcrumbInfo(displayPost.categories[0]).categoryRoute}
+                    className={`hover:underline transition-colors ${displayPost.bannerBackground ? 'hover:text-gray-200' : 'hover:text-gray-800'}`}
+                  >
+                    {displayPost.categories[0]}
+                  </Link>
+                </div>
+              )}
+              <h1 className={`text-display-sm md:text-display-md leading-none ${displayPost.bannerBackground ? 'text-white' : ''}`}>{displayPost.title}</h1>
+            </Box>
+          </Container>
         }
         asset={
           displayPost.mainImage && (
@@ -92,7 +128,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
                 altText={displayPost.mainImage.altText ?? displayPost.title}
                 className="w-full flex-1 object-cover"
               />
-              <Box direction="row" className="gap-[0.75rem]">
+              <Box direction="row" className="gap-[0.75rem] mb-8">
                 {displayPost.categories.map((category, index) => (
                   <Text className="uppercase px-[0.75rem] py-[0.5rem] bg-subtle w-fit" key={index}>{category}</Text>
                 ))}
@@ -102,8 +138,20 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         }
         contentBottom={
           <Container>
-            <Article className="">
-              <div {...inspectorProps({ fieldId: 'content' })}>
+            <Article 
+              className="w-full max-w-full overflow-hidden"
+            >
+              <div 
+                {...inspectorProps({ fieldId: 'content' })} 
+                className="w-full max-w-full"
+                style={{ 
+                  width: '100%', 
+                  maxWidth: '100%', 
+                  minWidth: 0,
+                  boxSizing: 'border-box',
+                  overflow: 'hidden'
+                }}
+              >
                 <RichTextRenderer content={displayPost.content} />
               </div>
             </Article>

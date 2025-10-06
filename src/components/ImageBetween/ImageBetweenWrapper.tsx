@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
 
 interface ImageBetweenWrapperProps {
   contentTop?: React.ReactNode;
@@ -15,6 +16,11 @@ interface ImageBetweenWrapperProps {
   darkSectionClassName?: string;
   lightSectionClassName?: string;
   assetClassName?: string;
+  // Background image for dark section
+  backgroundImage?: {
+    link: string;
+    altText?: string;
+  };
 }
 
 /**
@@ -30,7 +36,8 @@ export function ImageBetweenWrapper({
   className,
   darkSectionClassName,
   lightSectionClassName,
-  assetClassName
+  assetClassName,
+  backgroundImage
 }: ImageBetweenWrapperProps) {
   return (
     <ErrorBoundary>
@@ -40,11 +47,18 @@ export function ImageBetweenWrapper({
           'dark bg-background flex flex-col relative h-full w-full',
           darkSectionClassName
         )}>
+          {backgroundImage && (
+            <AirImage
+              link={backgroundImage.link}
+              altText={backgroundImage.altText ?? ''}
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
+          )}
           <Box
             direction="col"
             gap={8}
             className={cn(
-              'mb-72 mt-24 lg:mb-56 lg:mt-24 xl:mb-72 xl:mt-24 w-full max-w-[71.3rem] mx-auto'
+              'mb-72 mt-24 lg:mb-56 lg:mt-24 xl:mb-72 xl:mt-24 w-full max-w-full lg:max-w-[71.3rem] mx-auto'
             )}
           >
             {/* Top Content */}
@@ -58,7 +72,7 @@ export function ImageBetweenWrapper({
 
         {/* Central Asset */}
         {asset && (
-          <div className="relative flex items-center justify-center max-w-[71.3rem] w-full mx-auto">
+          <div className="relative flex items-center justify-center max-w-full lg:max-w-[71.3rem] w-full mx-auto">
             <Container className={cn('absolute z-20', assetClassName)}>
               {asset}
             </Container>
@@ -70,11 +84,11 @@ export function ImageBetweenWrapper({
           'relative h-full w-full overflow-hidden',
           lightSectionClassName
         )}>
-          <div className="mt-64 lg:mt-56 xl:mt-96">
+          <div className="mt-40 lg:mt-52 xl:mt-56">
             <Box direction="col" gap={8}>
               {/* Bottom Content */}
               {contentBottom && (
-                <div className="relative z-10 w-[71.3rem] mx-auto">
+                <div className="relative z-10 w-full max-w-full lg:max-w-[71.3rem] mx-auto">
                   {contentBottom}
                 </div>
               )}

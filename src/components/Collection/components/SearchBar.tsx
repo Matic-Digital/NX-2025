@@ -51,11 +51,6 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
     wasActiveRef.current = false;
   };
 
-  const handleSearchClick = () => {
-    // Force an update by triggering the search change with current value
-    // This will cause the search results to refresh
-    onSearchChange(searchQuery);
-  };
 
   // Generate dynamic placeholder text based on content types
   const getPlaceholderText = () => {
@@ -88,6 +83,7 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
   return (
     <div className="mb-6">
       <div className="relative max-w-[42.25rem]">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
         <input
           ref={inputRef}
           type="text"
@@ -96,17 +92,9 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          className={`${collectionStyles.getSearchInputClasses()} pr-12`}
+          className={`${collectionStyles.getSearchInputClasses()} pl-12`}
           autoComplete="off"
         />
-        <button
-          type="button"
-          onClick={handleSearchClick}
-          className="absolute top-0 right-0 h-full bg-primary px-[1.75rem] border border-primary flex items-center justify-center"
-          aria-label="Search"
-        >
-          <Search className="h-5 w-5 text-white" />
-        </button>
       </div>
     </div>
   );

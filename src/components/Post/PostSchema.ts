@@ -34,6 +34,7 @@ export const PostSchema = z.object({
   excerpt: z.string().optional(),
   datePublished: z.string().optional(),
   mainImage: ImageSchema.optional(),
+  bannerBackground: ImageSchema.optional(),
   content: RichTextSchema,
   authorsCollection: z.object({
     items: z.array(TeamMemberSchema)

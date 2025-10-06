@@ -10,7 +10,7 @@ export const richTextStyles = {
    * Get CSS classes for main content container
    */
   getContentContainerClasses: () => {
-    return 'prose prose-lg max-w-none mb-12';
+    return 'mb-12';
   },
 
   /**
@@ -41,7 +41,7 @@ export const richTextStyles = {
    * Get CSS classes for paragraphs
    */
   getParagraphClasses: () => {
-    return 'text-gray-700 leading-relaxed mb-6 text-base md:text-lg';
+    return 'text-gray-700 leading-relaxed mb-6 text-base md:text-lg w-full max-w-full';
   },
 
   /**
@@ -83,35 +83,35 @@ export const richTextStyles = {
    * Get CSS classes for blockquotes
    */
   getBlockquoteClasses: () => {
-    return 'border-l-4 border-primary bg-gray-50 pl-6 pr-4 py-4 my-8 italic text-gray-700';
+    return 'border-l-4 border-primary bg-gray-50 pl-6 pr-4 py-4 my-8 italic text-gray-700 w-full max-w-full box-border';
   },
 
   /**
    * Get CSS classes for unordered lists
    */
   getUnorderedListClasses: () => {
-    return 'list-disc list-outside mb-6 space-y-2 text-gray-700 pl-6';
+    return 'list-disc list-outside mb-6 space-y-2 text-gray-700 pl-6 w-full max-w-full';
   },
 
   /**
    * Get CSS classes for ordered lists
    */
   getOrderedListClasses: () => {
-    return 'list-decimal list-outside mb-6 space-y-2 text-gray-700 pl-6';
+    return 'list-decimal list-outside mb-6 space-y-2 text-gray-700 pl-6 w-full max-w-full';
   },
 
   /**
    * Get CSS classes for list items
    */
   getListItemClasses: () => {
-    return 'text-base md:text-lg leading-relaxed ml-0';
+    return 'text-base md:text-lg leading-relaxed ml-0 w-full max-w-full';
   },
 
   /**
    * Get CSS classes for horizontal rules
    */
   getHorizontalRuleClasses: () => {
-    return 'border-0 h-px bg-gray-300 my-12';
+    return 'border-0 h-px bg-gray-300 my-12 w-full max-w-full';
   },
 
   /**
