@@ -1,3 +1,5 @@
+import { CONTENTSLIDERITEM_GRAPHQL_FIELDS } from './components/ContentSliderItemApi';
+
 import { fetchGraphQL } from '@/lib/api';
 import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
@@ -28,6 +30,9 @@ const SLIDERITEM_GRAPHQL_FIELDS = `
 
 // Minimal slider item fields with inline fragments for union types
 export const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
+  ... on ContentSliderItem {
+    ${CONTENTSLIDERITEM_GRAPHQL_FIELDS} 
+  }
   ... on Image {
     ${IMAGE_GRAPHQL_FIELDS}
   }
