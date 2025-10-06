@@ -1,5 +1,4 @@
 import { EmptyState } from '@/components/Collection/components/EmptyState';
-import { FilterButtons } from '@/components/Collection/components/FilterButtons';
 import { Pagination } from '@/components/Collection/components/Pagination';
 import { SearchBar } from '@/components/Collection/components/SearchBar';
 import { collectionStyles } from '@/components/Collection/utils/CollectionStyles';
@@ -14,7 +13,7 @@ interface PostCollectionProps {
   totalPages: number;
   activeFilter: string | null;
   searchQuery: string;
-  postTagCategories: string[];
+  postTagCategories?: string[]; // Made optional since it's not used
   onFilterChange: (filter: string | null) => void;
   onSearchChange: (query: string) => void;
   onPageChange: (page: number) => void;
@@ -28,7 +27,7 @@ export function PostCollection({
   totalPages,
   activeFilter,
   searchQuery,
-  postTagCategories,
+  postTagCategories: _postTagCategories, // Prefix with underscore to indicate intentionally unused
   onFilterChange,
   onSearchChange,
   onPageChange,
@@ -43,15 +42,6 @@ export function PostCollection({
     <div>
       {/* Search bar - only show if searchBar is enabled */}
       {searchBarEnabled && <SearchBar searchQuery={searchQuery} onSearchChange={onSearchChange} />}
-
-      {/* Display clickable tag filters above the list */}
-      {postTagCategories.length > 0 && (
-        <FilterButtons
-          categories={postTagCategories}
-          activeFilter={activeFilter}
-          onFilterChange={onFilterChange}
-        />
-      )}
 
       <div className={collectionStyles.getGridClasses()}>
         {currentPosts.length === 0 ? (

@@ -45,7 +45,7 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
     title: post.title,
     imageUrl: post.mainImage?.link ?? '',
     altText: post.mainImage?.altText ?? post.title,
-    link: `/post/${post.slug}`
+    link: `/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`
   });
 
   const handleRegularMenuItemHover = () => {

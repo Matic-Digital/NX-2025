@@ -29,7 +29,8 @@ export const SliderSysSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  __typename: z.string().optional()
+  __typename: z.string().optional(),
+  context: z.enum(['ImageBetween', 'ContentGrid', 'default']).optional()
 });
 
 export type SliderSys = z.infer<typeof SliderSysSchema>;

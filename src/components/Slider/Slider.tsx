@@ -26,6 +26,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
+import { PostSliderCard } from '@/components/Post/PostSliderCard';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
@@ -51,9 +52,10 @@ interface SliderCardProps {
   api?: CarouselApi;
   solutionUrls?: Record<string, string>;
   onTeamMemberClick?: (teamMember: TeamMember) => void;
+  context?: 'ImageBetween' | 'ContentGrid' | 'default';
 }
 
-const ContentOverlay = ({ children }: ContentOverlay) => (
+const _ContentOverlay = ({ children }: ContentOverlay) => (
   <div className="absolute right-0 bottom-0 left-0 md:relative md:h-full">
     <div
       className="flex w-full flex-col justify-end rounded-[2px] p-10 backdrop-blur-[14px] md:h-full md:max-w-[393px]"
@@ -67,7 +69,7 @@ const ContentOverlay = ({ children }: ContentOverlay) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: SliderCardProps) => {
+const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, context = 'default' }: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
@@ -169,51 +171,12 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick }: S
   if (updatedItem.__typename === 'Post') {
     const postItem = updatedItem as PostSliderItem;
     return (
-      <div className={baseCardClasses}>
-        <AirImage
-          link={postItem.mainImage?.link}
-          altText={postItem.mainImage?.altText}
-          className="absolute h-full w-full object-cover"
-        />
-        <ContentOverlay>
-          <Box direction="col" gap={5}>
-            <Box direction="col" gap={1.5}>
-              {postItem.categories && (
-                <p
-                  className="text-body-sm text-white uppercase"
-                  {...inspectorProps({ fieldId: 'categories' })}
-                >
-                  {postItem.categories}
-                </p>
-              )}
-              <h2
-                className="text-headline-sm leading-tight text-white"
-                {...inspectorProps({ fieldId: 'title' })}
-              >
-                {postItem.title}
-              </h2>
-            </Box>
-            {postItem.excerpt && (
-              <p
-                className="text-body-xs letter-spacing-[0.14px] leading-normal text-white"
-                {...inspectorProps({ fieldId: 'excerpt' })}
-              >
-                {postItem.excerpt}
-              </p>
-            )}
-
-            <Link href={`/${postItem.slug}`} className="">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white hover:text-black"
-              >
-                Read More
-              </Button>
-            </Link>
-          </Box>
-        </ContentOverlay>
-      </div>
+      <PostSliderCard
+        item={postItem}
+        index={index}
+        current={current}
+        context={context}
+      />
     );
   }
 
@@ -410,6 +373,7 @@ interface GenericSliderProps {
   showAltNavigation?: boolean;
   isFullWidth?: boolean;
   onTeamMemberClick?: (teamMember: TeamMember) => void;
+  context?: 'ImageBetween' | 'ContentGrid' | 'default';
 }
 
 const GenericSlider = ({
@@ -422,7 +386,8 @@ const GenericSlider = ({
   showAltIndicators = false,
   showAltNavigation = false,
   isFullWidth = true,
-  onTeamMemberClick
+  onTeamMemberClick,
+  context = 'default'
 }: GenericSliderProps) => {
   const isContentSlider = sliderData.itemsCollection.items[0]?.__typename === 'ContentSliderItem';
   const isSlider = sliderData.itemsCollection.items[0]?.__typename === 'SliderItem';
@@ -515,6 +480,7 @@ const GenericSlider = ({
                   api={api}
                   solutionUrls={solutionUrls}
                   onTeamMemberClick={onTeamMemberClick}
+                  context={context}
                 />
               </CarouselItem>
             );
@@ -1089,6 +1055,7 @@ export function Slider(props: SliderSys) {
           !isTestimonialSlider
         }
         onTeamMemberClick={handleTeamMemberClick}
+        context={props.context}
       />
 
       {/* Team Member Modal */}

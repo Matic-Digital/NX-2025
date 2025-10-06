@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
+import { Search } from 'lucide-react';
 
 import { collectionStyles } from '../utils/CollectionStyles';
 
@@ -50,6 +51,7 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
     wasActiveRef.current = false;
   };
 
+
   // Generate dynamic placeholder text based on content types
   const getPlaceholderText = () => {
     if (!contentTypes || contentTypes.length === 0) {
@@ -80,17 +82,20 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
 
   return (
     <div className="mb-6">
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder={getPlaceholderText()}
-        value={searchQuery}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className={collectionStyles.getSearchInputClasses()}
-        autoComplete="off"
-      />
+      <div className="relative max-w-[42.25rem]">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder={getPlaceholderText()}
+          value={searchQuery}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={`${collectionStyles.getSearchInputClasses()} pl-12`}
+          autoComplete="off"
+        />
+      </div>
     </div>
   );
 }

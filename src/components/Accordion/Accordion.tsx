@@ -50,7 +50,7 @@ export function Accordion({ sys }: AccordionProps) {
 
   return (
     <div onMouseLeave={handleMouseLeave}>
-      <AccordionPrimitive type="single" value="item-0">
+      <AccordionPrimitive type="single" collapsible>
         <Box direction="col" gap={6}>
           {accordionItems.map((item, index) => {
             const displayState = getItemDisplayState(index, `item-${index}`);

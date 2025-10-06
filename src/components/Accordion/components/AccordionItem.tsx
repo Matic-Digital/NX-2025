@@ -120,15 +120,15 @@ export const AccordionItem = ({
         <AccordionTrigger
           chevron={false}
           onMouseOver={() => onHover(itemValue)}
-          className={accordionStyles.getTriggerClasses(isHovered, shouldShowExpanded)}
+          className={accordionStyles.getTriggerClasses(isHovered, shouldShowExpanded, item.variant)}
         >
           <Box
             direction="col"
             gap={0}
             cols={1}
-            className={accordionStyles.getWrapperClasses(item.variant)}
+            className={accordionStyles.getWrapperClasses(item.variant, isHovered, shouldShowExpanded)}
           >
-            {item.image?.sys?.id && (
+            {item.image?.sys?.id && shouldShowExpanded && (
               <div className={accordionStyles.getImageClasses(item.variant)}>
                 <AirImage
                   sys={{ id: item.image.sys.id }}
@@ -148,18 +148,18 @@ export const AccordionItem = ({
               >
                 <div>
                   {item.overline && (
-                    <p className={accordionStyles.getOverlineClasses()}>{item.overline}</p>
+                    <p className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded, item.variant)}>{item.overline}</p>
                   )}
 
-                  <h3 className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}>
+                  <h3 className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded, item.variant)}>
                     {item.title}
                   </h3>
                 </div>
                 <div
-                  className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}
+                  className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded, item.variant)}
                 >
                   {item.description && (
-                    <p className={accordionStyles.getDescriptionTextClasses()}>
+                    <p className={accordionStyles.getDescriptionTextClasses(isHovered, shouldShowExpanded, item.variant)}>
                       {item.description}
                     </p>
                   )}
