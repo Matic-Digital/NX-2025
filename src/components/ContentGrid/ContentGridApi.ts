@@ -117,6 +117,8 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       }
     }
   }
+  title
+  theme
   variant
 `;
 

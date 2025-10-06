@@ -174,7 +174,6 @@ export function ImageBetween(props: ImageBetween) {
                 {imageBetween.contentTop.__typename === 'ContentGrid' && contentTopData && (
                   <ContentGrid
                     {...(contentTopData as ContentGridType)}
-                    isDarkMode={true}
                     componentType={imageBetween.__typename}
                   />
                 )}
@@ -221,7 +220,6 @@ export function ImageBetween(props: ImageBetween) {
                 <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute">
                   <ContentGrid
                     {...assetContentGrid}
-                    isDarkMode={true}
                     componentType={imageBetween.__typename}
                     forceTabletSingleColumn={true}
                   />

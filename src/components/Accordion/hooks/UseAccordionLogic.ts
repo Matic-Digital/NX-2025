@@ -26,7 +26,7 @@ export const useAccordionLogic = (_accordionItems: AccordionItemType[]) => {
   const getItemDisplayState = (index: number, itemValue: string) => {
     const isHovered = hoveredItem === itemValue;
     const isFirstItem = index === 0;
-    const shouldShowExpanded = isFirstItem && !hoveredItem;
+    const shouldShowExpanded = isHovered;
 
     return {
       isHovered,

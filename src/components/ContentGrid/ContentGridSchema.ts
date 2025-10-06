@@ -51,6 +51,7 @@ export const ContentGridSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
+  theme: z.enum(['Light', 'Dark']).optional(),
   heading: SectionHeadingSchema.optional(),
   backgroundImage: ImageSchema.optional(),
   backgroundAsset: AssetSchema.optional(),

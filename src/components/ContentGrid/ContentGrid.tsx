@@ -26,7 +26,6 @@ import type { ContentGrid as ContentGridType } from './ContentGridSchema';
 import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 
 interface ContentGridProps extends ContentGridType {
-  isDarkMode?: boolean;
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
   forceTabletSingleColumn?: boolean; // Force single column layout on tablet
@@ -182,11 +181,8 @@ export function ContentGrid(props: ContentGridProps) {
   // Check if there are any service cards to wrap with provider
   const hasServiceCards = collectionAnalyzers.hasServiceCards(validItems);
 
-  // Auto-enable dark mode if all items are accordions OR if backgroundAsset is present
-  const shouldUseDarkMode =
-    props.isDarkMode ??
-    (analysis.allItemsAreAccordions ||
-      contentGrid.itemsCollection?.items[0]?.__typename === 'Video');
+  // Use theme from ContentGrid, defaulting to Light if not specified
+  const shouldUseDarkMode = (contentGrid.theme ?? 'Light') === 'Dark';
 
   // Check if this is an ImageBetween component
   const isImageBetweenComponent = props.componentType === 'ImageBetween';

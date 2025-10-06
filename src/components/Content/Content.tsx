@@ -414,7 +414,6 @@ export function Content(props: ContentProps) {
             ctaCollection={isSectionHeadingCardData(data) ? data.ctaCollection : undefined}
             variant={isSectionHeadingCardData(data) ? getValidVariant(data.variant) : 'Default'}
             componentType={'content'}
-            isDarkMode={true}
           />
         </div>
       </ContentContainer>
