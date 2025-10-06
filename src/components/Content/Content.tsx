@@ -16,6 +16,7 @@ import { Box } from '@/components/global/matic-ds';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
+import { NewsletterSignupForm } from '@/components/Forms/NewsletterSignup/NewsletterSignupForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -31,16 +32,15 @@ import type {
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { NewsletterSignup } from '@/components/Forms/NewsletterSignup/NewsletterSignupSchema';
 import type { Image } from '@/components/Image/ImageSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 
 // ===== TYPES & INTERFACES =====
 
-type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
-
-type SectionHeadingCardData = Pick<
-  SectionHeadingType,
-  'overline' | 'title' | 'description' | 'ctaCollection' | 'variant'
+type ContentGridItemCardData = Pick<
+  ContentGridItem,
+  'title' | 'heading' | 'description' | 'variant' | 'ctaCollection' | 'icon'
 > & {
   image: {
     link?: string;
@@ -49,9 +49,13 @@ type SectionHeadingCardData = Pick<
   };
 };
 
-type ContentGridItemCardData = Pick<
-  ContentGridItem,
-  'title' | 'heading' | 'description' | 'variant' | 'ctaCollection' | 'icon'
+type NewsletterSignupCardData = NewsletterSignup;
+
+type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
+
+type SectionHeadingCardData = Pick<
+  SectionHeadingType,
+  'overline' | 'title' | 'description' | 'ctaCollection' | 'variant'
 > & {
   image: {
     link?: string;
@@ -116,6 +120,8 @@ export function Content(props: ContentProps) {
   const content = useContentfulLiveUpdates(fetchedData ?? restProps);
   const inspectorProps = useContentfulInspectorMode({ entryId: content?.sys?.id });
 
+  console.log('⭐ Content', content);
+
   // ===== HANDLERS =====
   const handleModalOpen = (modal: Modal, _modalType: ModalType) => {
     setActiveModal({
@@ -176,6 +182,22 @@ export function Content(props: ContentProps) {
   );
 
   // ===== HELPER FUNCTIONS =====
+  const isContentGridItemData = (
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+  ): data is ContentGridItemCardData => {
+    return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
+  };
+
+  const isNewsletterSignupData = (
+    data:
+      | ProductCardData
+      | SectionHeadingCardData
+      | ContentGridItemCardData
+      | NewsletterSignupCardData
+  ): data is NewsletterSignupCardData => {
+    return 'title' in data && 'description' in data && 'formId' in data;
+  };
+
   const isProductData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is ProductCardData => {
@@ -186,12 +208,6 @@ export function Content(props: ContentProps) {
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
     return 'variant' in data && 'overline' in data;
-  };
-
-  const isContentGridItemData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
-  ): data is ContentGridItemCardData => {
-    return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
   };
 
   const isSectionHeadingData = (
@@ -237,14 +253,6 @@ export function Content(props: ContentProps) {
                   >
                     <Box direction="col" gap={5}>
                       <Box direction="col" gap={1.5}>
-                        {isProductData(data) && data.tags && (
-                          <p
-                            className="text-body-sm text-text-on-invert uppercase"
-                            {...inspectorProps({ fieldId: 'categories' })}
-                          >
-                            {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
-                          </p>
-                        )}
                         {isContentGridItemData(data) && data.heading && (
                           <p
                             className="text-body-sm text-text-on-invert uppercase"
@@ -253,6 +261,25 @@ export function Content(props: ContentProps) {
                             {data.heading}
                           </p>
                         )}
+
+                        {isNewsletterSignupData(data) && data.title && (
+                          <p
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'title' })}
+                          >
+                            {data.title}
+                          </p>
+                        )}
+
+                        {isProductData(data) && data.tags && (
+                          <p
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'categories' })}
+                          >
+                            {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                          </p>
+                        )}
+
                         {isSectionHeadingData(data) && data.title && (
                           <>
                             <p
@@ -281,6 +308,16 @@ export function Content(props: ContentProps) {
                     </Box>
 
                     {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+                    {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
+                      <ModalCtaButton
+                        cta={data.ctaCollection.items[0]}
+                        variant="white"
+                        modalType="quote"
+                        onModalOpen={handleModalOpen}
+                        className="w-fit"
+                      />
+                    )}
+
                     {isProductData(data) && (
                       <Button
                         variant="white"
@@ -291,15 +328,7 @@ export function Content(props: ContentProps) {
                         <Link href={data.slug}>Explore {data.title}</Link>
                       </Button>
                     )}
-                    {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
-                      <ModalCtaButton
-                        cta={data.ctaCollection.items[0]}
-                        variant="white"
-                        modalType="quote"
-                        onModalOpen={handleModalOpen}
-                        className="w-fit"
-                      />
-                    )}
+
                     {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
                       <ModalCtaButton
                         cta={data.ctaCollection.items[0]}
@@ -440,9 +469,13 @@ export function Content(props: ContentProps) {
   if (content && 'item' in content && content.item) {
     const item = content.item;
     const variant = getVariant();
+    console.log('⭐ Content item:', item);
+    console.log('⭐ Content item __typename:', item.__typename);
+    console.log('⭐ Content variant:', variant);
 
     // Only render if variant is specified
     if (!variant) {
+      console.log('⭐ No variant specified for content type:', content.__typename);
       return (
         <article className="prose max-w-none">
           <h2 {...inspectorProps({ fieldId: 'title' })}>{content.title}</h2>
@@ -557,6 +590,22 @@ export function Content(props: ContentProps) {
           {renderModal()}
         </>
       );
+    }
+
+    // ===== NEWSLETTER SIGNUP CONTENT =====
+    if ('__typename' in item && item.__typename === 'NewsletterSignup') {
+      const newsletterSignup = item as unknown as NewsletterSignup;
+
+      // Get image from Content asset if available
+      const image = content.asset?.__typename === 'Image'
+        ? {
+            link: (content.asset as Image).link ?? '',
+            altText: (content.asset as Image).altText ?? (content.asset as Image).title,
+            title: (content.asset as Image).title ?? ''
+          }
+        : {};
+
+      return <NewsletterSignupForm data={newsletterSignup} image={image} />;
     }
   }
 
