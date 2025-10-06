@@ -154,7 +154,7 @@ export function SectionHeading(props: SectionHeadingProps) {
             </h1>
           ) : (
             <h2
-              className="text-foreground lg:text-headline-md text-[56px] leading-[100%] tracking-[-1.1px]"
+              className="text-foreground text-headline-md text-[56px] leading-[100%] tracking-[-1.1px]"
               {...inspectorProps({ fieldId: 'heading.title' })}
             >
               {sectionHeading.title}

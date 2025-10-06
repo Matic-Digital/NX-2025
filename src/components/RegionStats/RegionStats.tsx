@@ -26,7 +26,7 @@ export function RegionStats(props: RegionStats) {
   }
 
   return (
-    <Container className="p-16">
+    <Container className="md:p-16">
       <Box direction={{ base: 'col', lg: 'row' }} gap={12}>
         <div className="basis-1/2 flex">
           <AirImage

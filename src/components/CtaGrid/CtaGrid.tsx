@@ -241,11 +241,11 @@ export function CtaGrid(props: CtaGrid) {
                 <Box direction="col" gap={6} className="flex-1 justify-end">
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
-                      <h3 className="text-body-sm leading-[160%] tracking-[0.01em]">
+                      <h3 className="text-body-lg leading-[160%] tracking-[0.01em]">
                         {item.heading}
                       </h3>
                       <div className="bg-border h-px w-full"></div>
-                      <p className="text-body-xxs text-text-subtle leading-relaxed">
+                      <p className="text-body-sm text-text-subtle leading-relaxed">
                         {item.description}
                       </p>
                     </div>
