@@ -1,7 +1,8 @@
 import { z } from 'zod';
+
 import { AssetSchema } from '@/components/Asset/AssetSchema';
-import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
 
 // Define the ContentGridItem schema
 export const ContentGridItemSchema = z.object({

@@ -12,6 +12,7 @@ export const ASSET_FIELDS = `
   url
   width
   height
+  contentType
   __typename
 `;
 
@@ -28,6 +29,27 @@ export const INTERNAL_LINK_FIELDS = `
     sys { id }
     slug
     __typename
+  }
+`;
+
+export const MENU_ITEM_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  text
+  description
+  internalLink {
+    ... on Page {
+      sys { id }
+      slug
+    }
+    ... on PageList {
+      sys { id }
+      slug
+    }
+  }
+  externalLink
+  icon {
+    ${ASSET_FIELDS}
   }
 `;
 
@@ -62,6 +84,13 @@ const fragments = {
           }
         }
       }
+    }
+    menu {
+      ${SYS_FIELDS}
+    }
+    search
+    overflow {
+      ${SYS_FIELDS}
     }
   `,
 
@@ -98,6 +127,13 @@ const fragments = {
               }
             }
           }
+        }
+      }
+    }
+    menusCollection(limit: 5) {
+      items {
+        ... on Menu {
+          ${fragments.MENU_BASIC_FIELDS()}
         }
       }
     }
@@ -256,6 +292,18 @@ const fragments = {
 
   COLLECTION_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
+  `,
+
+  MENU_BASIC_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    itemsCollection(limit: 10) {
+      items {
+        ... on MenuItem {
+          ${MENU_ITEM_FIELDS}
+        }
+      }
+    }
   `
 };
 
@@ -278,3 +326,4 @@ export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
 export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();
 export const getTESTIMONIALS_BASIC_FIELDS = () => fragments.TESTIMONIALS_BASIC_FIELDS();
 export const getCOLLECTION_BASIC_FIELDS = () => fragments.COLLECTION_BASIC_FIELDS();
+export const getMENU_BASIC_FIELDS = () => fragments.MENU_BASIC_FIELDS();

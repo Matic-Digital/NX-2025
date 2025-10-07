@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-export type AccordionVariant = 'ContentLeft' | 'ContentRight';
+import { ButtonSchema } from '@/components/Button/ButtonSchema';
+
+export const AccordionVariantEnum = z.enum(['ContentLeft', 'ContentTop', 'ContentRight']);
+export type AccordionVariant = z.infer<typeof AccordionVariantEnum>;
 
 export const AccordionItemSchema = z.object({
   sys: z.object({
@@ -14,8 +17,15 @@ export const AccordionItemSchema = z.object({
       id: z.string()
     })
   }),
+  backgroundImage: z.object({
+    sys: z.object({
+      id: z.string()
+    }),
+    link: z.string()
+  }),
   tags: z.array(z.string()).optional(),
   variant: z.string(),
+  cta: ButtonSchema,
   __typename: z.string().optional()
 });
 

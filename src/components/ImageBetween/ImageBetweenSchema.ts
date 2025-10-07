@@ -1,12 +1,18 @@
 import z from 'zod';
-import { AssetSchema } from '../Asset/AssetSchema';
-import { ContentGridSchema } from '../ContentGrid/ContentGridSchema';
-import { ImageSchema } from '../Image/ImageSchema';
-import { SliderSysSchema } from '../Slider/SliderSchema';
-import { VideoSchema } from '../Video/VideoSchema';
 
-const ContentAssetUnion = z.union([ImageSchema, SliderSysSchema, VideoSchema, ContentGridSchema]);
-export type ContentAsset = z.infer<typeof ContentAssetUnion>;
+import { AssetSchema } from '@/components/Asset/AssetSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { SliderSysSchema } from '@/components/Slider/SliderSchema';
+import { VideoSchema } from '@/components/Video/VideoSchema';
+
+const ImageBetweenAssetUnion = z.union([
+  ImageSchema,
+  SliderSysSchema,
+  VideoSchema,
+  ContentGridSchema
+]);
+export type ImageBetweenAsset = z.infer<typeof ImageBetweenAssetUnion>;
 
 export const ImageBetweenSchema = z.object({
   sys: z.object({
@@ -14,7 +20,7 @@ export const ImageBetweenSchema = z.object({
   }),
   title: z.string(),
   contentTop: ContentGridSchema,
-  asset: ContentAssetUnion,
+  asset: ImageBetweenAssetUnion,
   backgroundMedia: AssetSchema,
   contentBottom: ContentGridSchema,
   __typename: z.string().optional()

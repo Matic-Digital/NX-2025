@@ -22,12 +22,9 @@
 
 import React from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
-import type { Image as ImageType } from '@/components/Image/ImageSchema';
 
 // Import content components for dynamic rendering
 import { BannerHero } from '@/components/BannerHero/BannerHero';
@@ -36,8 +33,13 @@ import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import { Slider } from '@/components/Slider/Slider';
 import { RegionsMap } from '@/components/Region/RegionsMap';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
+import { Slider } from '@/components/Slider/Slider';
+
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
+import type { Image as ImageType } from '@/components/Image/ImageSchema';
 
 interface PageProps {
   sys: {
@@ -148,6 +150,9 @@ export function Page(props: PageProps) {
 
                   case 'RegionsMap':
                     return <RegionsMap key={key} {...(content as any)} />;
+
+                  case 'RegionStats':
+                    return <RegionStats key={key} {...(content as any)} />;
 
                   default:
                     return (

@@ -1,31 +1,37 @@
 import React from 'react';
 import Link from 'next/link';
+
+import { contentTypeDetectors } from '@/lib/component-grid/utils';
+
 import { Box } from '@/components/global/matic-ds';
-import { ContentGridItem } from './ContentGridItem';
+
 import { Accordion } from '@/components/Accordion/Accordion';
+import Collection from '@/components/Collection/Collection';
+import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { Event } from '@/components/Event/Event';
 import { AirImage } from '@/components/Image/AirImage';
-import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
+import { PostCard } from '@/components/Post/PostCard';
 import { ProductCard } from '@/components/Product/ProductCard';
 import { ServiceCard } from '@/components/Service/ServiceCard';
-import { SolutionCard } from '@/components/Solution/SolutionCard';
-import { PostCard } from '@/components/Post/PostCard';
-import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Slider } from '@/components/Slider/Slider';
-import Collection from '@/components/Collection/Collection';
-import { Location } from '@/components/OfficeLocation/OfficeLocation';
-import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
+import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
 
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
-import type { Image as AirImageType } from '@/components/Image/ImageSchema';
-import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
+import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
+import type { Event as EventType } from '@/components/Event/EventSchema';
+import type { Image as AirImageType } from '@/components/Image/ImageSchema';
 import type { OfficeLocation as LocationType } from '@/components/OfficeLocation/OfficeLocationSchema';
 import type {
-  PageList as PageListType,
-  PageListPages as PageListPagesType
+  PageListPages as PageListPagesType,
+  PageList as PageListType
 } from '@/components/PageList/PageListSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
 import type { Product as ProductType } from '@/components/Product/ProductSchema';
@@ -33,8 +39,7 @@ import type { Slider as SliderType } from '@/components/Slider/SliderSchema';
 import type { Solution as SolutionType } from '@/components/Solution/SolutionSchema';
 import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
 import type { Video as VideoType } from '@/components/Video/VideoSchema';
-
-import { contentTypeDetectors, type ContentGridItemUnion } from '../../lib/component-grid/utils';
+import type { ContentGridItemUnion } from '@/lib/component-grid/utils';
 
 interface RenderContext {
   index: number;
@@ -82,6 +87,15 @@ export const contentRenderers = {
     <CtaGrid key={item.sys?.id ?? context.index} {...item} />
   ),
 
+  renderEvent: (item: EventType, context: RenderContext) => (
+    <Event
+      key={item.sys?.id ?? context.index}
+      eventId={item.sys?.id ?? context.index}
+      {...item}
+      {...context}
+    />
+  ),
+
   renderImage: (item: AirImageType, context: RenderContext) => (
     <AirImage key={item.sys?.id ?? context.index} {...item} />
   ),
@@ -120,27 +134,13 @@ export const contentRenderers = {
     <Slider key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderSolution: (item: SolutionType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), use solutionId prop
-    if (item.sys?.id && !item.title && !item.heading) {
-      return (
-        <SolutionCard key={`lazy-${item.sys.id}`} solutionId={item.sys.id} index={context.index} />
-      );
-    }
-    // If we have full data, render normally
-    return (
-      <SolutionCard key={`full-${item.sys?.id ?? context.index}`} {...item} index={context.index} />
-    );
-  },
+  renderSolution: (item: SolutionType, context: RenderContext) => (
+    <SolutionCard key={item.sys?.id ?? context.index} {...item} index={context.index} />
+  ),
 
-  renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
-    // If we only have sys.id (lazy loading case), pass testimonialsId to unified component
-    if (item.sys?.id && !item.itemsCollection) {
-      return <Testimonials key={`lazy-${item.sys.id}`} testimonialsId={item.sys.id} />;
-    }
-    // If we have full data, render normally
-    return <Testimonials key={`full-${item.sys?.id ?? context.index}`} {...item} />;
-  },
+  renderTestimonials: (item: TestimonialsType, context: RenderContext) => (
+    <Testimonials key={item.sys?.id ?? context.index} {...item} />
+  ),
 
   renderVideo: (item: VideoType, context: RenderContext) => (
     <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />

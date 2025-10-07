@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
-import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
-import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
-import { ErrorBoundary } from '@/components/global/ErrorBoundary';
-import { AirImage } from '@/components/Image/AirImage';
-import { Button } from '@/components/ui/button';
-import { Box, Container } from '@/components/global/matic-ds';
+
 import { resolveNestedUrls } from '@/lib/page-link-utils';
+
+import { Button } from '@/components/ui/button';
+
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { ErrorBoundary } from '@/components/global/ErrorBoundary';
+import { Box, Container } from '@/components/global/matic-ds';
+import { AirImage } from '@/components/Image/AirImage';
+
+import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 
 export function CtaGrid(props: CtaGrid) {
   const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);
@@ -142,81 +146,161 @@ export function CtaGrid(props: CtaGrid) {
             </div>
           </div>
         ) : (
-          // ContentLeft or ContentRight: Side-by-side layout using CSS order
-          <Box direction="col" gap={5} cols={{ base: 1, xl: 4 }} className="min-h-[600px]">
-            {/* Content Section */}
-            <Box
-              direction="col"
-              gap={8}
-              className={`bg-subtle order-2 col-span-1 h-full p-10 xl:col-span-1 ${
-                variant === 'ContentLeft' ? 'xl:order-1' : 'xl:order-2'
-              }`}
-            >
-              {/* Content Grid Items */}
-              <Box direction="col" gap={6} className="flex-1 justify-end">
-                {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
-                  <div key={item.sys?.id || index} className="space-y-3">
-                    <h3 className="text-body-sm leading-[160%] tracking-[0.01em]">
-                      {item.heading}
-                    </h3>
-                    <p className="text-body-xxs text-text-subtle leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                ))}
-              </Box>
-              {/* CTA Button */}
-              {liveCtaGrid.ctaCollection?.items?.length > 0 && (
-                <div className="mt-auto">
-                  {liveCtaGrid.ctaCollection.items.map((cta, index) => {
-                    const isProduct = cta.internalLink?.__typename === 'Product';
-                    console.log('✅ Full CTA object:', cta.internalLink);
-                    return (
-                      <Button
-                        key={cta.sys?.id ?? index}
-                        variant="primary"
-                        {...inspectorProps({ fieldId: 'ctaCollection' })}
-                        asChild
-                      >
-                        {cta.internalLink ? (
-                          <Link
-                            href={
-                              isProduct
-                                ? (productUrls[cta.internalLink.sys.id] ??
-                                  `/products/${cta.internalLink.slug}`)
-                                : `/${cta.internalLink.slug}`
-                            }
-                          >
-                            {cta.text ?? cta.internalText}
-                          </Link>
-                        ) : cta.externalLink ? (
-                          <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
-                            {cta.text ?? cta.internalText}
-                          </a>
-                        ) : (
-                          <span>{cta.text ?? cta.internalText}</span>
-                        )}
-                      </Button>
-                    );
-                  })}
-                </div>
-              )}
-            </Box>
+          // Mobile: Overlay style, Desktop: Side-by-side layout using CSS Grid
+          <>
+            {/* CTA Button - Mobile only: above image */}
+            {liveCtaGrid.ctaCollection?.items?.length > 0 && (
+              <div className="mb-6 flex justify-center px-6 sm:px-6 md:px-9 xl:hidden">
+                {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                  const isProduct = cta.internalLink?.__typename === 'Product';
+                  return (
+                    <Button
+                      key={cta.sys?.id ?? index}
+                      variant="outline"
+                      {...inspectorProps({ fieldId: 'ctaCollection' })}
+                      asChild
+                    >
+                      {cta.internalLink ? (
+                        <Link
+                          href={
+                            isProduct
+                              ? (productUrls[cta.internalLink.sys.id] ??
+                                `/products/${cta.internalLink.slug}`)
+                              : `/${cta.internalLink.slug}`
+                          }
+                        >
+                          {cta.text ?? cta.internalText}
+                        </Link>
+                      ) : cta.externalLink ? (
+                        <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
+                          {cta.text ?? cta.internalText}
+                        </a>
+                      ) : (
+                        <span>{cta.text ?? cta.internalText}</span>
+                      )}
+                    </Button>
+                  );
+                })}
+              </div>
+            )}
 
-            {/* Image Section */}
-            <div
-              className={`relative order-1 col-span-1 xl:col-span-3 ${
-                variant === 'ContentLeft' ? 'xl:order-2' : 'xl:order-1'
-              }`}
-            >
-              <AirImage
-                link={liveCtaGrid.asset?.link}
-                altText={liveCtaGrid.asset?.altText}
-                className="h-full w-full object-cover"
-                priority
-              />
+            {/* Mobile: Image overlay layout, Desktop: CSS Grid layout */}
+            <div className="xl:hidden">
+              {/* Mobile Image and Content Container */}
+              <div className="relative min-h-[43.6rem]">
+                {/* Background Image - Full container on mobile */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <AirImage
+                    link={liveCtaGrid.asset?.link}
+                    altText={liveCtaGrid.asset?.altText}
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                </div>
+
+                {/* Content Overlay - Mobile: individual blur items */}
+                <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:px-9">
+                  <div className="w-full pb-4">
+                    <Box direction="col" gap={4} className="w-full">
+                      {/* Content Grid Items */}
+                      {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
+                        <div
+                          key={item.sys?.id || index}
+                          className="space-y-3 p-6 backdrop-blur-[14px]"
+                          style={{
+                            background:
+                              'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+                          }}
+                        >
+                          <h3 className="text-body-sm text-text-on-invert leading-[160%] tracking-[0.01em]">
+                            {item.heading}
+                          </h3>
+                          <div className="h-px w-full bg-white/30"></div>
+                          <p className="text-body-xxs text-text-on-invert leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                      ))}
+                    </Box>
+                  </div>
+                </div>
+              </div>
             </div>
-          </Box>
+
+            {/* Desktop: Original CSS Grid Layout */}
+            <div className="hidden h-full min-h-[600px] xl:flex">
+              {/* Content Section */}
+              <Box
+                direction="col"
+                gap={8}
+                className={`bg-subtle h-full max-w-[20.5rem] p-10 ${
+                  variant === 'ContentLeft' ? 'order-1' : 'order-2'
+                }`}
+              >
+                {/* Content Grid Items */}
+                <Box direction="col" gap={6} className="flex-1 justify-end">
+                  {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
+                    <div key={item.sys?.id || index} className="space-y-3">
+                      <h3 className="text-body-lg leading-[160%] tracking-[0.01em]">
+                        {item.heading}
+                      </h3>
+                      <div className="bg-border h-px w-full"></div>
+                      <p className="text-body-sm text-text-subtle leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
+                  ))}
+                </Box>
+                {/* CTA Button */}
+                {liveCtaGrid.ctaCollection?.items?.length > 0 && (
+                  <div className="mt-auto">
+                    {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                      const isProduct = cta.internalLink?.__typename === 'Product';
+                      return (
+                        <Button
+                          key={cta.sys?.id ?? index}
+                          variant="primary"
+                          {...inspectorProps({ fieldId: 'ctaCollection' })}
+                          asChild
+                        >
+                          {cta.internalLink ? (
+                            <Link
+                              href={
+                                isProduct
+                                  ? (productUrls[cta.internalLink.sys.id] ??
+                                    `/products/${cta.internalLink.slug}`)
+                                  : `/${cta.internalLink.slug}`
+                              }
+                            >
+                              {cta.text ?? cta.internalText}
+                            </Link>
+                          ) : cta.externalLink ? (
+                            <a href={cta.externalLink} target="_blank" rel="noopener noreferrer">
+                              {cta.text ?? cta.internalText}
+                            </a>
+                          ) : (
+                            <span>{cta.text ?? cta.internalText}</span>
+                          )}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
+              </Box>
+
+              {/* Image Section */}
+              <div
+                className={`relative flex-1 ${variant === 'ContentLeft' ? 'order-2' : 'order-1'}`}
+              >
+                <AirImage
+                  link={liveCtaGrid.asset?.link}
+                  altText={liveCtaGrid.asset?.altText}
+                  className="h-full w-full object-cover"
+                  priority
+                />
+              </div>
+            </div>
+          </>
         )}
       </Container>
     </ErrorBoundary>

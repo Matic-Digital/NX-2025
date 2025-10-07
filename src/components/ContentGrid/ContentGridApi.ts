@@ -1,15 +1,15 @@
-import { fetchGraphQL } from '../../lib/api';
-
-import type { ContentGrid, ContentGridResponse } from './ContentGridSchema';
-import type { ContentGridItem } from './ContentGridItemSchema';
-
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
+import { fetchGraphQL } from '@/lib/api';
 import {
+  ASSET_FIELDS,
   INTERNAL_LINK_FIELDS,
-  SYS_FIELDS,
-  ASSET_FIELDS
-} from '../../lib/contentful-api/graphql-fields';
-import { ContentfulError, NetworkError } from '../../lib/errors';
+  SYS_FIELDS
+} from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+
+import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { ContentGrid, ContentGridResponse } from '@/components/ContentGrid/ContentGridSchema';
 
 // ContentGridItem fields - minimal for initial load (no link field)
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
@@ -51,6 +51,9 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
   }
   backgroundImage {
     ${IMAGE_GRAPHQL_FIELDS}
+  }
+  backgroundAsset {
+    ${ASSET_FIELDS}
   }
   itemsCollection(limit: 20) {
     items {
@@ -109,8 +112,13 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
       ... on Video {
         ${SYS_FIELDS}
       }
+      ... on Event {
+        ${SYS_FIELDS}
+      }
     }
   }
+  title
+  theme
   variant
 `;
 
@@ -320,6 +328,15 @@ export async function getContentGridItemLink(
               slug
             }
             ... on Product {
+              slug
+            }
+            ... on Service {
+              slug
+            }
+            ... on Solution {
+              slug
+            }
+            ... on Post {
               slug
             }
           }

@@ -1,21 +1,22 @@
 // Next.js metadata types
-import type { Metadata } from 'next';
+import { getAllPageLists, getAllPages, getPageBySlug } from '@/lib/contentful-api';
 
 import { Container } from '@/components/global/matic-ds';
-import { getAllPages, getAllPageLists, getPageBySlug } from '@/lib/contentful-api';
-import { getAllFooters } from '@/components/Footer/FooterApi';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
+
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import type { FooterResponse } from '@/components/Footer/FooterSchema';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { getAllFooters } from '@/components/Footer/FooterApi';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import type { PageResponse } from '@/components/Page/PageSchema';
-import type { PageList } from '@/components/PageList/PageListSchema';
-import type { Page } from '@/components/Page/PageSchema';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
+
+import type { FooterResponse, Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Page, PageResponse } from '@/components/Page/PageSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
+import type { PageList } from '@/components/PageList/PageListSchema';
+import type { Metadata } from 'next';
 
 /**
  * Generate metadata for the page, including Open Graph tags
@@ -95,7 +96,8 @@ const componentMap = {
   BannerHero: BannerHero,
   ContentGrid: ContentGrid,
   CtaBanner: CtaBanner,
-  ImageBetween: ImageBetween
+  ImageBetween: ImageBetween,
+  RegionStats: RegionStats
   // Add other component types here as they are created
 };
 

@@ -1,7 +1,21 @@
-import { fetchGraphQL } from '../../lib/api';
-import { TestimonialsSchema, type Testimonials } from './TestimonialsSchema';
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { TestimonialsSchema } from '@/components/Testimonials/TestimonialsSchema';
+
+import type { Testimonials } from '@/components/Testimonials/TestimonialsSchema';
+
+export const TESTIMONIALITEM_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  quote
+  authorName
+  authorTitle
+  headshot {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+`;
 
 // Use centralized GraphQL fields
 export const TESTIMONIALS_GRAPHQL_FIELDS = `
@@ -9,13 +23,7 @@ export const TESTIMONIALS_GRAPHQL_FIELDS = `
   title
   itemsCollection {
     items {
-      ${SYS_FIELDS}
-      quote
-      authorName
-      authorTitle
-      headshot {
-        ${IMAGE_GRAPHQL_FIELDS}
-      }
+      ${TESTIMONIALITEM_GRAPHQL_FIELDS}
     }
   }
 `;

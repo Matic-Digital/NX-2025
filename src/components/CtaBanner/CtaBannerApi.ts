@@ -1,10 +1,11 @@
-import { fetchGraphQL } from '../../lib/api';
+import { fetchGraphQL } from '@/lib/api';
+import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import type { CtaBanner, CtaBannerResponse } from '@/types';
-import { SYS_FIELDS, ASSET_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
-import { ContentfulError, NetworkError } from '../../lib/errors';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+
+import type { CtaBanner, CtaBannerResponse } from '@/components/CtaBanner/CtaBannerSchema';
 
 // CtaBanner fields
 export const CTABANNER_GRAPHQL_FIELDS = `

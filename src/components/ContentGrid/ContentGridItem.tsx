@@ -1,21 +1,26 @@
 'use client';
 
-import * as React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useContentfulInspectorMode } from '@contentful/live-preview/react';
-import { Box } from '@/components/global/matic-ds';
-import { AirImage } from '@/components/Image/AirImage';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { ArrowUpRight } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 import { SvgIcon } from '@/components/ui/svg-icon';
-import { cn } from '@/lib/utils';
-import type { ContentGridItem as ContentGridItemType } from './ContentGridItemSchema';
+
+import { Box } from '@/components/global/matic-ds';
+
 import {
   getContentGridItemById,
   getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
-import { useState, useEffect } from 'react';
+import { AirImage } from '@/components/Image/AirImage';
+
+import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 
 interface ContentGridItemProps extends ContentGridItemType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
@@ -29,8 +34,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, title, heading, description, variant, icon, image } = contentData;
-  console.log('ContentGridItem', contentData);
+  const { sys, title, heading, description, variant, icon, image, ctaCollection } = contentData;
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -88,10 +92,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
             // Use the parent PageList slug to construct nested URLs
             href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
           }
-
-          console.log(
-            `ContentGridItem link constructed: ${href} (type: ${linkData.link.__typename})`
-          );
           setLinkHref(href);
         }
       } catch (error) {
@@ -227,7 +227,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                   variant="outlineTrasparentWhite"
                   className="hover:bg-background hover:text-foreground w-full transition-colors"
                 >
-                  Learn More
+                  {ctaCollection?.items?.[0]?.text}
                 </Button>
               </Link>
             </div>
@@ -329,6 +329,48 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
+  const BackgroundGradientHoverItemWithLinkItem = () => (
+    <div className="group rounded-xxs bg-subtle relative overflow-hidden">
+      {/* Card Image */}
+      {image && (
+        <div className="absolute z-10 h-full w-full md:opacity-0 transition-opacity group-hover:opacity-100">
+          <AirImage
+            link={image.link ?? ''}
+            altText={image.altText ?? ''}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Card Content */}
+      <Box direction="col" gap={4} className="relative z-20 h-full p-6">
+        {/* Text Content */}
+        <Box direction="col" gap={2}>
+          <h3
+            className="text-headline-sm text-background md:text-black md:group-hover:text-background line-clamp-2 transition-colors"
+            {...inspectorProps({ fieldId: 'heading' })}
+          >
+            {heading}
+          </h3>
+          {description && (
+            <p
+              className="text-body-sm text-white group-hover:text-background md:text-text-subtle line-clamp-3 transition-colors"
+              {...inspectorProps({ fieldId: 'description' })}
+            >
+              {description}
+            </p>
+          )}
+        </Box>
+        {/* Arrow Icon in Bottom Right */}
+        <Link href={getHref()} className="ml-auto mt-auto">
+          <div className="absolute bottom-0 right-0 flex size-10 items-center justify-center bg-background">
+            <ArrowUpRight className="size-8 text-text-body" />
+          </div>
+        </Link>
+      </Box>
+    </div>
+  );
+
   const ExpandingHoverCardItem = () => {
     // Get index from ContentGrid context - for now using a placeholder
     const index = 0; // This will need to be passed from ContentGrid
@@ -350,7 +392,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <div className="relative z-10 h-full">
           <Box direction="col" gap={12}>
             {/* Top content - appears on hover */}
-            <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
+            <div className="transition-opacity duration-300 bg-blue-500 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
                 <h2
                   className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"
@@ -395,6 +437,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundPrimaryHoverItem />;
     case 'BackgroundGradientHover':
       return <BackgroundGradientHoverItem />;
+    case 'BackgroundGradientHoverWithLink':
+      return <BackgroundGradientHoverItemWithLinkItem />;
     case 'ExpandingHoverCard':
       return <ExpandingHoverCardItem />;
     case 'Link':

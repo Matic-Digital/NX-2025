@@ -2,22 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+
+import { cn } from '@/lib/utils';
+
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { AirImage } from '@/components/Image/AirImage';
+
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { Slider } from '@/components/Slider/Slider';
-import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
-import type { Image } from '@/components/Image/ImageSchema';
-import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
-import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
-import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { cn } from '@/lib/utils';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
+import { AirImage } from '@/components/Image/AirImage';
+import { Slider } from '@/components/Slider/Slider';
+import { getSlidersByIds } from '@/components/Slider/SliderApi';
+
+import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
+import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
+import type { Image } from '@/components/Image/ImageSchema';
+import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
 
 export function ImageBetween(props: ImageBetween) {
   const imageBetween = useContentfulLiveUpdates(props);
@@ -27,8 +32,12 @@ export function ImageBetween(props: ImageBetween) {
   );
   const [assetContentGrid, setAssetContentGrid] = useState<ContentGridType | null>(null);
   const [contentBottomData, setContentBottomData] = useState<ContentGridType | null>(null);
+  const [sliderData, setSliderData] = useState<{ itemsCollection?: { items?: Array<{ __typename?: string }> } } | null>(null);
 
   const isBannerHero = imageBetween.contentTop?.__typename === 'BannerHero';
+  
+  // Check if the slider contains Post items
+  const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
 
   // Fetch full data for contentTop
   useEffect(() => {
@@ -75,6 +84,31 @@ export function ImageBetween(props: ImageBetween) {
     };
 
     void fetchAssetContentGrid();
+  }, [imageBetween.asset]);
+
+  // Fetch slider data if asset is a Slider
+  useEffect(() => {
+    const fetchSliderData = async () => {
+      if (
+        imageBetween.asset &&
+        imageBetween.asset.__typename === 'Slider' &&
+        imageBetween.asset.sys?.id
+      ) {
+        try {
+          const data = await getSlidersByIds([imageBetween.asset.sys.id]);
+          if (data.length > 0 && data[0]) {
+            setSliderData(data[0]);
+          }
+        } catch (error) {
+          console.error('Failed to fetch Slider asset:', error);
+          setSliderData(null);
+        }
+      } else {
+        setSliderData(null);
+      }
+    };
+
+    void fetchSliderData();
   }, [imageBetween.asset]);
 
   // Fetch full data for contentBottom
@@ -140,7 +174,6 @@ export function ImageBetween(props: ImageBetween) {
                 {imageBetween.contentTop.__typename === 'ContentGrid' && contentTopData && (
                   <ContentGrid
                     {...(contentTopData as ContentGridType)}
-                    isDarkMode={true}
                     componentType={imageBetween.__typename}
                   />
                 )}
@@ -170,8 +203,15 @@ export function ImageBetween(props: ImageBetween) {
               </Container>
             )}
             {imageBetween.asset && imageBetween.asset.__typename === 'Slider' && (
-              <Container className="absolute z-20">
-                <Slider {...imageBetween.asset} {...inspectorProps({ fieldId: 'asset' })} />
+              <Container className={cn(
+                "absolute z-20",
+                isPostSlider && "mt-8 mb-24 lg:mt-12 lg:mb-32 xl:mt-16 xl:my-44"
+              )}>
+                <Slider 
+                  {...imageBetween.asset} 
+                  {...inspectorProps({ fieldId: 'asset' })} 
+                  context="ImageBetween"
+                />
               </Container>
             )}
             {imageBetween.asset &&
@@ -180,7 +220,6 @@ export function ImageBetween(props: ImageBetween) {
                 <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute">
                   <ContentGrid
                     {...assetContentGrid}
-                    isDarkMode={true}
                     componentType={imageBetween.__typename}
                     forceTabletSingleColumn={true}
                   />

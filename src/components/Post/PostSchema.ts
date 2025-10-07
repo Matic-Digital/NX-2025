@@ -1,6 +1,8 @@
 import { z } from 'zod';
-import { ImageSchema } from '../Image/ImageSchema';
-import { TeamMemberSchema } from '../TeamMember/TeamMemberSchema';
+
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
+import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([
@@ -32,14 +34,19 @@ export const PostSchema = z.object({
   excerpt: z.string().optional(),
   datePublished: z.string().optional(),
   mainImage: ImageSchema.optional(),
+  bannerBackground: ImageSchema.optional(),
   content: RichTextSchema,
-  authors: z.array(TeamMemberSchema),
+  authorsCollection: z.object({
+    items: z.array(TeamMemberSchema)
+  }).optional(),
+  authors: z.array(TeamMemberSchema).optional(), // Keep for backward compatibility
   categories: z.array(PostCategorySchema),
   tags: z.array(z.string()).optional(),
   openGraphImage: ImageSchema.optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoFocusKeyword: z.string().optional(),
+  pageLayout: PageLayoutSchema.optional(),
   __typename: z.string().optional()
 });
 

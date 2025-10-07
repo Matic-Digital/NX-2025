@@ -2,29 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import { Box } from '@/components/global/matic-ds';
-import AirImage from '@/components/Image/AirImage';
-import { getPostById } from '@/components/Post/PostApi';
-import type { Post } from '@/components/Post/PostSchema';
 import Link from 'next/link';
-import { categoryColorMap } from '@/components/Post/PostCategories';
-import { cn } from '@/lib/utils';
+
 import { ArrowUpRight } from 'lucide-react';
 
-// Helper function to format date as "Month Day, Year"
-const formatDate = (dateString?: string): string => {
-  if (!dateString) return '';
+import { cn, formatDate } from '@/lib/utils';
 
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
+import { Box } from '@/components/global/matic-ds';
+
+import AirImage from '@/components/Image/AirImage';
+import { getPostById } from '@/components/Post/PostApi';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
+import { categoryColorMap } from '@/components/Post/PostCategories';
+
+import type { Post } from '@/components/Post/PostSchema';
 
 interface PostCardProps {
   sys: {
@@ -62,11 +56,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
 
   if (loading) {
-    return (
-      <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Loading post...</div>
-      </div>
-    );
+    return <PostCardSkeleton />;
   }
 
   if (!post) {
@@ -79,7 +69,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
 
   return (
     <Link
-      href={`/post/${post.slug}`}
+      href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
       {...inspectorProps({ fieldId: 'slug' })}
       className="group flex h-full flex-col"
     >

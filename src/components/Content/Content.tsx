@@ -2,37 +2,37 @@
 
 import { useEffect, useState } from 'react';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 
-// Components
-import { AirImage } from '@/components/Image/AirImage';
+import { cn } from '@/lib/utils';
+
+import { Button } from '@/components/ui/button';
+
 import { Box } from '@/components/global/matic-ds';
-import { Button } from '../ui/button';
-import { SectionHeading } from '../SectionHeading/SectionHeading';
-import { RequestAQuoteModal } from '../Modals/RequestAQuoteModal';
 
-// API
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
+import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
+import { AirImage } from '@/components/Image/AirImage';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-// Types
-import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
-import type { ContentVariant } from '@/components/Content/ContentVariant';
-import type { Product } from '@/components/Product/ProductSchema';
+import type { ModalType } from '../Button/ModalCtaButton';
+import type { Modal } from '../Modals/Modal';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
 } from '../SectionHeading/SectionHeadingSchema';
+// Types
+import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
+import type { ContentVariant } from '@/components/Content/ContentVariant';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { Image } from '@/components/Image/ImageSchema';
-
-// Constants
-import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
-
-// Utils
-import { cn } from '@/lib/utils';
+import type { Product } from '@/components/Product/ProductSchema';
 
 // ===== TYPES & INTERFACES =====
 
@@ -117,24 +117,18 @@ export function Content(props: ContentProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: content?.sys?.id });
 
   // ===== HANDLERS =====
-  const handleModalTrigger = (modal?: ModalData) => {
-    setActiveModal(
-      modal ?? {
-        title: 'Request a Quote',
-        description: 'Please fill out the form below to request a quote.',
-        sys: { id: 'content-modal' }
-      }
-    );
+  const handleModalOpen = (modal: Modal, _modalType: ModalType) => {
+    setActiveModal({
+      title: modal.title ?? 'Request a Quote',
+      description: modal.description ?? 'Please fill out the form below to request a quote.',
+      sys: modal.sys ?? { id: 'modal-' + Date.now() }
+    });
     setIsModalOpen(true);
   };
 
   // ===== EARLY RETURNS =====
   if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">Loading content...</div>
-      </div>
-    );
+    return <ContentSkeleton variant={fetchedData?.variant} />;
   }
 
   if (error) {
@@ -162,7 +156,7 @@ export function Content(props: ContentProps) {
   const ContentContainer = ({ children }: ContentContainerProps) => (
     <div
       className={cn(
-        'relative container mx-auto mt-12 mb-20 h-[502px] overflow-hidden px-6 sm:px-6 md:px-9'
+        'relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9'
       )}
     >
       {children}
@@ -171,7 +165,7 @@ export function Content(props: ContentProps) {
 
   const ContentOverlay = ({ children }: ContentOverlay) => (
     <div
-      className="flex h-full w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:p-10"
+      className="flex h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10"
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -188,13 +182,6 @@ export function Content(props: ContentProps) {
     return 'slug' in data;
   };
 
-  const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
-    if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
-      return variant as SectionHeadingVariant;
-    }
-    return 'Default';
-  };
-
   const isSectionHeadingCardData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
@@ -207,85 +194,124 @@ export function Content(props: ContentProps) {
     return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
   };
 
+  const isSectionHeadingData = (
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+  ): data is SectionHeadingCardData => {
+    return (
+      'overline' in data && 'ctaCollection' in data && !('heading' in data) && !('slug' in data)
+    );
+  };
+
+  const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
+    if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
+      return variant as SectionHeadingVariant;
+    }
+    return 'Default';
+  };
+
   // ===== CONTENT CARD COMPONENT =====
   const ContentCard = ({ data, inspectorProps, variant }: ContentCardProps) => {
+    console.log('ContentCard data', data);
+    console.log('ContentCard variant', variant);
+    console.log('ContentCard isSectionHeadingData', isSectionHeadingData(data));
     if (variant === 'ContentLeft') {
       return (
         <>
           <ContentContainer>
-            <div className="relative h-full overflow-hidden px-6 sm:px-6 md:px-9">
+            {/* Image container - ensure it fills the container properly */}
+            <div className="absolute inset-0 overflow-hidden px-6 sm:px-6 md:px-9">
               <AirImage
                 link={data.image?.link}
                 altText={data.image?.altText ?? data.image?.title}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
-            <div className="absolute inset-0 flex items-center px-6 sm:px-6 md:px-9">
-              <ContentOverlay>
-                <Box
-                  direction="col"
-                  gap={12}
-                  className="w-full items-center justify-center text-center"
-                >
-                  <Box direction="col" gap={5}>
-                    <Box direction="col" gap={1.5}>
-                      {isProductData(data) && data.tags && (
+            {/* Mobile: Content at bottom, Desktop: Content on left */}
+            <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:items-center md:px-9">
+              <div className="w-full md:h-full md:w-auto">
+                <ContentOverlay>
+                  <Box
+                    direction="col"
+                    gap={12}
+                    className="w-full items-center justify-center text-center"
+                  >
+                    <Box direction="col" gap={5}>
+                      <Box direction="col" gap={1.5}>
+                        {isProductData(data) && data.tags && (
+                          <p
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'categories' })}
+                          >
+                            {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                          </p>
+                        )}
+                        {isContentGridItemData(data) && data.heading && (
+                          <p
+                            className="text-body-sm text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'heading' })}
+                          >
+                            {data.heading}
+                          </p>
+                        )}
+                        {isSectionHeadingData(data) && data.title && (
+                          <>
+                            <p
+                              className="text-text-on-invert uppercase"
+                              {...inspectorProps({ fieldId: 'heading.overline' })}
+                            >
+                              {data.overline}
+                            </p>
+                            <h2
+                              className="text-headline-sm md:text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
+                              {...inspectorProps({ fieldId: 'title' })}
+                            >
+                              {data.title}
+                            </h2>
+                          </>
+                        )}
+                      </Box>
+                      {data.description && (
                         <p
-                          className="text-body-sm text-text-on-invert uppercase"
-                          {...inspectorProps({ fieldId: 'categories' })}
+                          className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                          {...inspectorProps({ fieldId: 'excerpt' })}
                         >
-                          {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                          {data.description}
                         </p>
                       )}
-                      {isContentGridItemData(data) && data.heading && (
-                        <p
-                          className="text-body-sm text-text-on-invert uppercase"
-                          {...inspectorProps({ fieldId: 'heading' })}
-                        >
-                          {data.heading}
-                        </p>
-                      )}
-                      <h2
-                        className="text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
-                        {...inspectorProps({ fieldId: 'title' })}
-                      >
-                        {data.title}
-                      </h2>
                     </Box>
-                    {data.description && (
-                      <p
-                        className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                        {...inspectorProps({ fieldId: 'excerpt' })}
-                      >
-                        {data.description}
-                      </p>
-                    )}
-                  </Box>
 
-                  {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
-                  {isProductData(data) ? (
-                    <Button
-                      variant="white"
-                      {...inspectorProps({ fieldId: 'button' })}
-                      className="w-fit"
-                      asChild
-                    >
-                      <Link href={data.slug}>Explore {data.title}</Link>
-                    </Button>
-                  ) : (
-                    isContentGridItemData(data) && (
+                    {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+                    {isProductData(data) && (
                       <Button
                         variant="white"
                         {...inspectorProps({ fieldId: 'button' })}
                         className="w-fit"
-                        onClick={() => handleModalTrigger(data.ctaCollection?.items?.[0]?.modal)}
+                        asChild
                       >
-                        {data.ctaCollection?.items?.[0]?.text}
+                        <Link href={data.slug}>Explore {data.title}</Link>
                       </Button>
-                    )
-                  )}
-                </Box>
-              </ContentOverlay>
+                    )}
+                    {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
+                      <ModalCtaButton
+                        cta={data.ctaCollection.items[0]}
+                        variant="white"
+                        modalType="quote"
+                        onModalOpen={handleModalOpen}
+                        className="w-fit"
+                      />
+                    )}
+                    {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
+                      <ModalCtaButton
+                        cta={data.ctaCollection.items[0]}
+                        variant="white"
+                        modalType="quote"
+                        onModalOpen={handleModalOpen}
+                        className="w-fit"
+                      />
+                    )}
+                  </Box>
+                </ContentOverlay>
+              </div>
             </div>
           </ContentContainer>
         </>
@@ -351,49 +377,21 @@ export function Content(props: ContentProps) {
                   </Button>
                 ) : (
                   'ctaCollection' in data &&
-                  data.ctaCollection?.items?.map((cta, index) => {
-                    // If CTA has a modal, use button with modal trigger instead of link
-                    if (cta.modal) {
-                      return (
-                        <Button
-                          key={cta.sys?.id || index}
-                          variant={
-                            (data.ctaCollection?.items?.length ?? 0) === 1
-                              ? 'white'
-                              : index === 0
-                                ? 'primary'
-                                : 'white'
-                          }
-                          onClick={() => handleModalTrigger(cta.modal)}
-                        >
-                          {cta.text}
-                        </Button>
-                      );
-                    }
-
-                    // Otherwise, use link as before
-                    return (
-                      <Link
-                        key={cta.sys?.id || index}
-                        href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-                        {...(cta.externalLink
-                          ? { target: '_blank', rel: 'noopener noreferrer' }
-                          : {})}
-                      >
-                        <Button
-                          variant={
-                            (data.ctaCollection?.items?.length ?? 0) === 1
-                              ? 'white'
-                              : index === 0
-                                ? 'primary'
-                                : 'white'
-                          }
-                        >
-                          {cta.text}
-                        </Button>
-                      </Link>
-                    );
-                  })
+                  data.ctaCollection?.items?.map((cta, index) => (
+                    <ModalCtaButton
+                      key={cta.sys?.id || index}
+                      cta={cta}
+                      variant={
+                        (data.ctaCollection?.items?.length ?? 0) === 1
+                          ? 'white'
+                          : index === 0
+                            ? 'primary'
+                            : 'white'
+                      }
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                    />
+                  ))
                 )}
               </Box>
             </Box>
@@ -410,13 +408,12 @@ export function Content(props: ContentProps) {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="relative flex h-full items-center justify-center p-10">
-          {/* TODO: need to fix this */}
           <SectionHeading
             title={data.title}
             description={data.description}
+            ctaCollection={isSectionHeadingCardData(data) ? data.ctaCollection : undefined}
             variant={isSectionHeadingCardData(data) ? getValidVariant(data.variant) : 'Default'}
             componentType={'content'}
-            isDarkMode={true}
           />
         </div>
       </ContentContainer>
@@ -551,6 +548,7 @@ export function Content(props: ContentProps) {
       return (
         <>
           <SectionHeading
+            overline={sectionHeading.overline}
             title={sectionHeading.title}
             description={sectionHeading.description}
             ctaCollection={sectionHeading.ctaCollection}

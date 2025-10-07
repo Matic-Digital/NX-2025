@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
 import { Box } from '@/components/global/matic-ds';
+
 import { AirImage } from '@/components/Image/AirImage';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
-import type { OfficeLocation } from '@/types';
+import { OfficeLocationSkeleton } from '@/components/OfficeLocation/OfficeLocationSkeleton';
+
+import type { OfficeLocation } from '@/components/OfficeLocation/OfficeLocationSchema';
 
 interface LocationProps {
   sys: {
@@ -37,7 +41,7 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
   }, [sys.id]);
 
   if (isLoading) {
-    return <div>Loading location...</div>;
+    return <OfficeLocationSkeleton />;
   }
 
   if (!location) {

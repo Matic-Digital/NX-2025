@@ -1,19 +1,24 @@
 import { z } from 'zod';
-import { ImageSchema } from '../Image/ImageSchema';
-import { SliderItemSchema } from './SliderItemSchema';
-import { TimelineSliderItemSchema } from '../TimelineSlider/TimelineSliderItemSchema';
-import { TeamMemberSchema } from '../TeamMember/TeamMemberSchema';
-import { PostSliderItemSchema } from '../Post/PostSchema';
-import { SolutionSchema } from '../Solution/SolutionSchema';
+
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { PostSliderItemSchema } from '@/components/Post/PostSchema';
+import { ContentSliderItemSchema } from '@/components/Slider/components/ContentSliderItemSchema';
+import { SliderItemSchema } from '@/components/Slider/SliderItemSchema';
+import { SolutionSchema } from '@/components/Solution/SolutionSchema';
+import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
+import { TestimonialItemSchema } from '@/components/Testimonials/TestimonialsSchema';
+import { TimelineSliderItemSchema } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 
 // Union type for slider items
 const SliderItemUnion = z.union([
+  ContentSliderItemSchema,
   SliderItemSchema,
   PostSliderItemSchema,
   ImageSchema,
   SliderItemSchema,
   TimelineSliderItemSchema,
   TeamMemberSchema,
+  TestimonialItemSchema,
   SolutionSchema
 ]);
 
@@ -24,7 +29,8 @@ export const SliderSysSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  __typename: z.string().optional()
+  __typename: z.string().optional(),
+  context: z.enum(['ImageBetween', 'ContentGrid', 'default']).optional()
 });
 
 export type SliderSys = z.infer<typeof SliderSysSchema>;

@@ -30,6 +30,16 @@ import { Page } from '@/components/Page/Page';
 import { Header } from '@/components/Header/Header';
 import { Footer } from '@/components/Footer/Footer';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { ButtonPreview } from '@/components/Button/ButtonPreview';
+import { Menu } from '@/components/Menu/Menu';
+import { MenuItem } from '@/components/MenuItem/MenuItem';
+
+// Import Preview components (when they exist)
+import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
+import { BannerHeroPreview } from '@/components/BannerHero/BannerHeroPreview';
+import { ContentPreview } from '@/components/Content/ContentPreview';
+import { CtaBannerPreview } from '@/components/CtaBanner/CtaBannerPreview';
 
 // Import all API functions
 import {
@@ -46,20 +56,40 @@ import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getProductById } from '@/components/Product/ProductApi';
+import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { getButtonById } from '@/components/Button/ButtonApi';
+import { getMenuById } from '@/components/Menu/MenuApi';
+import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 
 // Content type configuration
 interface ContentTypeConfig {
-  fetchFn: (id: string, preview?: boolean) => Promise<unknown>;
+  fetchFn: (id: string, preview: boolean) => Promise<unknown>;
   component: React.ComponentType<any>;
+  previewComponent?: React.ComponentType<any>; // Optional dedicated preview component
   entityName: string;
   containerClass: string;
   usePageLayout?: boolean;
 }
 
 const contentTypeConfig: Record<string, ContentTypeConfig> = {
+  button: {
+    fetchFn: getButtonById,
+    component: ButtonPreview, // Button only has preview component
+    previewComponent: ButtonPreview,
+    entityName: 'Button',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'section-heading': {
+    fetchFn: getSectionHeadingById,
+    component: SectionHeading,
+    previewComponent: SectionHeadingPreview,
+    entityName: 'SectionHeading',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
   'banner-hero': {
     fetchFn: getBannerHero,
     component: BannerHero,
+    previewComponent: BannerHeroPreview,
     entityName: 'BannerHero',
     containerClass: 'min-h-screen' // Full height for hero sections
   },
@@ -78,12 +108,14 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   content: {
     fetchFn: getContentById,
     component: Content,
+    previewComponent: ContentPreview,
     entityName: 'Content',
     containerClass: 'min-h-screen bg-white p-8'
   },
   'cta-banner': {
     fetchFn: getCtaBannerById,
     component: CtaBanner,
+    previewComponent: CtaBannerPreview,
     entityName: 'CtaBanner',
     containerClass: 'min-h-screen'
   },
@@ -130,15 +162,21 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getFooterById,
     component: Footer,
     entityName: 'Footer',
-    containerClass: 'bg-gray-900 text-white'
+    containerClass: 'bg-white text-white'
+  },
+  menu: {
+    fetchFn: getMenuById,
+    component: Menu,
+    entityName: 'Menu',
+    containerClass: 'min-h-screen bg-gray-50 p-8'
+  },
+  'menu-item': {
+    fetchFn: getMenuItemById,
+    component: MenuItem,
+    entityName: 'MenuItem',
+    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   }
-} as const;
-
-type _ContentType = keyof typeof contentTypeConfig;
-
-interface PreviewContentProps {
-  contentType: string;
-}
+};
 
 interface ContentfulContent {
   sys: { id: string };
@@ -147,6 +185,10 @@ interface ContentfulContent {
     footer?: unknown;
   };
   [key: string]: unknown;
+}
+
+interface PreviewContentProps {
+  contentType: string;
 }
 
 // Lightweight wrapper to render a Product using the Page component API
@@ -224,7 +266,10 @@ function PreviewContent({ contentType }: PreviewContentProps) {
     );
   }
 
-  const { component: Component, entityName, usePageLayout } = config;
+  const { component: Component, previewComponent: PreviewComponent, entityName, usePageLayout } = config;
+  
+  // Use PreviewComponent if available, otherwise fall back to regular Component
+  const ComponentToRender = PreviewComponent ?? Component;
 
   if (isLoading) {
     return (
@@ -273,7 +318,7 @@ function PreviewContent({ contentType }: PreviewContentProps) {
     return (
       <PageLayout header={pageHeader} footer={pageFooter}>
         <div {...inspectorProps}>
-          <Component {...(liveContent as any)} />
+          <ComponentToRender {...(liveContent as any)} />
         </div>
       </PageLayout>
     );
@@ -281,7 +326,7 @@ function PreviewContent({ contentType }: PreviewContentProps) {
 
   return (
     <div {...inspectorProps}>
-      <Component {...(liveContent as any)} />
+      <ComponentToRender {...(liveContent as any)} />
     </div>
   );
 }

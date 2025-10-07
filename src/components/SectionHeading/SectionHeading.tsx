@@ -2,25 +2,27 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { hasMarkdown, MarkdownRenderer } from './utils/MarkdownRenderer';
 import {
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
 // Utils
 import { cn } from '@/lib/utils';
-import { getSectionHeadingById } from './SectionHeadingApi';
 
 // Components
 import { Box } from '@/components/global/matic-ds';
-import { SectionHeadingSkeleton } from './SectionHeadingSkeleton';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
+import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 // Types
 import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
 import type { Modal } from '@/components/Modals/Modal';
-import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
 interface SectionHeadingProps extends Partial<SectionHeading> {
   sectionHeadingId?: string;
@@ -115,72 +117,123 @@ export function SectionHeading(props: SectionHeadingProps) {
   const gap = hasCtaCollection ? 12 : 0;
   const cols = { base: 1, md: 2, xl: hasCtaCollection ? 3 : 2 };
 
-  const HorizontalSectionHeading = () => (
-    <Box
-      gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
-      direction={{ base: 'col', md: 'row' }}
-      cols={{ base: 1, md: 2, xl: 3 }}
-      className="items-end"
-      {...inspectorProps({ fieldId: 'heading' })}
-    >
-      {/* title */}
-      <h2
-        className="text-foreground lg:text-display-lg col-span-2 w-full max-w-sm text-[56px] leading-[100%] tracking-[-1.1px] md:max-w-lg lg:max-w-3xl"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+  const HorizontalSectionHeading = () => {
+    // Check if description contains markdown to adjust alignment
+    const hasMarkdownContent =
+      sectionHeading.description && hasMarkdown(sectionHeading.description);
 
-      {/* cta */}
+    return (
       <Box
-        direction={hasCtaCollection ? 'col' : 'row'}
-        gap={8}
+        gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
+        direction={{ base: 'col', md: 'row' }}
+        cols={{ base: 1, md: 2, xl: 3 }}
+        className={hasMarkdownContent ? 'items-start' : 'items-end'}
         {...inspectorProps({ fieldId: 'heading' })}
-        className="col-span-2 w-full max-w-sm lg:max-w-md xl:col-span-1 xl:ml-auto xl:max-w-lg xl:items-end"
       >
-        {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
-          >
-            {sectionHeading.description}
-          </p>
-        )}
-
+        {/* overline and title */}
         <Box
-          gap={3}
-          {...inspectorProps({ fieldId: 'heading' })}
-          className="col-span-1 items-end xl:ml-auto"
+          direction="col"
+          gap={{ base: 2, md: 4 }}
+          className="col-span-2 w-full max-w-sm md:max-w-lg lg:max-w-3xl"
         >
-          {hasCtaCollection &&
-            sectionHeading.ctaCollection?.items?.map((cta, index) => {
-              const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
-              const defaultVariant =
-                totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
+          {sectionHeading.overline && (
+            <p
+              className="text-foreground uppercase"
+              {...inspectorProps({ fieldId: 'heading.overline' })}
+            >
+              {sectionHeading.overline}
+            </p>
+          )}
+          {/* title */}
+          {componentType === 'banner-hero' ? (
+            <h1
+              className="text-foreground lg:text-display-lg text-[56px] leading-[100%] tracking-[-1.1px]"
+              {...inspectorProps({ fieldId: 'heading.title' })}
+            >
+              {sectionHeading.title}
+            </h1>
+          ) : (
+            <h2
+              className="text-foreground text-headline-md text-[56px] leading-[100%] tracking-[-1.1px]"
+              {...inspectorProps({ fieldId: 'heading.title' })}
+            >
+              {sectionHeading.title}
+            </h2>
+          )}
+        </Box>
 
-              return (
-                <ModalCtaButton
-                  key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
-              );
-            })}
+        {/* cta */}
+        <Box
+          direction={hasCtaCollection ? 'col' : 'row'}
+          gap={8}
+          {...inspectorProps({ fieldId: 'heading' })}
+          className="col-span-2 w-full max-w-sm lg:max-w-md xl:col-span-1 xl:ml-auto xl:max-w-lg xl:items-end"
+        >
+          {sectionHeading.description &&
+            (hasMarkdown(sectionHeading.description) ? (
+              <MarkdownRenderer
+                content={sectionHeading.description}
+                className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+                forceLeftAlign={true}
+                {...inspectorProps({ fieldId: 'heading.description' })}
+              />
+            ) : (
+              <p
+                {...inspectorProps({ fieldId: 'heading.description' })}
+                className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+              >
+                {sectionHeading.description}
+              </p>
+            ))}
+
+          <Box
+            gap={3}
+            {...inspectorProps({ fieldId: 'heading' })}
+            className="col-span-1 items-end xl:ml-auto"
+          >
+            {hasCtaCollection &&
+              sectionHeading.ctaCollection?.items?.map((cta, index) => {
+                const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
+                const defaultVariant =
+                  totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
+
+                return (
+                  <div
+                    key={cta.sys?.id || index}
+                    {...inspectorProps({ fieldId: `ctaCollection.${index}` })}
+                  >
+                    <ModalCtaButton
+                      cta={cta}
+                      variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                      onModalOpen={handleModalOpen}
+                    />
+                  </div>
+                );
+              })}
+          </Box>
         </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
 
   const StackedSectionHeading = () => (
     <Box direction="col" gap={12} {...inspectorProps({ fieldId: 'heading' })}>
       {/* title */}
-      <h2
-        className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+      {componentType === 'banner-hero' ? (
+        <h1
+          className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h1>
+      ) : (
+        <h2
+          className="text-foreground lg:text-display-lg w-full text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h2>
+      )}
 
       {/* cta */}
       <Box
@@ -189,14 +242,22 @@ export function SectionHeading(props: SectionHeadingProps) {
         {...inspectorProps({ fieldId: 'heading' })}
         className="w-full"
       >
-        {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
-          >
-            {sectionHeading.description}
-          </p>
-        )}
+        {sectionHeading.description &&
+          (hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p
+              {...inspectorProps({ fieldId: 'heading.description' })}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+            >
+              {sectionHeading.description}
+            </p>
+          ))}
 
         <Box gap={3} {...inspectorProps({ fieldId: 'heading' })} className="items-end lg:ml-auto">
           {hasCtaCollection &&
@@ -206,12 +267,16 @@ export function SectionHeading(props: SectionHeadingProps) {
                 totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
 
               return (
-                <ModalCtaButton
+                <div
                   key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
+                  {...inspectorProps({ fieldId: `ctaCollection.${index}` })}
+                >
+                  <ModalCtaButton
+                    cta={cta}
+                    variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                    onModalOpen={handleModalOpen}
+                  />
+                </div>
               );
             })}
         </Box>
@@ -227,12 +292,21 @@ export function SectionHeading(props: SectionHeadingProps) {
       {...inspectorProps({ fieldId: 'heading' })}
     >
       {/* title */}
-      <h2
-        className="text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
-        {...inspectorProps({ fieldId: 'heading.title' })}
-      >
-        {sectionHeading.title}
-      </h2>
+      {componentType === 'banner-hero' ? (
+        <h1
+          className="text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h1>
+      ) : (
+        <h2
+          className="text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+          {...inspectorProps({ fieldId: 'heading.title' })}
+        >
+          {sectionHeading.title}
+        </h2>
+      )}
 
       {/* cta */}
       <Box
@@ -241,14 +315,22 @@ export function SectionHeading(props: SectionHeadingProps) {
         {...inspectorProps({ fieldId: 'heading' })}
         className="col-span-full w-full items-center"
       >
-        {sectionHeading.description && (
-          <p
-            {...inspectorProps({ fieldId: 'heading.description' })}
-            className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
-          >
-            {sectionHeading.description}
-          </p>
-        )}
+        {sectionHeading.description &&
+          (hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p
+              {...inspectorProps({ fieldId: 'heading.description' })}
+              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+            >
+              {sectionHeading.description}
+            </p>
+          ))}
 
         <Box
           gap={3}
@@ -262,12 +344,16 @@ export function SectionHeading(props: SectionHeadingProps) {
                 totalButtons === 1 ? 'primary' : index === 0 ? 'white' : 'primary';
 
               return (
-                <ModalCtaButton
+                <div
                   key={cta.sys?.id || index}
-                  cta={cta}
-                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                />
+                  {...inspectorProps({ fieldId: `ctaCollection.${index}` })}
+                >
+                  <ModalCtaButton
+                    cta={cta}
+                    variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                    onModalOpen={handleModalOpen}
+                  />
+                </div>
               );
             })}
         </Box>
@@ -276,7 +362,12 @@ export function SectionHeading(props: SectionHeadingProps) {
   );
 
   const DefaultSectionHeading = () => (
-    <Box cols={cols} gap={gap} {...inspectorProps({ fieldId: 'heading' })}>
+    <Box
+      cols={cols}
+      gap={gap}
+      {...inspectorProps({ fieldId: 'heading' })}
+      className={isDarkMode ? 'dark' : ''}
+    >
       {/* overline and title */}
       <Box
         direction="col"
@@ -295,17 +386,34 @@ export function SectionHeading(props: SectionHeadingProps) {
             {sectionHeading.overline}
           </p>
         )}
-        <h2
-          className="text-headline-md text-foreground leading-tight"
-          {...inspectorProps({ fieldId: 'heading.title' })}
-        >
-          {sectionHeading.title}
-        </h2>
-        {sectionHeading.description && (
-          <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
-            {sectionHeading.description}
-          </p>
+        {componentType === 'banner-hero' ? (
+          <h1
+            className="text-display-lg text-foreground leading-tight"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h1>
+        ) : (
+          <h2
+            className="text-headline-md text-foreground leading-tight"
+            {...inspectorProps({ fieldId: 'heading.title' })}
+          >
+            {sectionHeading.title}
+          </h2>
         )}
+        {sectionHeading.description &&
+          (hasMarkdown(sectionHeading.description) ? (
+            <MarkdownRenderer
+              content={sectionHeading.description}
+              className="text-foreground"
+              forceLeftAlign={true}
+              {...inspectorProps({ fieldId: 'heading.description' })}
+            />
+          ) : (
+            <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
+              {sectionHeading.description}
+            </p>
+          ))}
       </Box>
 
       {/* cta */}
@@ -323,12 +431,16 @@ export function SectionHeading(props: SectionHeadingProps) {
               totalButtons === 1 ? 'primary' : index === 0 ? 'primary' : 'outline';
 
             return (
-              <ModalCtaButton
+              <div
                 key={cta.sys?.id || index}
-                cta={cta}
-                variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                onModalOpen={handleModalOpen}
-              />
+                {...inspectorProps({ fieldId: `ctaCollection.${index}` })}
+              >
+                <ModalCtaButton
+                  cta={cta}
+                  variant={getButtonVariant(index, totalButtons, defaultVariant)}
+                  onModalOpen={handleModalOpen}
+                />
+              </div>
             );
           })}
       </Box>

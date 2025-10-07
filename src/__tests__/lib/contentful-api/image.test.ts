@@ -14,11 +14,12 @@
  * - Proper parameter passing to the GraphQL API
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as imageAPI from '@/components/Image/ImageApi';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import { fetchGraphQL } from '@/lib/api';
 import { ContentfulError, NetworkError } from '@/lib/errors';
-import type { Image } from '@/types';
+
+import * as imageAPI from '@/components/Image/ImageApi';
 
 // Mock the fetchGraphQL function
 vi.mock('@/lib/api', () => ({

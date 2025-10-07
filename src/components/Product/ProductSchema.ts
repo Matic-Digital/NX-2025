@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
 import { z } from 'zod';
-import { AssetSchema } from '../Asset/AssetSchema';
-import { ImageSchema } from '../Image/ImageSchema';
-import { CtaBannerSchema } from '../CtaBanner/CtaBannerSchema';
-import { ContentGridSchema } from '../ContentGrid/ContentGridSchema';
-import { BannerHeroSchema } from '../BannerHero/BannerHeroSchema';
-import { ImageBetweenSchema } from '../ImageBetween/ImageBetweenSchema';
-import { ContentSchema } from '../Content/ContentSchema';
+
+import { AssetSchema } from '@/components/Asset/AssetSchema';
+import { BannerHeroSchema } from '@/components/BannerHero/BannerHeroSchema';
+import { ContentSchema } from '@/components/Content/ContentSchema';
+import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { ImageBetweenSchema } from '@/components/ImageBetween/ImageBetweenSchema';
 
 export const ProductSysSchema = z.object({
   sys: z.object({

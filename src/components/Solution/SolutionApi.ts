@@ -2,15 +2,15 @@
 
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Solution } from '@/components/Solution/SolutionSchema';
-
-import { ContentfulError, NetworkError } from '@/lib/errors';
 
 // Basic Solution fields for use in sliders and lists
 export const SOLUTION_GRAPHQL_FIELDS = `
@@ -219,6 +219,42 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
       throw new NetworkError(`Error fetching Solution by slug: ${error.message}`);
     }
     throw new Error('Unknown error fetching Solution by slug');
+  }
+}
+
+export async function getAllSolutions(preview = false): Promise<Solution[]> {
+  try {
+    const response = await fetchGraphQL<Solution>(
+      `query GetAllSolutions($preview: Boolean!) {
+        solutionCollection(preview: $preview, order: sys_publishedAt_DESC) {
+          items {
+            ${SOLUTION_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { solutionCollection?: { items?: Solution[] } };
+
+    if (!data.solutionCollection?.items?.length) {
+      return [];
+    }
+
+    return data.solutionCollection.items;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Solutions: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Solutions');
   }
 }
 

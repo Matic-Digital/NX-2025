@@ -1,15 +1,11 @@
-import Link from 'next/link';
-import { Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useContentfulInspectorMode } from '@contentful/live-preview/react';
+import { useModalButtonLogic } from '@/components/Button/hooks/UseModalButtonLogic';
+import { ModalButtonContent } from '@/components/Button/components/ModalButtonContent';
+
+import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
 import type { Modal } from '@/components/Modals/Modal';
-import type { Button as ButtonType } from './ButtonSchema';
 
 export type ModalType = 'quote' | 'support';
-
-// Icon mapping for button icons
-const iconMap = {
-  Email: Mail
-} as const;
 
 interface ModalCtaButtonProps {
   cta: ButtonType;
@@ -19,6 +15,10 @@ interface ModalCtaButtonProps {
   className?: string;
 }
 
+/**
+ * Main ModalCtaButton component - orchestrates all layers
+ * Pure composition of logic and presentation layers
+ */
 export function ModalCtaButton({
   cta,
   variant,
@@ -26,42 +26,24 @@ export function ModalCtaButton({
   onModalOpen,
   className
 }: ModalCtaButtonProps) {
-  console.log('cta', cta);
-  // Render icon based on the icon type
-  const renderIcon = () => {
-    if (!cta.icon) return null;
+  // Business logic layer
+  const { isModalButton, linkProps, handleModalClick } = useModalButtonLogic(cta, modalType);
+  
+  // Contentful Live Preview inspector props
+  const inspectorProps = useContentfulInspectorMode({ entryId: cta.sys?.id });
 
-    const IconComponent = iconMap[cta.icon];
-    if (!IconComponent) return null;
-
-    return <IconComponent className="ml-2 h-4 w-4" />;
-  };
-
-  if (cta.modal) {
-    return (
-      <Button
-        variant={variant}
-        className={className}
-        onClick={() => {
-          if (cta.modal) {
-            onModalOpen(cta.modal, modalType);
-          }
-        }}
-      >
-        {cta.text}
-      </Button>
-    );
-  }
+  // Handle modal click
+  const onClick = () => handleModalClick(onModalOpen);
 
   return (
-    <Link
-      href={cta.internalLink?.slug ?? cta.externalLink ?? '#'}
-      {...(cta.externalLink ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-    >
-      <Button variant={variant} className={className}>
-        {cta.text}
-        {renderIcon()}
-      </Button>
-    </Link>
+    <ModalButtonContent
+      cta={cta}
+      variant={variant}
+      className={className}
+      isModalButton={isModalButton}
+      linkProps={linkProps}
+      onModalClick={onClick}
+      inspectorProps={inspectorProps}
+    />
   );
 }

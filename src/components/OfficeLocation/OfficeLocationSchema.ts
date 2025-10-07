@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { ImageSchema } from '../Image/ImageSchema';
+
+import { ImageSchema } from '@/components/Image/ImageSchema';
 
 export const OfficeLocationSchema = z.object({
   sys: z.object({

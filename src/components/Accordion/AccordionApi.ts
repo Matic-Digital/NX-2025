@@ -1,7 +1,10 @@
-import { SYS_FIELDS } from '../../lib/contentful-api/graphql-fields';
-import { fetchGraphQL } from '../../lib/api';
-import type { Accordion, AccordionItem } from './AccordionSchema';
-import { ContentfulError, NetworkError } from '../../lib/errors';
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
+
+import type { Accordion, AccordionItem } from '@/components/Accordion/AccordionSchema';
 
 export const ACCORDION_ITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -11,8 +14,15 @@ export const ACCORDION_ITEM_GRAPHQL_FIELDS = `
   image {
     ${SYS_FIELDS}
   }
+  backgroundImage {
+    ${SYS_FIELDS}
+    link
+  }
   tags
   variant
+  cta {
+      ${BUTTON_GRAPHQL_FIELDS}
+    }
 `;
 
 export const ACCORDION_GRAPHQL_FIELDS = `

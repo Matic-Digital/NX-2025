@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { PageSchema } from '@/components/Page/PageSchema';
 import { PageListSchema } from '@/components/PageList/PageListSchema';
@@ -9,11 +10,28 @@ export const HeaderSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  name: z.string().optional(),
-  logo: AssetSchema.optional(),
+  name: z.string(),
+  logo: AssetSchema,
   navLinksCollection: z
     .object({
       items: z.array(NavLinksUnion)
+    })
+    .optional(),
+  menu: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      __typename: z.string()
+    })
+    .optional(),
+  search: z.boolean().optional(),
+  overflow: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      __typename: z.string()
     })
     .optional(),
   __typename: z.string().optional()

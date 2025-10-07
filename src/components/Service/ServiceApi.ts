@@ -1,10 +1,10 @@
 import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Service, ServiceResponse } from '@/components/Service/ServiceSchema';
-
-import { ContentfulError, NetworkError } from '@/lib/errors';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 
 // Service fields
 export const SERVICE_GRAPHQL_FIELDS = `
@@ -23,7 +23,7 @@ export async function getAllServices(preview = false): Promise<ServiceResponse> 
   try {
     const response = await fetchGraphQL<Service>(
       `query GetAllServices($preview: Boolean!) {
-        serviceCollection(preview: $preview, order: datePublished_DESC) {
+        serviceCollection(preview: $preview, order: sys_publishedAt_DESC) {
           items {
             ${SERVICE_GRAPHQL_FIELDS}
           }
