@@ -5,7 +5,7 @@
  * - Real-time field validation using Zod
  * - Accessible form controls with ARIA attributes
  * - Loading and error states
- * - Toast notifications for form submission feedback
+ * - Toast notifications for form submission feedback.
  */
 import { useState } from 'react';
 import { useForm } from '@tanstack/react-form';
