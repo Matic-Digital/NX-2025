@@ -431,7 +431,7 @@ export function Content(props: ContentProps) {
       onOpenChange={setIsModalOpen}
       title={activeModal?.title ?? 'Request a Quote'}
       description={activeModal?.description ?? 'Please fill out the form below to request a quote.'}
-      sys={activeModal?.sys ?? { id: 'content-modal' }}
+      formId={activeModal?.sys?.id ?? 'default-form-id'}
     />
   );
 
@@ -575,7 +575,7 @@ export function Content(props: ContentProps) {
         description={
           activeModal?.description ?? 'Please fill out the form below to request a quote.'
         }
-        sys={activeModal?.sys ?? { id: 'content-modal' }}
+        formId={activeModal?.sys?.id ?? 'default-form-id'}
       />
     </>
   );

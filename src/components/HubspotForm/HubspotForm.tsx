@@ -7,44 +7,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { FieldRenderer, validateField, type HubSpotFormData } from './fields';
+import type { HubspotForm } from './HubspotFormSchema';
+import { getFormIdFromHubspotForm } from './HubspotFormSchema';
 
 interface HubspotFormProps {
-  formId: string;
+  hubspotForm?: HubspotForm;
+  formId?: string;
   onSubmit?: (data: Record<string, unknown>) => void;
   className?: string;
 }
 
 const HubspotForm: React.FC<HubspotFormProps> = ({
-  formId,
+  hubspotForm,
+  formId: propFormId,
   onSubmit,
   className = ''
 }) => {
+  // Get form ID from either the hubspotForm prop or the formId prop
+  const formId = hubspotForm ? getFormIdFromHubspotForm(hubspotForm) : propFormId;
+  
+  // Initialize all hooks at the top level
   const [formData, setFormData] = useState<HubSpotFormData | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Fetch form data from our API
-  useEffect(() => {
-    const fetchFormData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/hubspot/form/${formId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch form data');
-        }
-        const data = await response.json() as HubSpotFormData;
-        setFormData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load form');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchFormData();
-  }, [formId]);
 
   // Create form with TanStack Form
   const form = useForm({
@@ -80,6 +67,46 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
     },
   });
 
+  // Fetch form data from our API
+  useEffect(() => {
+    const fetchFormData = async () => {
+      if (!formId) {
+        setError('No form ID provided');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/hubspot/form/${formId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch form data');
+        }
+        const data = await response.json() as HubSpotFormData;
+        setFormData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load form');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchFormData();
+  }, [formId]);
+
+  // Early return after all hooks are called
+  if (!formId) {
+    return (
+      <Card className={className}>
+        <CardContent className="p-8">
+          <div className="text-center text-red-600">
+            <p>Error: No form ID provided</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (loading) {
     return (
       <Card className={className}>
@@ -108,10 +135,13 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
   const isFirstStep = currentStep === 0;
   const progress = ((currentStep + 1) / formData.steps.length) * 100;
 
+  // Get form title from Contentful or fallback to HubSpot form name
+  const formTitle = hubspotForm?.title ?? (formData.formData as Record<string, unknown>)?.name as string ?? 'HubSpot Form';
+
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>{(formData.formData as Record<string, unknown>)?.name as string ?? 'HubSpot Form'}</CardTitle>
+        <CardTitle>{formTitle}</CardTitle>
         {formData.metadata.isMultiStep && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600">

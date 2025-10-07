@@ -1,6 +1,5 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { extractFormIdFromLink } from '@/components/HubspotForm/HubspotFormApi';
 
 // HubSpot v3 API Types
 interface HubSpotV3FormField {
@@ -555,20 +554,8 @@ export async function GET(
       );
     }
 
-    // Check if formId is actually a form link URL
-    let actualFormId = formId;
-    if (formId.includes('hubspot.com')) {
-      const extractedId = extractFormIdFromLink(formId);
-      if (!extractedId) {
-        return NextResponse.json(
-          { error: 'Invalid HubSpot form link' },
-          { status: 400 }
-        );
-      }
-      actualFormId = extractedId;
-    }
-
-    const formData = await getHubSpotV3FormData(actualFormId);
+    // Use the formId directly since we're now passing form IDs, not links
+    const formData = await getHubSpotV3FormData(formId);
     
     // Analyze steps - HubSpot forms can have multiple strategies for steps
     const steps = analyzeFormSteps(formData);
