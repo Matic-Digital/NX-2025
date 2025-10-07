@@ -1,23 +1,28 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { FieldRenderer, validateField } from './fields';
 import { useForm } from '@tanstack/react-form';
+
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { FieldRenderer, validateField, type HubSpotFormData } from './fields';
-import type { HubspotForm } from './HubspotFormSchema';
-import { getFormIdFromHubspotForm } from './HubspotFormSchema';
+
+import { getFormIdFromHubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+
+import type { HubSpotFormData } from './fields';
+import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 interface HubspotFormProps {
-  hubspotForm?: HubspotForm;
+  hubspotForm?: HubspotFormType;
   formId?: string;
   onSubmit?: (data: Record<string, unknown>) => void;
   className?: string;
 }
 
-const HubspotForm: React.FC<HubspotFormProps> = ({
+export const HubspotForm: React.FC<HubspotFormProps> = ({
   hubspotForm,
   formId: propFormId,
   onSubmit,
@@ -25,7 +30,7 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
 }) => {
   // Get form ID from either the hubspotForm prop or the formId prop
   const formId = hubspotForm ? getFormIdFromHubspotForm(hubspotForm) : propFormId;
-  
+
   // Initialize all hooks at the top level
   const [formData, setFormData] = useState<HubSpotFormData | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
@@ -43,9 +48,9 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
         const response = await fetch(`/api/hubspot/form/${formId}/submit`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
-          body: JSON.stringify(value),
+          body: JSON.stringify(value)
         });
 
         if (!response.ok) {
@@ -64,7 +69,7 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
       } finally {
         setSubmitting(false);
       }
-    },
+    }
   });
 
   // Fetch form data from our API
@@ -82,7 +87,7 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
         if (!response.ok) {
           throw new Error('Failed to fetch form data');
         }
-        const data = await response.json() as HubSpotFormData;
+        const data = (await response.json()) as HubSpotFormData;
         setFormData(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load form');
@@ -136,7 +141,10 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
   const progress = ((currentStep + 1) / formData.steps.length) * 100;
 
   // Get form title from Contentful or fallback to HubSpot form name
-  const formTitle = hubspotForm?.title ?? (formData.formData as Record<string, unknown>)?.name as string ?? 'HubSpot Form';
+  const formTitle =
+    hubspotForm?.title ??
+    ((formData.formData as Record<string, unknown>)?.name as string) ??
+    'HubSpot Form';
 
   return (
     <Card className={className}>
@@ -145,7 +153,9 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
         {formData.metadata.isMultiStep && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-gray-600">
-              <span>Step {currentStep + 1} of {formData.steps.length}</span>
+              <span>
+                Step {currentStep + 1} of {formData.steps.length}
+              </span>
               <span>{Math.round(progress)}% Complete</span>
             </div>
             <Progress value={progress} className="w-full" />
@@ -167,15 +177,15 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
             {currentStepData?.stepName && (
               <h3 className="text-lg font-semibold">{currentStepData.stepName}</h3>
             )}
-            
+
             {currentStepData?.fields
-              .filter(field => !field.hidden)
+              .filter((field) => !field.hidden)
               .map((field) => (
                 <form.Field
                   key={field.name}
                   name={field.name}
                   validators={{
-                    onChange: validateField(field),
+                    onChange: validateField(field)
                   }}
                 >
                   {(fieldApi) => (
@@ -195,7 +205,7 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+              onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
               disabled={isFirstStep}
               className="flex items-center"
             >
@@ -205,7 +215,10 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
 
             {isLastStep ? (
               <form.Subscribe
-                selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
+                selector={(state) => ({
+                  canSubmit: state.canSubmit,
+                  isSubmitting: state.isSubmitting
+                })}
               >
                 {({ canSubmit, isSubmitting: _isSubmitting }) => (
                   <Button
@@ -221,7 +234,9 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
             ) : (
               <Button
                 type="button"
-                onClick={() => setCurrentStep(prev => Math.min(formData.steps.length - 1, prev + 1))}
+                onClick={() =>
+                  setCurrentStep((prev) => Math.min(formData.steps.length - 1, prev + 1))
+                }
                 className="flex items-center"
               >
                 Next
@@ -240,5 +255,3 @@ const HubspotForm: React.FC<HubspotFormProps> = ({
     </Card>
   );
 };
-
-export default HubspotForm;

@@ -1,5 +1,6 @@
 import { Box, Container } from '@/components/global/matic-ds';
 
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 
 import type { NewsletterSignup } from '@/components/Forms/NewsletterSignup/NewsletterSignupSchema';
@@ -29,6 +30,7 @@ export function NewsletterSignupForm({ data, image }: NewsletterSignupFormProps)
         <Box direction="col" gap={4} className="justify-center h-full w-full">
           <h2 className="text-text-on-invert text-headline-md">{data.title}</h2>
           <p className="text-text-on-invert text-body-xs">{data.description}</p>
+          <HubspotForm formId={data.formId} className="w-full h-auto" />
         </Box>
       </Container>
     </div>

@@ -36,7 +36,7 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { PageList } from '@/components/PageList/PageList';
 import { RegionsMap } from '@/components/Region/RegionsMap';
 import { RegionStats } from '@/components/RegionStats/RegionStats';
-import RichContent from '@/components/RichContent/RichContent';
+import { RichContent } from '@/components/RichContent/RichContent';
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Dialog,
   DialogContent,
@@ -6,7 +7,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import HubspotForm from '@/components/HubspotForm/HubspotForm';
+
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 
 interface RequestAQuoteModalProps {
   isOpen: boolean;
@@ -30,32 +32,26 @@ export function RequestAQuoteModal({
   const handleFormSubmit = (data: Record<string, unknown>) => {
     console.log('Quote request submitted:', data);
     // You can add additional logic here like tracking, notifications, etc.
-    
+
     // Close the modal after successful submission
     onOpenChange(false);
   };
 
   // Get modal content with fallbacks
   const modalTitle = title ?? 'Request a Quote';
-  const modalDescription = description ?? 'Fill out the form below to request a quote for our services.';
-
+  const modalDescription =
+    description ?? 'Fill out the form below to request a quote for our services.';
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{modalTitle}</DialogTitle>
-          <DialogDescription>
-            {modalDescription}
-          </DialogDescription>
+          <DialogDescription>{modalDescription}</DialogDescription>
         </DialogHeader>
-        
+
         <div className="mt-4">
-          <HubspotForm
-            formId={hubspotFormId}
-            onSubmit={handleFormSubmit}
-            className="w-full"
-          />
+          <HubspotForm formId={hubspotFormId} onSubmit={handleFormSubmit} className="w-full" />
         </div>
       </DialogContent>
     </Dialog>

@@ -143,5 +143,3 @@ export const AirImage: React.FC<AirImageType> = (props) => {
     />
   );
 };
-
-export default AirImage;

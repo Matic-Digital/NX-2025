@@ -13,7 +13,7 @@ import { cn, formatDate } from '@/lib/utils';
 
 import { Box } from '@/components/global/matic-ds';
 
-import AirImage from '@/components/Image/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { categoryColorMap } from '@/components/Post/PostCategories';

@@ -24,37 +24,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
 
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
-import { getPageListBySlug } from '@/components/PageList/PageListApi';
-import { getProductBySlug } from '@/components/Product/ProductApi';
-import { getServiceBySlug } from '@/components/Service/ServiceApi';
-import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
-import { getPostBySlug } from '@/components/Post/PostApi';
-import { getPageBySlug } from '@/components/Page/PageApi';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
+
+import {
+  extractOpenGraphImage,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
+
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Content } from '@/components/Content/Content';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import RichContent from '@/components/RichContent/RichContent';
-import { Slider } from '@/components/Slider/Slider';
+import { getPageBySlug } from '@/components/Page/PageApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { getPageListBySlug } from '@/components/PageList/PageListApi';
+import { getPostBySlug } from '@/components/Post/PostApi';
+import { getProductBySlug } from '@/components/Product/ProductApi';
 import { RegionsMap } from '@/components/Region/RegionsMap';
+import { RichContent } from '@/components/RichContent/RichContent';
+import { getServiceBySlug } from '@/components/Service/ServiceApi';
+import { Slider } from '@/components/Slider/Slider';
+import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
+
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Page } from '@/components/Page/PageSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type { PageList as PageListType } from '@/components/PageList/PageListSchema';
+import type { Post } from '@/components/Post/PostSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
-import type { Post } from '@/components/Post/PostSchema';
-import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
-import {
-  extractOpenGraphImage,
-  extractSEOTitle,
-  extractSEODescription
-} from '@/lib/metadata-utils';
+import type { Metadata } from 'next';
 
 // Define the component mapping for content items
 const componentMap = {

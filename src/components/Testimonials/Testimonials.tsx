@@ -45,7 +45,7 @@ export function Testimonials({ sys }: TestimonialsProps) {
     <ErrorBoundary>
       <Section>
         <Container className="px-0">
-          <Box direction={{ base: "col", md: "row" }} gap={8} className="">
+          <Box direction={{ base: 'col', md: 'row' }} gap={8} className="">
             {testimonials.itemsCollection.items.map((item) => (
               <TestimonialItem key={item.sys?.id} item={item} />
             ))}
@@ -55,5 +55,3 @@ export function Testimonials({ sys }: TestimonialsProps) {
     </ErrorBoundary>
   );
 }
-
-export default Testimonials;

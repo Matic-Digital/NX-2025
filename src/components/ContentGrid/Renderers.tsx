@@ -6,7 +6,7 @@ import { contentTypeDetectors } from '@/lib/component-grid/utils';
 import { Box } from '@/components/global/matic-ds';
 
 import { Accordion } from '@/components/Accordion/Accordion';
-import Collection from '@/components/Collection/Collection';
+import { Collection } from '@/components/Collection/Collection';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';

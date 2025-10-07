@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/HubspotForm/HubspotFormApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 
 import type { Modal } from '@/components/Modals/Modal';
 
@@ -30,10 +30,7 @@ export const MODAL_MINIMAL_FIELDS = `
 // CONTENTFUL API FUNCTIONS
 // ============================================================================
 
-export async function getModalById(
-  id: string,
-  preview = false
-): Promise<Modal | null> {
+export async function getModalById(id: string, preview = false): Promise<Modal | null> {
   const query = `
     query GetModalById($id: String!, $preview: Boolean!) {
       modal(id: $id, preview: $preview) {
@@ -65,10 +62,7 @@ export async function getModalById(
   }
 }
 
-export async function getModalsByIds(
-  modalIds: string[],
-  preview = false
-): Promise<Modal[]> {
+export async function getModalsByIds(modalIds: string[], preview = false): Promise<Modal[]> {
   if (modalIds.length === 0) {
     return [];
   }

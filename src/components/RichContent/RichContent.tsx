@@ -491,7 +491,7 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
   return nodes.map((node: ContentfulNode) => processNode(node));
 };
 
-function RichContent({
+export function RichContent({
   sys,
   title,
   tableOfContents,
@@ -757,5 +757,3 @@ function RichContent({
     </div>
   );
 }
-
-export default RichContent;
