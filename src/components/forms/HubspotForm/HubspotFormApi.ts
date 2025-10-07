@@ -11,12 +11,14 @@ import type { HubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSche
 export const HUBSPOTFORM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
+  description
   formId
 `;
 
 export const HUBSPOTFORM_MINIMAL_FIELDS = `
   sys { id }
   title
+  description
   formId
   __typename
 `;
