@@ -192,5 +192,3 @@ export function ContentfulPreviewProvider({
     </ContentfulLivePreviewProvider>
   );
 }
-
-export default ContentfulPreviewProvider;

@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import HubspotForm from '@/components/HubspotForm/HubspotForm';
-import { FormMetadataDisplay } from '@/components/HubspotForm/FormMetadataDisplay';
-import type { HubSpotFormData } from '@/components/HubspotForm/fields/types';
+import { useEffect, useState } from 'react';
+
+import { FormMetadataDisplay } from '@/components/Forms/HubspotForm/FormMetadataDisplay';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+
+import type { HubSpotFormData } from '@/components/Forms/HubspotForm/fields/types';
 
 export default function DynamicFormDemo() {
   const [formMetadata, setFormMetadata] = useState<HubSpotFormData | null>(null);
   const [loadingMetadata, setLoadingMetadata] = useState(true);
-  const formId = "1d392e69-b470-4703-afa6-19b01f490b84";
+  const formId = '1d392e69-b470-4703-afa6-19b01f490b84';
 
   const handleSubmit = (data: Record<string, unknown>) => {
     console.log('Form submitted:', data);
@@ -22,7 +24,7 @@ export default function DynamicFormDemo() {
         setLoadingMetadata(true);
         const response = await fetch(`/api/hubspot/form/${formId}`);
         if (response.ok) {
-          const data = await response.json() as HubSpotFormData;
+          const data = (await response.json()) as HubSpotFormData;
           setFormMetadata(data);
         }
       } catch (error) {
@@ -38,18 +40,12 @@ export default function DynamicFormDemo() {
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">
-          Dynamic HubSpot Form Demo
-        </h1>
-        
+        <h1 className="text-3xl font-bold text-center mb-8">Dynamic HubSpot Form Demo</h1>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form Section */}
           <div>
-            <HubspotForm
-              formId={formId}
-              onSubmit={handleSubmit}
-              className="w-full"
-            />
+            <HubspotForm formId={formId} onSubmit={handleSubmit} className="w-full" />
           </div>
 
           {/* Metadata Section */}
@@ -63,9 +59,7 @@ export default function DynamicFormDemo() {
             ) : formMetadata ? (
               <FormMetadataDisplay hubspotData={formMetadata} />
             ) : (
-              <div className="p-4 text-center text-gray-500">
-                Failed to load form metadata
-              </div>
+              <div className="p-4 text-center text-gray-500">Failed to load form metadata</div>
             )}
           </div>
         </div>

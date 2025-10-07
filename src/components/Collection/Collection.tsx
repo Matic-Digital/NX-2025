@@ -5,24 +5,24 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
+import { CollectionFilterButtons } from '@/components/Collection/components/CollectionFilterButtons';
+import { CollectionSearchBar } from '@/components/Collection/components/CollectionSearchBar';
+import { CollectionSortDropdown } from '@/components/Collection/components/CollectionSortDropdown';
 import { PageCollection } from '@/components/Collection/components/PageCollection';
+import { Pagination } from '@/components/Collection/components/Pagination';
 import { PostCollection } from '@/components/Collection/components/PostCollection';
 import { SearchCard } from '@/components/Collection/components/SearchCard';
-import { Pagination } from '@/components/Collection/components/Pagination';
-import { CollectionSearchBar } from '@/components/Collection/components/CollectionSearchBar';
-import { CollectionFilterButtons } from '@/components/Collection/components/CollectionFilterButtons';
-import { CollectionSortDropdown } from '@/components/Collection/components/CollectionSortDropdown';
-import { detectContentType } from '@/components/Collection/utils/ContentTypeDetection';
 // State components are now handled inline for better performance
 import { useCollectionData } from '@/components/Collection/hooks/UseCollectionData';
 import { useCollectionFiltering } from '@/components/Collection/hooks/UseCollectionFiltering';
 import { useCollectionState } from '@/components/Collection/hooks/UseCollectionState';
-import { usePagesData } from '@/components/Collection/hooks/UsePagesData';
 import { usePageListsData } from '@/components/Collection/hooks/UsePageListsData';
+import { usePagesData } from '@/components/Collection/hooks/UsePagesData';
 import { usePostsData } from '@/components/Collection/hooks/UsePostsData';
 import { useProductsData } from '@/components/Collection/hooks/UseProductsData';
-import { useSolutionsData } from '@/components/Collection/hooks/UseSolutionsData';
 import { useServicesData } from '@/components/Collection/hooks/UseServicesData';
+import { useSolutionsData } from '@/components/Collection/hooks/UseSolutionsData';
+import { detectContentType } from '@/components/Collection/utils/ContentTypeDetection';
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 
@@ -40,14 +40,20 @@ interface CollectionProps {
  * Main Collection component - orchestrates all layers
  * Pure composition of data, logic, and presentation layers
  */
-export default function Collection({ collectionData, sys, isSearchContext = false }: CollectionProps) {
+export function Collection({ collectionData, sys, isSearchContext = false }: CollectionProps) {
   // Data layer
   const { collection, isLoading, error } = useCollectionData({ collectionData, sys });
   const { posts, isLoading: postsLoading } = usePostsData({ collection, collectionData });
   const { pages, isLoading: pagesLoading } = usePagesData({ collection, collectionData });
-  const { pageLists, isLoading: pageListsLoading } = usePageListsData({ collection, collectionData });
+  const { pageLists, isLoading: pageListsLoading } = usePageListsData({
+    collection,
+    collectionData
+  });
   const { products, isLoading: productsLoading } = useProductsData({ collection, collectionData });
-  const { solutions, isLoading: solutionsLoading } = useSolutionsData({ collection, collectionData });
+  const { solutions, isLoading: solutionsLoading } = useSolutionsData({
+    collection,
+    collectionData
+  });
   const { services, isLoading: servicesLoading } = useServicesData({ collection, collectionData });
 
   // Business logic layer (filtering and pagination)
@@ -89,13 +95,27 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
   const finalCollection = updatedCollection ?? collection;
 
   // State layer - use unified items when search bar is enabled
-  const itemsForState = (finalCollection?.searchBar ?? false) ? currentUnifiedItems : [...currentPosts, ...currentPages, ...pageLists, ...products, ...solutions, ...services];
-  
+  const itemsForState =
+    (finalCollection?.searchBar ?? false)
+      ? currentUnifiedItems
+      : [...currentPosts, ...currentPages, ...pageLists, ...products, ...solutions, ...services];
+
   // Filter for state management
-  const postsForState = itemsForState.filter(item => 'categories' in item);
-  const pagesForState = itemsForState.filter(item => !('categories' in item) && !('icon' in item) && !('backgroundImage' in item) && !('cardImage' in item));
-  
-  const { shouldRenderContent, stateComponent, message, searchQuery: emptySearchQuery } = useCollectionState(
+  const postsForState = itemsForState.filter((item) => 'categories' in item);
+  const pagesForState = itemsForState.filter(
+    (item) =>
+      !('categories' in item) &&
+      !('icon' in item) &&
+      !('backgroundImage' in item) &&
+      !('cardImage' in item)
+  );
+
+  const {
+    shouldRenderContent,
+    stateComponent,
+    message,
+    searchQuery: emptySearchQuery
+  } = useCollectionState(
     finalCollection,
     isLoading,
     error,
@@ -159,7 +179,9 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
         )}
         {stateComponent === 'EmptySearchState' && (
           <div className="flex flex-col items-center justify-center p-8 text-center">
-            <div className="text-muted-foreground mb-2">No results found for &ldquo;{emptySearchQuery}&rdquo;</div>
+            <div className="text-muted-foreground mb-2">
+              No results found for &ldquo;{emptySearchQuery}&rdquo;
+            </div>
             <div className="text-sm text-muted-foreground">Try adjusting your search terms</div>
           </div>
         )}
@@ -167,12 +189,13 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
 
       {/* Render content with CSS visibility toggle */}
       <div className={shouldRenderContent ? 'block' : 'hidden'}>
-
         {/* When search bar is enabled, check if it's Posts only or mixed content */}
         {(finalCollection?.searchBar ?? false) ? (
           <div>
             {/* If collection is Posts only, use PostCard with filtering */}
-            {finalCollection && finalCollection.contentType?.includes('Post') && !finalCollection.contentType?.includes('Page') ? (
+            {finalCollection &&
+            finalCollection.contentType?.includes('Post') &&
+            !finalCollection.contentType?.includes('Page') ? (
               <PostCollection
                 filteredPosts={filteredPosts}
                 currentPosts={currentPosts}
@@ -194,12 +217,12 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
                   {/* Render unified items as SearchCards */}
                   {currentUnifiedItems.map((item) => {
                     const contentType = detectContentType(item);
-                    
+
                     return (
-                      <SearchCard 
+                      <SearchCard
                         key={`${contentType}-${item.sys.id}`}
-                        {...item} 
-                        contentType={contentType} 
+                        {...item}
+                        contentType={contentType}
                       />
                     );
                   })}
@@ -207,10 +230,10 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
 
                 {/* Single unified pagination */}
                 {totalUnifiedPages > 1 && (
-                  <Pagination 
-                    currentPage={currentPage} 
-                    totalPages={totalUnifiedPages} 
-                    onPageChange={setCurrentPage} 
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalUnifiedPages}
+                    onPageChange={setCurrentPage}
                   />
                 )}
               </>
@@ -250,11 +273,13 @@ export default function Collection({ collectionData, sys, isSearchContext = fals
               />
             )}
 
-            {finalCollection && !finalCollection.contentType?.includes('Post') && !finalCollection.contentType?.includes('Page') && (
-              <div className="flex items-center justify-center p-8">
-                <div className="text-muted-foreground">No content type matched</div>
-              </div>
-            )}
+            {finalCollection &&
+              !finalCollection.contentType?.includes('Post') &&
+              !finalCollection.contentType?.includes('Page') && (
+                <div className="flex items-center justify-center p-8">
+                  <div className="text-muted-foreground">No content type matched</div>
+                </div>
+              )}
           </>
         )}
       </div>

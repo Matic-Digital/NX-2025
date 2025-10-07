@@ -14,34 +14,37 @@
  */
 
 import { notFound, redirect } from 'next/navigation';
+
+import {
+  extractOpenGraphImage,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
+
+import { BannerHero } from '@/components/BannerHero/BannerHero';
+import { Content } from '@/components/Content/Content';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getPageBySlug } from '@/components/Page/PageApi';
-import { getPageListBySlug, getAllPageLists } from '@/components/PageList/PageListApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { getAllPageLists, getPageListBySlug } from '@/components/PageList/PageListApi';
+import { getPostBySlug } from '@/components/Post/PostApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
+import { RichContent } from '@/components/RichContent/RichContent';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
-import { getPostBySlug } from '@/components/Post/PostApi';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
+
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Page } from '@/components/Page/PageSchema';
+import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type { PageList, PageListContent } from '@/components/PageList/PageListSchema';
+import type { Post } from '@/components/Post/PostSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
-import type { Post } from '@/components/Post/PostSchema';
-import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { Content } from '@/components/Content/Content';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import RichContent from '@/components/RichContent/RichContent';
-import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Metadata } from 'next';
-import {
-  extractOpenGraphImage,
-  extractSEOTitle,
-  extractSEODescription
-} from '@/lib/metadata-utils';
 
 // Define the component mapping for content items (same as standalone Product page)
 const componentMap = {

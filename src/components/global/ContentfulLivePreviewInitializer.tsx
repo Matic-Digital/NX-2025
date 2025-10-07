@@ -42,5 +42,3 @@ export function ContentfulLivePreviewInitializer() {
   // This component doesn't render anything
   return null;
 }
-
-export default ContentfulLivePreviewInitializer;

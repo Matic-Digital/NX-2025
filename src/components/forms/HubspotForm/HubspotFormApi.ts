@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import type { HubspotForm } from '@/components/HubspotForm/HubspotFormSchema';
+import type { HubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 // ============================================================================
 // GRAPHQL FIELDS
@@ -142,10 +142,7 @@ export interface ParsedFormStructure {
 // CONTENTFUL API FUNCTIONS
 // ============================================================================
 
-export async function getHubspotFormById(
-  id: string,
-  preview = false
-): Promise<HubspotForm | null> {
+export async function getHubspotFormById(id: string, preview = false): Promise<HubspotForm | null> {
   const query = `
     query GetHubspotFormById($id: String!, $preview: Boolean!) {
       hubspotForm(id: $id, preview: $preview) {
@@ -233,9 +230,9 @@ export async function getHubspotFormsByIds(
 // FORM PARSING FUNCTIONS
 // ============================================================================
 const detectFormSteps = (formData: HubSpotFormData): FormStep[] => {
-  const allFields = formData.formFieldGroups.flatMap(group => group.fields);
+  const allFields = formData.formFieldGroups.flatMap((group) => group.fields);
   const steps: FormStep[] = [];
-  
+
   // Strategy 1: Look for step indicators in field metadata or properties
   const _fieldsWithStepInfo = allFields.map((field, index) => {
     const stepIndicators = {
@@ -246,41 +243,42 @@ const detectFormSteps = (formData: HubSpotFormData): FormStep[] => {
       hidden: field.hidden,
       fieldIndex: index
     };
-    
+
     return {
       field,
       ...stepIndicators
     };
   });
-  
+
   // Strategy 2: Detect step changes based on conditional dependencies
   // Fields that depend on other fields might be in different steps
   let currentStepNumber = 1;
   let currentStepFields: HubSpotFormField[] = [];
-  
+
   allFields.forEach((field, _fieldIndex) => {
-    const hasConditionalLogic = field.dependentFieldFilters && field.dependentFieldFilters.length > 0;
+    const hasConditionalLogic =
+      field.dependentFieldFilters && field.dependentFieldFilters.length > 0;
     const _isHidden = field.hidden;
-    
+
     // Check if this field should start a new step
     let shouldStartNewStep = false;
-    
+
     // Rule 1: If field has conditional logic and we already have fields in current step
     if (hasConditionalLogic && currentStepFields.length > 0) {
       shouldStartNewStep = true;
     }
-    
+
     // Rule 2: Check for page breaks in field groups
-    const fieldGroup = formData.formFieldGroups.find(group => 
-      group.fields.some(f => f.name === field.name)
+    const fieldGroup = formData.formFieldGroups.find((group) =>
+      group.fields.some((f) => f.name === field.name)
     );
     if (fieldGroup?.isPageBreak && currentStepFields.length > 0) {
       shouldStartNewStep = true;
     }
-    
+
     // Rule 3: Look for step patterns in display order or metadata
     // (This could be expanded based on what we find in the API)
-    
+
     if (shouldStartNewStep) {
       // Finalize current step
       if (currentStepFields.length > 0) {
@@ -289,16 +287,16 @@ const detectFormSteps = (formData: HubSpotFormData): FormStep[] => {
           fields: [...currentStepFields],
           isPageBreak: currentStepNumber > 1
         });
-        
+
         currentStepNumber++;
         currentStepFields = [];
       }
     }
-    
+
     // Add field to current step
     currentStepFields.push(field);
   });
-  
+
   // Finalize the last step
   if (currentStepFields.length > 0) {
     steps.push({
@@ -307,7 +305,7 @@ const detectFormSteps = (formData: HubSpotFormData): FormStep[] => {
       isPageBreak: currentStepNumber > 1
     });
   }
-  
+
   // If no steps were created using conditional logic, fall back to single step
   if (steps.length === 0) {
     steps.push({
@@ -316,44 +314,56 @@ const detectFormSteps = (formData: HubSpotFormData): FormStep[] => {
       isPageBreak: false
     });
   }
-  
+
   return steps;
 };
 
-const parseFormStructureComprehensive = (primaryFormData: HubSpotFormData, allFormData: Record<string, unknown>): ParsedFormStructure => {
+const parseFormStructureComprehensive = (
+  primaryFormData: HubSpotFormData,
+  allFormData: Record<string, unknown>
+): ParsedFormStructure => {
   // Try to detect steps from V3 API structure
   if ((allFormData.v3Form as Record<string, unknown>)?.fieldGroups) {
     return parseV3FormStructure(allFormData.v3Form as Record<string, unknown>, primaryFormData);
   }
-  
+
   // Try to detect steps from form definition
   if ((allFormData.formDefinition as Record<string, unknown>)?.steps) {
-    return parseFormDefinitionStructure(allFormData.formDefinition as Record<string, unknown>, primaryFormData);
+    return parseFormDefinitionStructure(
+      allFormData.formDefinition as Record<string, unknown>,
+      primaryFormData
+    );
   }
-  
+
   // Try to detect steps from configuration pages
   if ((allFormData.formConfiguration as Record<string, unknown>)?.pages) {
-    return parseFormConfigurationStructure(allFormData.formConfiguration as Record<string, unknown>, primaryFormData);
+    return parseFormConfigurationStructure(
+      allFormData.formConfiguration as Record<string, unknown>,
+      primaryFormData
+    );
   }
-  
+
   // Fallback to original parsing
   return parseFormStructure(primaryFormData);
 };
 
-const parseV3FormStructure = (v3Form: Record<string, unknown>, v2Form: HubSpotFormData): ParsedFormStructure => {
+const parseV3FormStructure = (
+  v3Form: Record<string, unknown>,
+  v2Form: HubSpotFormData
+): ParsedFormStructure => {
   const steps: FormStep[] = [];
-  
+
   (v3Form.fieldGroups as Array<Record<string, unknown>>).forEach((group, groupIndex: number) => {
     // Each field group in V3 might represent a step
     if (group.fields && Array.isArray(group.fields) && group.fields.length > 0) {
       // Map V3 fields back to V2 format for consistency
       const v2Fields = (group.fields as Array<Record<string, unknown>>).map((v3Field) => {
         const v2Field = v2Form.formFieldGroups
-          .flatMap(g => g.fields)
-          .find(f => f.name === (v3Field.name as string));
+          .flatMap((g) => g.fields)
+          .find((f) => f.name === (v3Field.name as string));
         return v2Field ?? (v3Field as unknown as HubSpotFormField);
       });
-      
+
       steps.push({
         stepNumber: groupIndex + 1,
         fields: v2Fields,
@@ -361,25 +371,34 @@ const parseV3FormStructure = (v3Form: Record<string, unknown>, v2Form: HubSpotFo
       });
     }
   });
-  
+
   return createParsedStructure(v2Form, steps);
 };
 
-const parseFormDefinitionStructure = (formDefinition: Record<string, unknown>, v2Form: HubSpotFormData): ParsedFormStructure => {
+const parseFormDefinitionStructure = (
+  formDefinition: Record<string, unknown>,
+  v2Form: HubSpotFormData
+): ParsedFormStructure => {
   // Implementation would depend on what the definition API returns
   return parseFormStructure(v2Form);
 };
 
-const parseFormConfigurationStructure = (formConfiguration: Record<string, unknown>, v2Form: HubSpotFormData): ParsedFormStructure => {
+const parseFormConfigurationStructure = (
+  formConfiguration: Record<string, unknown>,
+  v2Form: HubSpotFormData
+): ParsedFormStructure => {
   // Implementation would depend on what the configuration API returns
   return parseFormStructure(v2Form);
 };
 
-const createParsedStructure = (formData: HubSpotFormData, steps: FormStep[]): ParsedFormStructure => {
+const createParsedStructure = (
+  formData: HubSpotFormData,
+  steps: FormStep[]
+): ParsedFormStructure => {
   const fieldsWithConditionalLogic = steps
-    .flatMap(step => step.fields)
-    .filter(field => field.dependentFieldFilters && field.dependentFieldFilters.length > 0);
-  
+    .flatMap((step) => step.fields)
+    .filter((field) => field.dependentFieldFilters && field.dependentFieldFilters.length > 0);
+
   return {
     formId: formData.guid ?? formData.id ?? '',
     formName: formData.name,
@@ -391,12 +410,12 @@ const createParsedStructure = (formData: HubSpotFormData, steps: FormStep[]): Pa
 
 export function parseFormStructure(formData: HubSpotFormData): ParsedFormStructure {
   const steps = detectFormSteps(formData);
-  
+
   // Collect all fields with conditional logic
   const fieldsWithConditionalLogic = steps
-    .flatMap(step => step.fields)
-    .filter(field => field.dependentFieldFilters.length > 0);
-  
+    .flatMap((step) => step.fields)
+    .filter((field) => field.dependentFieldFilters.length > 0);
+
   return {
     formId: formData.guid ?? formData.id ?? '',
     formName: formData.name,
@@ -412,7 +431,7 @@ export function parseFormStructure(formData: HubSpotFormData): ParsedFormStructu
 
 export async function getHubSpotFormFields(formId: string): Promise<HubSpotFormField[]> {
   const apiKey = process.env.HUBSPOT_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('HUBSPOT_API_KEY environment variable is not set');
   }
@@ -420,23 +439,23 @@ export async function getHubSpotFormFields(formId: string): Promise<HubSpotFormF
   try {
     const response = await fetch(`https://api.hubapi.com/forms/v2/forms/${formId}`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
       throw new Error(`HubSpot API error: ${response.status} ${response.statusText}`);
     }
 
-    const formData = await response.json() as HubSpotFormData;
-    
+    const formData = (await response.json()) as HubSpotFormData;
+
     // Process form data for field analysis if needed
     // (Debug logging removed for production)
 
     // Flatten form fields from all field groups
     const fields: HubSpotFormField[] = [];
-    formData.formFieldGroups.forEach(group => {
+    formData.formFieldGroups.forEach((group) => {
       fields.push(...group.fields);
     });
 
@@ -447,11 +466,11 @@ export async function getHubSpotFormFields(formId: string): Promise<HubSpotFormF
     }
     throw new NetworkError('Unknown error fetching HubSpot form fields');
   }
-};
+}
 
 const fetchCompleteFormStructure = async (formId: string): Promise<Record<string, unknown>> => {
   const apiKey = process.env.HUBSPOT_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('HUBSPOT_API_KEY not available');
   }
@@ -467,9 +486,9 @@ const fetchCompleteFormStructure = async (formId: string): Promise<Record<string
   try {
     const v3Response = await fetch(`https://api.hubapi.com/marketing/v3/forms/${formId}`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (v3Response.ok) {
@@ -483,9 +502,9 @@ const fetchCompleteFormStructure = async (formId: string): Promise<Record<string
   try {
     const v2Response = await fetch(`https://api.hubapi.com/forms/v2/forms/${formId}`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (v2Response.ok) {
@@ -499,9 +518,9 @@ const fetchCompleteFormStructure = async (formId: string): Promise<Record<string
   try {
     const defResponse = await fetch(`https://api.hubapi.com/forms/v2/forms/${formId}/definition`, {
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (defResponse.ok) {
@@ -513,12 +532,15 @@ const fetchCompleteFormStructure = async (formId: string): Promise<Record<string
 
   // 4. Try Form Configuration API (if available)
   try {
-    const configResponse = await fetch(`https://api.hubapi.com/forms/v2/forms/${formId}/configuration`, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const configResponse = await fetch(
+      `https://api.hubapi.com/forms/v2/forms/${formId}/configuration`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
     if (configResponse.ok) {
       results.formConfiguration = await configResponse.json();
@@ -532,7 +554,7 @@ const fetchCompleteFormStructure = async (formId: string): Promise<Record<string
 
 export async function getHubSpotFormStructure(formId: string): Promise<ParsedFormStructure> {
   const apiKey = process.env.HUBSPOT_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('HUBSPOT_API_KEY environment variable is not set');
   }
@@ -540,21 +562,20 @@ export async function getHubSpotFormStructure(formId: string): Promise<ParsedFor
   try {
     // Get comprehensive form data from all available endpoints
     const allFormData = await fetchCompleteFormStructure(formId);
-    
+
     // Use the most complete data source available
     const primaryFormData = allFormData.v2Form as HubSpotFormData;
-    
+
     if (!primaryFormData) {
       throw new Error('No form data available from any endpoint');
     }
-    
+
     // Enhanced parsing with data from multiple sources
     return parseFormStructureComprehensive(primaryFormData, allFormData);
-    
   } catch (error) {
     if (error instanceof Error) {
       throw new NetworkError(`Error fetching HubSpot form structure: ${error.message}`);
     }
     throw new NetworkError('Unknown error fetching HubSpot form structure');
   }
-};
+}

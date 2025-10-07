@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 
 import { Box } from '@/components/global/matic-ds';
 
-import AirImage from '@/components/Image/AirImage';
+import { AirImage } from '@/components/Image/AirImage';
 import { getPageById } from '@/components/Page/PageApi';
 
 import type { Page } from '@/components/Page/PageSchema';
@@ -92,7 +92,7 @@ export function PageCard(props: PageCardProps) {
               className="w-full h-full object-cover"
             />
           </div>
-          
+
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -100,16 +100,16 @@ export function PageCard(props: PageCardProps) {
               <span className="text-xs text-gray-500">•</span>
               <span className="text-xs text-gray-500">/{page?.slug}</span>
             </div>
-            
-            <h3 
+
+            <h3
               className="text-lg font-semibold text-gray-900 group-hover:text-primary line-clamp-1 mb-2"
               {...inspectorProps({ fieldId: 'title' })}
             >
               {page?.title}
             </h3>
-            
+
             {page?.description && (
-              <p 
+              <p
                 className="text-sm text-gray-600 line-clamp-2"
                 {...inspectorProps({ fieldId: 'description' })}
               >
@@ -117,7 +117,7 @@ export function PageCard(props: PageCardProps) {
               </p>
             )}
           </div>
-          
+
           {/* Arrow */}
           <div className="flex-shrink-0">
             <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
