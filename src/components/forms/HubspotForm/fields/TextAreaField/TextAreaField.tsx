@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { Label } from '@/components/ui/label';
+
 import type { FieldRendererProps } from '../types';
 
 export const TextAreaField: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
@@ -21,9 +23,7 @@ export const TextAreaField: React.FC<FieldRendererProps> = ({ field, value, onCh
         rows={4}
         className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
       />
-      {field.description && (
-        <p className="text-xs text-gray-600">{field.description}</p>
-      )}
+      {field.description && <p className="text-xs text-gray-600">{field.description}</p>}
       {error && (
         <p className="text-xs text-red-500">
           {Array.isArray(error) ? error.join(', ') : String(error)}

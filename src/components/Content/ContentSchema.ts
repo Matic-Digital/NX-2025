@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ContentVariantEnum } from '@/components/Content/ContentVariant';
 import { ContentGridItemSchema } from '@/components/ContentGrid/ContentGridItemSchema';
-import { NewsletterSignupSchema } from '@/components/Forms/NewsletterSignup/NewsletterSignupSchema';
+import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ProductSchema } from '@/components/Product/ProductSchema';
 import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
@@ -10,7 +10,7 @@ import { VideoSchema } from '@/components/Video/VideoSchema';
 
 const ContentItemUnion = z.union([
   ContentGridItemSchema,
-  NewsletterSignupSchema,
+  HubspotFormSchema,
   ProductSchema,
   SectionHeadingSchema
 ]);

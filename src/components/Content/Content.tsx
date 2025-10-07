@@ -11,12 +11,12 @@ import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 
-import { Box } from '@/components/global/matic-ds';
+import { Box, Container } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { NewsletterSignupForm } from '@/components/Forms/NewsletterSignup/NewsletterSignupForm';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -32,7 +32,7 @@ import type {
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
-import type { NewsletterSignup } from '@/components/Forms/NewsletterSignup/NewsletterSignupSchema';
+import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import type { Image } from '@/components/Image/ImageSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 
@@ -49,7 +49,11 @@ type ContentGridItemCardData = Pick<
   };
 };
 
-type NewsletterSignupCardData = NewsletterSignup;
+type HubspotFormCardData = Omit<HubspotFormType, 'title' | 'description'> & {
+  title: string;
+  description: string;
+  image: Image;
+};
 
 type ProductCardData = Pick<Product, 'title' | 'description' | 'slug' | 'image' | 'tags'>;
 
@@ -71,13 +75,14 @@ type ModalData = {
 };
 
 interface ContentCardProps {
-  data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData;
+  data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
   variant: ContentVariant;
 }
 
 interface ContentContainerProps {
   children: React.ReactNode;
+  data?: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData;
 }
 
 interface ContentProps extends Content {
@@ -132,55 +137,6 @@ export function Content(props: ContentProps) {
     setIsModalOpen(true);
   };
 
-  // ===== EARLY RETURNS =====
-  if (loading) {
-    return <ContentSkeleton variant={fetchedData?.variant} />;
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-red-500">{error}</div>
-      </div>
-    );
-  }
-
-  if (!content?.sys) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">No content found</div>
-        <div className="mt-2 text-sm text-gray-500">
-          {content
-            ? `Content exists but liveContent is invalid: ${JSON.stringify(content).substring(0, 100)}...`
-            : 'No content data'}
-        </div>
-      </div>
-    );
-  }
-
-  // ===== SHARED COMPONENTS =====
-  const ContentContainer = ({ children }: ContentContainerProps) => (
-    <div
-      className={cn(
-        'relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9'
-      )}
-    >
-      {children}
-    </div>
-  );
-
-  const ContentOverlay = ({ children }: ContentOverlay) => (
-    <div
-      className="flex h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10"
-      style={{
-        background:
-          'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-      }}
-    >
-      {children}
-    </div>
-  );
-
   // ===== HELPER FUNCTIONS =====
   const isContentGridItemData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
@@ -188,13 +144,9 @@ export function Content(props: ContentProps) {
     return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
   };
 
-  const isNewsletterSignupData = (
-    data:
-      | ProductCardData
-      | SectionHeadingCardData
-      | ContentGridItemCardData
-      | NewsletterSignupCardData
-  ): data is NewsletterSignupCardData => {
+  const isHubspotFormData = (
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
+  ): data is HubspotFormCardData => {
     return 'title' in data && 'description' in data && 'formId' in data;
   };
 
@@ -225,16 +177,66 @@ export function Content(props: ContentProps) {
     return 'Default';
   };
 
+  // ===== EARLY RETURNS =====
+  if (loading) {
+    return <ContentSkeleton variant={fetchedData?.variant} />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  if (!content?.sys) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="text-lg">No content found</div>
+        <div className="mt-2 text-sm text-gray-500">
+          {content
+            ? `Content exists but liveContent is invalid: ${JSON.stringify(content).substring(0, 100)}...`
+            : 'No content data'}
+        </div>
+      </div>
+    );
+  }
+
+  // ===== SHARED COMPONENTS =====
+  const ContentContainer = ({ children, data }: ContentContainerProps) =>
+    isHubspotFormData(data as HubspotFormCardData) ? (
+      <div className={cn('relative container mx-auto mb-20 overflow-hidden p-6 sm:p-6 md:p-9')}>
+        {children}
+      </div>
+    ) : (
+      <div
+        className={cn(
+          'relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9'
+        )}
+      >
+        {children}
+      </div>
+    );
+
+  const ContentOverlay = ({ children }: ContentOverlay) => (
+    <div
+      className="flex h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10"
+      style={{
+        background:
+          'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+      }}
+    >
+      {children}
+    </div>
+  );
+
   // ===== CONTENT CARD COMPONENT =====
   const ContentCard = ({ data, inspectorProps, variant }: ContentCardProps) => {
-    console.log('ContentCard data', data);
-    console.log('ContentCard variant', variant);
-    console.log('ContentCard isSectionHeadingData', isSectionHeadingData(data));
     if (variant === 'ContentLeft') {
-      return (
-        <>
-          <ContentContainer>
-            {/* Image container - ensure it fills the container properly */}
+      if (isHubspotFormData(data)) {
+        return (
+          <ContentContainer data={data}>
             <div className="absolute inset-0 overflow-hidden px-6 sm:px-6 md:px-9">
               <AirImage
                 link={data.image?.link}
@@ -242,108 +244,116 @@ export function Content(props: ContentProps) {
                 className="h-full w-full object-cover"
               />
             </div>
-            {/* Mobile: Content at bottom, Desktop: Content on left */}
-            <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:items-center md:px-9">
-              <div className="w-full md:h-full md:w-auto">
-                <ContentOverlay>
-                  <Box
-                    direction="col"
-                    gap={12}
-                    className="w-full items-center justify-center text-center"
-                  >
-                    <Box direction="col" gap={5}>
-                      <Box direction="col" gap={1.5}>
-                        {isContentGridItemData(data) && data.heading && (
-                          <p
-                            className="text-body-sm text-text-on-invert uppercase"
-                            {...inspectorProps({ fieldId: 'heading' })}
-                          >
-                            {data.heading}
-                          </p>
-                        )}
+            <Container className="relative h-full w-full">
+              <Box direction="col" gap={4} className="justify-center h-full w-full">
+                <HubspotForm hubspotForm={data} formId={data.formId} className="w-full h-auto" />
+              </Box>
+            </Container>
+          </ContentContainer>
+        );
+      }
+      return (
+        <ContentContainer>
+          {/* Image container - ensure it fills the container properly */}
+          <div className="absolute inset-0 overflow-hidden px-6 sm:px-6 md:px-9">
+            <AirImage
+              link={data.image?.link}
+              altText={data.image?.altText ?? data.image?.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
+          {/* Mobile: Content at bottom, Desktop: Content on left */}
+          <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:items-center md:px-9">
+            <div className="w-full md:h-full md:w-auto">
+              <ContentOverlay>
+                <Box
+                  direction="col"
+                  gap={12}
+                  className="w-full items-center justify-center text-center"
+                >
+                  <Box direction="col" gap={5}>
+                    <Box direction="col" gap={1.5}>
+                      {isContentGridItemData(data) && data.heading && (
+                        <p
+                          className="text-body-sm text-text-on-invert uppercase"
+                          {...inspectorProps({ fieldId: 'heading' })}
+                        >
+                          {data.heading}
+                        </p>
+                      )}
 
-                        {isNewsletterSignupData(data) && data.title && (
+                      {isProductData(data) && data.tags && (
+                        <p
+                          className="text-body-sm text-text-on-invert uppercase"
+                          {...inspectorProps({ fieldId: 'categories' })}
+                        >
+                          {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                        </p>
+                      )}
+
+                      {isSectionHeadingData(data) && data.title && (
+                        <>
                           <p
-                            className="text-body-sm text-text-on-invert uppercase"
+                            className="text-text-on-invert uppercase"
+                            {...inspectorProps({ fieldId: 'heading.overline' })}
+                          >
+                            {data.overline}
+                          </p>
+                          <h2
+                            className="text-headline-sm md:text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
                             {...inspectorProps({ fieldId: 'title' })}
                           >
                             {data.title}
-                          </p>
-                        )}
-
-                        {isProductData(data) && data.tags && (
-                          <p
-                            className="text-body-sm text-text-on-invert uppercase"
-                            {...inspectorProps({ fieldId: 'categories' })}
-                          >
-                            {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
-                          </p>
-                        )}
-
-                        {isSectionHeadingData(data) && data.title && (
-                          <>
-                            <p
-                              className="text-text-on-invert uppercase"
-                              {...inspectorProps({ fieldId: 'heading.overline' })}
-                            >
-                              {data.overline}
-                            </p>
-                            <h2
-                              className="text-headline-sm md:text-headline-lg text-text-on-invert mx-auto max-w-xs leading-tight"
-                              {...inspectorProps({ fieldId: 'title' })}
-                            >
-                              {data.title}
-                            </h2>
-                          </>
-                        )}
-                      </Box>
-                      {data.description && (
-                        <p
-                          className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
-                          {...inspectorProps({ fieldId: 'excerpt' })}
-                        >
-                          {data.description}
-                        </p>
+                          </h2>
+                        </>
                       )}
                     </Box>
-
-                    {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
-                    {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
-                      <ModalCtaButton
-                        cta={data.ctaCollection.items[0]}
-                        variant="white"
-                        modalType="quote"
-                        onModalOpen={handleModalOpen}
-                        className="w-fit"
-                      />
-                    )}
-
-                    {isProductData(data) && (
-                      <Button
-                        variant="white"
-                        {...inspectorProps({ fieldId: 'button' })}
-                        className="w-fit"
-                        asChild
+                    {data.description && (
+                      <p
+                        className="text-body-xs letter-spacing-[0.14px] text-text-on-invert leading-normal"
+                        {...inspectorProps({ fieldId: 'excerpt' })}
                       >
-                        <Link href={data.slug}>Explore {data.title}</Link>
-                      </Button>
-                    )}
-
-                    {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
-                      <ModalCtaButton
-                        cta={data.ctaCollection.items[0]}
-                        variant="white"
-                        modalType="quote"
-                        onModalOpen={handleModalOpen}
-                        className="w-fit"
-                      />
+                        {data.description}
+                      </p>
                     )}
                   </Box>
-                </ContentOverlay>
-              </div>
+
+                  {/* Render button for Product, ContentGridItem, or CTA collection for SectionHeading */}
+                  {isContentGridItemData(data) && data.ctaCollection?.items?.[0] && (
+                    <ModalCtaButton
+                      cta={data.ctaCollection.items[0]}
+                      variant="white"
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                      className="w-fit"
+                    />
+                  )}
+
+                  {isProductData(data) && (
+                    <Button
+                      variant="white"
+                      {...inspectorProps({ fieldId: 'button' })}
+                      className="w-fit"
+                      asChild
+                    >
+                      <Link href={data.slug}>Explore {data.title}</Link>
+                    </Button>
+                  )}
+
+                  {isSectionHeadingData(data) && data.ctaCollection?.items?.[0] && (
+                    <ModalCtaButton
+                      cta={data.ctaCollection.items[0]}
+                      variant="white"
+                      modalType="quote"
+                      onModalOpen={handleModalOpen}
+                      className="w-fit"
+                    />
+                  )}
+                </Box>
+              </ContentOverlay>
             </div>
-          </ContentContainer>
-        </>
+          </div>
+        </ContentContainer>
       );
     }
 
@@ -592,40 +602,55 @@ export function Content(props: ContentProps) {
     }
 
     // ===== NEWSLETTER SIGNUP CONTENT =====
-    if ('__typename' in item && item.__typename === 'NewsletterSignup') {
-      const newsletterSignup = item as unknown as NewsletterSignup;
+    if ('__typename' in item && item.__typename === 'HubspotForm') {
+      const hubspotForm = item as unknown as HubspotFormType;
 
-      // Get image from Content asset if available
-      const image = content.asset?.__typename === 'Image'
-        ? {
-            link: (content.asset as Image).link ?? '',
-            altText: (content.asset as Image).altText ?? (content.asset as Image).title,
-            title: (content.asset as Image).title ?? ''
+      if (content.asset?.__typename === 'Image') {
+        const imageAsset = content.asset as Image;
+
+        const hubspotFormData: HubspotFormCardData = {
+          sys: {
+            id: hubspotForm.sys.id
+          },
+          title: hubspotForm.title ?? 'Contact Form',
+          description:
+            hubspotForm.description ?? 'Please fill out the form below to get in touch with us.',
+          formId: hubspotForm.formId,
+          image: {
+            sys: {
+              id: imageAsset.sys.id
+            },
+            link: imageAsset.link ?? '',
+            altText: imageAsset.altText ?? imageAsset.title,
+            title: imageAsset.title ?? ''
           }
-        : {};
+        };
 
-      return <NewsletterSignupForm data={newsletterSignup} image={image} />;
+        return (
+          <ContentCard data={hubspotFormData} variant={variant} inspectorProps={inspectorProps} />
+        );
+      }
     }
+
+    // ===== GENERIC CONTENT FALLBACK =====
+    return (
+      <>
+        <article className="prose max-w-none">
+          <h2 {...inspectorProps({ fieldId: 'title' })}>{content.title}</h2>
+          <p className="text-sm text-gray-500">Content type: {content.__typename}</p>
+        </article>
+
+        {/* Request a Quote Modal */}
+        <RequestAQuoteModal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          title={activeModal?.title ?? 'Request a Quote'}
+          description={
+            activeModal?.description ?? 'Please fill out the form below to request a quote.'
+          }
+          formId={activeModal?.sys?.id ?? 'default-form-id'}
+        />
+      </>
+    );
   }
-
-  // ===== GENERIC CONTENT FALLBACK =====
-  return (
-    <>
-      <article className="prose max-w-none">
-        <h2 {...inspectorProps({ fieldId: 'title' })}>{content.title}</h2>
-        <p className="text-sm text-gray-500">Content type: {content.__typename}</p>
-      </article>
-
-      {/* Request a Quote Modal */}
-      <RequestAQuoteModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        title={activeModal?.title ?? 'Request a Quote'}
-        description={
-          activeModal?.description ?? 'Please fill out the form below to request a quote.'
-        }
-        formId={activeModal?.sys?.id ?? 'default-form-id'}
-      />
-    </>
-  );
 }

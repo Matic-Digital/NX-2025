@@ -3,7 +3,7 @@ import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
-import { NEWSLETTER_SIGNUP_GRAPHQL_FIELDS } from '@/components/Forms/NewsletterSignup/NewsletterSignupApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PRODUCT_GRAPHQL_FIELDS } from '@/components/Product/ProductApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '@/components/SectionHeading/SectionHeadingApi';
@@ -35,8 +35,8 @@ export const CONTENT_GRAPHQL_FIELDS = `
     ... on ContentGridItem {
       ${CONTENTGRIDITEM_GRAPHQL_FIELDS}
     }
-    ... on NewsletterSignup {
-      ${NEWSLETTER_SIGNUP_GRAPHQL_FIELDS}
+    ... on HubspotForm {
+      ${HUBSPOTFORM_GRAPHQL_FIELDS}
     }
     ... on Product {
       ${PRODUCT_GRAPHQL_FIELDS}

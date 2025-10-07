@@ -1,12 +1,13 @@
 import React from 'react';
-import type { FieldRendererProps } from './types';
-import { TextField } from './TextField/TextField';
+import { CheckboxField } from './CheckboxField/CheckboxField';
 import { EmailField } from './EmailField/EmailField';
-import { PhoneField } from './PhoneField/PhoneField';
 import { NumberField } from './NumberField/NumberField';
+import { PhoneField } from './PhoneField/PhoneField';
 import { SelectField } from './SelectField/SelectField';
 import { TextAreaField } from './TextAreaField/TextAreaField';
-import { CheckboxField } from './CheckboxField/CheckboxField';
+import { TextField } from './TextField/TextField';
+
+import type { FieldRendererProps } from './types';
 
 export const FieldRenderer: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
   switch (field.fieldType) {
@@ -32,7 +33,7 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ field, value, onCh
     case 'textarea':
       return <TextAreaField field={field} value={value} onChange={onChange} error={error} />;
 
-    case 'checkbox':
+    case 'single_checkbox':
       return <CheckboxField field={field} value={value} onChange={onChange} error={error} />;
 
     case 'url':

@@ -5,6 +5,7 @@ export const HubspotFormSchema = z.object({
     id: z.string()
   }),
   title: z.string().optional(),
+  description: z.string().optional(),
   formId: z.string(),
   __typename: z.string().optional()
 });

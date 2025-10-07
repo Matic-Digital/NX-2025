@@ -1,35 +1,30 @@
 import React from 'react';
+
+import { cn } from '@/lib/utils';
+
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+import { Box } from '@/components/global/matic-ds';
+
 import type { FieldRendererProps } from '../types';
 
 export const EmailField: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
-  const getCleanLabel = (label: string) => {
-    return label.replace(/\s*-\s*\d+$/, '').trim();
-  };
-
   return (
-    <div className="space-y-2">
-      <Label htmlFor={field.name} className="text-sm font-medium">
-        {getCleanLabel(field.label)}
-        {field.required && <span className="text-red-500 ml-1">*</span>}
-      </Label>
+    <Box direction="col" gap={2} className="space-y-4">
       <Input
         id={field.name}
         type="email"
         value={String(value ?? '')}
         onChange={(e) => onChange(e.target.value)}
         placeholder={field.placeholder ?? 'Enter your email'}
-        className={error ? 'border-red-500' : ''}
+        className={cn('bg-white text-text-input', error && 'border-red-500')}
       />
-      {field.description && (
-        <p className="text-xs text-gray-600">{field.description}</p>
-      )}
+      {field.description && <p className="text-xs text-gray-600">{field.description}</p>}
       {error && (
         <p className="text-xs text-red-500">
           {Array.isArray(error) ? error.join(', ') : String(error)}
         </p>
       )}
-    </div>
+    </Box>
   );
 };
