@@ -82,6 +82,19 @@ const config = {
         '@eslint-react/naming-convention/filename': ['error', 'kebab-case']
       }
     },
+    // Utility files - allow lowercase naming
+    {
+      files: [
+        '**/types.ts',
+        '**/validation.ts', 
+        '**/index.ts',
+        '**/utils/**/*.ts',
+        '**/lib/**/*.ts'
+      ],
+      rules: {
+        '@eslint-react/naming-convention/filename': 'off'
+      }
+    },
     // Test files - disable type-related rules
     {
       files: ['src/__tests__/**/*.{ts,tsx}', '**/*.test.{ts,tsx}'],

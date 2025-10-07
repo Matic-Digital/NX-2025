@@ -156,7 +156,7 @@ export function CtaBanner(props: CtaBanner) {
             ctaBanner.secondaryCta.modal?.description ??
             'Please fill out the form below to request a quote.'
           }
-          sys={ctaBanner.secondaryCta.modal?.sys ?? { id: 'default-modal' }}
+          formId={ctaBanner.secondaryCta.modal?.sys?.id ?? 'default-form-id'}
         />
       )}
     </ErrorBoundary>
