@@ -538,15 +538,26 @@ export function RichContent({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+        // Find the entry that's most visible and closest to the top
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        
+        if (visibleEntries.length > 0) {
+          // Sort by how close they are to the top of the viewport
+          const sortedEntries = visibleEntries.sort((a, b) => {
+            return a.boundingClientRect.top - b.boundingClientRect.top;
+          });
+          
+          // Set the topmost visible section as active
+          const topEntry = sortedEntries[0];
+          if (topEntry) {
+            setActiveSection(topEntry.target.id);
           }
-        });
+        }
       },
       {
-        rootMargin: '-20% 0px -70% 0px',
-        threshold: 0
+        // Account for navbar height (120px) and add some buffer
+        rootMargin: '-140px 0px -60% 0px',
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
       }
     );
 
@@ -673,7 +684,7 @@ export function RichContent({
           {tableOfContents && tocItems.length > 0 && (
             <div className="w-full flex-shrink-0 md:max-w-[25.75rem]" data-toc-container>
               <div
-                className={`max-h-[calc(100vh-2rem)] overflow-y-auto p-[2rem] ${
+                className={`max-h-[80vh] overflow-y-auto p-[2rem] ${
                   isLegalVariant ? 'bg-subtle' : 'border border-blue-200 bg-blue-50'
                 }`}
                 style={{ position: 'sticky', top: '8rem' }}
@@ -710,7 +721,15 @@ export function RichContent({
                             e.preventDefault();
                             const element = window.document.getElementById(item.id);
                             if (element) {
-                              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                              // Calculate offset to position heading just under the navbar
+                              const navbarHeight = 120; // Adjust this value based on your navbar height
+                              const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                              const offsetPosition = elementPosition - navbarHeight;
+                              
+                              window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                              });
                             }
                           }}
                         >
