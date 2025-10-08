@@ -115,9 +115,9 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
           <AirImage
             link={post.mainImage?.link}
             altText={post.mainImage?.altText}
-            className="min-h-[16rem] w-full object-cover"
+            className="min-h-[16rem] lg:flex-1 lg:min-h-0 w-full object-cover"
           />
-          <Box direction="col" gap={0} className="bg-subtle h-full justify-between">
+          <Box direction="col" gap={0} className="bg-subtle lg:flex-shrink-0 h-full lg:h-auto justify-between">
             <Box
               direction="col"
               gap={0}

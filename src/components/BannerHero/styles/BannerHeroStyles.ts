@@ -27,8 +27,11 @@ export const bannerHeroStyles = {
   /**
    * Get CSS classes for the background image
    */
-  getBackgroundImageClasses: () => {
-    return 'absolute inset-0 h-[789px] w-full object-cover';
+  getBackgroundImageClasses: (isImageBetween?: boolean) => {
+    return cn(
+      'absolute inset-0 w-full object-cover',
+      isImageBetween ? 'h-[calc(789px+4rem)]' : 'h-[789px]'
+    );
   },
 
   /**
