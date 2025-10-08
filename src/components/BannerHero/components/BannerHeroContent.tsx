@@ -34,7 +34,7 @@ export const BannerHeroContent = ({
       <AirImage
         link={bannerHero.backgroundImage.link}
         altText={bannerHero.backgroundImage.altText}
-        className={bannerHeroStyles.getBackgroundImageClasses()}
+        className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
       />
 
       {/* Content Overlay */}

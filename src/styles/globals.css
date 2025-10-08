@@ -758,3 +758,12 @@
 .regions-map:has(#middleEastIndiaAfrica:hover) #middleEastIndiaAfrica-dots circle {
   fill: #f97316;
 }
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}

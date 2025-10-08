@@ -11,7 +11,8 @@ export const bannerHeroStyles = {
    */
   getSectionClasses: (isCenteredSectionHeading: boolean, isImageBetween: boolean) => {
     return cn(
-      'relative flex h-[789px]',
+      'relative flex',
+      isImageBetween ? 'h-[789px]' : 'max-h-[100vh] h-[789px]',
       isCenteredSectionHeading || isImageBetween ? 'items-center justify-center' : 'items-end',
       'dark'
     );
@@ -27,8 +28,11 @@ export const bannerHeroStyles = {
   /**
    * Get CSS classes for the background image
    */
-  getBackgroundImageClasses: () => {
-    return 'absolute inset-0 h-[789px] w-full object-cover';
+  getBackgroundImageClasses: (isImageBetween?: boolean) => {
+    return cn(
+      'absolute inset-0 w-full object-cover',
+      isImageBetween ? 'h-[calc(789px+4rem)]' : 'h-full'
+    );
   },
 
   /**

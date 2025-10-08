@@ -75,11 +75,11 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     
     // Set the content for this mega menu
     const content = (
-      <div className="p-8">
-        <div className="flex flex-col gap-8">
-          <div className="flex">
-            <h2 className="mb-4 flex-grow text-[1.5rem] text-white">{displayTitle}</h2>
-            <div className="grid auto-rows-min grid-cols-3 gap-4">
+      <div className="p-4 sm:p-6 xl:p-8">
+        <div className="flex flex-col gap-6 xl:gap-8">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:gap-8">
+            <h2 className="text-lg sm:text-xl xl:text-[1.5rem] text-white xl:flex-shrink-0 xl:w-64">{displayTitle}</h2>
+            <div className="grid auto-rows-min grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:flex-grow">
               {menuItems.map((menuItem) => (
                 <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
               ))}
@@ -87,7 +87,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
           </div>
           {!postsLoading && recentPosts.length > 0 && (
             <div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                 {recentPosts.slice(0, 3).map((post) => (
                   <MegaMenuCard key={post.sys.id} {...postToMegaMenuCard(post)} />
                 ))}
@@ -139,13 +139,13 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   return (
     <div className="relative">
       <div
-        className="cursor-pointer px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
+        className="cursor-pointer px-2 xl:px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="flex gap-[0.75rem] items-center">
+        <div className="flex gap-2 xl:gap-[0.75rem] items-center">
           <Text 
-            className="text-white transition-all duration-300"
+            className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
             style={{
               textShadow: isHovered 
                 ? '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)'
@@ -154,7 +154,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
           >
             {displayTitle}
           </Text>
-          <ChevronDown className="size-4 text-white" />
+          <ChevronDown className="size-3 xl:size-4 text-white" />
         </div>
       </div>
     </div>

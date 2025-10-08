@@ -29,6 +29,8 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
   const [isHeaderBlurVisible, setIsHeaderBlurVisible] = useState(true);
   const [activeMegaMenuContent, setActiveMegaMenuContent] = useState<React.ReactNode | null>(null);
   const [activeMegaMenuId, setActiveMegaMenuId] = useState<string | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
   const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -63,6 +65,11 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
   const openMegaMenu = (menuId: string) => {
     setOpenMegaMenus((prev) => new Set(prev).add(menuId));
     setActiveMegaMenuId(menuId);
+    setShouldRender(true);
+    // Small delay to ensure DOM is ready, then start animation
+    requestAnimationFrame(() => {
+      setIsAnimating(true);
+    });
   };
 
   const closeMegaMenu = React.useCallback((menuId: string) => {
@@ -72,8 +79,14 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       return newSet;
     });
     if (activeMegaMenuId === menuId) {
-      setActiveMegaMenuId(null);
-      setActiveMegaMenuContent(null);
+      // Start closing animation
+      setIsAnimating(false);
+      // Wait for animation to complete before removing content
+      setTimeout(() => {
+        setActiveMegaMenuId(null);
+        setActiveMegaMenuContent(null);
+        setShouldRender(false);
+      }, 200); // Match animation duration
     }
   }, [activeMegaMenuId]);
 
@@ -107,7 +120,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Close mega menus when clicking outside
+  // Close mega menus when clicking outside or hovering out on desktop
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Only close if clicking outside the mega menu portal and header area
@@ -121,9 +134,44 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const handleMouseLeave = (event: Event) => {
+      // Only close on desktop (screen width >= 1280px)
+      if (typeof window !== 'undefined' && window.innerWidth >= 1280) {
+        const mouseEvent = event as MouseEvent;
+        const target = mouseEvent.target as Element;
+        const relatedTarget = mouseEvent.relatedTarget as Element | null;
+        
+        // Check if we're leaving the mega menu portal or header area
+        const isLeavingMegaMenu = target.closest('[data-mega-menu-portal]');
+        const isEnteringHeader = relatedTarget?.closest('header');
+        const isEnteringMegaMenu = relatedTarget?.closest('[data-mega-menu-portal]');
+        
+        // Close if leaving mega menu and not entering header or another mega menu
+        if (isLeavingMegaMenu && !isEnteringHeader && !isEnteringMegaMenu && activeMegaMenuId) {
+          // Add a small delay to prevent accidental closes when moving between elements
+          closeTimeoutRef.current = setTimeout(() => {
+            closeMegaMenu(activeMegaMenuId);
+            setActiveMegaMenuContent(null);
+          }, 100);
+        }
+      }
+    };
+
     if (typeof window !== 'undefined' && activeMegaMenuId) {
       document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      
+      // Add mouse leave listener to the mega menu portal
+      const megaMenuPortal = document.querySelector('[data-mega-menu-portal]');
+      if (megaMenuPortal) {
+        megaMenuPortal.addEventListener('mouseleave', handleMouseLeave);
+      }
+      
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+        if (megaMenuPortal) {
+          megaMenuPortal.removeEventListener('mouseleave', handleMouseLeave);
+        }
+      };
     }
   }, [activeMegaMenuId, closeMegaMenu, setActiveMegaMenuContent]);
 
@@ -146,13 +194,21 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
     >
       {children}
       {/* Single shared portal for all mega menus */}
-      {isAnyMegaMenuOpen && activeMegaMenuContent && typeof window !== 'undefined' && document.body &&
+      {shouldRender && activeMegaMenuContent && typeof window !== 'undefined' && document.body &&
         createPortal(
           <div 
-            className="fixed top-0 left-0 w-screen bg-black/[0.72] backdrop-blur-[30px] shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] z-40"
+            className={`fixed top-0 left-0 w-screen bg-black/[0.72] backdrop-blur-[30px] shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] z-40 transition-all duration-200 ease-out ${
+              isAnimating 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 -translate-y-2'
+            }`}
             data-mega-menu-portal
           >
-            <div className="pt-24 px-6">
+            <div className={`pt-24 px-6 transition-all duration-200 ease-out delay-75 ${
+              isAnimating 
+                ? 'opacity-100 translate-y-0' 
+                : 'opacity-0 -translate-y-1'
+            }`}>
               <Container>
                 {activeMegaMenuContent}
               </Container>
