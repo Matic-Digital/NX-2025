@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
-import { ChevronDown, Menu, Search } from 'lucide-react';
+import { ChevronDown, Menu, Search, X } from 'lucide-react';
 import { MegaMenuProvider, useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 // Sheet components for mobile menu from shadcn
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -309,7 +310,7 @@ function HeaderContent(props: HeaderProps) {
               <Search className="text-white hover:text-white/80 transition-colors cursor-pointer size-5" />
             </Link>
             
-            {/* Tablet Hamburger Menu */}
+            {/* Mobile Hamburger Menu */}
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -321,48 +322,94 @@ function HeaderContent(props: HeaderProps) {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader className="text-left text-lg font-semibold">
-                  <SheetTitle>Menu</SheetTitle>
-                  <SheetDescription>Main navigation menu</SheetDescription>
-                </SheetHeader>
-                <nav className="mt-6 space-y-6">
+              <SheetContent side="fullscreen" className="p-0 bg-black">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                {/* Header with Logo, Search, and Close */}
+                <div className="flex items-center justify-between p-6">
+                  <Logo logo={header.logo} />
+                  <div className="flex items-center gap-4">
+                    <Link href="/search">
+                      <Button
+                        variant="ghost"
+                        className="rounded-xxs flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl"
+                      >
+                        <Search className="size-5" />
+                        <span className="sr-only">Search</span>
+                      </Button>
+                    </Link>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="rounded-xxs flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl"
+                      >
+                        <X className="size-5" />
+                        <span className="sr-only">Close menu</span>
+                      </Button>
+                    </SheetClose>
+                  </div>
+                </div>
+
+                {/* Navigation Content */}
+                <nav className="px-6 pt-6 space-y-6">
                   {/* Main Menu Items */}
                   {menuLoading ? (
-                    <div className="text-foreground">Loading menu...</div>
+                    <div className="text-white">Loading menu...</div>
                   ) : menu ? (
                     <div>
-                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">
-                        Navigation
-                      </h3>
                       <div className="space-y-2">
-                        {menu.itemsCollection?.items?.map((item) => {
-                          if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug
-                              ? `/${item.internalLink.slug}`
-                              : (item.externalLink ?? '#');
-                            const linkTarget = item.externalLink ? '_blank' : '_self';
-                            const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+                        {menu.itemsCollection?.items?.map((item, index) => {
+                          const isDropdownParent = item.__typename === 'MegaMenu';
+                          const previousItem = index > 0 ? menu.itemsCollection?.items?.[index - 1] : null;
+                          const previousIsDropdownParent = previousItem?.__typename === 'MegaMenu';
+                          const isCurrentOpen = openCollapsible === `main-${item.sys.id}`;
+                          const isPreviousOpen = previousItem && openCollapsible === `main-${previousItem.sys.id}`;
+                          const hasAnyDropdownOpen = openCollapsible !== null;
+                          
+                          // Show divider logic:
+                          // If no dropdown is open: show dividers between all top-level items (except first)
+                          // If a dropdown is open: only show dividers around the open dropdown
+                          const needsDivider = index > 0 && (
+                            !hasAnyDropdownOpen || 
+                            (isDropdownParent && previousIsDropdownParent && (isCurrentOpen || isPreviousOpen))
+                          );
 
-                            return (
-                              <a
-                                key={item.sys.id}
-                                href={linkUrl}
-                                target={linkTarget}
-                                rel={linkRel}
-                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
-                                onClick={() => setIsSheetOpen(false)}
-                              >
-                                {item.text}
-                              </a>
-                            );
-                          }
-                          return null;
+                          // Check if any dropdown is open and this is a regular menu item
+                          const isInactiveMenuItem = item.__typename === 'MenuItem' && hasAnyDropdownOpen;
+
+                          return (
+                            <div key={item.sys.id} className={isInactiveMenuItem ? 'opacity-50' : ''}>
+                              {needsDivider && (
+                                <div className="my-4 border-t border-white/20"></div>
+                              )}
+                              
+                              {item.__typename === 'MenuItem' && (
+                                (() => {
+                                  const linkUrl = item.internalLink?.slug
+                                    ? `/${item.internalLink.slug}`
+                                    : (item.externalLink ?? '#');
+                                  const linkTarget = item.externalLink ? '_blank' : '_self';
+                                  const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+
+                                  return (
+                                    <a
+                                      href={linkUrl}
+                                      target={linkTarget}
+                                      rel={linkRel}
+                                      className="text-white hover:bg-white/10 block rounded-md px-3 py-2 text-[1.375rem] font-normal leading-[1.4] tracking-[0.01rem] transition-colors"
+                                      onClick={() => setIsSheetOpen(false)}
+                                    >
+                                      {item.text}
+                                    </a>
+                                  );
+                                })()
+                              )}
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-foreground">No menu available</div>
+                    <div className="text-white">No menu available</div>
                   )}
                 </nav>
               </SheetContent>
@@ -501,140 +548,188 @@ function HeaderContent(props: HeaderProps) {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader className="text-left text-lg font-semibold">
-                  <SheetTitle>Menu</SheetTitle>
-                  <SheetDescription>Main navigation menu</SheetDescription>
-                </SheetHeader>
-                <nav className="mt-6 space-y-6">
+              <SheetContent side="fullscreen" className="p-0 bg-black">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                {/* Header with Logo, Search, and Close */}
+                <div className="flex items-center justify-between p-6">
+                  <Logo logo={header.logo} />
+                  <div className="flex items-center gap-4">
+                    <Link href="/search">
+                      <Button
+                        variant="ghost"
+                        className="rounded-xxs flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl"
+                      >
+                        <Search className="size-5" />
+                        <span className="sr-only">Search</span>
+                      </Button>
+                    </Link>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="rounded-xxs flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl"
+                      >
+                        <X className="size-5" />
+                        <span className="sr-only">Close menu</span>
+                      </Button>
+                    </SheetClose>
+                  </div>
+                </div>
+
+                {/* Navigation Content */}
+                <nav className="px-6 pt-6 space-y-6">
                   {/* Main Menu Items */}
                   {menuLoading ? (
-                    <div className="text-foreground">Loading menu...</div>
+                    <div className="text-white">Loading menu...</div>
                   ) : menu ? (
                     <div>
-                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">
-                        Navigation
-                      </h3>
                       <div className="space-y-2">
-                        {menu.itemsCollection?.items?.map((item) => {
-                          if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug
-                              ? `/${item.internalLink.slug}`
-                              : (item.externalLink ?? '#');
-                            const linkTarget = item.externalLink ? '_blank' : '_self';
-                            const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+                        {menu.itemsCollection?.items?.map((item, index) => {
+                          const isDropdownParent = item.__typename === 'MegaMenu';
+                          const previousItem = index > 0 ? menu.itemsCollection?.items?.[index - 1] : null;
+                          const previousIsDropdownParent = previousItem?.__typename === 'MegaMenu';
+                          const isCurrentOpen = openCollapsible === `main-${item.sys.id}`;
+                          const isPreviousOpen = previousItem && openCollapsible === `main-${previousItem.sys.id}`;
+                          const hasAnyDropdownOpen = openCollapsible !== null;
+                          
+                          // Show divider logic:
+                          // If no dropdown is open: show dividers between all top-level items (except first)
+                          // If a dropdown is open: only show dividers around the open dropdown
+                          const needsDivider = index > 0 && (
+                            !hasAnyDropdownOpen || 
+                            (isDropdownParent && previousIsDropdownParent && (isCurrentOpen || isPreviousOpen))
+                          );
+                          
+                          // Check if any dropdown is open and this dropdown is not the open one
+                          const isInactiveDropdown = isDropdownParent && hasAnyDropdownOpen && !isCurrentOpen;
+                          // Check if any dropdown is open and this is a regular menu item
+                          const isInactiveMenuItem = item.__typename === 'MenuItem' && hasAnyDropdownOpen;
 
-                            return (
-                              <a
-                                key={item.sys.id}
-                                href={linkUrl}
-                                target={linkTarget}
-                                rel={linkRel}
-                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
-                                onClick={() => setIsSheetOpen(false)}
-                              >
-                                {item.text}
-                              </a>
-                            );
-                          } else if (item.__typename === 'MegaMenu') {
-                            const megaMenuData = loadedMegaMenus[item.sys.id];
-                            const isOpen = openCollapsible === `main-${item.sys.id}`;
+                          return (
+                            <div key={item.sys.id} className={`${isInactiveDropdown ? 'opacity-50' : ''} ${isInactiveMenuItem ? 'opacity-50' : ''}`}>
+                              {needsDivider && (
+                                <div className="my-4 border-t border-white/20"></div>
+                              )}
+                              
+                              {item.__typename === 'MenuItem' ? (
+                                (() => {
+                                  const linkUrl = item.internalLink?.slug
+                                    ? `/${item.internalLink.slug}`
+                                    : (item.externalLink ?? '#');
+                                  const linkTarget = item.externalLink ? '_blank' : '_self';
+                                  const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
-                            return (
-                              <Collapsible
-                                key={item.sys.id}
-                                open={isOpen}
-                                onOpenChange={(open) => {
-                                  if (open) {
-                                    setOpenCollapsible(`main-${item.sys.id}`);
-                                    if (!megaMenuData) {
-                                      getMegaMenuById(item.sys.id)
-                                        .then((loadedMenu) => {
-                                          if (loadedMenu?.itemsCollection) {
-                                            const itemsCollection = loadedMenu.itemsCollection;
-                                            setLoadedMegaMenus((prev) => ({
-                                              ...prev,
-                                              [item.sys.id]: {
-                                                ...loadedMenu,
-                                                itemsCollection: {
-                                                  items: itemsCollection.items.map((menuItem) => ({
-                                                    ...menuItem,
-                                                    __typename: 'MenuItem' as const
-                                                  }))
+                                  return (
+                                    <a
+                                      href={linkUrl}
+                                      target={linkTarget}
+                                      rel={linkRel}
+                                      className="text-white hover:bg-white/10 block rounded-md px-3 py-2 text-[1.375rem] font-normal leading-[1.4] tracking-[0.01rem] transition-colors"
+                                      onClick={() => setIsSheetOpen(false)}
+                                    >
+                                      {item.text}
+                                    </a>
+                                  );
+                                })()
+                              ) : item.__typename === 'MegaMenu' ? (
+                                (() => {
+                                  const megaMenuData = loadedMegaMenus[item.sys.id];
+                                  const isOpen = openCollapsible === `main-${item.sys.id}`;
+
+                                  return (
+                                    <Collapsible
+                                      open={isOpen}
+                                      onOpenChange={(open) => {
+                                        if (open) {
+                                          setOpenCollapsible(`main-${item.sys.id}`);
+                                          if (!megaMenuData) {
+                                            getMegaMenuById(item.sys.id)
+                                              .then((loadedMenu) => {
+                                                if (loadedMenu?.itemsCollection) {
+                                                  const itemsCollection = loadedMenu.itemsCollection;
+                                                  setLoadedMegaMenus((prev) => ({
+                                                    ...prev,
+                                                    [item.sys.id]: {
+                                                      ...loadedMenu,
+                                                      itemsCollection: {
+                                                        items: itemsCollection.items.map((menuItem) => ({
+                                                          ...menuItem,
+                                                          __typename: 'MenuItem' as const
+                                                        }))
+                                                      }
+                                                    }
+                                                  }));
                                                 }
-                                              }
-                                            }));
+                                              })
+                                              .catch((error: unknown) => {
+                                                console.error('Failed to load mega menu:', error);
+                                              });
                                           }
-                                        })
-                                        .catch((error: unknown) => {
-                                          console.error('Failed to load mega menu:', error);
-                                        });
-                                    }
-                                  } else {
-                                    setOpenCollapsible(null);
-                                  }
-                                }}
-                              >
-                                <CollapsibleTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    className="text-foreground hover:bg-accent w-full justify-between rounded-md px-3 py-2 text-sm transition-colors"
-                                  >
-                                    {item.title}
-                                    <ChevronDown className="h-4 w-4" />
-                                  </Button>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="space-y-1 pl-4">
-                                  {megaMenuData?.itemsCollection?.items?.map((subItem) => {
-                                    if (subItem.__typename === 'MenuItem') {
-                                      const subLinkUrl = subItem.internalLink?.slug
-                                        ? `/${subItem.internalLink.slug}`
-                                        : (subItem.externalLink ?? '#');
-                                      const subLinkTarget = subItem.externalLink
-                                        ? '_blank'
-                                        : '_self';
-                                      const subLinkRel = subItem.externalLink
-                                        ? 'noopener noreferrer'
-                                        : undefined;
-
-                                      return (
-                                        <a
-                                          key={subItem.sys.id}
-                                          href={subLinkUrl}
-                                          target={subLinkTarget}
-                                          rel={subLinkRel}
-                                          className="text-muted-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
-                                          onClick={() => setIsSheetOpen(false)}
+                                        } else {
+                                          setOpenCollapsible(null);
+                                        }
+                                      }}
+                                    >
+                                      <CollapsibleTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          className="text-white hover:bg-white/10 w-full justify-between rounded-md px-3 py-2 text-[1.375rem] font-normal leading-[1.4] tracking-[0.01rem] transition-colors"
                                         >
-                                          {subItem.text}
-                                        </a>
-                                      );
-                                    }
-                                    return null;
-                                  }) ?? (
-                                    <div className="text-muted-foreground px-3 py-2 text-sm">
-                                      {megaMenuData ? 'No items available' : 'Loading...'}
-                                    </div>
-                                  )}
-                                </CollapsibleContent>
-                              </Collapsible>
-                            );
-                          }
-                          return null;
+                                          {item.title}
+                                          <ChevronDown className="h-4 w-4" />
+                                        </Button>
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent className="pl-4 pb-4">
+                                        <div className="space-y-1">
+                                          {megaMenuData?.itemsCollection?.items?.map((subItem) => {
+                                            if (subItem.__typename === 'MenuItem') {
+                                              const subLinkUrl = subItem.internalLink?.slug
+                                                ? `/${subItem.internalLink.slug}`
+                                                : (subItem.externalLink ?? '#');
+                                              const subLinkTarget = subItem.externalLink
+                                                ? '_blank'
+                                                : '_self';
+                                              const subLinkRel = subItem.externalLink
+                                                ? 'noopener noreferrer'
+                                                : undefined;
+
+                                              return (
+                                                <a
+                                                  key={subItem.sys.id}
+                                                  href={subLinkUrl}
+                                                  target={subLinkTarget}
+                                                  rel={subLinkRel}
+                                                  className="text-white/90 hover:bg-white/10 block rounded-md px-3 py-3 text-base font-normal leading-[1.4] tracking-[0.01rem] transition-colors"
+                                                  onClick={() => setIsSheetOpen(false)}
+                                                >
+                                                  {subItem.text}
+                                                </a>
+                                              );
+                                            }
+                                            return null;
+                                          }) ?? (
+                                            <div className="text-white/70 px-3 py-3 text-base">
+                                              {megaMenuData ? 'No items available' : 'Loading...'}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </CollapsibleContent>
+                                    </Collapsible>
+                                  );
+                                })()
+                              ) : null}
+                            </div>
+                          );
                         })}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-foreground">No menu available</div>
+                    <div className="text-white">No menu available</div>
                   )}
 
-                  {/* Overflow Menu Items */}
-                  {overflowMenuLoading ? (
-                    <div className="text-foreground">Loading overflow menu...</div>
-                  ) : overflowMenu ? (
-                    <div>
-                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">More</h3>
-                      <div className="space-y-2">
+                  {/* Overflow Menu Items - Mobile Bottom */}
+                  {overflowMenu && (
+                    <div className="fixed bottom-0 left-0 right-0 p-6 bg-black">
+                      <div className="flex flex-wrap gap-4 justify-center">
                         {overflowMenu.itemsCollection?.items?.map((item) => {
                           if (item.__typename === 'MenuItem') {
                             const linkUrl = item.internalLink?.slug
@@ -649,104 +744,18 @@ function HeaderContent(props: HeaderProps) {
                                 href={linkUrl}
                                 target={linkTarget}
                                 rel={linkRel}
-                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
+                                className="text-white/90 hover:bg-white/10 rounded-md px-4 py-2 text-sm transition-colors whitespace-nowrap"
                                 onClick={() => setIsSheetOpen(false)}
                               >
                                 {item.text}
                               </a>
-                            );
-                          } else if (item.__typename === 'MegaMenu') {
-                            const megaMenuData = loadedMegaMenus[item.sys.id];
-                            const isOpen = openCollapsible === `overflow-${item.sys.id}`;
-
-                            return (
-                              <Collapsible
-                                key={item.sys.id}
-                                open={isOpen}
-                                onOpenChange={(open) => {
-                                  if (open) {
-                                    setOpenCollapsible(`overflow-${item.sys.id}`);
-                                    if (!megaMenuData) {
-                                      getMegaMenuById(item.sys.id)
-                                        .then((loadedMenu) => {
-                                          if (loadedMenu?.itemsCollection) {
-                                            const itemsCollection = loadedMenu.itemsCollection;
-                                            setLoadedMegaMenus((prev) => ({
-                                              ...prev,
-                                              [item.sys.id]: {
-                                                ...loadedMenu,
-                                                itemsCollection: {
-                                                  items: itemsCollection.items.map((menuItem) => ({
-                                                    ...menuItem,
-                                                    __typename: 'MenuItem' as const
-                                                  }))
-                                                }
-                                              }
-                                            }));
-                                          }
-                                        })
-                                        .catch((error: unknown) => {
-                                          console.error(
-                                            'Failed to load overflow mega menu:',
-                                            error
-                                          );
-                                        });
-                                    }
-                                  } else {
-                                    setOpenCollapsible(null);
-                                  }
-                                }}
-                              >
-                                <CollapsibleTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    className="text-foreground hover:bg-accent w-full justify-between rounded-md px-3 py-2 text-sm transition-colors"
-                                  >
-                                    {item.title}
-                                    <ChevronDown className="h-4 w-4" />
-                                  </Button>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="space-y-1 pl-4">
-                                  {megaMenuData?.itemsCollection?.items?.map((subItem) => {
-                                    if (subItem.__typename === 'MenuItem') {
-                                      const subLinkUrl = subItem.internalLink?.slug
-                                        ? `/${subItem.internalLink.slug}`
-                                        : (subItem.externalLink ?? '#');
-                                      const subLinkTarget = subItem.externalLink
-                                        ? '_blank'
-                                        : '_self';
-                                      const subLinkRel = subItem.externalLink
-                                        ? 'noopener noreferrer'
-                                        : undefined;
-
-                                      return (
-                                        <a
-                                          key={subItem.sys.id}
-                                          href={subLinkUrl}
-                                          target={subLinkTarget}
-                                          rel={subLinkRel}
-                                          className="text-muted-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
-                                          onClick={() => setIsSheetOpen(false)}
-                                        >
-                                          {subItem.text}
-                                        </a>
-                                      );
-                                    }
-                                    return null;
-                                  }) ?? (
-                                    <div className="text-muted-foreground px-3 py-2 text-sm">
-                                      {megaMenuData ? 'No items available' : 'Loading...'}
-                                    </div>
-                                  )}
-                                </CollapsibleContent>
-                              </Collapsible>
                             );
                           }
                           return null;
                         })}
                       </div>
                     </div>
-                  ) : null}
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -766,3 +775,4 @@ export function Header(props: HeaderProps) {
     </ErrorBoundary>
   );
 }
+
