@@ -141,31 +141,32 @@ export function Content(props: ContentProps) {
   const isContentGridItemData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is ContentGridItemCardData => {
-    return 'heading' in data && 'variant' in data && 'ctaCollection' in data;
+    return data != null && typeof data === 'object' && 'heading' in data && 'variant' in data && 'ctaCollection' in data;
   };
 
   const isHubspotFormData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is HubspotFormCardData => {
-    return 'title' in data && 'description' in data && 'formId' in data;
+    return data != null && typeof data === 'object' && 'title' in data && 'description' in data && 'formId' in data;
   };
 
   const isProductData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is ProductCardData => {
-    return 'slug' in data;
+    return data != null && typeof data === 'object' && 'slug' in data;
   };
 
   const isSectionHeadingCardData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
-    return 'variant' in data && 'overline' in data;
+    return data != null && typeof data === 'object' && 'variant' in data && 'overline' in data;
   };
 
   const isSectionHeadingData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
     return (
+      data != null && typeof data === 'object' &&
       'overline' in data && 'ctaCollection' in data && !('heading' in data) && !('slug' in data)
     );
   };
@@ -271,7 +272,7 @@ export function Content(props: ContentProps) {
                   gap={12}
                   className="w-full items-center justify-center text-center"
                 >
-                  <Box direction="col" gap={5}>
+                  <Box direction="col" gap={5} className="">
                     <Box direction="col" gap={1.5}>
                       {isContentGridItemData(data) && data.heading && (
                         <p
@@ -360,18 +361,14 @@ export function Content(props: ContentProps) {
     if (variant === 'ContentCenter') {
       return (
         <>
-          <ContentContainer>
+          <div className="relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9 flex items-center justify-center">
             <AirImage
               link={data.image?.link}
               altText={data.image?.altText ?? data.image?.title}
               className="absolute inset-0 h-full w-full object-cover px-6 md:px-9"
             />
-            <Box
-              direction="col"
-              gap={12}
-              className="relative h-full w-full items-center justify-center text-center"
-            >
-              <Box direction="col" gap={5}>
+            <div className="relative z-10 text-center">
+              <Box direction="col" gap={5} className="p-[3.44rem]">
                 <Box direction="col" gap={1.5}>
                   {isProductData(data) && data.tags && (
                     <p
@@ -433,8 +430,8 @@ export function Content(props: ContentProps) {
                   ))
                 )}
               </Box>
-            </Box>
-          </ContentContainer>
+            </div>
+          </div>
         </>
       );
     }

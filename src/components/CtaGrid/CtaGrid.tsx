@@ -102,7 +102,7 @@ export function CtaGrid(props: CtaGrid) {
                 <Box direction="col" gap={6}>
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
-                      <h3 className="text-headline-lg leading-tight">{item.heading}</h3>
+                      <h3 className="leading-[130%]" style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>{item.heading}</h3>
                       <p className="text-body-sm leading-relaxed opacity-90">{item.description}</p>
                     </div>
                   ))}
@@ -198,25 +198,45 @@ export function CtaGrid(props: CtaGrid) {
                   />
                 </div>
 
-                {/* Content Overlay - Mobile: individual blur items */}
-                <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:px-9">
-                  <div className="w-full pb-4">
-                    <Box direction="col" gap={4} className="w-full">
+                {/* Content Overlay - Mobile: conditional styling based on CTA presence */}
+                <div className={`absolute inset-0 flex ${
+                  liveCtaGrid.ctaCollection?.items?.length > 0 
+                    ? 'items-end px-6 sm:px-6 md:px-9' 
+                    : 'items-end'
+                }`}>
+                  <div className={`w-full ${liveCtaGrid.ctaCollection?.items?.length > 0 ? 'pb-4' : ''}`}>
+                    <Box direction="col" gap={liveCtaGrid.ctaCollection?.items?.length > 0 ? 4 : 6} className="w-full">
                       {/* Content Grid Items */}
                       {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                         <div
                           key={item.sys?.id || index}
-                          className="space-y-3 p-6 backdrop-blur-[14px]"
-                          style={{
+                          className={`space-y-3 ${
+                            liveCtaGrid.ctaCollection?.items?.length > 0 
+                              ? 'p-6 backdrop-blur-[14px]' 
+                              : 'bg-subtle p-10'
+                          }`}
+                          style={liveCtaGrid.ctaCollection?.items?.length > 0 ? {
                             background:
                               'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-                          }}
+                          } : {}}
                         >
-                          <h3 className="text-body-sm text-text-on-invert leading-[160%] tracking-[0.01em]">
+                          <h3 className={`leading-[130%] ${
+                            liveCtaGrid.ctaCollection?.items?.length > 0 
+                              ? 'text-text-on-invert' 
+                              : ''
+                          }`} style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>
                             {item.heading}
                           </h3>
-                          <div className="h-px w-full bg-white/30"></div>
-                          <p className="text-body-xxs text-text-on-invert leading-relaxed">
+                          <div className={`h-px w-full ${
+                            liveCtaGrid.ctaCollection?.items?.length > 0 
+                              ? 'bg-white/30' 
+                              : 'bg-border'
+                          }`}></div>
+                          <p className={`leading-relaxed ${
+                            liveCtaGrid.ctaCollection?.items?.length > 0 
+                              ? 'text-body-xxs text-text-on-invert' 
+                              : 'text-body-sm text-text-subtle'
+                          }`}>
                             {item.description}
                           </p>
                         </div>
@@ -228,12 +248,12 @@ export function CtaGrid(props: CtaGrid) {
             </div>
 
             {/* Desktop: Original CSS Grid Layout */}
-            <div className="hidden h-full min-h-[600px] xl:flex">
+            <div className="hidden h-full min-h-[600px] xl:flex xl:gap-[1.25rem]">
               {/* Content Section */}
               <Box
                 direction="col"
                 gap={8}
-                className={`bg-subtle h-full max-w-[20.5rem] p-10 ${
+                className={`bg-subtle h-full flex-1 p-10 ${
                   variant === 'ContentLeft' ? 'order-1' : 'order-2'
                 }`}
               >
@@ -241,7 +261,7 @@ export function CtaGrid(props: CtaGrid) {
                 <Box direction="col" gap={6} className="flex-1 justify-end">
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
-                      <h3 className="text-body-lg leading-[160%] tracking-[0.01em]">
+                      <h3 className="leading-[130%]" style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>
                         {item.heading}
                       </h3>
                       <div className="bg-border h-px w-full"></div>
@@ -290,7 +310,7 @@ export function CtaGrid(props: CtaGrid) {
 
               {/* Image Section */}
               <div
-                className={`relative flex-1 ${variant === 'ContentLeft' ? 'order-2' : 'order-1'}`}
+                className={`relative max-w-[56.75rem] flex-shrink-0 ${variant === 'ContentLeft' ? 'order-2' : 'order-1'}`}
               >
                 <AirImage
                   link={liveCtaGrid.asset?.link}

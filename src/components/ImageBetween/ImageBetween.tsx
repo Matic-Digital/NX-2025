@@ -165,7 +165,8 @@ export function ImageBetween(props: ImageBetween) {
                 imageBetween.asset.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
-              isBannerHero && 'mb-0 pb-16'
+              isBannerHero && !isPostSlider && 'mb-0 pb-0',
+              isBannerHero && isPostSlider && 'mb-0 pb-16'
             )}
           >
             {/* Top Content Grid */}
@@ -178,12 +179,21 @@ export function ImageBetween(props: ImageBetween) {
                   />
                 )}
                 {imageBetween.contentTop.__typename === 'BannerHero' && contentTopData && (
-                  <div className="pb-16 -mb-16">
-                    <BannerHero
-                      {...(contentTopData as BannerHeroType)}
-                      contentType={imageBetween.__typename}
-                    />
-                  </div>
+                  <>
+                    {isPostSlider ? (
+                      <div className="pb-16 -mb-16">
+                        <BannerHero
+                          {...(contentTopData as BannerHeroType)}
+                          contentType={imageBetween.__typename}
+                        />
+                      </div>
+                    ) : (
+                      <BannerHero
+                        {...(contentTopData as BannerHeroType)}
+                        contentType={imageBetween.__typename}
+                      />
+                    )}
+                  </>
                 )}
               </>
             )}
