@@ -322,12 +322,12 @@ function HeaderContent(props: HeaderProps) {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="fullscreen" className="p-0 bg-black">
+              <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Header with Logo, Search, and Close */}
                 <div className="flex items-center justify-between p-6">
                   <Logo logo={header.logo} />
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-0 pl-4">
                     <Link href="/search">
                       <Button
                         variant="ghost"
@@ -350,7 +350,7 @@ function HeaderContent(props: HeaderProps) {
                 </div>
 
                 {/* Navigation Content */}
-                <nav className="px-6 pt-6 space-y-6">
+                <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                   {/* Main Menu Items */}
                   {menuLoading ? (
                     <div className="text-white">Loading menu...</div>
@@ -526,7 +526,7 @@ function HeaderContent(props: HeaderProps) {
 
           {/* Mobile Navigation */}
           <Box direction="row" gap={2} className="items-center md:hidden" data-testid="mobile-nav">
-            <Link href="/search">
+            <Link href="/search" className="hidden min-[376px]:block">
               <Button
                 variant="ghost"
                 className={`rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
@@ -548,12 +548,12 @@ function HeaderContent(props: HeaderProps) {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="fullscreen" className="p-0 bg-black">
+              <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col">
                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 {/* Header with Logo, Search, and Close */}
                 <div className="flex items-center justify-between p-6">
                   <Logo logo={header.logo} />
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <Link href="/search">
                       <Button
                         variant="ghost"
@@ -576,7 +576,7 @@ function HeaderContent(props: HeaderProps) {
                 </div>
 
                 {/* Navigation Content */}
-                <nav className="px-6 pt-6 space-y-6">
+                <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                   {/* Main Menu Items */}
                   {menuLoading ? (
                     <div className="text-white">Loading menu...</div>
