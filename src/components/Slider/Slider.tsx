@@ -465,7 +465,7 @@ const GenericSlider = ({
                             : isSolutionSlider
                               ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                               : isTestimonialSlider
-                                ? 'basis-1/3'
+                                ? 'basis-full sm:basis-1/2 lg:basis-1/3'
                                 : isContentSlider
                                   ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                                   : 'basis-full'
@@ -538,7 +538,7 @@ const GenericSlider = ({
       )}
 
       {showAltIndicators && (
-        <Container>
+        <Container className={isTestimonialSlider ? '!px-0' : ''}>
           <div
             className={cn(
               'mx-auto mt-12 flex',
@@ -547,7 +547,8 @@ const GenericSlider = ({
                 isSolutionSlider ||
                 isPostSlider ||
                 isServiceSlider ||
-                isContentSlider
+                isContentSlider ||
+                isTestimonialSlider
                 ? 'w-full items-center justify-between'
                 : 'justify-center'
             )}
@@ -560,30 +561,21 @@ const GenericSlider = ({
                   isSolutionSlider ||
                   isPostSlider ||
                   isServiceSlider ||
-                  isContentSlider
+                  isContentSlider ||
+                  isTestimonialSlider
                   ? 'flex-1'
                   : 'max-w-md flex-1'
               )}
             >
-              {(isTestimonialSlider
-                ? Array.from({ length: Math.ceil(sliderData.itemsCollection.items.length / 3) })
-                : sliderData.itemsCollection.items
-              ).map((_, index) => {
-                // For testimonial sliders, calculate which group is active
-                const isActive = isTestimonialSlider
-                  ? Math.floor((current - 1) / 3) === index
-                  : current === index + 1;
+              {sliderData.itemsCollection.items.map((_, index) => {
+                // For testimonial sliders on desktop, calculate which group is active
+                const isActive = current === index + 1;
 
                 return (
                   <button
                     key={index}
                     onClick={() => {
-                      if (isTestimonialSlider) {
-                        // For testimonial sliders, scroll to the first item in the group
-                        api?.scrollTo(index * 3);
-                      } else {
-                        api?.scrollTo(index);
-                      }
+                      api?.scrollTo(index);
                     }}
                     className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
                       'bg-surface-invert': isActive
@@ -597,15 +589,7 @@ const GenericSlider = ({
               <div className="ml-8 flex items-center gap-4">
                 <button
                   onClick={() => {
-                    if (isTestimonialSlider) {
-                      const currentSnap = api?.selectedScrollSnap() ?? 0;
-                      const totalSlides = sliderData.itemsCollection.items.length;
-                      const targetSnap = currentSnap - 3;
-                      const loopedSnap = targetSnap < 0 ? totalSlides - 3 : targetSnap;
-                      api?.scrollTo(loopedSnap);
-                    } else {
-                      api?.scrollPrev();
-                    }
+                    api?.scrollPrev();
                   }}
                   className="relative left-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                   aria-label="Previous slide"
@@ -625,15 +609,7 @@ const GenericSlider = ({
                 </button>
                 <button
                   onClick={() => {
-                    if (isTestimonialSlider) {
-                      const currentSnap = api?.selectedScrollSnap() ?? 0;
-                      const totalSlides = sliderData.itemsCollection.items.length;
-                      const targetSnap = currentSnap + 3;
-                      const loopedSnap = targetSnap >= totalSlides ? 0 : targetSnap;
-                      api?.scrollTo(loopedSnap);
-                    } else {
-                      api?.scrollNext();
-                    }
+                    api?.scrollNext();
                   }}
                   className="relative right-0 flex size-8 items-center justify-center rounded-none border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                   aria-label="Next slide"

@@ -17,7 +17,7 @@ export const collectionStyles = {
    * Get CSS classes for pagination container
    */
   getPaginationClasses: () => {
-    return 'flex items-center justify-end gap-4';
+    return 'flex items-center justify-center gap-4 w-full md:justify-end md:w-auto mt-8';
   },
 
   /**

@@ -14,7 +14,7 @@ interface TestimonialItemProps {
 export const TestimonialItem = ({ item }: TestimonialItemProps) => {
   return (
     <Box key={item.sys?.id} direction="row" className="w-full">
-      <Box className="bg-blue relative overflow-hidden aspect-square w-20 flex-shrink-0 sm:w-24 md:w-28">
+      <Box className="bg-blue relative overflow-hidden aspect-square min-w-[7.125rem] w-20 flex-shrink-0 sm:w-24 md:w-28">
         <AirImage
           {...item.headshot}
           altText={item.headshot?.altText ?? undefined}
