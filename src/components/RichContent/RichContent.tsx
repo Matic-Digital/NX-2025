@@ -188,9 +188,10 @@ const renderOptions = {
         );
       }
 
+      // Regular paragraphs should not have padding/indentation - only use paddingClass for list items
       return (
         <p
-          className={`text-secondary my-[1.75rem] text-[1rem] leading-[160%] font-normal whitespace-pre-line ${paddingClass}`}
+          className="text-secondary my-[1.75rem] text-[1rem] leading-[160%] font-normal whitespace-pre-line"
         >
           {children}
         </p>
@@ -473,17 +474,21 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
         }
       };
     } else if (currentLevel >= 2 && !isInList) {
-      // Calculate padding based on heading level
-      const paddingRem = (currentLevel - 1) * 2; // 2rem per level (H2 content = 2rem, H3 content = 4rem, etc.)
-      const paddingClass = `pl-[${paddingRem}rem]`;
+      // Only add padding to non-paragraph elements (lists, headings, etc.)
+      // Paragraphs should remain flush left under headings
+      if (node.nodeType !== 'paragraph') {
+        // Calculate padding based on heading level
+        const paddingRem = (currentLevel - 1) * 2; // 2rem per level (H2 content = 2rem, H3 content = 4rem, etc.)
+        const paddingClass = `pl-[${paddingRem}rem]`;
 
-      return {
-        ...node,
-        data: {
-          ...node.data,
-          paddingClass
-        }
-      };
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            paddingClass
+          }
+        };
+      }
     }
     return node;
   };
