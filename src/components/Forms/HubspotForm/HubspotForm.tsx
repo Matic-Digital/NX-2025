@@ -160,6 +160,12 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     ((formData.formData as Record<string, unknown>)?.description as string) ??
     'HubSpot Form Description';
 
+  // Get submit button text from form data or fallback
+  const submitButtonText =
+    ((formData.formData as Record<string, unknown>)?.submitText as string) ??
+    ((formData.formData as Record<string, unknown>)?.submitButtonText as string) ??
+    'Submit';
+
   if (formData.metadata.isMultiStep) {
     return (
       <Card className={className}>
@@ -242,7 +248,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                       className="flex items-center"
                     >
                       {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                      Submit Form
+                      {submitButtonText}
                     </Button>
                   )}
                 </form.Subscribe>
@@ -275,11 +281,11 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     <Box
       direction="col"
       gap={4}
-      className="relative justify-center h-full w-full max-w-4xl xl:pl-20"
+      className="relative justify-center h-full w-full max-w-4xl py-[3.44rem] px-[1.5rem] xl:pl-20"
     >
-      <h2 className="text-text-on-invert text-headline-md">{formTitle}</h2>
-      <p className="text-text-on-invert text-body-xs ">{formDescription}</p>
-      <CardContent className="text-text-on-invert p-0">
+      <h2 className="text-text-on-invert text-4xl font-normal leading-[120%] md:text-headline-md text-center md:text-left">{formTitle}</h2>
+      <p className="text-text-on-invert text-sm font-normal leading-[160%] tracking-[0.00875rem] md:text-body-xs text-center md:text-left">{formDescription}</p>
+      <CardContent className="text-text-on-invert p-0 mt-[2.5rem] md:mt-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -288,7 +294,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           }}
           className="space-y-6"
         >
-          <Box gap={2} className="w-full items-start">
+          <Box className="w-full items-start flex-col md:flex-row gap-8 md:gap-2">
             <div className="space-y-4 w-full">
               {currentStepData?.fields
                 .filter((field) => !field.hidden)
@@ -323,10 +329,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 <Button
                   type="submit"
                   disabled={!canSubmit || submitting}
-                  className="flex items-center p-3.5 rounded-sm"
+                  className="flex items-center p-3.5 rounded-sm w-full md:w-auto"
                 >
                   {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Submit Form
+                  {submitButtonText}
                 </Button>
               )}
             </form.Subscribe>

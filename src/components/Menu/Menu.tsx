@@ -143,7 +143,7 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
   return (
     <div className="group/navbar">
       <NavigationMenu>
-        <NavigationMenuList className="gap-[0.75rem]">
+        <NavigationMenuList className="gap-2 xl:gap-[0.75rem] flex-wrap xl:flex-nowrap">
           {menuItems.map((item) => {
             // TypeScript now properly discriminates based on __typename
             if (item.__typename === 'MegaMenu') {
@@ -168,11 +168,11 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
                   href={linkUrl}
                   target={linkTarget}
                   rel={linkRel}
-                  className="cursor-pointer px-[0.75rem] py-[0.38rem] group"
+                  className="cursor-pointer px-2 xl:px-[0.75rem] py-[0.38rem] group"
                   onMouseEnter={handleRegularMenuItemHover}
                 >
                   <Text 
-                    className="text-white transition-all duration-300"
+                    className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
                     style={{
                       textShadow: 'none'
                     }}

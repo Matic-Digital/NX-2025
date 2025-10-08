@@ -73,9 +73,17 @@ function HeaderContent(props: HeaderProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loadedMegaMenus, setLoadedMegaMenus] = useState<Record<string, MenuType>>({});
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
+  const [overflowAnimating, setOverflowAnimating] = useState(false);
   const overflowButtonRef = useRef<HTMLButtonElement>(null);
   const overflowMenuRef = useRef<HTMLDivElement>(null);
-  const { isHeaderBlurVisible, setOverflowMenuOpen, isOverflowMenuOpen } = useMegaMenuContext();
+  const { 
+    isHeaderBlurVisible, 
+    setOverflowMenuOpen, 
+    isOverflowMenuOpen, 
+    activeMegaMenuId, 
+    closeMegaMenu, 
+    setMegaMenuContent 
+  } = useMegaMenuContext();
 
   // Important: We'll use CSS-only dark mode with the 'dark:' variant
   // This prevents hydration mismatches by ensuring server and client render the same HTML
@@ -226,7 +234,7 @@ function HeaderContent(props: HeaderProps) {
     window.addEventListener('scroll', handleScroll);
     const handleResize = () => {
       if (window.innerWidth >= 768 && isSheetOpen) {
-        // md breakpoint is 768px
+        // md breakpoint is 768px - close sheet when switching to tablet/desktop
         setIsSheetOpen(false);
       }
     };
@@ -263,22 +271,108 @@ function HeaderContent(props: HeaderProps) {
 
   return (
     <Container
-      className={`sticky top-0 z-[100] pt-0 transition-all duration-300 max-md:z-[40] md:pt-6`}
+      className={`sticky top-0 z-[100] pt-0 transition-all duration-300 max-lg:z-[40] lg:pt-6`}
     >
       <header
         className={`relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full ${
           isScrolled && isHeaderBlurVisible ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
         }`}
         {...inspectorProps({ fieldId: 'name' })}
+        onMouseLeave={(e) => {
+          // Only close on desktop (screen width >= 1280px)
+          if (typeof window !== 'undefined' && window.innerWidth >= 1280) {
+            const relatedTarget = e.relatedTarget as Element | null;
+            const isEnteringMegaMenu = relatedTarget?.closest('[data-mega-menu-portal]');
+            const isEnteringOverflowMenu = relatedTarget?.closest('[data-overflow-menu]');
+            
+            // Don't close if entering mega menu or overflow menu
+            if (!isEnteringMegaMenu && !isEnteringOverflowMenu) {
+              // Close any open mega menus after a short delay
+              setTimeout(() => {
+                if (activeMegaMenuId) {
+                  closeMegaMenu(activeMegaMenuId);
+                  setMegaMenuContent(null);
+                }
+                setOverflowMenuOpen(false);
+              }, 150);
+            }
+          }
+        }}
       >
         <Box className="items-center justify-between">
           {/* Logo Section */}
-          <Logo logo={header.logo} className="flex items-center gap-2 py-4" />
+          <Logo logo={header.logo} className="flex items-center gap-2 py-4 flex-shrink-0" />
+
+          {/* Tablet Navigation - Compact */}
+          <div className="hidden items-center md:flex xl:hidden" data-testid="tablet-nav">
+            <Link href="/search" aria-label="Search" className="mr-2">
+              <Search className="text-white hover:text-white/80 transition-colors cursor-pointer size-5" />
+            </Link>
+            
+            {/* Tablet Hamburger Menu */}
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="rounded-xxs flex items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl"
+                  aria-label="Open menu"
+                >
+                  <Menu className="size-5" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <SheetHeader className="text-left text-lg font-semibold">
+                  <SheetTitle>Menu</SheetTitle>
+                  <SheetDescription>Main navigation menu</SheetDescription>
+                </SheetHeader>
+                <nav className="mt-6 space-y-6">
+                  {/* Main Menu Items */}
+                  {menuLoading ? (
+                    <div className="text-foreground">Loading menu...</div>
+                  ) : menu ? (
+                    <div>
+                      <h3 className="text-muted-foreground mb-3 text-sm font-semibold">
+                        Navigation
+                      </h3>
+                      <div className="space-y-2">
+                        {menu.itemsCollection?.items?.map((item) => {
+                          if (item.__typename === 'MenuItem') {
+                            const linkUrl = item.internalLink?.slug
+                              ? `/${item.internalLink.slug}`
+                              : (item.externalLink ?? '#');
+                            const linkTarget = item.externalLink ? '_blank' : '_self';
+                            const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+
+                            return (
+                              <a
+                                key={item.sys.id}
+                                href={linkUrl}
+                                target={linkTarget}
+                                rel={linkRel}
+                                className="text-foreground hover:bg-accent block rounded-md px-3 py-2 text-sm transition-colors"
+                                onClick={() => setIsSheetOpen(false)}
+                              >
+                                {item.text}
+                              </a>
+                            );
+                          }
+                          return null;
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-foreground">No menu available</div>
+                  )}
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center md:flex" data-testid="desktop-nav">
+          <div className="hidden items-center xl:flex min-w-0 flex-1 justify-end" data-testid="desktop-nav">
             <div
-              className={`rounded-xxs mr-4 transition-all duration-300 ${
+              className={`rounded-xxs mr-4 transition-all duration-300 min-w-0 ${
                 isHeaderBlurVisible && !isScrolled ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
               }`}
             >
@@ -307,7 +401,19 @@ function HeaderContent(props: HeaderProps) {
                   aria-label="Open overflow menu"
                   aria-expanded={isOverflowMenuOpen}
                   aria-haspopup="true"
-                  onClick={() => setOverflowMenuOpen(!isOverflowMenuOpen)}
+                  onClick={() => {
+                    if (!isOverflowMenuOpen) {
+                      setOverflowMenuOpen(true);
+                      requestAnimationFrame(() => {
+                        setOverflowAnimating(true);
+                      });
+                    } else {
+                      setOverflowAnimating(false);
+                      setTimeout(() => {
+                        setOverflowMenuOpen(false);
+                      }, 200);
+                    }
+                  }}
                 >
                   <Menu className="size-5" />
                   <span className="sr-only">Open overflow menu</span>
@@ -319,10 +425,39 @@ function HeaderContent(props: HeaderProps) {
                   createPortal(
                     <div
                       ref={overflowMenuRef}
-                      className="fixed top-0 left-0 z-[99] h-auto min-h-fit w-screen bg-black/[0.72] pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px]"
-                      onClick={() => setOverflowMenuOpen(false)}
+                      className={`fixed top-0 left-0 z-[99] h-auto min-h-fit w-screen bg-black/[0.72] pt-24 shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] backdrop-blur-[30px] transition-all duration-200 ease-out ${
+                        overflowAnimating 
+                          ? 'opacity-100 translate-y-0' 
+                          : 'opacity-0 -translate-y-2'
+                      }`}
+                      data-overflow-menu
+                      onClick={() => {
+                        setOverflowAnimating(false);
+                        setTimeout(() => {
+                          setOverflowMenuOpen(false);
+                        }, 200);
+                      }}
+                      onMouseLeave={(e) => {
+                        // Only close on desktop (screen width >= 1280px)
+                        if (typeof window !== 'undefined' && window.innerWidth >= 1280) {
+                          const relatedTarget = e.relatedTarget as Element | null;
+                          const isEnteringHeader = relatedTarget?.closest('header');
+                          
+                          // Close if not entering header area
+                          if (!isEnteringHeader) {
+                            setOverflowAnimating(false);
+                            setTimeout(() => {
+                              setOverflowMenuOpen(false);
+                            }, 200);
+                          }
+                        }
+                      }}
                     >
-                      <div className="px-6 py-8">
+                      <div className={`px-6 py-8 transition-all duration-200 ease-out delay-75 ${
+                        overflowAnimating 
+                          ? 'opacity-100 translate-y-0' 
+                          : 'opacity-0 -translate-y-1'
+                      }`}>
                         <Container>
                           <nav onClick={(e) => e.stopPropagation()}>
                             {overflowMenuLoading ? (

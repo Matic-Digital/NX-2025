@@ -130,8 +130,8 @@ export function Collection({ collectionData, sys, isSearchContext = false }: Col
 
   return (
     <div {...inspectorProps}>
-      {/* Search and Sort in horizontal flex layout */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6">
+      {/* Desktop: Search and Sort in horizontal flex layout */}
+      <div className="hidden sm:flex gap-4 items-start sm:items-end mb-6">
         <div className="flex-1">
           <CollectionSearchBar
             searchQuery={searchQuery}
@@ -152,13 +152,46 @@ export function Collection({ collectionData, sys, isSearchContext = false }: Col
         </div>
       </div>
 
-      {/* Always render filter buttons for Posts collections - outside of state/content toggle */}
-      <CollectionFilterButtons
-        categories={postTagCategories}
-        activeFilter={activeFilter}
-        onFilterChange={handleFilterChange}
-        isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
-      />
+      {/* Mobile: Vertical layout with search, filters, then sort */}
+      <div className="sm:hidden mb-6">
+        {/* Search at top */}
+        <CollectionSearchBar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          contentTypes={finalCollection?.contentType ?? []}
+          isEnabled={finalCollection?.searchBar ?? false}
+          className="mb-4"
+        />
+        
+        {/* Filter buttons in middle */}
+        <CollectionFilterButtons
+          categories={postTagCategories}
+          activeFilter={activeFilter}
+          onFilterChange={handleFilterChange}
+          isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
+        />
+        
+        {/* Sort dropdown at bottom, right-aligned */}
+        <div className="flex justify-end">
+          <CollectionSortDropdown
+            sortOptions={sortOptions}
+            activeSortOption={activeSortOption}
+            onSortChange={setActiveSortOption}
+            isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
+            className="mb-0"
+          />
+        </div>
+      </div>
+
+      {/* Desktop: Filter buttons below search/sort row */}
+      <div className="hidden sm:block">
+        <CollectionFilterButtons
+          categories={postTagCategories}
+          activeFilter={activeFilter}
+          onFilterChange={handleFilterChange}
+          isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
+        />
+      </div>
 
       {/* Render state components with CSS visibility toggle */}
       <div className={shouldRenderContent ? 'hidden' : 'block'}>

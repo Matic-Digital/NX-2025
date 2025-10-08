@@ -34,6 +34,9 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({ field, value, onCh
       return <TextAreaField field={field} value={value} onChange={onChange} error={error} />;
 
     case 'single_checkbox':
+    case 'checkbox':
+    case 'booleancheckbox':
+    case 'boolean':
       return <CheckboxField field={field} value={value} onChange={onChange} error={error} />;
 
     case 'url':
