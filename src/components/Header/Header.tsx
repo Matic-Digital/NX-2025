@@ -23,6 +23,7 @@ import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
+import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenuProvider, useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
 import { Button } from '@/components/ui/button';
@@ -33,8 +34,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
   SheetTitle,
   SheetTrigger
 } from '@/components/ui/sheet';
@@ -282,9 +281,13 @@ function HeaderContent(props: HeaderProps) {
         onMouseLeave={(e) => {
           // Only close on desktop (screen width >= 1280px)
           if (typeof window !== 'undefined' && window.innerWidth >= 1280) {
-            const relatedTarget = e.relatedTarget as Element | null;
-            const isEnteringMegaMenu = relatedTarget?.closest('[data-mega-menu-portal]');
-            const isEnteringOverflowMenu = relatedTarget?.closest('[data-overflow-menu]');
+            const relatedTarget = e.relatedTarget;
+            const isEnteringMegaMenu = relatedTarget && typeof relatedTarget === 'object' && 'closest' in relatedTarget 
+              ? (relatedTarget as Element).closest('[data-mega-menu-portal]')
+              : null;
+            const isEnteringOverflowMenu = relatedTarget && typeof relatedTarget === 'object' && 'closest' in relatedTarget
+              ? (relatedTarget as Element).closest('[data-overflow-menu]')
+              : null;
             
             // Don't close if entering mega menu or overflow menu
             if (!isEnteringMegaMenu && !isEnteringOverflowMenu) {
@@ -487,8 +490,10 @@ function HeaderContent(props: HeaderProps) {
                       onMouseLeave={(e) => {
                         // Only close on desktop (screen width >= 1280px)
                         if (typeof window !== 'undefined' && window.innerWidth >= 1280) {
-                          const relatedTarget = e.relatedTarget as Element | null;
-                          const isEnteringHeader = relatedTarget?.closest('header');
+                          const relatedTarget = e.relatedTarget;
+                          const isEnteringHeader = relatedTarget && typeof relatedTarget === 'object' && 'closest' in relatedTarget
+                            ? (relatedTarget as Element).closest('header')
+                            : null;
                           
                           // Close if not entering header area
                           if (!isEnteringHeader) {
@@ -510,7 +515,12 @@ function HeaderContent(props: HeaderProps) {
                             {overflowMenuLoading ? (
                               <div className="text-white">Loading overflow menu...</div>
                             ) : overflowMenu ? (
-                              <MenuComponent menu={overflowMenu} variant="overflow" />
+                              <div className="space-y-6">
+                                <MenuComponent menu={overflowMenu} variant="overflow" />
+                                <div className="flex justify-end">
+                                  <LocaleDropdown />
+                                </div>
+                              </div>
                             ) : (
                               <div className="text-white">No overflow menu available</div>
                             )}
@@ -753,6 +763,7 @@ function HeaderContent(props: HeaderProps) {
                           }
                           return null;
                         })}
+                        <LocaleDropdown className="rounded-md px-4 py-2" />
                       </div>
                     </div>
                   )}
