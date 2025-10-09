@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getAvailableLocales, getCurrentLocale } from './LocaleDropdownApi';
+
 import { ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -8,17 +10,19 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
-import { getAvailableLocales, getCurrentLocale, setCurrentLocale } from './LocaleDropdownApi';
 import type { Locale, LocaleDropdownProps } from './LocaleDropdownSchema';
 
 /**
  * LocaleDropdown Component
  * Displays available locales and allows users to switch between them
  */
-export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: LocaleDropdownProps) {
+export function LocaleDropdown({
+  currentLocale: propCurrentLocale,
+  className
+}: LocaleDropdownProps) {
   const [locales, setLocales] = useState<Locale[]>([]);
   const [currentLocale, setCurrentLocale] = useState<string>(propCurrentLocale ?? 'en-US');
   const [loading, setLoading] = useState(true);
@@ -29,10 +33,10 @@ export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: 
       try {
         const availableLocales = await getAvailableLocales();
         setLocales(availableLocales);
-        
+
         // Force English as default if no specific locale is provided
         const current = propCurrentLocale ?? getCurrentLocale();
-        
+
         // Override with English if we detect Spanish or other non-English defaults
         const finalLocale = current === 'es' || current === 'es-ES' ? 'en-US' : current;
         setCurrentLocale(finalLocale);
@@ -49,21 +53,21 @@ export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: 
   // Handle locale change
   const handleLocaleChange = (locale: string) => {
     console.log('Switching locale to:', locale);
-    
+
     // Update localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('contentful-locale', locale);
     }
-    
+
     // Update URL parameter
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.set('locale', locale);
-      
+
       // Update the URL and reload to apply the new locale
       window.location.href = url.toString();
     }
-    
+
     // Update local state (though page will reload)
     setCurrentLocale(locale);
   };
@@ -93,14 +97,12 @@ export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: 
           onMouseLeave={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
-          <span className="text-sm font-bold uppercase">
-            {currentLocale.split('-')[0]}
-          </span>
+          <span className="text-sm font-bold uppercase">{currentLocale.split('-')[0]}</span>
           <ChevronDown className="h-3 w-3" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        align="end" 
+      <DropdownMenuContent
+        align="end"
         className="min-w-[160px] bg-black/90 backdrop-blur-md border-white/20 z-[9999]"
         onMouseEnter={(e) => e.stopPropagation()}
         onMouseLeave={(e) => e.stopPropagation()}
@@ -121,9 +123,7 @@ export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: 
           >
             <div className="flex items-center justify-between w-full">
               <span>{locale.name}</span>
-              {currentLocale === locale.code && (
-                <div className="h-2 w-2 rounded-full bg-white" />
-              )}
+              {currentLocale === locale.code && <div className="h-2 w-2 rounded-full bg-white" />}
             </div>
           </DropdownMenuItem>
         ))}
