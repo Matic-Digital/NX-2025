@@ -70,6 +70,7 @@ function HeaderContent(props: HeaderProps) {
   const [menuLoading, setMenuLoading] = useState(false);
   const [overflowMenu, setOverflowMenu] = useState<MenuType | null>(null);
   const [overflowMenuLoading, setOverflowMenuLoading] = useState(false);
+  const [overflowMenuTags, setOverflowMenuTags] = useState<Array<{ id: string; name: string }> | undefined>(undefined);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loadedMegaMenus, setLoadedMegaMenus] = useState<Record<string, MenuType>>({});
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
@@ -150,6 +151,9 @@ function HeaderContent(props: HeaderProps) {
                 }
               };
               setOverflowMenu(menuFormat);
+              
+              // Store the tags from the original MegaMenu
+              setOverflowMenuTags(loadedMegaMenu.contentfulMetadata?.tags);
             }
           })
           .catch((error: unknown) => {
@@ -468,8 +472,12 @@ function HeaderContent(props: HeaderProps) {
                     }
                   }}
                 >
-                  <Menu className="size-5" />
-                  <span className="sr-only">Open overflow menu</span>
+                  {isOverflowMenuOpen ? (
+                    <X className="size-5" />
+                  ) : (
+                    <Menu className="size-5" />
+                  )}
+                  <span className="sr-only">{isOverflowMenuOpen ? 'Close overflow menu' : 'Open overflow menu'}</span>
                 </Button>
 
                 {/* Portal-based dropdown menu */}
@@ -518,7 +526,7 @@ function HeaderContent(props: HeaderProps) {
                             {overflowMenuLoading ? (
                               <div className="text-white">Loading overflow menu...</div>
                             ) : overflowMenu ? (
-                              <MenuComponent menu={overflowMenu} variant="overflow" />
+                              <MenuComponent menu={overflowMenu} variant="overflow" megaMenuTags={overflowMenuTags} />
                             ) : (
                               <div className="text-white">No overflow menu available</div>
                             )}
@@ -737,31 +745,38 @@ function HeaderContent(props: HeaderProps) {
                   {/* Overflow Menu Items - Mobile Bottom */}
                   {overflowMenu && (
                     <div className="fixed bottom-0 left-0 right-0 p-6 bg-black">
-                      <div className="flex flex-wrap gap-4 justify-center">
-                        {overflowMenu.itemsCollection?.items?.map((item) => {
-                          if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug
-                              ? `/${item.internalLink.slug}`
-                              : (item.externalLink ?? '#');
-                            const linkTarget = item.externalLink ? '_blank' : '_self';
-                            const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+                      <div className="space-y-4">
+                        {/* LocaleDropdown - Centered above overflow items */}
+                        <div className="flex justify-center">
+                          <LocaleDropdown className="rounded-md px-4 py-2" />
+                        </div>
+                        
+                        {/* Overflow Menu Items */}
+                        <div className="flex flex-wrap gap-4 justify-center">
+                          {overflowMenu.itemsCollection?.items?.map((item) => {
+                            if (item.__typename === 'MenuItem') {
+                              const linkUrl = item.internalLink?.slug
+                                ? `/${item.internalLink.slug}`
+                                : (item.externalLink ?? '#');
+                              const linkTarget = item.externalLink ? '_blank' : '_self';
+                              const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
-                            return (
-                              <a
-                                key={item.sys.id}
-                                href={linkUrl}
-                                target={linkTarget}
-                                rel={linkRel}
-                                className="text-white/90 hover:bg-white/10 rounded-md px-4 py-2 text-sm transition-colors whitespace-nowrap"
-                                onClick={() => setIsSheetOpen(false)}
-                              >
-                                {item.text}
-                              </a>
-                            );
-                          }
-                          return null;
-                        })}
-                        <LocaleDropdown className="rounded-md px-4 py-2" />
+                              return (
+                                <a
+                                  key={item.sys.id}
+                                  href={linkUrl}
+                                  target={linkTarget}
+                                  rel={linkRel}
+                                  className="text-white/90 hover:bg-white/10 rounded-md px-4 py-2 text-sm transition-colors whitespace-nowrap"
+                                  onClick={() => setIsSheetOpen(false)}
+                                >
+                                  {item.text}
+                                </a>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
                       </div>
                     </div>
                   )}

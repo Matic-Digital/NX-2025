@@ -16,7 +16,6 @@ import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
-import { categoryColorMap } from '@/components/Post/PostCategories';
 
 import type { Post } from '@/components/Post/PostSchema';
 
@@ -107,9 +106,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
             <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
               {post.categories.map((category, index) => (
                 <span key={index}>
-                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                    {category}
-                  </span>
+                  <span className="text-[#525252] group-hover:text-primary">{category}</span>
                   {index < post.categories.length - 1 ? ', ' : ''}
                 </span>
               ))}

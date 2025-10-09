@@ -9,6 +9,14 @@ export const MegaMenuSchema = z.object({
   __typename: z.string(),
   overflow: z.boolean().optional(),
   title: z.string(),
+  contentfulMetadata: z
+    .object({
+      tags: z.array(z.object({
+        id: z.string(),
+        name: z.string()
+      }))
+    })
+    .optional(),
   itemsCollection: z
     .object({
       items: z.array(MenuItemSchema)

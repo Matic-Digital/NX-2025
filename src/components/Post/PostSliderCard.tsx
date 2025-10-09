@@ -17,7 +17,6 @@ import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
-import { categoryColorMap } from '@/components/Post/PostCategories';
 
 import type { Post, PostSliderItem } from '@/components/Post/PostSchema';
 
@@ -107,28 +106,22 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
         {...inspectorProps({ fieldId: 'slug' })}
         className="group flex h-[35rem] mt-26 flex-col"
       >
-        <Box
-          direction="col"
-          gap={0}
-          className="h-full flex-col"
-        >
+        <Box direction="col" gap={0} className="h-full flex-col">
           <AirImage
             link={post.mainImage?.link}
             altText={post.mainImage?.altText}
             className="min-h-[16rem] lg:flex-1 lg:min-h-0 w-full object-cover"
           />
-          <Box direction="col" gap={0} className="bg-subtle lg:flex-shrink-0 h-full lg:h-auto justify-between">
-            <Box
-              direction="col"
-              gap={0}
-              className="gap-[0.75rem] p-[1.5rem]"
-            >
+          <Box
+            direction="col"
+            gap={0}
+            className="bg-subtle lg:flex-shrink-0 h-full lg:h-auto justify-between"
+          >
+            <Box direction="col" gap={0} className="gap-[0.75rem] p-[1.5rem]">
               <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
                 {post.categories?.map((category, index) => (
                   <span key={index}>
-                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                      {category}
-                    </span>
+                    <span className="text-[#525252] group-hover:text-primary">{category}</span>
                     {index < (post.categories?.length ?? 0) - 1 ? ', ' : ''}
                   </span>
                 ))}
@@ -140,11 +133,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
                 {post.title}
               </h2>
             </Box>
-            <Box
-              direction="row"
-              gap={2}
-              className="items-center justify-between pl-[1.5rem]"
-            >
+            <Box direction="row" gap={2} className="items-center justify-between pl-[1.5rem]">
               <p
                 className="text-body-xs text-[#525252]"
                 {...inspectorProps({ fieldId: 'datePublished' })}
@@ -183,9 +172,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
               >
                 {post.categories.map((category, index) => (
                   <span key={index}>
-                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
-                      {category}
-                    </span>
+                    <span className="text-white group-hover:text-primary">{category}</span>
                     {index < (post.categories?.length ?? 0) - 1 ? ', ' : ''}
                   </span>
                 ))}
@@ -207,7 +194,10 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
             </p>
           )}
 
-          <Link href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`} className="">
+          <Link
+            href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
+            className=""
+          >
             <Button
               variant="outline"
               size="lg"

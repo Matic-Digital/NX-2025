@@ -11,7 +11,7 @@ import { Text } from '@/components/global/matic-ds';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import { getRecentPostsForMegaMenu } from '@/components/Post/PostApi';
+import { getRecentPostsForMegaMenu, getRecentPostsForMegaMenuByCategory } from '@/components/Post/PostApi';
 
 import type { MegaMenu as MegaMenuType } from '@/components/MegaMenu/MegaMenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
@@ -43,17 +43,40 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     }
   }, [megaMenu, megaMenuId]);
 
+  const currentMegaMenu = megaMenu ?? loadedMegaMenu;
+
   // Fetch recent posts for MegaMenu display
   useEffect(() => {
     setPostsLoading(true);
     const limit = overflow ? 1 : 3; // 1 post for overflow, 3 for regular mega menu
-    getRecentPostsForMegaMenu(limit)
+    
+    // Extract categories from Contentful tags using same logic as Collection component
+    const postTagCategories = currentMegaMenu?.contentfulMetadata?.tags
+      ?.filter(tag => 
+        tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
+      )
+      ?.map(tag => tag.name.replace(/^post:/i, '').trim()) ?? [];
+    
+    const category = postTagCategories[0]; // Use first matching category
+    
+    // Debug logging to match Collection component
+    console.log('🔍 MegaMenu post filtering debug:');
+    console.log('- MegaMenu:', currentMegaMenu?.title);
+    console.log('- MegaMenu tags:', currentMegaMenu?.contentfulMetadata?.tags);
+    console.log('- Post tag categories:', postTagCategories);
+    console.log('- Selected category:', category);
+    
+    const fetchFunction = category 
+      ? () => getRecentPostsForMegaMenuByCategory(category, limit)
+      : () => getRecentPostsForMegaMenu(limit);
+    
+    console.log('- Using function:', category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu');
+    
+    fetchFunction()
       .then((response) => setRecentPosts(response.items))
       .catch(console.error)
       .finally(() => setPostsLoading(false));
-  }, [overflow]);
-
-  const currentMegaMenu = megaMenu ?? loadedMegaMenu;
+  }, [overflow, currentMegaMenu]);
   const displayTitle = title ?? currentMegaMenu?.title ?? 'Menu';
   const menuItems = currentMegaMenu?.itemsCollection?.items ?? [];
 
@@ -139,11 +162,11 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   return (
     <div className="relative">
       <div
-        className="cursor-pointer px-2 xl:px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
+        className="group cursor-pointer px-2 xl:px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="flex gap-2 xl:gap-[0.75rem] items-center">
+        <div className={`flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:transition-transform after:duration-200 after:ease-out after:origin-left ${isHovered ? 'after:scale-x-100' : 'after:scale-x-0'}`}>
           <Text 
             className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
             style={{
@@ -154,7 +177,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
           >
             {displayTitle}
           </Text>
-          <ChevronDown className="size-3 xl:size-4 text-white" />
+          <ChevronDown className="size-3 xl:size-4 text-white ml-2" />
         </div>
       </div>
     </div>
