@@ -126,7 +126,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
               <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
                 {post.categories?.map((category, index) => (
                   <span key={index}>
-                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
+                    <span className="text-[#525252] group-hover:text-primary">
                       {category}
                     </span>
                     {index < (post.categories?.length ?? 0) - 1 ? ', ' : ''}
@@ -183,7 +183,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
               >
                 {post.categories.map((category, index) => (
                   <span key={index}>
-                    <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
+                    <span className="text-white group-hover:text-primary">
                       {category}
                     </span>
                     {index < (post.categories?.length ?? 0) - 1 ? ', ' : ''}

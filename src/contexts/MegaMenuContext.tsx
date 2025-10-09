@@ -36,10 +36,10 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
 
   const isAnyMegaMenuOpen = openMegaMenus.size > 0;
 
-  // Update header blur visibility based on mega menu portal state only
+  // Update header blur visibility based on mega menu portal state and overflow menu
   React.useEffect(() => {
-    if (isAnyMegaMenuOpen && activeMegaMenuContent) {
-      // Immediately hide blur when mega menu portal opens - no delay
+    if ((isAnyMegaMenuOpen && activeMegaMenuContent) || isOverflowMenuOpen) {
+      // Immediately hide blur when mega menu portal or overflow menu opens - no delay
       if (blurTimeoutRef.current) {
         clearTimeout(blurTimeoutRef.current);
         blurTimeoutRef.current = null;
@@ -60,7 +60,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
         clearTimeout(blurTimeoutRef.current);
       }
     };
-  }, [isAnyMegaMenuOpen, activeMegaMenuContent]);
+  }, [isAnyMegaMenuOpen, activeMegaMenuContent, isOverflowMenuOpen]);
 
   const openMegaMenu = (menuId: string) => {
     setOpenMegaMenus((prev) => new Set(prev).add(menuId));

@@ -468,8 +468,12 @@ function HeaderContent(props: HeaderProps) {
                     }
                   }}
                 >
-                  <Menu className="size-5" />
-                  <span className="sr-only">Open overflow menu</span>
+                  {isOverflowMenuOpen ? (
+                    <X className="size-5" />
+                  ) : (
+                    <Menu className="size-5" />
+                  )}
+                  <span className="sr-only">{isOverflowMenuOpen ? 'Close overflow menu' : 'Open overflow menu'}</span>
                 </Button>
 
                 {/* Portal-based dropdown menu */}
