@@ -1,5 +1,9 @@
 import { fetchGraphQL } from '@/lib/api';
-import { INTERNAL_LINK_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import {
+  ASSET_FIELDS,
+  INTERNAL_LINK_FIELDS,
+  SYS_FIELDS
+} from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import type { SectionHeading } from '@/components/SectionHeading/SectionHeadingSchema';
@@ -7,6 +11,9 @@ import type { SectionHeading } from '@/components/SectionHeading/SectionHeadingS
 // SectionHeading fields
 export const SECTION_HEADING_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
+  icon {
+    ${ASSET_FIELDS}
+  }
   overline
   title
   description

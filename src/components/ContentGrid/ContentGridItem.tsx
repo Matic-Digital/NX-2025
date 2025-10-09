@@ -156,6 +156,22 @@ export function ContentGridItem(props: ContentGridItemProps) {
     );
   };
 
+  const BackgroundItem = () => {
+    return (
+      <Box direction="col" gap={4} className="group bg-subtle p-8">
+        <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
+          {icon?.url && (
+            <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+          )}
+        </Box>
+        <Box direction="col" gap={2}>
+          <h3 className="text-headline-sm group-hover:text-primary transition-colors">{heading}</h3>
+          <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
+        </Box>
+      </Box>
+    );
+  };
+
   const LinkItem = () => {
     return (
       <Link href={getHref()} className="group flex flex-col">
@@ -445,6 +461,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <ExpandingHoverCardItem />;
     case 'Link':
       return <LinkItem />;
+    case 'Background':
+      return <BackgroundItem />;
     default:
       return <DefaultItem />;
   }
