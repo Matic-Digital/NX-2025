@@ -107,7 +107,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
             <p className="text-body-xs uppercase" {...inspectorProps({ fieldId: 'categories' })}>
               {post.categories.map((category, index) => (
                 <span key={index}>
-                  <span className={categoryColorMap(category) + ' group-hover:text-primary'}>
+                  <span className="text-[#525252] group-hover:text-primary">
                     {category}
                   </span>
                   {index < post.categories.length - 1 ? ', ' : ''}

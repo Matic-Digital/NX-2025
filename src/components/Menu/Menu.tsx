@@ -11,7 +11,10 @@ import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import { getRecentPostsForMegaMenu } from '@/components/Post/PostApi';
+import {
+  getRecentPostsForMegaMenu,
+  getRecentPostsForMegaMenuByCategory
+} from '@/components/Post/PostApi';
 
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
@@ -19,9 +22,10 @@ import type { Post } from '@/components/Post/PostSchema';
 interface MenuProps {
   menu: MenuType;
   variant?: 'default' | 'overflow';
+  megaMenuTags?: Array<{ id: string; name: string }>;
 }
 
-export function Menu({ menu, variant = 'default' }: MenuProps) {
+export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
   const { setMegaMenuContent, activeMegaMenuId, closeMegaMenu } = useMegaMenuContext();
   const [recentPosts, setRecentPosts] = React.useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = React.useState(false);
@@ -34,12 +38,39 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
   React.useEffect(() => {
     if (variant === 'overflow') {
       setPostsLoading(true);
-      getRecentPostsForMegaMenu(1) // Only 1 post for overflow
+
+      // Extract categories from Contentful tags using same logic as Collection component
+      const postTagCategories =
+        megaMenuTags
+          ?.filter(
+            (tag) =>
+              tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
+          )
+          ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
+
+      const category = postTagCategories[0]; // Use first matching category
+
+      // Debug logging to match Collection component
+      console.log('🔍 MegaMenu post filtering debug:');
+      console.log('- MegaMenu tags:', megaMenuTags);
+      console.log('- Post tag categories:', postTagCategories);
+      console.log('- Selected category:', category);
+
+      const fetchFunction = category
+        ? () => getRecentPostsForMegaMenuByCategory(category, 1)
+        : () => getRecentPostsForMegaMenu(1);
+
+      console.log(
+        '- Using function:',
+        category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu'
+      );
+
+      fetchFunction()
         .then((response) => setRecentPosts(response.items))
         .catch(console.error)
         .finally(() => setPostsLoading(false));
     }
-  }, [variant]);
+  }, [variant, megaMenuTags]);
 
   // Helper function to convert Post to MegaMenuCard props
   const postToMegaMenuCard = (post: Post) => ({
@@ -225,24 +256,26 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
                   href={linkUrl}
                   target={linkTarget}
                   rel={linkRel}
-                  className="cursor-pointer px-2 xl:px-[0.75rem] py-[0.38rem] group"
+                  className="group cursor-pointer px-2 xl:px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
                   onMouseEnter={handleRegularMenuItemHover}
                 >
-                  <Text
-                    className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
-                    style={{
-                      textShadow: 'none'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.textShadow =
-                        '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.textShadow = 'none';
-                    }}
-                  >
-                    {item.text}
-                  </Text>
+                  <div className="flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:scale-x-0 after:transition-transform after:duration-200 after:ease-out after:origin-left">
+                    <Text
+                      className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
+                      style={{
+                        textShadow: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.textShadow =
+                          '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textShadow = 'none';
+                      }}
+                    >
+                      {item.text}
+                    </Text>
+                  </div>
                 </a>
               );
             }
