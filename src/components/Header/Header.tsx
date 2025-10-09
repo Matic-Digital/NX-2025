@@ -737,31 +737,38 @@ function HeaderContent(props: HeaderProps) {
                   {/* Overflow Menu Items - Mobile Bottom */}
                   {overflowMenu && (
                     <div className="fixed bottom-0 left-0 right-0 p-6 bg-black">
-                      <div className="flex flex-wrap gap-4 justify-center">
-                        {overflowMenu.itemsCollection?.items?.map((item) => {
-                          if (item.__typename === 'MenuItem') {
-                            const linkUrl = item.internalLink?.slug
-                              ? `/${item.internalLink.slug}`
-                              : (item.externalLink ?? '#');
-                            const linkTarget = item.externalLink ? '_blank' : '_self';
-                            const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
+                      <div className="space-y-4">
+                        {/* LocaleDropdown - Centered above overflow items */}
+                        <div className="flex justify-center">
+                          <LocaleDropdown className="rounded-md px-4 py-2" />
+                        </div>
+                        
+                        {/* Overflow Menu Items */}
+                        <div className="flex flex-wrap gap-4 justify-center">
+                          {overflowMenu.itemsCollection?.items?.map((item) => {
+                            if (item.__typename === 'MenuItem') {
+                              const linkUrl = item.internalLink?.slug
+                                ? `/${item.internalLink.slug}`
+                                : (item.externalLink ?? '#');
+                              const linkTarget = item.externalLink ? '_blank' : '_self';
+                              const linkRel = item.externalLink ? 'noopener noreferrer' : undefined;
 
-                            return (
-                              <a
-                                key={item.sys.id}
-                                href={linkUrl}
-                                target={linkTarget}
-                                rel={linkRel}
-                                className="text-white/90 hover:bg-white/10 rounded-md px-4 py-2 text-sm transition-colors whitespace-nowrap"
-                                onClick={() => setIsSheetOpen(false)}
-                              >
-                                {item.text}
-                              </a>
-                            );
-                          }
-                          return null;
-                        })}
-                        <LocaleDropdown className="rounded-md px-4 py-2" />
+                              return (
+                                <a
+                                  key={item.sys.id}
+                                  href={linkUrl}
+                                  target={linkTarget}
+                                  rel={linkRel}
+                                  className="text-white/90 hover:bg-white/10 rounded-md px-4 py-2 text-sm transition-colors whitespace-nowrap"
+                                  onClick={() => setIsSheetOpen(false)}
+                                >
+                                  {item.text}
+                                </a>
+                              );
+                            }
+                            return null;
+                          })}
+                        </div>
                       </div>
                     </div>
                   )}
