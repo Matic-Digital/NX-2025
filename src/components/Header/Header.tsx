@@ -70,6 +70,7 @@ function HeaderContent(props: HeaderProps) {
   const [menuLoading, setMenuLoading] = useState(false);
   const [overflowMenu, setOverflowMenu] = useState<MenuType | null>(null);
   const [overflowMenuLoading, setOverflowMenuLoading] = useState(false);
+  const [overflowMenuTags, setOverflowMenuTags] = useState<Array<{ id: string; name: string }> | undefined>(undefined);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loadedMegaMenus, setLoadedMegaMenus] = useState<Record<string, MenuType>>({});
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
@@ -150,6 +151,9 @@ function HeaderContent(props: HeaderProps) {
                 }
               };
               setOverflowMenu(menuFormat);
+              
+              // Store the tags from the original MegaMenu
+              setOverflowMenuTags(loadedMegaMenu.contentfulMetadata?.tags);
             }
           })
           .catch((error: unknown) => {
@@ -522,7 +526,7 @@ function HeaderContent(props: HeaderProps) {
                             {overflowMenuLoading ? (
                               <div className="text-white">Loading overflow menu...</div>
                             ) : overflowMenu ? (
-                              <MenuComponent menu={overflowMenu} variant="overflow" />
+                              <MenuComponent menu={overflowMenu} variant="overflow" megaMenuTags={overflowMenuTags} />
                             ) : (
                               <div className="text-white">No overflow menu available</div>
                             )}

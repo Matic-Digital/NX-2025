@@ -36,19 +36,21 @@ export function MegaMenuCard({
         <Box
           direction="col"
           gap={0}
-          className="absolute pl-[1.25rem] pt-[1.25rem] w-full h-full justify-between"
+          className="absolute inset-0 w-full h-full justify-between"
         >
-          <p className="text-[0.875rem] font-medium text-white leading-[120%] tracking-[0.00875rem] uppercase">
+          <p className="text-[0.875rem] font-medium text-white leading-[120%] tracking-[0.00875rem] uppercase pl-[1.25rem] pt-[1.25rem]">
             {kicker}
           </p>
-          <Box className="flex justify-between items-center gap-6">
-            <p className="text-[1.5rem] font-medium text-white leading-[120%] tracking-[0.015rem]">
-              {title}
-            </p>
-            <Box className="bg-white group-hover:bg-primary p-[0.5rem] transition-colors">
+          <div className="relative">
+            <div className="pl-[1.25rem] pr-[5rem] pb-[1rem]">
+              <p className="text-[1.5rem] font-medium text-white leading-[120%] tracking-[0.015rem] line-clamp-3 overflow-hidden max-h-[5.4rem]">
+                {title}
+              </p>
+            </div>
+            <Box className="absolute bottom-0 right-0 bg-white group-hover:bg-primary p-[0.5rem] transition-colors">
               <ArrowUpRight className="size-14 stroke-1 text-black group-hover:text-white transition-colors" />
             </Box>
-          </Box>
+          </div>
         </Box>
       </Box>
     </Link>

@@ -430,8 +430,8 @@ export async function getRelatedPosts(
 }
 
 /**
- * Fetches recent Posts for MegaMenu display
- * @param limit - Number of posts to fetch (default 3)
+ * Fetches recent Posts for MegaMenu display with minimal data
+ * @param limit - Maximum number of posts to fetch
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to Posts response with minimal data for MegaMenu
  */
@@ -462,16 +462,59 @@ export async function getRecentPostsForMegaMenu(limit = 3, preview = false): Pro
       return { items: [] };
     }
 
-    return {
-      items: data.postCollection.items
-    };
+    return { items: data.postCollection.items };
   } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
-    }
     if (error instanceof Error) {
-      throw new NetworkError(`Error fetching recent Posts for MegaMenu: ${error.message}`);
+      throw new NetworkError(`Error fetching recent posts for mega menu: ${error.message}`);
     }
-    throw new Error('Unknown error fetching recent Posts for MegaMenu');
+    throw new Error('Unknown error fetching recent posts for mega menu');
+  }
+}
+
+/**
+ * Fetches recent Posts for MegaMenu display filtered by category
+ * @param category - Category to filter posts by (extracted from Contentful tag like "Post:Case Study")
+ * @param limit - Maximum number of posts to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to Posts response with minimal data for MegaMenu
+ */
+export async function getRecentPostsForMegaMenuByCategory(category: string, limit = 3, preview = false): Promise<PostResponse> {
+  try {
+    const response = await fetchGraphQL<Post>(
+      `query GetRecentPostsForMegaMenuByCategory($category: String!, $limit: Int!, $preview: Boolean!) {
+        postCollection(
+          preview: $preview, 
+          order: datePublished_DESC, 
+          limit: $limit,
+          where: { categories_contains_some: [$category] }
+        ) {
+          items {
+            ${POST_MEGAMENU_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { category, limit, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { postCollection?: { items?: Post[] } };
+
+    // Return empty array if no posts found
+    if (!data.postCollection?.items) {
+      return { items: [] };
+    }
+
+    return { items: data.postCollection.items };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching recent posts for mega menu by category: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching recent posts for mega menu by category');
   }
 }

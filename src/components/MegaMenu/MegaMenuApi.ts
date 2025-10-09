@@ -8,6 +8,12 @@ export const MEGA_MENU_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   overflow
   title
+  contentfulMetadata {
+    tags {
+      id
+      name
+    }
+  }
   itemsCollection {
     items {
       ${MENU_ITEM_FIELDS}
@@ -19,6 +25,12 @@ export const OVERFLOW_MEGA_MENU_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   overflow
   title
+  contentfulMetadata {
+    tags {
+      id
+      name
+    }
+  }
   itemsCollection {
     items {
       ${MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE}

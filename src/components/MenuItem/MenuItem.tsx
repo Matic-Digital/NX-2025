@@ -17,7 +17,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
 
   const content = layout === 'horizontal' ? (
     // Horizontal layout: icon on left, text on right (top-aligned)
-    <div className="flex w-fit cursor-pointer items-start gap-[0.75rem] p-[0.75rem] hover:bg-[#FFFFFF14]">
+    <div className="group flex w-fit cursor-pointer items-start gap-[0.75rem] p-[0.75rem] hover:bg-[#FFFFFF14]">
       {icon && (
         <div className="w-fit bg-white p-[0.25rem] flex-shrink-0">
           <Image
@@ -38,7 +38,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
     </div>
   ) : (
     // Vertical layout: responsive width for different screen sizes
-    <div className="flex w-fit min-w-[280px] sm:min-w-[240px] xl:min-w-[17.9rem] cursor-pointer flex-col gap-[0.5rem] p-[0.5rem] sm:p-[0.75rem] hover:bg-[#FFFFFF14]">
+    <div className="group flex w-fit min-w-[280px] sm:min-w-[240px] xl:min-w-[17.9rem] cursor-pointer flex-col gap-[0.5rem] p-[0.5rem] sm:p-[0.75rem] hover:bg-[#FFFFFF14]">
       {icon && (
         <div className="w-fit bg-white p-[0.25rem]">
           <Image
