@@ -81,9 +81,18 @@ export async function GET() {
         default: item.default
       }))
       .sort((a, b) => {
-        // Sort with default locale first, then alphabetically
-        if (a.default) return -1;
-        if (b.default) return 1;
+        // Prioritize English locales first, then default locale, then alphabetically
+        const isAEnglish = a.code.startsWith('en');
+        const isBEnglish = b.code.startsWith('en');
+        
+        if (isAEnglish && !isBEnglish) return -1;
+        if (!isAEnglish && isBEnglish) return 1;
+        
+        // If both or neither are English, sort by default status
+        if (a.default && !b.default) return -1;
+        if (!a.default && b.default) return 1;
+        
+        // Finally sort alphabetically
         return a.name.localeCompare(b.name);
       });
 

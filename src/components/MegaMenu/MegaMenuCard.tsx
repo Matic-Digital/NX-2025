@@ -41,8 +41,8 @@ export function MegaMenuCard({
           <p className="text-[0.875rem] font-medium text-white leading-[120%] tracking-[0.00875rem] uppercase">
             {kicker}
           </p>
-          <Box className="flex justify-between items-center">
-            <p className="text-[1.75rem] font-medium text-white leading-[120%] tracking-[0.0175rem]">
+          <Box className="flex justify-between items-center gap-6">
+            <p className="text-[1.5rem] font-medium text-white leading-[120%] tracking-[0.015rem]">
               {title}
             </p>
             <Box className="bg-white group-hover:bg-primary p-[0.5rem] transition-colors">

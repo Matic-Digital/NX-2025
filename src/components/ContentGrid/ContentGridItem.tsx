@@ -221,16 +221,18 @@ export function ContentGridItem(props: ContentGridItemProps) {
               </Box>
             </div>
 
-            <div className="mt-auto">
-              <Link href={getHref()} className="inline-block w-full md:w-auto">
-                <Button
-                  variant="outlineTrasparentWhite"
-                  className="hover:bg-background hover:text-foreground w-full transition-colors"
-                >
-                  {ctaCollection?.items?.[0]?.text}
-                </Button>
-              </Link>
-            </div>
+            {ctaCollection?.items?.[0]?.text && (
+              <div className="mt-auto">
+                <Link href={getHref()} className="inline-block w-full md:w-auto">
+                  <Button
+                    variant="outlineTrasparentWhite"
+                    className="hover:bg-background hover:text-foreground w-full transition-colors"
+                  >
+                    {ctaCollection?.items?.[0]?.text}
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </Box>
       </div>

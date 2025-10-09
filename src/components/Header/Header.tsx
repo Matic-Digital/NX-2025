@@ -131,8 +131,8 @@ function HeaderContent(props: HeaderProps) {
       // Since overflow links to MegaMenu, not Menu, we need to use MegaMenu API
       if (header.overflow.__typename === 'MegaMenu') {
         import('../MegaMenu/MegaMenuApi')
-          .then(({ getMegaMenuById }) => {
-            return getMegaMenuById(header.overflow!.sys.id);
+          .then(({ getOverflowMegaMenuById }) => {
+            return getOverflowMegaMenuById(header.overflow!.sys.id);
           })
           .then((loadedMegaMenu) => {
             console.log('Overflow MegaMenu loaded:', loadedMegaMenu);
@@ -157,8 +157,11 @@ function HeaderContent(props: HeaderProps) {
           })
           .finally(() => setOverflowMenuLoading(false));
       } else {
-        // Fallback to Menu API
-        getMenuById(header.overflow.sys.id)
+        // Fallback to Menu API with associated images for overflow
+        import('../Menu/MenuApi')
+          .then(({ getOverflowMenuById }) => {
+            return getOverflowMenuById(header.overflow!.sys.id);
+          })
           .then((loadedMenu) => {
             console.log('Overflow menu loaded:', loadedMenu);
             if (loadedMenu) {
@@ -515,12 +518,7 @@ function HeaderContent(props: HeaderProps) {
                             {overflowMenuLoading ? (
                               <div className="text-white">Loading overflow menu...</div>
                             ) : overflowMenu ? (
-                              <div className="space-y-6">
-                                <MenuComponent menu={overflowMenu} variant="overflow" />
-                                <div className="flex justify-end">
-                                  <LocaleDropdown />
-                                </div>
-                              </div>
+                              <MenuComponent menu={overflowMenu} variant="overflow" />
                             ) : (
                               <div className="text-white">No overflow menu available</div>
                             )}

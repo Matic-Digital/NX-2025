@@ -30,8 +30,12 @@ export function LocaleDropdown({ currentLocale: propCurrentLocale, className }: 
         const availableLocales = await getAvailableLocales();
         setLocales(availableLocales);
         
+        // Force English as default if no specific locale is provided
         const current = propCurrentLocale ?? getCurrentLocale();
-        setCurrentLocale(current);
+        
+        // Override with English if we detect Spanish or other non-English defaults
+        const finalLocale = current === 'es' || current === 'es-ES' ? 'en-US' : current;
+        setCurrentLocale(finalLocale);
       } catch (error) {
         console.error('Failed to load locales:', error);
       } finally {

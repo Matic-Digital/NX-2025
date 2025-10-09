@@ -17,12 +17,23 @@ const AssetSchema = z.object({
   __typename: z.string()
 });
 
+const ImageSchema = z.object({
+  sys: z.object({
+    id: z.string()
+  }),
+  __typename: z.string(),
+  link: z.string(),
+  altText: z.string().optional(),
+  title: z.string().optional()
+});
+
 export const MenuItemSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
   __typename: z.string(),
   icon: AssetSchema.optional(),
+  associatedImage: ImageSchema.optional(),
   title: z.string(),
   text: z.string(),
   description: z.string(),

@@ -89,11 +89,8 @@ export function getCurrentLocale(): string {
     if (savedLocale) return savedLocale;
   }
   
-  // Check browser language
-  if (typeof navigator !== 'undefined') {
-    return navigator.language || 'en-US';
-  }
-  
+  // Always default to English instead of browser language
+  // This ensures consistent English default regardless of user's browser settings
   return 'en-US';
 }
 

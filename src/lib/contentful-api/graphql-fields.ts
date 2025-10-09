@@ -16,6 +16,13 @@ export const ASSET_FIELDS = `
   __typename
 `;
 
+export const IMAGE_FIELDS = `
+  ${SYS_FIELDS}
+  link
+  altText
+  title
+`;
+
 export const INTERNAL_LINK_FIELDS = `
   ... on Page {
     sys { id }
@@ -50,6 +57,30 @@ export const MENU_ITEM_FIELDS = `
   externalLink
   icon {
     ${ASSET_FIELDS}
+  }
+`;
+
+export const MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE = `
+  ${SYS_FIELDS}
+  title
+  text
+  description
+  internalLink {
+    ... on Page {
+      sys { id }
+      slug
+    }
+    ... on PageList {
+      sys { id }
+      slug
+    }
+  }
+  externalLink
+  icon {
+    ${ASSET_FIELDS}
+  }
+  associatedImage {
+    ${IMAGE_FIELDS}
   }
 `;
 

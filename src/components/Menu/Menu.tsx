@@ -8,11 +8,11 @@ import {
   NavigationMenuList
 } from '@/components/ui/navigation-menu';
 
+import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getRecentPostsForMegaMenu } from '@/components/Post/PostApi';
-
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
 
@@ -22,11 +22,13 @@ interface MenuProps {
 }
 
 export function Menu({ menu, variant = 'default' }: MenuProps) {
-  const { itemsCollection } = menu;
-  const menuItems = itemsCollection?.items ?? [];
-  const { closeMegaMenu, setMegaMenuContent, activeMegaMenuId } = useMegaMenuContext();
+  const { setMegaMenuContent, clearCloseTimeout, activeMegaMenuId, closeMegaMenu } = useMegaMenuContext();
   const [recentPosts, setRecentPosts] = React.useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = React.useState(false);
+  const [hoveredMenuItem, setHoveredMenuItem] = React.useState<string | null>(null);
+
+  // Extract menu items from the menu
+  const menuItems = menu?.itemsCollection?.items ?? [];
 
   // Fetch recent posts for overflow variant
   React.useEffect(() => {
@@ -109,30 +111,73 @@ export function Menu({ menu, variant = 'default' }: MenuProps) {
             })}
           </div>
         ) : (
-          // If only MenuItem types, create 2-column layout with MegaMenuCard
+          // If only MenuItem types, create 2-column layout with associated image
           <div className="flex gap-4 items-stretch">
-            {/* First column: MegaMenuCard (flexible, grows) */}
+            {/* First column: Associated Image (flexible, grows) */}
             <div className="flex-1 flex">
-              {!postsLoading && recentPosts.length > 0 && recentPosts[0] && (
-                <div className="w-full h-full">
-                  <MegaMenuCard {...postToMegaMenuCard(recentPosts[0])} fullHeight={true} />
-                </div>
-              )}
+              <div className="w-full h-[29.1875rem] relative overflow-hidden">
+                {(() => {
+                  // Find the hovered menu item or default to first item with associated image
+                  const targetItem = hoveredMenuItem 
+                    ? menuItems.find(item => item.__typename === 'MenuItem' && item.sys.id === hoveredMenuItem)
+                    : menuItems.find(item => item.__typename === 'MenuItem' && item.associatedImage);
+                  
+                  if (targetItem && targetItem.__typename === 'MenuItem' && targetItem.associatedImage) {
+                    return (
+                      <>
+                        <img
+                          key={targetItem.sys.id}
+                          src={targetItem.associatedImage.link}
+                          alt={targetItem.associatedImage.altText ?? targetItem.title}
+                          className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ease-in-out" />
+                        <div className="absolute bottom-4 left-4 text-white transition-opacity duration-300 ease-in-out">
+                          <h3 className="text-6xl font-normal leading-[90%] tracking-[0.04rem]">{targetItem.text}</h3>
+                        </div>
+                      </>
+                    );
+                  }
+                  
+                  // Fallback to recent post if no associated images
+                  if (!postsLoading && recentPosts.length > 0 && recentPosts[0]) {
+                    return (
+                      <div className="transition-opacity duration-300 ease-in-out">
+                        <MegaMenuCard {...postToMegaMenuCard(recentPosts[0])} fullHeight={true} />
+                      </div>
+                    );
+                  }
+                  
+                  return null;
+                })()}
+              </div>
             </div>
             {/* Second column: Menu items (fixed max-width) */}
             <div className="flex flex-col max-w-[30.8rem] h-full min-h-[21.25rem] justify-between">
-              {menuItems.filter(item => item.__typename === 'MenuItem').map((item) => {
-                // TypeScript type narrowing after filter
-                if (item.__typename !== 'MenuItem') return null;
-                
-                return (
-                  <MenuItem 
-                    key={item.sys.id} 
-                    menuItem={item}
-                    layout="horizontal"
-                  />
-                );
-              })}
+              <div className="flex flex-col">
+                {menuItems.filter(item => item.__typename === 'MenuItem').map((item) => {
+                  // TypeScript type narrowing after filter
+                  if (item.__typename !== 'MenuItem') return null;
+                  
+                  return (
+                    <div
+                      key={item.sys.id}
+                      onMouseEnter={() => setHoveredMenuItem(item.sys.id)}
+                      onMouseLeave={() => setHoveredMenuItem(null)}
+                    >
+                      <MenuItem 
+                        menuItem={item}
+                        layout="horizontal"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {/* LocaleDropdown positioned at bottom of menu items column */}
+              <div className="flex justify-end mt-4">
+                <LocaleDropdown />
+              </div>
             </div>
           </div>
         )}

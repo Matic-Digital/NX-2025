@@ -24,6 +24,17 @@ const MenuItemInUnionSchema = BaseItemSchema.extend({
       __typename: z.string()
     })
     .optional(),
+  associatedImage: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      __typename: z.string(),
+      link: z.string(),
+      altText: z.string().optional(),
+      title: z.string().optional()
+    })
+    .optional(),
   internalLink: z
     .object({
       sys: z.object({
