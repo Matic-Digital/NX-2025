@@ -392,7 +392,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <div className="relative z-10 h-full">
           <Box direction="col" gap={12}>
             {/* Top content - appears on hover */}
-            <div className="transition-opacity duration-300 bg-blue-500 xl:opacity-0 xl:group-hover:opacity-100">
+            <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
                 <h2
                   className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"
