@@ -32,10 +32,12 @@ export function ImageBetween(props: ImageBetween) {
   );
   const [assetContentGrid, setAssetContentGrid] = useState<ContentGridType | null>(null);
   const [contentBottomData, setContentBottomData] = useState<ContentGridType | null>(null);
-  const [sliderData, setSliderData] = useState<{ itemsCollection?: { items?: Array<{ __typename?: string }> } } | null>(null);
+  const [sliderData, setSliderData] = useState<{
+    itemsCollection?: { items?: Array<{ __typename?: string }> };
+  } | null>(null);
 
   const isBannerHero = imageBetween.contentTop?.__typename === 'BannerHero';
-  
+
   // Check if the slider contains Post items
   const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
 
@@ -165,7 +167,7 @@ export function ImageBetween(props: ImageBetween) {
                 imageBetween.asset.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
-              isBannerHero && !isPostSlider && 'mb-0 pb-0',
+              isBannerHero && !isPostSlider && 'mb-14 pb-14',
               isBannerHero && isPostSlider && 'mb-0 pb-16'
             )}
           >
@@ -215,13 +217,15 @@ export function ImageBetween(props: ImageBetween) {
               </Container>
             )}
             {imageBetween.asset && imageBetween.asset.__typename === 'Slider' && (
-              <Container className={cn(
-                "absolute z-20",
-                isPostSlider && "mt-8 mb-24 lg:mt-12 lg:mb-32 xl:mt-16 xl:my-44"
-              )}>
-                <Slider 
-                  {...imageBetween.asset} 
-                  {...inspectorProps({ fieldId: 'asset' })} 
+              <Container
+                className={cn(
+                  'absolute z-20',
+                  isPostSlider && 'mt-8 mb-24 lg:mt-12 lg:mb-32 xl:mt-16 xl:my-44'
+                )}
+              >
+                <Slider
+                  {...imageBetween.asset}
+                  {...inspectorProps({ fieldId: 'asset' })}
                   context="ImageBetween"
                 />
               </Container>
