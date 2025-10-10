@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 import { useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
@@ -7,6 +6,7 @@ import { NavigationMenu, NavigationMenuList } from '@/components/ui/navigation-m
 
 import { Text } from '@/components/global/matic-ds';
 
+import { AirImage } from '@/components/Image/AirImage';
 import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
@@ -167,10 +167,10 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
                   ) {
                     return (
                       <>
-                        <Image
+                        <AirImage
                           key={targetItem.sys.id}
-                          src={targetItem.associatedImage.link}
-                          alt={targetItem.associatedImage.altText ?? targetItem.title}
+                          link={targetItem.associatedImage.link}
+                          altText={targetItem.associatedImage.altText ?? targetItem.title}
                           className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ease-in-out" />
