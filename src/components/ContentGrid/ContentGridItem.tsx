@@ -464,6 +464,34 @@ export function ContentGridItem(props: ContentGridItemProps) {
     );
   };
 
+  const StackGradientHoverItem = () => {
+    return (
+      <Box direction="col" className="group">
+        {image?.link && (
+          <AirImage link={image.link} altText={heading} className="h-full w-full object-cover" />
+        )}
+        <Box direction="col" gap={2} className="bg-zinc-800 p-6 relative">
+          <AirImage
+            link="https://air-prod.imgix.net/9767136e-c070-4bd1-9f65-cbbdacbc196e.jpg?w=1340&h=304&fm=webp&fit=crop&auto=auto"
+            altText={heading}
+            className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
+          />
+          <div className="z-20">
+            <h3 className="text-headline-sm text-white">{heading}</h3>
+            <Box gap={4} className="items-end">
+              <p className="text-body-xs text-white">{description}</p>
+              <Button
+                variant="outlineTrasparentWhite"
+                className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
+              >
+                {ctaCollection?.items?.[0]?.text}
+              </Button>
+            </Box>
+          </div>
+        </Box>
+      </Box>
+    );
+  };
   const LinkItem = () => {
     return (
       <Link href={getHref()} className="group flex flex-col">
@@ -521,6 +549,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundGradientHoverItemWithLinkItem />;
     case 'ExpandingHoverCard':
       return <ExpandingHoverCardItem />;
+    case 'StackGradientHover':
+      return <StackGradientHoverItem />;
     case 'Link':
       return <LinkItem />;
     default:

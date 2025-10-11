@@ -228,6 +228,16 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
     };
   }
 
+  if (variant === 'TwoColumn') {
+    return {
+      analysis,
+      cols: { base: 1, lg: 2 }, // 2 columns for TwoColumns grid
+      gap: 12,
+      direction: 'col' as const,
+      variant: 'TwoColumn'
+    };
+  }
+
   if (variant === 'FourColumn') {
     return {
       analysis,

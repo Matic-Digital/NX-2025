@@ -436,6 +436,20 @@ export function ContentGrid(props: ContentGridProps) {
                       </div>
                     )}
                   </div>
+                ) : gridVariant === 'TwoColumn' ? (
+                  <Box cols={gridConfig.cols} gap={gridConfig.gap}>
+                    {validItems.map((item, index) => (
+                      <ContentItemRenderer
+                        key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
+                        item={item}
+                        index={index}
+                        validItems={validItems}
+                        parentPageListSlug={props.parentPageListSlug}
+                        currentPath={props.currentPath}
+                        variant="grid"
+                      />
+                    ))}
+                  </Box>
                 ) : gridVariant === 'OffsetStart' ? (
                   // Custom 4-item staggered grid using Box
                   <Box
