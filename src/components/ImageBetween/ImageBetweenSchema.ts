@@ -1,6 +1,7 @@
 import z from 'zod';
 
 import { AssetSchema } from '@/components/Asset/AssetSchema';
+import { BannerHeroSchema } from '@/components/BannerHero/BannerHeroSchema';
 import { ContentGridSchema } from '@/components/ContentGrid/ContentGridSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { SliderSysSchema } from '@/components/Slider/SliderSchema';
@@ -19,7 +20,7 @@ export const ImageBetweenSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  contentTop: ContentGridSchema,
+  contentTop: z.union([ContentGridSchema, BannerHeroSchema]),
   asset: ImageBetweenAssetUnion,
   backgroundMedia: AssetSchema,
   contentBottom: ContentGridSchema,

@@ -101,11 +101,11 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         className={cn('grid grid-cols-1 gap-6 md:grid-cols-2 mt-12', alignmentAdjustedClassName)}
       >
         {sections.map((sec, idx) => (
-          <div key={idx} className="flex flex-col">
-            <h3 className="text-[1.25rem] font-normal leading-[160%] text-foreground mb-2">
+          <div key={idx} className="flex flex-col gap-3">
+            <h3 className="text-[1.25rem] font-normal leading-[160%] text-foreground">
               {sec.heading}
             </h3>
-            <hr className="border-subtle-border" />
+            <hr className="border-primary" />
             {sec.body.length > 0 && (
               <p className="text-body-md text-foreground">{sec.body.join(' ')}</p>
             )}

@@ -108,19 +108,19 @@ export function ContentGridItem(props: ContentGridItemProps) {
     if (!icon?.url) {
       return (
         <div
-          className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+          className={cn('mb-4 inline-flex size-12 items-center justify-center bg-black p-2', {
             'group-hover:bg-primary transition-colors': !isBackgroundImage
           })}
         >
           {/* Placeholder for when no icon is available */}
-          <div className="h-8 w-8 rounded bg-white/20" />
+          <div className="size-12rounded bg-white/20" />
         </div>
       );
     }
 
     return (
       <div
-        className={cn('mb-4 inline-flex h-16 w-16 items-center justify-center bg-black p-2', {
+        className={cn('inline-flex size-12 items-center justify-center bg-black p-1', {
           'group-hover:bg-primary transition-colors': !isBackgroundImage
         })}
       >
@@ -140,9 +140,9 @@ export function ContentGridItem(props: ContentGridItemProps) {
     return linkHref;
   };
 
-  const DefaultItem = () => {
+  const BackgroundItem = () => {
     return (
-      <Box direction="col" gap={4} className="group">
+      <Box direction="col" gap={4} className="group bg-subtle p-8">
         <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
           {icon?.url && (
             <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
@@ -153,31 +153,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
           <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
         </Box>
       </Box>
-    );
-  };
-
-  const LinkItem = () => {
-    return (
-      <Link href={getHref()} className="group flex flex-col">
-        <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
-          <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
-            {icon?.url && (
-              <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
-            )}
-          </Box>
-          <Box direction="col" gap={2}>
-            <Box direction="row" gap={2} className="items-center">
-              <h3 className="text-headline-sm group-hover:text-primary transition-colors">
-                {heading}
-              </h3>
-              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
-                <ArrowUpRight className="size-10 stroke-1" />
-              </span>
-            </Box>
-            <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
-          </Box>
-        </Box>
-      </Link>
     );
   };
 
@@ -226,6 +201,64 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 <Link href={getHref()} className="inline-block w-full md:w-auto">
                   <Button
                     variant="outlineTrasparentWhite"
+                    className="hover:bg-background hover:text-foreground w-full transition-colors"
+                  >
+                    {ctaCollection?.items?.[0]?.text}
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </Box>
+      </div>
+    </div>
+  );
+
+  const BackgroundImageCompactItem = () => (
+    <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[23.25rem]">
+      {/* Background image */}
+      <AirImage
+        link={image?.link ?? ''}
+        altText={image?.altText ?? ''}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+
+      {/* Overlay card */}
+      <div className="absolute inset-0 flex items-end lg:items-center justify-end p-4 md:p-6 lg:p-8">
+        <Box
+          direction="col"
+          gap={6}
+          className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
+        >
+          <div className="flex h-full flex-col">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-row gap-[0.75rem] items-center">
+                <div>{renderIcon(true)}</div>
+                <h3
+                  className="text-headline-sm line-clamp-2"
+                  {...inspectorProps({ fieldId: 'heading' })}
+                >
+                  {heading}
+                </h3>
+              </div>
+
+              <Box direction="col" gap={4} className="mb-8">
+                {description && (
+                  <p
+                    className="text-background/90 line-clamp-3"
+                    {...inspectorProps({ fieldId: 'description' })}
+                  >
+                    {description}
+                  </p>
+                )}
+              </Box>
+            </div>
+
+            {ctaCollection?.items?.[0]?.text && (
+              <div className="mt-auto">
+                <Link href={getHref()} className="inline-block w-full md:w-auto">
+                  <Button
+                    variant="white"
                     className="hover:bg-background hover:text-foreground w-full transition-colors"
                   >
                     {ctaCollection?.items?.[0]?.text}
@@ -431,10 +464,83 @@ export function ContentGridItem(props: ContentGridItemProps) {
     );
   };
 
+  const StackGradientHoverItem = () => {
+    return (
+      <Box direction="col" className="group">
+        {image?.link && (
+          <AirImage link={image.link} altText={heading} className="h-full w-full object-cover" />
+        )}
+        <Box direction="col" gap={2} className="bg-zinc-800 p-6 relative">
+          <AirImage
+            link="https://air-prod.imgix.net/9767136e-c070-4bd1-9f65-cbbdacbc196e.jpg?w=1340&h=304&fm=webp&fit=crop&auto=auto"
+            altText={heading}
+            className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
+          />
+          <div className="z-20">
+            <h3 className="text-headline-sm text-white">{heading}</h3>
+            <Box gap={4} className="items-end">
+              <p className="text-body-xs text-white">{description}</p>
+              <Button
+                variant="outlineTrasparentWhite"
+                className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
+              >
+                {ctaCollection?.items?.[0]?.text}
+              </Button>
+            </Box>
+          </div>
+        </Box>
+      </Box>
+    );
+  };
+  const LinkItem = () => {
+    return (
+      <Link href={getHref()} className="group flex flex-col">
+        <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
+          <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
+            {icon?.url && (
+              <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+            )}
+          </Box>
+          <Box direction="col" gap={2}>
+            <Box direction="row" gap={2} className="items-center">
+              <h3 className="text-headline-sm group-hover:text-primary transition-colors">
+                {heading}
+              </h3>
+              <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
+                <ArrowUpRight className="size-10 stroke-1" />
+              </span>
+            </Box>
+            <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
+          </Box>
+        </Box>
+      </Link>
+    );
+  };
+
+  const DefaultItem = () => {
+    return (
+      <Box direction="col" gap={4} className="group">
+        <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
+          {icon?.url && (
+            <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+          )}
+        </Box>
+        <Box direction="col" gap={2}>
+          <h3 className="text-headline-sm group-hover:text-primary transition-colors">{heading}</h3>
+          <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
+        </Box>
+      </Box>
+    );
+  };
+
   // Determine rendering style based on variant field from Contentful
   switch (variant) {
+    case 'Background':
+      return <BackgroundItem />;
     case 'BackgroundImage':
       return <BackgroundImageItem />;
+    case 'BackgroundImageCompact':
+      return <BackgroundImageCompactItem />;
     case 'BackgroundPrimaryHover':
       return <BackgroundPrimaryHoverItem />;
     case 'BackgroundGradientHover':
@@ -443,6 +549,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundGradientHoverItemWithLinkItem />;
     case 'ExpandingHoverCard':
       return <ExpandingHoverCardItem />;
+    case 'StackGradientHover':
+      return <StackGradientHoverItem />;
     case 'Link':
       return <LinkItem />;
     default:

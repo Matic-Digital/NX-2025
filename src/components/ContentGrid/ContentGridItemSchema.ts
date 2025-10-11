@@ -16,7 +16,7 @@ export const ContentGridItemSchema = z.object({
       items: z.array(ButtonSchema)
     })
     .optional(),
-  description: z.string(),
+  description: z.string().optional(),
   icon: AssetSchema.optional(),
   image: ImageSchema.optional(),
   variant: z.string().optional(),

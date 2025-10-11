@@ -11,7 +11,11 @@ import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import { getRecentPostsForMegaMenu, getRecentPostsForMegaMenuByCategory } from '@/components/Post/PostApi';
+import {
+  getRecentPostsForMegaMenu,
+  getRecentPostsForMegaMenuByCategory
+} from '@/components/Post/PostApi';
+
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
 
@@ -34,28 +38,33 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
   React.useEffect(() => {
     if (variant === 'overflow') {
       setPostsLoading(true);
-      
+
       // Extract categories from Contentful tags using same logic as Collection component
-      const postTagCategories = megaMenuTags
-        ?.filter(tag => 
-          tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
-        )
-        ?.map(tag => tag.name.replace(/^post:/i, '').trim()) ?? [];
-      
+      const postTagCategories =
+        megaMenuTags
+          ?.filter(
+            (tag) =>
+              tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
+          )
+          ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
+
       const category = postTagCategories[0]; // Use first matching category
-      
+
       // Debug logging to match Collection component
       console.log('🔍 MegaMenu post filtering debug:');
       console.log('- MegaMenu tags:', megaMenuTags);
       console.log('- Post tag categories:', postTagCategories);
       console.log('- Selected category:', category);
-      
-      const fetchFunction = category 
+
+      const fetchFunction = category
         ? () => getRecentPostsForMegaMenuByCategory(category, 1)
         : () => getRecentPostsForMegaMenu(1);
-      
-      console.log('- Using function:', category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu');
-      
+
+      console.log(
+        '- Using function:',
+        category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu'
+      );
+
       fetchFunction()
         .then((response) => setRecentPosts(response.items))
         .catch(console.error)
@@ -251,13 +260,14 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
                   onMouseEnter={handleRegularMenuItemHover}
                 >
                   <div className="flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:scale-x-0 after:transition-transform after:duration-200 after:ease-out after:origin-left">
-                    <Text 
+                    <Text
                       className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
                       style={{
                         textShadow: 'none'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.textShadow = '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)';
+                        e.currentTarget.style.textShadow =
+                          '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.textShadow = 'none';

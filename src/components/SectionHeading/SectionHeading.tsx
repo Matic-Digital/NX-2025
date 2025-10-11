@@ -11,6 +11,8 @@ import {
 // Utils
 import { cn } from '@/lib/utils';
 
+import { SvgIcon } from '@/components/ui/svg-icon';
+
 // Components
 import { Box } from '@/components/global/matic-ds';
 
@@ -291,6 +293,17 @@ export function SectionHeading(props: SectionHeadingProps) {
       className="items-center text-center"
       {...inspectorProps({ fieldId: 'heading' })}
     >
+      {sectionHeading.icon && (
+        <div className="bg-black p-2" {...inspectorProps({ fieldId: 'icon' })}>
+          <SvgIcon
+            src={sectionHeading.icon.url}
+            alt={sectionHeading.title}
+            width={40}
+            height={40}
+            className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
+          />
+        </div>
+      )}
       {/* title */}
       {componentType === 'banner-hero' ? (
         <h1
