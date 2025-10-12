@@ -226,7 +226,34 @@ async function resolveNestedContent(segments: string[]): Promise<{
   // Each PageList must be nested within the previous one in the URL path
   for (let i = 0; i < segments.length - 1; i++) {
     const slug = segments[i]!;
-    const pageList = await getPageListBySlug(slug, preview);
+    let pageList = await getPageListBySlug(slug, preview);
+
+    // If direct slug lookup fails and we have a parent, search within the parent's items
+    if (!pageList && currentPageList) {
+      console.log(`Direct PageList lookup failed for "${slug}", searching in parent PageList`);
+      console.log(`Parent PageList "${currentPageList.title}" contains:`, 
+        currentPageList.pagesCollection?.items?.map((item: any) => ({
+          slug: item?.slug,
+          title: item?.title,
+          typename: item?.__typename
+        })));
+      
+      const nestedItem = currentPageList.pagesCollection?.items?.find((item: any) => {
+        const itemSlug = item?.slug;
+        if (typeof itemSlug !== 'string') return false;
+        
+        // Check if this item matches the segment we're looking for
+        return itemSlug === slug || 
+          (itemSlug.endsWith(`/${slug}`) && itemSlug.split('/').pop() === slug);
+      });
+
+      if (nestedItem && nestedItem.__typename === 'PageList') {
+        // Found the nested PageList, now fetch it using its actual slug
+        const actualSlug = (nestedItem as any).slug;
+        console.log(`Found nested PageList in parent: ${slug} -> ${actualSlug}`);
+        pageList = await getPageListBySlug(actualSlug as string, preview);
+      }
+    }
 
     if (!pageList) {
       console.log(`PageList not found for slug: ${slug}`);
@@ -315,11 +342,46 @@ async function resolveNestedContent(segments: string[]): Promise<{
   }
 
   // Case 3: Final segment is a content item (Page, Product, Service, etc.)
-  // Try to fetch as different content types and validate it belongs to the parent PageList
+  // First find the item in the PageList to get its actual slug, then fetch it
+  if (currentPageList) {
+    const targetItem = currentPageList.pagesCollection?.items?.find((item: any) => {
+      if (!item || typeof item !== 'object') return false;
+      
+      const itemSlug = (item as any).slug;
+      if (typeof itemSlug !== 'string') return false;
+      
+      // Check for exact match or if the item slug ends with the finalSlug
+      // This handles compound slugs like "products/trackers/nx-horizon"
+      return itemSlug === finalSlug || 
+        (itemSlug.endsWith(`/${finalSlug}`) && itemSlug.split('/').pop() === finalSlug);
+    });
+
+    if (targetItem) {
+      const actualSlug = (targetItem as any).slug ?? finalSlug;
+      console.log(`Found item in PageList: ${finalSlug} -> ${actualSlug} (${targetItem.__typename})`);
+      
+      // Fetch the content using the actual slug
+      const contentItem = await tryFetchContentItem(actualSlug as string, preview);
+      if (contentItem) {
+        console.log(`Successfully fetched content item with slug: ${actualSlug}`);
+        return { content: contentItem.item, type: contentItem.type, parentPageLists };
+      } else {
+        console.log(`Failed to fetch content item with slug: ${actualSlug}`);
+      }
+    } else {
+      console.log(`No matching item found in PageList for finalSlug: ${finalSlug}`);
+      console.log(`PageList items:`, currentPageList.pagesCollection?.items?.map((item: any) => ({
+        slug: item?.slug,
+        title: item?.title,
+        typename: item?.__typename
+      })));
+    }
+  }
+
+  // Fallback: Try to fetch using just the final slug (for backward compatibility)
   const contentItem = await tryFetchContentItem(finalSlug, preview);
   if (contentItem && currentPageList) {
     // Critical validation: Ensure the content item is actually contained within the parent PageList
-    // This prevents access to content items via incorrect nested URLs
     const isInList = currentPageList.pagesCollection?.items?.some(
       (item: any) => item?.sys?.id === contentItem.item.sys.id
     );

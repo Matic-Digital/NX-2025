@@ -112,8 +112,32 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       console.log(`Found direct PageList match, checking for parents...`);
     }
 
-    // Check if this PageList has parents
+    // Check if this PageList has parents, but also check for Page conflicts first
     if (targetPageList) {
+      // Before redirecting a PageList, check if there are also Pages with the same slug
+      // This prevents conflicts where both a PageList and Page have the same slug
+      let hasPageConflict = false;
+      
+      for (const pageList of pageLists) {
+        if (!pageList.pagesCollection?.items?.length) continue;
+        
+        const foundPage = pageList.pagesCollection.items.find(
+          (item) => hasSlug(item) && (item.slug === slug || item.slug?.endsWith(`/${slug}`))
+        );
+        
+        if (foundPage) {
+          console.log(`Found Page conflict: "${slug}" exists as both PageList and Page`);
+          hasPageConflict = true;
+          break;
+        }
+      }
+      
+      // If there's a conflict, don't auto-redirect - let user access via explicit nested URLs
+      if (hasPageConflict) {
+        console.log(`Not auto-redirecting PageList "${slug}" due to Page conflict`);
+        return null;
+      }
+      
       const parentPath = buildRoutingPath(targetPageList.sys.id);
       if (parentPath.length > 0) {
         const fullPath = [...parentPath, slug].join('/');
@@ -122,6 +146,8 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     }
 
     // Check if slug is a content item within any PageList (including nested PageLists)
+    const matchingPageLists: Array<{ pageList: typeof pageLists[0]; fullPath: string }> = [];
+    
     for (const pageList of pageLists) {
       if (!pageList.pagesCollection?.items?.length) continue;
 
@@ -132,8 +158,22 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       if (foundItem && hasSlug(foundItem)) {
         const parentPath = buildRoutingPath(pageList.sys.id);
         const fullPath = [...parentPath, pageList.slug, foundItem.slug].join('/');
-        return fullPath;
+        matchingPageLists.push({ pageList, fullPath });
       }
+    }
+
+    // If we found multiple matches, don't auto-redirect to avoid conflicts
+    // Let the user access the content directly via the nested URL structure
+    if (matchingPageLists.length > 1) {
+      console.log(`Multiple PageLists contain slug "${slug}":`, 
+        matchingPageLists.map(m => m.fullPath).join(', '));
+      console.log(`Not auto-redirecting to avoid conflicts. User should access via nested URL.`);
+      return null;
+    }
+
+    // If we found exactly one match, redirect to it
+    if (matchingPageLists.length === 1) {
+      return matchingPageLists[0]!.fullPath;
     }
 
     // Also check if slug is a product/content item that should be nested deeper
@@ -173,7 +213,9 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
           console.log(`Found ${contentType}: ${contentItem.title} (${contentItem.sys.id})`);
           console.log(`Searching through ${pageLists.length} PageLists to find container...`);
 
-          // Find which PageList contains this content item
+          // Find which PageLists contain this content item
+          const containingPageLists: Array<{ pageList: typeof pageLists[0]; fullPath: string }> = [];
+
           for (const pageList of pageLists) {
             if (!pageList.pagesCollection?.items?.length) continue;
 
@@ -194,10 +236,25 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
               const parentPath = buildRoutingPath(pageList.sys.id);
               console.log(`Parent path for ${pageList.title}:`, parentPath);
               const fullPath = [...parentPath, pageList.slug, contentItem.slug].join('/');
-              console.log(`Redirecting ${slug} to: ${fullPath}`);
-              return fullPath;
+              containingPageLists.push({ pageList, fullPath });
             }
           }
+
+          // If content item is in multiple PageLists, don't auto-redirect
+          if (containingPageLists.length > 1) {
+            console.log(`${contentType} "${slug}" found in multiple PageLists:`, 
+              containingPageLists.map(c => c.fullPath).join(', '));
+            console.log(`Not auto-redirecting to avoid conflicts. User should access via nested URL.`);
+            return null;
+          }
+
+          // If content item is in exactly one PageList, redirect to it
+          if (containingPageLists.length === 1) {
+            const fullPath = containingPageLists[0]!.fullPath;
+            console.log(`Redirecting ${slug} to: ${fullPath}`);
+            return fullPath;
+          }
+
           console.log(`Content item ${slug} not found in any PageList`);
         }
       } catch (error) {

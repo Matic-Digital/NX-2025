@@ -452,61 +452,94 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       notFound();
     }
 
-    // Check if pageSlug is actually a nested PageList
-    const nestedPageList = await getPageListBySlug(pageSlug, preview);
-    if (nestedPageList) {
-      console.log(
-        `Found nested PageList "${nestedPageList.title}" - handling directly in [slug]/[pageSlug] route`
-      );
-
-      // Verify that the nested PageList is actually contained in the parent PageList
-      const isNested = pageList.pagesCollection?.items?.some(
-        (item) => item?.sys?.id === nestedPageList.sys.id
-      );
-
-      if (!isNested) {
-        console.log(`PageList "${nestedPageList.title}" is not nested in "${pageList.title}"`);
-        notFound();
+    // Instead of guessing by slug, find the actual item in the PageList and determine its type
+    console.log(`Looking for item with slug "${pageSlug}" in PageList "${pageList.title}"`);
+    console.log(`PageList contains ${pageList.pagesCollection?.items?.length || 0} items`);
+    
+    // Find the specific item in this PageList by slug
+    const targetItem = pageList.pagesCollection?.items?.find((item) => {
+      if (!item || typeof item !== 'object') return false;
+      
+      // Check if item has a slug property that matches
+      const itemSlug = (item as { slug?: string }).slug;
+      if (typeof itemSlug !== 'string') return false;
+      
+      // Check for exact match or if the item slug ends with the pageSlug
+      // But ensure it's a proper path segment match, not just a substring match
+      const hasMatchingSlug = itemSlug === pageSlug || 
+        (itemSlug.endsWith(`/${pageSlug}`) && itemSlug.split('/').pop() === pageSlug);
+      
+      if (hasMatchingSlug) {
+        const typename = (item as { __typename?: string }).__typename ?? 'Unknown';
+        console.log(`Found matching item: ${pageSlug} -> ${itemSlug} (${typename})`);
+        return true;
       }
-
-      console.log(`Confirmed: "${nestedPageList.title}" is nested in "${pageList.title}"`);
-
-      // Render the nested PageList directly
-      // Ensure slug is defined for type compatibility
-      if (!nestedPageList.slug) {
-        console.error(`Nested PageList "${nestedPageList.title}" has no slug`);
-        notFound();
-      }
-      contentItem = nestedPageList;
+      
+      return false;
+    });
+    
+    if (!targetItem) {
+      console.log(`No item with slug "${pageSlug}" found in PageList "${pageList.title}"`);
+      notFound();
+    }
+    
+    // Determine the content type from the item's __typename
+    const itemTypename = (targetItem as { __typename?: string }).__typename;
+    const actualSlug = (targetItem as { slug?: string }).slug ?? pageSlug;
+    console.log(`Item typename: ${itemTypename}, actual slug: ${actualSlug}`);
+    
+    // Fetch the full content based on the typename
+    if (itemTypename === 'Page') {
+      contentItem = await getPageBySlug(actualSlug, preview);
+      contentType = 'Page';
+    } else if (itemTypename === 'PageList') {
+      contentItem = await getPageListBySlug(actualSlug, preview);
       contentType = 'PageList';
+    } else if (itemTypename === 'Product') {
+      contentItem = await getProductBySlug(actualSlug, preview);
+      contentType = 'Product';
+    } else if (itemTypename === 'Service') {
+      contentItem = await getServiceBySlug(actualSlug, preview);
+      contentType = 'Service';
+    } else if (itemTypename === 'Solution') {
+      contentItem = await getSolutionBySlug(actualSlug, preview);
+      contentType = 'Solution';
+    } else if (itemTypename === 'Post') {
+      contentItem = await getPostBySlug(actualSlug, preview);
+      contentType = 'Post';
     } else {
-      console.log(`PageList lookup failed for "${pageSlug}", continuing with content item lookup`);
-
-      // Try to fetch the content item as different content types
+      console.log(`Unknown content type: ${itemTypename}`);
+      // Fallback to trying different content types using the actual slug
       // First try as a Page
-      contentItem = await getPageBySlug(pageSlug, preview);
+      contentItem = await getPageBySlug(actualSlug, preview);
       if (contentItem) {
         contentType = 'Page';
       } else {
         // Try as Product
-        contentItem = await getProductBySlug(pageSlug, preview);
+        contentItem = await getProductBySlug(actualSlug, preview);
         if (contentItem) {
           contentType = 'Product';
         } else {
           // Try as Service
-          contentItem = await getServiceBySlug(pageSlug, preview);
+          contentItem = await getServiceBySlug(actualSlug, preview);
           if (contentItem) {
             contentType = 'Service';
           } else {
             // Try as Solution
-            contentItem = await getSolutionBySlug(pageSlug, preview);
+            contentItem = await getSolutionBySlug(actualSlug, preview);
             if (contentItem) {
               contentType = 'Solution';
             } else {
               // Try as Post
-              contentItem = await getPostBySlug(pageSlug, preview);
+              contentItem = await getPostBySlug(actualSlug, preview);
               if (contentItem) {
                 contentType = 'Post';
+              } else {
+                // Try as PageList as last resort
+                contentItem = await getPageListBySlug(actualSlug, preview);
+                if (contentItem) {
+                  contentType = 'PageList';
+                }
               }
             }
           }
