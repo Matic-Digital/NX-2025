@@ -83,7 +83,7 @@ export function ButtonPreview(props: ButtonPreviewProps) {
           </div>
 
           {/* Field Breakdown */}
-          <FieldBreakdown title="Button Fields" fields={buttonFields} data={liveButton} />
+          <FieldBreakdown fields={buttonFields} data={liveButton} />
         </div>
       </div>
     </div>

@@ -30,8 +30,8 @@ import { getCollectionById } from '@/components/Collection/CollectionApi';
 import { CollectionPreview } from '@/components/Collection/preview/CollectionPreview';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
-import { Content } from '@/components/Content/Content';
 import { getContentById } from '@/components/Content/ContentApi';
+import { ContentPreview } from '@/components/Content/preview/ContentPreview';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import {
   getContentGridById,
@@ -102,115 +102,6 @@ interface ContentTypeConfig {
 }
 
 const contentTypeConfig: Record<string, ContentTypeConfig> = {
-  button: {
-    fetchFn: getButtonById,
-    component: ButtonPreview, // Button only has preview component
-    previewComponent: ButtonPreview,
-    entityName: 'Button',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  collection: {
-    fetchFn: getCollectionById,
-    component: CollectionPreview, // Collection only has preview component
-    previewComponent: CollectionPreview,
-    entityName: 'Collection',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  content: {
-    fetchFn: getContentById,
-    component: Content,
-    entityName: 'Content',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'content-block': {
-    fetchFn: getContentById,
-    component: Content,
-    entityName: 'Content',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'section-heading': {
-    fetchFn: getSectionHeadingById,
-    component: SectionHeading,
-    previewComponent: SectionHeadingPreview,
-    entityName: 'SectionHeading',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'banner-hero': {
-    fetchFn: getBannerHero,
-    component: BannerHero,
-    previewComponent: BannerHeroPreview,
-    entityName: 'BannerHero',
-    containerClass: 'min-h-screen' // Full height for hero sections
-  },
-  'content-grid': {
-    fetchFn: getContentGridById,
-    component: ContentGrid,
-    entityName: 'ContentGrid',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'content-grid-item': {
-    fetchFn: getContentGridItemById,
-    component: ContentGridItem,
-    entityName: 'ContentGridItem',
-    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
-  'image-between': {
-    fetchFn: getImageBetweenById,
-    component: ImageBetween,
-    entityName: 'ImageBetween',
-    containerClass: 'min-h-screen bg-white'
-  },
-  slider: {
-    fetchFn: getSliderById,
-    component: Slider,
-    entityName: 'Slider',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'page-list': {
-    fetchFn: getPageListById,
-    component: PageList,
-    entityName: 'PageList',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  page: {
-    fetchFn: getPageById,
-    component: Page,
-    entityName: 'Page',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  product: {
-    fetchFn: getProductById,
-    component: ProductAsPage,
-    entityName: 'Product',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  header: {
-    fetchFn: getHeaderById,
-    component: Header,
-    entityName: 'Header',
-    containerClass: 'bg-white shadow-sm'
-  },
-  footer: {
-    fetchFn: getFooterById,
-    component: Footer,
-    entityName: 'Footer',
-    containerClass: 'bg-white text-white'
-  },
-  menu: {
-    fetchFn: getMenuById,
-    component: Menu,
-    entityName: 'Menu',
-    containerClass: 'min-h-screen bg-gray-50 p-8'
-  },
-  'menu-item': {
-    fetchFn: getMenuItemById,
-    component: MenuItem,
-    entityName: 'MenuItem',
-    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
   accordion: {
     fetchFn: getAccordionById,
     component: AccordionPreview, // Accordion only has preview component
@@ -225,12 +116,52 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'AccordionItem',
     containerClass: 'min-h-screen bg-gray-50'
   },
+  'banner-hero': {
+    fetchFn: getBannerHero,
+    component: BannerHero,
+    previewComponent: BannerHeroPreview,
+    entityName: 'BannerHero',
+    containerClass: 'min-h-screen' // Full height for hero sections
+  },
+  button: {
+    fetchFn: getButtonById,
+    component: ButtonPreview, // Button only has preview component
+    previewComponent: ButtonPreview,
+    entityName: 'Button',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  collection: {
+    fetchFn: getCollectionById,
+    component: CollectionPreview, // Collection only has preview component
+    previewComponent: CollectionPreview,
+    entityName: 'Collection',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
   'contact-card': {
     fetchFn: getContactCardById,
     component: ContactCardPreview, // ContactCard only has preview component
     previewComponent: ContactCardPreview,
     entityName: 'ContactCard',
     containerClass: 'min-h-screen bg-gray-50'
+  },
+  content: {
+    fetchFn: getContentById,
+    component: ContentPreview,
+    previewComponent: ContentPreview,
+    entityName: 'Content',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'content-grid': {
+    fetchFn: getContentGridById,
+    component: ContentGrid,
+    entityName: 'ContentGrid',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'content-grid-item': {
+    fetchFn: getContentGridItemById,
+    component: ContentGridItem,
+    entityName: 'ContentGridItem',
+    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   },
   'cta-banner': {
     fetchFn: getCtaBannerById,
@@ -250,6 +181,18 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'Event',
     containerClass: 'min-h-screen bg-white'
   },
+  footer: {
+    fetchFn: getFooterById,
+    component: Footer,
+    entityName: 'Footer',
+    containerClass: 'bg-white text-white'
+  },
+  header: {
+    fetchFn: getHeaderById,
+    component: Header,
+    entityName: 'Header',
+    containerClass: 'bg-white shadow-sm'
+  },
   'hubspot-form': {
     fetchFn: getHubspotFormById,
     component: HubspotForm,
@@ -262,11 +205,35 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'Image',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   },
+  'image-between': {
+    fetchFn: getImageBetweenById,
+    component: ImageBetween,
+    entityName: 'ImageBetween',
+    containerClass: 'min-h-screen bg-white'
+  },
   'mega-menu': {
     fetchFn: getMegaMenuById,
     component: MegaMenu,
     entityName: 'MegaMenu',
     containerClass: 'min-h-screen bg-white'
+  },
+  menu: {
+    fetchFn: getMenuById,
+    component: Menu,
+    entityName: 'Menu',
+    containerClass: 'min-h-screen bg-gray-50 p-8'
+  },
+  'menu-item': {
+    fetchFn: getMenuItemById,
+    component: MenuItem,
+    entityName: 'MenuItem',
+    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
+  },
+  modal: {
+    fetchFn: getModalById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Modal',
+    containerClass: 'min-h-screen bg-gray-50'
   },
   'office-location': {
     fetchFn: getLocationById,
@@ -274,11 +241,32 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'OfficeLocation',
     containerClass: 'min-h-screen bg-gray-50'
   },
+  page: {
+    fetchFn: getPageById,
+    component: Page,
+    entityName: 'Page',
+    containerClass: 'min-h-screen',
+    usePageLayout: true
+  },
+  'page-list': {
+    fetchFn: getPageListById,
+    component: PageList,
+    entityName: 'PageList',
+    containerClass: 'min-h-screen',
+    usePageLayout: true
+  },
   post: {
     fetchFn: getPostById,
     component: PostCard,
     entityName: 'Post',
     containerClass: 'min-h-screen bg-white'
+  },
+  product: {
+    fetchFn: getProductById,
+    component: ProductAsPage,
+    entityName: 'Product',
+    containerClass: 'min-h-screen',
+    usePageLayout: true
   },
   region: {
     fetchFn: getRegionsMapById,
@@ -292,6 +280,13 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'RichContent',
     containerClass: 'min-h-screen bg-white'
   },
+  'section-heading': {
+    fetchFn: getSectionHeadingById,
+    component: SectionHeading,
+    previewComponent: SectionHeadingPreview,
+    entityName: 'SectionHeading',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
   service: {
     fetchFn: getServiceById,
     component: ServicePreview,
@@ -299,18 +294,24 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'Service',
     containerClass: 'min-h-screen bg-gray-50'
   },
-  solution: {
-    fetchFn: getSolutionById,
-    component: SolutionPreview,
-    previewComponent: SolutionPreview,
-    entityName: 'Solution',
-    containerClass: 'min-h-screen bg-gray-50'
+  slider: {
+    fetchFn: getSliderById,
+    component: Slider,
+    entityName: 'Slider',
+    containerClass: 'min-h-screen bg-white'
   },
   social: {
     fetchFn: getSocialById,
     component: SocialPreview,
     previewComponent: SocialPreview,
     entityName: 'Social',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  solution: {
+    fetchFn: getSolutionById,
+    component: SolutionPreview,
+    previewComponent: SolutionPreview,
+    entityName: 'Solution',
     containerClass: 'min-h-screen bg-gray-50'
   },
   'team-member': {
@@ -324,12 +325,6 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     component: Testimonials,
     entityName: 'Testimonials',
     containerClass: 'min-h-screen bg-white'
-  },
-  modal: {
-    fetchFn: getModalById,
-    component: PostCard, // Using PostCard as placeholder
-    entityName: 'Modal',
-    containerClass: 'min-h-screen bg-gray-50'
   },
   'timeline-slider-item': {
     fetchFn: (id: string, preview = false) =>
