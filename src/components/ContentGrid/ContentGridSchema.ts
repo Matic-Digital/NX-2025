@@ -50,15 +50,17 @@ export const ContentGridSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
+  theme: z.enum(['Light', 'Dark']),
   title: z.string(),
-  theme: z.enum(['Light', 'Dark']).optional(),
+  variant: z.string(),
   heading: SectionHeadingSchema.optional(),
+  itemsCollection: z
+    .object({
+      items: z.array(ContentGridItemUnion)
+    })
+    .optional(),
   backgroundImage: ImageSchema.optional(),
   backgroundAsset: AssetSchema.optional(),
-  itemsCollection: z.object({
-    items: z.array(ContentGridItemUnion)
-  }),
-  variant: z.string(),
   componentType: z.string().optional(),
   __typename: z.string().optional()
 });

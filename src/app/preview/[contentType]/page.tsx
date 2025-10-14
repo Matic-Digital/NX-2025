@@ -38,6 +38,7 @@ import {
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { ContentGridPreview } from '@/components/ContentGrid/preview/ContentGridPreview';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
@@ -154,6 +155,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'content-grid': {
     fetchFn: getContentGridById,
     component: ContentGrid,
+    previewComponent: ContentGridPreview,
     entityName: 'ContentGrid',
     containerClass: 'min-h-screen bg-white'
   },

@@ -3,6 +3,14 @@ import type { FieldConfig } from '@/components/Preview/FieldBreakdown';
 
 export const contentGridFields: FieldConfig<Partial<ContentGrid>>[] = [
   {
+    name: 'theme',
+    label: 'Theme',
+    required: true,
+    description: 'The color theme for the content grid (Light or Dark).',
+    color: 'blue',
+    getValue: (data) => (data.theme ? `"${data.theme}"` : 'Not set')
+  },
+  {
     name: 'title',
     label: 'Title',
     required: true,
@@ -11,12 +19,12 @@ export const contentGridFields: FieldConfig<Partial<ContentGrid>>[] = [
     getValue: (data) => (data.title ? `"${data.title}"` : 'Not set')
   },
   {
-    name: 'theme',
-    label: 'Theme',
-    required: false,
-    description: 'The color theme for the content grid (Light or Dark).',
-    color: 'blue',
-    getValue: (data) => (data.theme ? `"${data.theme}"` : 'Not set')
+    name: 'variant',
+    label: 'Variant',
+    required: true,
+    description: 'The layout variant that determines how items are displayed in the grid.',
+    color: 'pink',
+    getValue: (data) => (data.variant ? `"${data.variant}"` : 'Not set')
   },
   {
     name: 'heading',
@@ -27,6 +35,18 @@ export const contentGridFields: FieldConfig<Partial<ContentGrid>>[] = [
     getValue: (data) =>
       data.heading
         ? `SectionHeading configured (Title: "${data.heading.title ?? 'Not set'}")`
+        : 'Not set'
+  },
+  {
+    name: 'itemsCollection',
+    label: 'Items Collection',
+    required: false,
+    description:
+      'Collection of items to display in the grid. Can include Accordion, ContentGridItem, CtaGrid, ContactCard, Event, Image, OfficeLocation, Post, Product, Service, Slider, Solution, or Video.',
+    color: 'indigo',
+    getValue: (data) =>
+      data.itemsCollection?.items
+        ? `${data.itemsCollection.items.length} item(s) configured`
         : 'Not set'
   },
   {
@@ -50,26 +70,6 @@ export const contentGridFields: FieldConfig<Partial<ContentGrid>>[] = [
       data.backgroundAsset
         ? `Asset configured (${data.backgroundAsset.title ?? 'Untitled'})`
         : 'Not set'
-  },
-  {
-    name: 'itemsCollection',
-    label: 'Items Collection',
-    required: true,
-    description:
-      'Collection of items to display in the grid. Can include Accordion, ContentGridItem, CtaGrid, ContactCard, Event, Image, OfficeLocation, Post, Product, Service, Slider, Solution, or Video.',
-    color: 'indigo',
-    getValue: (data) =>
-      data.itemsCollection?.items
-        ? `${data.itemsCollection.items.length} item(s) configured`
-        : 'Not set'
-  },
-  {
-    name: 'variant',
-    label: 'Variant',
-    required: true,
-    description: 'The layout variant that determines how items are displayed in the grid.',
-    color: 'pink',
-    getValue: (data) => (data.variant ? `"${data.variant}"` : 'Not set')
   },
   {
     name: 'componentType',
