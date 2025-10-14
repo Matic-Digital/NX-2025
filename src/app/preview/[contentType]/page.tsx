@@ -9,89 +9,85 @@
 
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import {
   ContentfulLivePreviewProvider,
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import { useSearchParams } from 'next/navigation';
 
-// Import all components
+// Component imports
+import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
+import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
+import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
+import { getButtonById } from '@/components/Button/ButtonApi';
+import { ButtonPreview } from '@/components/Button/preview/ButtonPreview';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { CollectionPreview } from '@/components/Collection/preview/CollectionPreview';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
 import { Content } from '@/components/Content/Content';
-import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import { Slider } from '@/components/Slider/Slider';
-import { PageList } from '@/components/PageList/PageList';
-import { Page } from '@/components/Page/Page';
-import { Header } from '@/components/Header/Header';
-import { Footer } from '@/components/Footer/Footer';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
-import { ButtonPreview } from '@/components/Button/ButtonPreview';
-import { Menu } from '@/components/Menu/Menu';
-import { MenuItem } from '@/components/MenuItem/MenuItem';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
-import { Event } from '@/components/Event/Event';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
-import { AirImage } from '@/components/Image/AirImage';
-import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
-import { PostCard } from '@/components/Post/PostCard';
-import { RichContent } from '@/components/RichContent/RichContent';
-import { ServicePreview } from '@/components/Service/ServicePreview';
-import { SolutionPreview } from '@/components/Solution/SolutionPreview';
-import { SocialPreview } from '@/components/Social/SocialPreview';
-import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
-import { Testimonials } from '@/components/Testimonials/Testimonials';
-
-// Import Preview components (when they exist)
-import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
-import { BannerHeroPreview } from '@/components/BannerHero/BannerHeroPreview';
-import { AccordionPreview } from '@/components/Accordion/AccordionPreview';
-import { AccordionItemPreview } from '@/components/Accordion/AccordionItemPreview';
-import { ContactCardPreview } from '@/components/ContactCard/ContactCardPreview';
-import { CollectionPreview } from '@/components/Collection/CollectionPreview';
-
-// Import all API functions
+import { getContentById } from '@/components/Content/ContentApi';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/components/Page/PageApi';
-import { getPageListById } from '@/components/PageList/PageListApi';
-import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { getContentById } from '@/components/Content/ContentApi';
-import { getFooterById } from '@/components/Footer/FooterApi';
-import { getHeaderById } from '@/components/Header/HeaderApi';
-import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
-import { getSliderById } from '@/components/Slider/SliderApi';
-import { getProductById } from '@/components/Product/ProductApi';
-import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { getButtonById } from '@/components/Button/ButtonApi';
-import { getMenuById } from '@/components/Menu/MenuApi';
-import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
-import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
-import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
-import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { Event } from '@/components/Event/Event';
 import { getEventById } from '@/components/Event/EventApi';
+import { Footer } from '@/components/Footer/Footer';
+import { getFooterById } from '@/components/Footer/FooterApi';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { Header } from '@/components/Header/Header';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { AirImage } from '@/components/Image/AirImage';
 import { getImageById } from '@/components/Image/ImageApi';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
-import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
-import { getPostById } from '@/components/Post/PostApi';
-import { getRegionsMapById } from '@/components/Region/RegionApi';
-import { getRichContentById } from '@/components/RichContent/RichContentApi';
-import { getServiceById } from '@/components/Service/ServiceApi';
-import { getSolutionById } from '@/components/Solution/SolutionApi';
-import { getSocialById } from '@/components/Social/SocialApi';
-import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
-import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import { Menu } from '@/components/Menu/Menu';
+import { getMenuById } from '@/components/Menu/MenuApi';
+import { MenuItem } from '@/components/MenuItem/MenuItem';
+import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 import { getModalById } from '@/components/Modals/ModalApi';
+import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { Page } from '@/components/Page/Page';
+import { getPageById } from '@/components/Page/PageApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { PageList } from '@/components/PageList/PageList';
+import { getPageListById } from '@/components/PageList/PageListApi';
+import { getPostById } from '@/components/Post/PostApi';
+import { PostCard } from '@/components/Post/PostCard';
+import { getProductById } from '@/components/Product/ProductApi';
+import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { RichContent } from '@/components/RichContent/RichContent';
+import { getRichContentById } from '@/components/RichContent/RichContentApi';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
+import { getServiceById } from '@/components/Service/ServiceApi';
+import { ServicePreview } from '@/components/Service/ServicePreview';
+import { Slider } from '@/components/Slider/Slider';
+import { getSliderById } from '@/components/Slider/SliderApi';
+import { getSocialById } from '@/components/Social/SocialApi';
+import { SocialPreview } from '@/components/Social/SocialPreview';
+import { getSolutionById } from '@/components/Solution/SolutionApi';
+import { SolutionPreview } from '@/components/Solution/SolutionPreview';
+import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
+import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
 import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
 import { getVideosByIds } from '@/components/Video/VideoApi';
 
@@ -336,13 +332,15 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     containerClass: 'min-h-screen bg-gray-50'
   },
   'timeline-slider-item': {
-    fetchFn: (id: string, preview = false) => getTimelineSliderItemsByIds([id], preview).then(items => items[0]),
+    fetchFn: (id: string, preview = false) =>
+      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
     component: PostCard, // Using PostCard as placeholder
     entityName: 'TimelineSliderItem',
     containerClass: 'min-h-screen bg-white'
   },
   video: {
-    fetchFn: (id: string, preview = false) => getVideosByIds([id], preview).then(items => items[0]),
+    fetchFn: (id: string, preview = false) =>
+      getVideosByIds([id], preview).then((items) => items[0]),
     component: PostCard, // Using PostCard as placeholder
     entityName: 'Video',
     containerClass: 'min-h-screen bg-white'
@@ -437,8 +435,13 @@ function PreviewContent({ contentType }: PreviewContentProps) {
     );
   }
 
-  const { component: Component, previewComponent: PreviewComponent, entityName, usePageLayout } = config;
-  
+  const {
+    component: Component,
+    previewComponent: PreviewComponent,
+    entityName,
+    usePageLayout
+  } = config;
+
   // Use PreviewComponent if available, otherwise fall back to regular Component
   const ComponentToRender = PreviewComponent ?? Component;
 

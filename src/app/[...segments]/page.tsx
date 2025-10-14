@@ -73,12 +73,12 @@ const componentMap = {
   RegionsMap
 } as const;
 
-console.log('🔍 Component map initialized:', {
-  hasRichContent: !!RichContent,
-  hasContentTypeRichText: !!componentMap.ContentTypeRichText,
-  richContentName: RichContent?.name,
-  allKeys: Object.keys(componentMap)
-});
+// console.log('🔍 Component map initialized:', {
+//   hasRichContent: !!RichContent,
+//   hasContentTypeRichText: !!componentMap.ContentTypeRichText,
+//   richContentName: RichContent?.name,
+//   allKeys: Object.keys(componentMap)
+// });
 
 // Type-safe component map with explicit typing
 type _ComponentMapType = {
@@ -231,20 +231,23 @@ async function resolveNestedContent(segments: string[]): Promise<{
     // If direct slug lookup fails and we have a parent, search within the parent's items
     if (!pageList && currentPageList) {
       console.log(`Direct PageList lookup failed for "${slug}", searching in parent PageList`);
-      console.log(`Parent PageList "${currentPageList.title}" contains:`, 
+      console.log(
+        `Parent PageList "${currentPageList.title}" contains:`,
         currentPageList.pagesCollection?.items?.map((item: any) => ({
           slug: item?.slug,
           title: item?.title,
           typename: item?.__typename
-        })));
-      
+        }))
+      );
+
       const nestedItem = currentPageList.pagesCollection?.items?.find((item: any) => {
         const itemSlug = item?.slug;
         if (typeof itemSlug !== 'string') return false;
-        
+
         // Check if this item matches the segment we're looking for
-        return itemSlug === slug || 
-          (itemSlug.endsWith(`/${slug}`) && itemSlug.split('/').pop() === slug);
+        return (
+          itemSlug === slug || (itemSlug.endsWith(`/${slug}`) && itemSlug.split('/').pop() === slug)
+        );
       });
 
       if (nestedItem && nestedItem.__typename === 'PageList') {
@@ -346,20 +349,24 @@ async function resolveNestedContent(segments: string[]): Promise<{
   if (currentPageList) {
     const targetItem = currentPageList.pagesCollection?.items?.find((item: any) => {
       if (!item || typeof item !== 'object') return false;
-      
+
       const itemSlug = (item as any).slug;
       if (typeof itemSlug !== 'string') return false;
-      
+
       // Check for exact match or if the item slug ends with the finalSlug
       // This handles compound slugs like "products/trackers/nx-horizon"
-      return itemSlug === finalSlug || 
-        (itemSlug.endsWith(`/${finalSlug}`) && itemSlug.split('/').pop() === finalSlug);
+      return (
+        itemSlug === finalSlug ||
+        (itemSlug.endsWith(`/${finalSlug}`) && itemSlug.split('/').pop() === finalSlug)
+      );
     });
 
     if (targetItem) {
       const actualSlug = (targetItem as any).slug ?? finalSlug;
-      console.log(`Found item in PageList: ${finalSlug} -> ${actualSlug} (${targetItem.__typename})`);
-      
+      console.log(
+        `Found item in PageList: ${finalSlug} -> ${actualSlug} (${targetItem.__typename})`
+      );
+
       // Fetch the content using the actual slug
       const contentItem = await tryFetchContentItem(actualSlug as string, preview);
       if (contentItem) {
@@ -370,11 +377,14 @@ async function resolveNestedContent(segments: string[]): Promise<{
       }
     } else {
       console.log(`No matching item found in PageList for finalSlug: ${finalSlug}`);
-      console.log(`PageList items:`, currentPageList.pagesCollection?.items?.map((item: any) => ({
-        slug: item?.slug,
-        title: item?.title,
-        typename: item?.__typename
-      })));
+      console.log(
+        `PageList items:`,
+        currentPageList.pagesCollection?.items?.map((item: any) => ({
+          slug: item?.slug,
+          title: item?.title,
+          typename: item?.__typename
+        }))
+      );
     }
   }
 

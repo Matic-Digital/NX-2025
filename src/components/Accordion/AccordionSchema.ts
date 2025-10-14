@@ -19,14 +19,16 @@ export const AccordionItemSchema = z.object({
       id: z.string()
     })
   }),
-  backgroundImage: z.object({
-    sys: z.object({
-      id: z.string()
-    }),
-    link: z.string().optional()
-  }).optional(),
+  backgroundImage: z
+    .object({
+      sys: z.object({
+        id: z.string()
+      }),
+      link: z.string()
+    })
+    .optional(),
   cta: ButtonSchema.optional(),
-  __typename: z.string().optional()
+  __typename: z.string()
 });
 
 export type AccordionItem = z.infer<typeof AccordionItemSchema>;
@@ -36,7 +38,7 @@ export const AccordionItemReferenceSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  __typename: z.string().optional()
+  __typename: z.string()
 });
 
 export type AccordionItemReference = z.infer<typeof AccordionItemReferenceSchema>;
@@ -49,7 +51,7 @@ export const AccordionSchema = z.object({
   itemsCollection: z.object({
     items: z.array(AccordionItemReferenceSchema)
   }),
-  __typename: z.string().optional()
+  __typename: z.string()
 });
 
 export type Accordion = z.infer<typeof AccordionSchema>;
