@@ -33,6 +33,19 @@ import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { ButtonPreview } from '@/components/Button/ButtonPreview';
 import { Menu } from '@/components/Menu/Menu';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { Event } from '@/components/Event/Event';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { AirImage } from '@/components/Image/AirImage';
+import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
+import { PostCard } from '@/components/Post/PostCard';
+import { RichContent } from '@/components/RichContent/RichContent';
+import { ServicePreview } from '@/components/Service/ServicePreview';
+import { SolutionPreview } from '@/components/Solution/SolutionPreview';
+import { SocialPreview } from '@/components/Social/SocialPreview';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
 
 // Import Preview components (when they exist)
 import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
@@ -63,6 +76,24 @@ import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { getEventById } from '@/components/Event/EventApi';
+import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { getImageById } from '@/components/Image/ImageApi';
+import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
+import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { getPostById } from '@/components/Post/PostApi';
+import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { getRichContentById } from '@/components/RichContent/RichContentApi';
+import { getServiceById } from '@/components/Service/ServiceApi';
+import { getSolutionById } from '@/components/Solution/SolutionApi';
+import { getSocialById } from '@/components/Social/SocialApi';
+import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
+import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import { getModalById } from '@/components/Modals/ModalApi';
+import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getVideosByIds } from '@/components/Video/VideoApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -204,6 +235,117 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     previewComponent: ContactCardPreview,
     entityName: 'ContactCard',
     containerClass: 'min-h-screen bg-gray-50'
+  },
+  'cta-banner': {
+    fetchFn: getCtaBannerById,
+    component: CtaBanner,
+    entityName: 'CtaBanner',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'cta-grid': {
+    fetchFn: getCtaGridById,
+    component: CtaGrid,
+    entityName: 'CtaGrid',
+    containerClass: 'min-h-screen bg-white'
+  },
+  event: {
+    fetchFn: getEventById,
+    component: Event,
+    entityName: 'Event',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'hubspot-form': {
+    fetchFn: getHubspotFormById,
+    component: HubspotForm,
+    entityName: 'HubspotForm',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  image: {
+    fetchFn: getImageById,
+    component: AirImage,
+    entityName: 'Image',
+    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
+  },
+  'mega-menu': {
+    fetchFn: getMegaMenuById,
+    component: MegaMenu,
+    entityName: 'MegaMenu',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'office-location': {
+    fetchFn: getLocationById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'OfficeLocation',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  post: {
+    fetchFn: getPostById,
+    component: PostCard,
+    entityName: 'Post',
+    containerClass: 'min-h-screen bg-white'
+  },
+  region: {
+    fetchFn: getRegionsMapById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Region',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'rich-content': {
+    fetchFn: getRichContentById,
+    component: RichContent,
+    entityName: 'RichContent',
+    containerClass: 'min-h-screen bg-white'
+  },
+  service: {
+    fetchFn: getServiceById,
+    component: ServicePreview,
+    previewComponent: ServicePreview,
+    entityName: 'Service',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  solution: {
+    fetchFn: getSolutionById,
+    component: SolutionPreview,
+    previewComponent: SolutionPreview,
+    entityName: 'Solution',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  social: {
+    fetchFn: getSocialById,
+    component: SocialPreview,
+    previewComponent: SocialPreview,
+    entityName: 'Social',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'team-member': {
+    fetchFn: getTeamMemberById,
+    component: TeamMemberModal,
+    entityName: 'TeamMember',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  testimonials: {
+    fetchFn: getTestimonialsById,
+    component: Testimonials,
+    entityName: 'Testimonials',
+    containerClass: 'min-h-screen bg-white'
+  },
+  modal: {
+    fetchFn: getModalById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Modal',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'timeline-slider-item': {
+    fetchFn: (id: string, preview = false) => getTimelineSliderItemsByIds([id], preview).then(items => items[0]),
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'TimelineSliderItem',
+    containerClass: 'min-h-screen bg-white'
+  },
+  video: {
+    fetchFn: (id: string, preview = false) => getVideosByIds([id], preview).then(items => items[0]),
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Video',
+    containerClass: 'min-h-screen bg-white'
   }
 };
 

@@ -28,6 +28,19 @@ import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { getEventById } from '@/components/Event/EventApi';
+import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
+import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { getPostById } from '@/components/Post/PostApi';
+import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { getRichContentById } from '@/components/RichContent/RichContentApi';
+import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
+import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import { getModalById } from '@/components/Modals/ModalApi';
+import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getVideosByIds } from '@/components/Video/VideoApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
@@ -160,8 +173,73 @@ const contentTypeMap = {
     fetchFn: getContactCardById,
     previewPath: '/preview/contact-card',
     entityName: 'ContactCard'
+  },
+  'cta-grid': {
+    fetchFn: getCtaGridById,
+    previewPath: '/preview/cta-grid',
+    entityName: 'CtaGrid'
+  },
+  event: {
+    fetchFn: getEventById,
+    previewPath: '/preview/event',
+    entityName: 'Event'
+  },
+  'hubspot-form': {
+    fetchFn: getHubspotFormById,
+    previewPath: '/preview/hubspot-form',
+    entityName: 'HubspotForm'
+  },
+  'mega-menu': {
+    fetchFn: getMegaMenuById,
+    previewPath: '/preview/mega-menu',
+    entityName: 'MegaMenu'
+  },
+  'office-location': {
+    fetchFn: getLocationById,
+    previewPath: '/preview/office-location',
+    entityName: 'OfficeLocation'
+  },
+  post: {
+    fetchFn: getPostById,
+    previewPath: '/preview/post',
+    entityName: 'Post'
+  },
+  region: {
+    fetchFn: getRegionsMapById,
+    previewPath: '/preview/region',
+    entityName: 'Region'
+  },
+  'rich-content': {
+    fetchFn: getRichContentById,
+    previewPath: '/preview/rich-content',
+    entityName: 'RichContent'
+  },
+  'team-member': {
+    fetchFn: getTeamMemberById,
+    previewPath: '/preview/team-member',
+    entityName: 'TeamMember'
+  },
+  testimonials: {
+    fetchFn: getTestimonialsById,
+    previewPath: '/preview/testimonials',
+    entityName: 'Testimonials'
+  },
+  modal: {
+    fetchFn: getModalById,
+    previewPath: '/preview/modal',
+    entityName: 'Modal'
+  },
+  'timeline-slider-item': {
+    fetchFn: (id: string, preview = false) => getTimelineSliderItemsByIds([id], preview).then(items => items[0]),
+    previewPath: '/preview/timeline-slider-item',
+    entityName: 'TimelineSliderItem'
+  },
+  video: {
+    fetchFn: (id: string, preview = false) => getVideosByIds([id], preview).then(items => items[0]),
+    previewPath: '/preview/video',
+    entityName: 'Video'
   }
-} as const;
+};
 
 type ContentType = keyof typeof contentTypeMap;
 
