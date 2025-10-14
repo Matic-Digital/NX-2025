@@ -17,6 +17,7 @@ import {
 } from '@contentful/live-preview/react';
 import { useSearchParams } from 'next/navigation';
 
+// Component imports
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
 import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
 import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
@@ -37,28 +38,58 @@ import {
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { Event } from '@/components/Event/Event';
+import { getEventById } from '@/components/Event/EventApi';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
+import { AirImage } from '@/components/Image/AirImage';
+import { getImageById } from '@/components/Image/ImageApi';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
+import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { Menu } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { getModalById } from '@/components/Modals/ModalApi';
+import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import { Page } from '@/components/Page/Page';
 import { getPageById } from '@/components/Page/PageApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { PageList } from '@/components/PageList/PageList';
 import { getPageListById } from '@/components/PageList/PageListApi';
+import { getPostById } from '@/components/Post/PostApi';
+import { PostCard } from '@/components/Post/PostCard';
 import { getProductById } from '@/components/Product/ProductApi';
+import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { RichContent } from '@/components/RichContent/RichContent';
+import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-// Import Preview components (when they exist)
 import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
+import { getServiceById } from '@/components/Service/ServiceApi';
+import { ServicePreview } from '@/components/Service/ServicePreview';
 import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
+import { getSocialById } from '@/components/Social/SocialApi';
+import { SocialPreview } from '@/components/Social/SocialPreview';
+import { getSolutionById } from '@/components/Solution/SolutionApi';
+import { SolutionPreview } from '@/components/Solution/SolutionPreview';
+import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
+import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import { Testimonials } from '@/components/Testimonials/Testimonials';
+import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getVideosByIds } from '@/components/Video/VideoApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -200,6 +231,119 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     previewComponent: ContactCardPreview,
     entityName: 'ContactCard',
     containerClass: 'min-h-screen bg-gray-50'
+  },
+  'cta-banner': {
+    fetchFn: getCtaBannerById,
+    component: CtaBanner,
+    entityName: 'CtaBanner',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'cta-grid': {
+    fetchFn: getCtaGridById,
+    component: CtaGrid,
+    entityName: 'CtaGrid',
+    containerClass: 'min-h-screen bg-white'
+  },
+  event: {
+    fetchFn: getEventById,
+    component: Event,
+    entityName: 'Event',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'hubspot-form': {
+    fetchFn: getHubspotFormById,
+    component: HubspotForm,
+    entityName: 'HubspotForm',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  image: {
+    fetchFn: getImageById,
+    component: AirImage,
+    entityName: 'Image',
+    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
+  },
+  'mega-menu': {
+    fetchFn: getMegaMenuById,
+    component: MegaMenu,
+    entityName: 'MegaMenu',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'office-location': {
+    fetchFn: getLocationById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'OfficeLocation',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  post: {
+    fetchFn: getPostById,
+    component: PostCard,
+    entityName: 'Post',
+    containerClass: 'min-h-screen bg-white'
+  },
+  region: {
+    fetchFn: getRegionsMapById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Region',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'rich-content': {
+    fetchFn: getRichContentById,
+    component: RichContent,
+    entityName: 'RichContent',
+    containerClass: 'min-h-screen bg-white'
+  },
+  service: {
+    fetchFn: getServiceById,
+    component: ServicePreview,
+    previewComponent: ServicePreview,
+    entityName: 'Service',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  solution: {
+    fetchFn: getSolutionById,
+    component: SolutionPreview,
+    previewComponent: SolutionPreview,
+    entityName: 'Solution',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  social: {
+    fetchFn: getSocialById,
+    component: SocialPreview,
+    previewComponent: SocialPreview,
+    entityName: 'Social',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'team-member': {
+    fetchFn: getTeamMemberById,
+    component: TeamMemberModal,
+    entityName: 'TeamMember',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  testimonials: {
+    fetchFn: getTestimonialsById,
+    component: Testimonials,
+    entityName: 'Testimonials',
+    containerClass: 'min-h-screen bg-white'
+  },
+  modal: {
+    fetchFn: getModalById,
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Modal',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'timeline-slider-item': {
+    fetchFn: (id: string, preview = false) =>
+      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'TimelineSliderItem',
+    containerClass: 'min-h-screen bg-white'
+  },
+  video: {
+    fetchFn: (id: string, preview = false) =>
+      getVideosByIds([id], preview).then((items) => items[0]),
+    component: PostCard, // Using PostCard as placeholder
+    entityName: 'Video',
+    containerClass: 'min-h-screen bg-white'
   }
 };
 
