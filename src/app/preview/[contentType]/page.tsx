@@ -9,60 +9,56 @@
 
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import {
   ContentfulLivePreviewProvider,
-  useContentfulLiveUpdates,
-  useContentfulInspectorMode
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import { useSearchParams } from 'next/navigation';
 
-// Import all components
+import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
+import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
-import { Content } from '@/components/Content/Content';
-import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
-import { Slider } from '@/components/Slider/Slider';
-import { PageList } from '@/components/PageList/PageList';
-import { Page } from '@/components/Page/Page';
-import { Header } from '@/components/Header/Header';
-import { Footer } from '@/components/Footer/Footer';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
+import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
+import { getButtonById } from '@/components/Button/ButtonApi';
 import { ButtonPreview } from '@/components/Button/ButtonPreview';
-import { Menu } from '@/components/Menu/Menu';
-import { MenuItem } from '@/components/MenuItem/MenuItem';
-
-// Import Preview components (when they exist)
-import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
-import { BannerHeroPreview } from '@/components/BannerHero/BannerHeroPreview';
-import { AccordionPreview } from '@/components/Accordion/AccordionPreview';
-import { AccordionItemPreview } from '@/components/Accordion/AccordionItemPreview';
-import { ContactCardPreview } from '@/components/ContactCard/ContactCardPreview';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
 import { CollectionPreview } from '@/components/Collection/CollectionPreview';
-
-// Import all API functions
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
+import { Content } from '@/components/Content/Content';
+import { getContentById } from '@/components/Content/ContentApi';
+import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/components/Page/PageApi';
-import { getPageListById } from '@/components/PageList/PageListApi';
-import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { getContentById } from '@/components/Content/ContentApi';
+import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
+import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
+import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
-import { getSliderById } from '@/components/Slider/SliderApi';
-import { getProductById } from '@/components/Product/ProductApi';
-import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { getButtonById } from '@/components/Button/ButtonApi';
+import { Menu } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
+import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
-import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
-import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
-import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { Page } from '@/components/Page/Page';
+import { getPageById } from '@/components/Page/PageApi';
+import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { PageList } from '@/components/PageList/PageList';
+import { getPageListById } from '@/components/PageList/PageListApi';
+import { getProductById } from '@/components/Product/ProductApi';
+import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
+import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+// Import Preview components (when they exist)
+import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
+import { Slider } from '@/components/Slider/Slider';
+import { getSliderById } from '@/components/Slider/SliderApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -295,8 +291,13 @@ function PreviewContent({ contentType }: PreviewContentProps) {
     );
   }
 
-  const { component: Component, previewComponent: PreviewComponent, entityName, usePageLayout } = config;
-  
+  const {
+    component: Component,
+    previewComponent: PreviewComponent,
+    entityName,
+    usePageLayout
+  } = config;
+
   // Use PreviewComponent if available, otherwise fall back to regular Component
   const ComponentToRender = PreviewComponent ?? Component;
 
