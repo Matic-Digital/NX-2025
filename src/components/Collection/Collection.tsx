@@ -41,8 +41,16 @@ interface CollectionProps {
  * Pure composition of data, logic, and presentation layers
  */
 export function Collection({ collectionData, sys, isSearchContext = false }: CollectionProps) {
+  // Check if we're in preview mode by looking for draft mode cookies
+  const isPreviewMode = typeof window !== 'undefined' && 
+    (document.cookie.includes('__prerender_bypass') || document.cookie.includes('__next_preview_data'));
+  
   // Data layer
-  const { collection, isLoading, error } = useCollectionData({ collectionData, sys });
+  const { collection, isLoading, error } = useCollectionData({ 
+    collectionData, 
+    sys, 
+    preview: isPreviewMode 
+  });
   const { posts, isLoading: postsLoading } = usePostsData({ collection, collectionData });
   const { pages, isLoading: pagesLoading } = usePagesData({ collection, collectionData });
   const { pageLists, isLoading: pageListsLoading } = usePageListsData({

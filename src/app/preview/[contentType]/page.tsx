@@ -22,7 +22,6 @@ import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { Content } from '@/components/Content/Content';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { Slider } from '@/components/Slider/Slider';
 import { PageList } from '@/components/PageList/PageList';
@@ -38,8 +37,10 @@ import { MenuItem } from '@/components/MenuItem/MenuItem';
 // Import Preview components (when they exist)
 import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
 import { BannerHeroPreview } from '@/components/BannerHero/BannerHeroPreview';
-import { ContentPreview } from '@/components/Content/ContentPreview';
-import { CtaBannerPreview } from '@/components/CtaBanner/CtaBannerPreview';
+import { AccordionPreview } from '@/components/Accordion/AccordionPreview';
+import { AccordionItemPreview } from '@/components/Accordion/AccordionItemPreview';
+import { ContactCardPreview } from '@/components/ContactCard/ContactCardPreview';
+import { CollectionPreview } from '@/components/Collection/CollectionPreview';
 
 // Import all API functions
 import {
@@ -50,7 +51,6 @@ import { getPageById } from '@/components/Page/PageApi';
 import { getPageListById } from '@/components/PageList/PageListApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getContentById } from '@/components/Content/ContentApi';
-import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
@@ -60,6 +60,9 @@ import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadin
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getMenuById } from '@/components/Menu/MenuApi';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -78,6 +81,25 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     previewComponent: ButtonPreview,
     entityName: 'Button',
     containerClass: 'min-h-screen bg-gray-50'
+  },
+  collection: {
+    fetchFn: getCollectionById,
+    component: CollectionPreview, // Collection only has preview component
+    previewComponent: CollectionPreview,
+    entityName: 'Collection',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  content: {
+    fetchFn: getContentById,
+    component: Content,
+    entityName: 'Content',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'content-block': {
+    fetchFn: getContentById,
+    component: Content,
+    entityName: 'Content',
+    containerClass: 'min-h-screen bg-white'
   },
   'section-heading': {
     fetchFn: getSectionHeadingById,
@@ -104,20 +126,6 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     component: ContentGridItem,
     entityName: 'ContentGridItem',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
-  content: {
-    fetchFn: getContentById,
-    component: Content,
-    previewComponent: ContentPreview,
-    entityName: 'Content',
-    containerClass: 'min-h-screen bg-white p-8'
-  },
-  'cta-banner': {
-    fetchFn: getCtaBannerById,
-    component: CtaBanner,
-    previewComponent: CtaBannerPreview,
-    entityName: 'CtaBanner',
-    containerClass: 'min-h-screen'
   },
   'image-between': {
     fetchFn: getImageBetweenById,
@@ -175,6 +183,27 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     component: MenuItem,
     entityName: 'MenuItem',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
+  },
+  accordion: {
+    fetchFn: getAccordionById,
+    component: AccordionPreview, // Accordion only has preview component
+    previewComponent: AccordionPreview,
+    entityName: 'Accordion',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'accordion-item': {
+    fetchFn: getAccordionItemById,
+    component: AccordionItemPreview, // AccordionItem only has preview component
+    previewComponent: AccordionItemPreview,
+    entityName: 'AccordionItem',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
+  'contact-card': {
+    fetchFn: getContactCardById,
+    component: ContactCardPreview, // ContactCard only has preview component
+    previewComponent: ContactCardPreview,
+    entityName: 'ContactCard',
+    containerClass: 'min-h-screen bg-gray-50'
   }
 };
 

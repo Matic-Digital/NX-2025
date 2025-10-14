@@ -1,5 +1,8 @@
 'use client';
 
+import {
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import { Content } from './Content';
 import type { Content as ContentType } from './ContentSchema';
 
@@ -14,6 +17,13 @@ interface ContentPreviewProps extends Partial<ContentType> {
  * with a live preview and field breakdown.
  */
 export function ContentPreview(props: ContentPreviewProps) {
+  // Contentful Live Preview integration
+  const liveContent = useContentfulLiveUpdates(props);
+
+  // Debug logging
+  console.log('ContentPreview - props:', props);
+  console.log('ContentPreview - liveContent:', liveContent);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}
@@ -27,15 +37,20 @@ export function ContentPreview(props: ContentPreviewProps) {
               </span>
             </div>
             <div className="p-8">
-              {props.sys && props.title && props.item ? (
-                <Content {...(props as ContentType)} />
+              {liveContent?.sys && liveContent?.title && liveContent?.item ? (
+                <Content {...(liveContent as ContentType)} />
               ) : (
                 <div className="p-8 text-center text-gray-500">
                   <p>Preview will appear when all required fields are configured:</p>
                   <ul className="mt-2 text-sm">
-                    {!props.title && <li>• Title is required</li>}
-                    {!props.item && <li>• Item is required</li>}
+                    {!liveContent?.sys && <li>• Content ID is required</li>}
+                    {!liveContent?.title && <li>• Title is required</li>}
+                    {!liveContent?.item && <li>• Item is required</li>}
                   </ul>
+                  {/* Debug info */}
+                  <div className="mt-4 text-xs text-gray-400">
+                    <p>Debug: sys={liveContent?.sys?.id ? '✓' : '✗'}, title={liveContent?.title ? '✓' : '✗'}, item={liveContent?.item ? '✓' : '✗'}</p>
+                  </div>
                 </div>
               )}
             </div>
@@ -56,7 +71,7 @@ export function ContentPreview(props: ContentPreviewProps) {
                   The title for this content section. Used for internal organization and may be displayed depending on the variant.
                 </p>
                 <div className="text-xs text-gray-500">
-                  Current value: {props.title ? `"${props.title}"` : 'Not set'}
+                  Current value: {liveContent?.title ? `"${liveContent.title}"` : 'Not set'}
                 </div>
               </div>
 
@@ -70,7 +85,7 @@ export function ContentPreview(props: ContentPreviewProps) {
                   Controls the layout and positioning. Options: ContentLeft, ContentCenter, ContentRight, FullWidth.
                 </p>
                 <div className="text-xs text-gray-500">
-                  Current value: {props.variant ?? 'Default layout'}
+                  Current value: {liveContent?.variant ?? 'Default layout'}
                 </div>
               </div>
 
@@ -84,8 +99,8 @@ export function ContentPreview(props: ContentPreviewProps) {
                   An image or video that accompanies the content. Can be positioned based on the variant setting.
                 </p>
                 <div className="text-xs text-gray-500">
-                  Current value: {props.asset ? 
-                    `${props.asset.__typename ?? 'Asset'} configured (${props.asset.title ?? 'Untitled'})` : 
+                  Current value: {liveContent?.asset ? 
+                    `${liveContent.asset.__typename ?? 'Asset'} configured (${liveContent.asset.title ?? 'Untitled'})` : 
                     'Not set'
                   }
                 </div>
@@ -101,8 +116,8 @@ export function ContentPreview(props: ContentPreviewProps) {
                   The main content item. Can be a Product, SectionHeading, or ContentGridItem that provides the primary content.
                 </p>
                 <div className="text-xs text-gray-500">
-                  Current value: {props.item ? 
-                    `${props.item.__typename ?? 'Item'} configured` : 
+                  Current value: {liveContent?.item ? 
+                    `${liveContent.item.__typename ?? 'Item'} configured` : 
                     'Not set'
                   }
                 </div>

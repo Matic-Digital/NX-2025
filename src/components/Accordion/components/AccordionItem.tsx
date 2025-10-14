@@ -22,6 +22,7 @@ interface AccordionItemProps {
   isHovered: boolean;
   shouldShowExpanded: boolean;
   onHover: (value: string) => void;
+  inspectorProps?: (options: { fieldId: string }) => Record<string, unknown> | null;
 }
 
 /**
@@ -33,7 +34,8 @@ export const AccordionItem = ({
   index,
   isHovered,
   shouldShowExpanded,
-  onHover
+  onHover,
+  inspectorProps
 }: AccordionItemProps) => {
   const itemValue = `item-${index}`;
 
@@ -56,7 +58,10 @@ export const AccordionItem = ({
             className={accordionStyles.getWrapperClasses(item.variant)}
           >
             {item.image?.sys?.id && (
-              <div className={accordionStyles.getImageClasses(item.variant)}>
+              <div 
+                className={accordionStyles.getImageClasses(item.variant)}
+                {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
+              >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
                   className={accordionStyles.getImageElementClasses(isHovered, shouldShowExpanded)}
@@ -68,29 +73,44 @@ export const AccordionItem = ({
               gap={24}
               className={accordionStyles.getContentClasses(item.variant)}
             >
-              <Image
-                src={item.backgroundImage.link}
-                alt="background gradient image"
-                fill
-                className={accordionStyles.getBackgroundImageClasses(
-                  isHovered,
-                  shouldShowExpanded,
-                  item.variant
-                )}
-              />
+              {item.backgroundImage?.link && (
+                <Image
+                  src={item.backgroundImage.link}
+                  alt="background gradient image"
+                  fill
+                  className={accordionStyles.getBackgroundImageClasses(
+                    isHovered,
+                    shouldShowExpanded,
+                    item.variant
+                  )}
+                />
+              )}
 
               <div>
                 {item.overline && (
-                  <p className={accordionStyles.getOverlineClasses()}>{item.overline}</p>
+                  <p 
+                    className={accordionStyles.getOverlineClasses()}
+                    {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
+                  >
+                    {item.overline}
+                  </p>
                 )}
 
-                <h3 className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}>
+                <h3 
+                  className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}
+                  {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
+                >
                   {item.title}
                 </h3>
               </div>
               <div className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}>
                 {item.description && (
-                  <p className={accordionStyles.getDescriptionTextClasses()}>{item.description}</p>
+                  <p 
+                    className={accordionStyles.getDescriptionTextClasses()}
+                    {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
+                  >
+                    {item.description}
+                  </p>
                 )}
 
                 {item.tags && (
@@ -129,7 +149,10 @@ export const AccordionItem = ({
             className={accordionStyles.getWrapperClasses(item.variant, isHovered, shouldShowExpanded)}
           >
             {item.image?.sys?.id && shouldShowExpanded && (
-              <div className={accordionStyles.getImageClasses(item.variant)}>
+              <div 
+                className={accordionStyles.getImageClasses(item.variant)}
+                {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
+              >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
                   className={accordionStyles.getImageElementClasses(isHovered, shouldShowExpanded)}
@@ -148,10 +171,18 @@ export const AccordionItem = ({
               >
                 <div>
                   {item.overline && (
-                    <p className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded, item.variant)}>{item.overline}</p>
+                    <p 
+                      className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded, item.variant)}
+                      {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
+                    >
+                      {item.overline}
+                    </p>
                   )}
 
-                  <h3 className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded, item.variant)}>
+                  <h3 
+                    className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded, item.variant)}
+                    {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
+                  >
                     {item.title}
                   </h3>
                 </div>
@@ -159,7 +190,10 @@ export const AccordionItem = ({
                   className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded, item.variant)}
                 >
                   {item.description && (
-                    <p className={accordionStyles.getDescriptionTextClasses(isHovered, shouldShowExpanded, item.variant)}>
+                    <p 
+                      className={accordionStyles.getDescriptionTextClasses(isHovered, shouldShowExpanded, item.variant)}
+                      {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
+                    >
                       {item.description}
                     </p>
                   )}
@@ -176,7 +210,10 @@ export const AccordionItem = ({
                 </div>
               </Box>
               {item.cta && (
-                <div className={accordionStyles.getCtaWrapperClasses(item.variant)}>
+                <div 
+                  className={accordionStyles.getCtaWrapperClasses(item.variant)}
+                  {...(inspectorProps ? inspectorProps({ fieldId: 'cta' }) ?? {} : {})}
+                >
                   <Button variant="white" asChild>
                     <Link href={item.cta.internalLink?.slug ?? ''}>{item.cta.text}</Link>
                   </Button>

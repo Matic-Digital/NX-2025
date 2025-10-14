@@ -167,7 +167,8 @@ export function ImageBetween(props: ImageBetween) {
                 imageBetween.asset.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
-              isBannerHero && !isPostSlider && 'mb-14 pb-14',
+              imageBetween.asset && imageBetween.asset.__typename === 'ContentGrid' && 'mb-0',
+              isBannerHero && !isPostSlider && 'mb-0 pb-0',
               isBannerHero && isPostSlider && 'mb-0 pb-16'
             )}
           >
@@ -175,25 +176,29 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.contentTop && (
               <>
                 {imageBetween.contentTop.__typename === 'ContentGrid' && contentTopData && (
-                  <ContentGrid
-                    {...(contentTopData as ContentGridType)}
-                    componentType={imageBetween.__typename}
-                  />
+                  <div {...inspectorProps({ fieldId: 'contentTop' })}>
+                    <ContentGrid
+                      {...(contentTopData as ContentGridType)}
+                      componentType={imageBetween.__typename}
+                    />
+                  </div>
                 )}
                 {imageBetween.contentTop.__typename === 'BannerHero' && contentTopData && (
                   <>
                     {isPostSlider ? (
-                      <div className="pb-16 -mb-16">
+                      <div className="pb-16 -mb-16" {...inspectorProps({ fieldId: 'contentTop' })}>
                         <BannerHero
                           {...(contentTopData as BannerHeroType)}
                           contentType={imageBetween.__typename}
                         />
                       </div>
                     ) : (
-                      <BannerHero
-                        {...(contentTopData as BannerHeroType)}
-                        contentType={imageBetween.__typename}
-                      />
+                      <div {...inspectorProps({ fieldId: 'contentTop' })}>
+                        <BannerHero
+                          {...(contentTopData as BannerHeroType)}
+                          contentType={imageBetween.__typename}
+                        />
+                      </div>
                     )}
                   </>
                 )}
@@ -233,7 +238,7 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.asset &&
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
-                <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute">
+                <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute" {...inspectorProps({ fieldId: 'asset' })}>
                   <ContentGrid
                     {...assetContentGrid}
                     componentType={imageBetween.__typename}

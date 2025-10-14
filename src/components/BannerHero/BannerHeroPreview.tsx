@@ -1,5 +1,8 @@
 'use client';
 
+import {
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import { BannerHero } from './BannerHero';
 import type { BannerHero as BannerHeroType } from './BannerHeroSchema';
 
@@ -14,6 +17,9 @@ interface BannerHeroPreviewProps extends Partial<BannerHeroType> {
  * with a live preview and field breakdown.
  */
 export function BannerHeroPreview(props: BannerHeroPreviewProps) {
+  // Contentful Live Preview integration
+  const liveBannerHero = useContentfulLiveUpdates(props);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}
@@ -27,8 +33,8 @@ export function BannerHeroPreview(props: BannerHeroPreviewProps) {
               </span>
             </div>
             <div className="overflow-hidden">
-              {props.sys && props.title && props.heading && props.backgroundImage ? (
-                <BannerHero {...(props as BannerHeroType)} />
+              {liveBannerHero?.sys && liveBannerHero?.title && liveBannerHero?.heading && liveBannerHero?.backgroundImage ? (
+                <BannerHero {...(liveBannerHero as BannerHeroType)} />
               ) : (
                 <div className="p-8 text-center text-gray-500">
                   <p>Preview will appear when all required fields are configured:</p>

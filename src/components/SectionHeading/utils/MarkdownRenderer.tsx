@@ -6,6 +6,7 @@ interface MarkdownRendererProps {
   content: string;
   className?: string;
   forceLeftAlign?: boolean;
+  [key: string]: unknown; // Allow inspector props to be passed through
 }
 
 /**
@@ -17,7 +18,8 @@ interface MarkdownRendererProps {
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   content,
   className,
-  forceLeftAlign = false
+  forceLeftAlign = false,
+  ...inspectorProps
 }) => {
   // Parse markdown into sections
   const parseSections = (text: string) => {
@@ -95,30 +97,34 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     : className;
 
   if (sections.length > 0) {
-    // Grid mode
+    // Grid mode - wrap entire content in single inspector
     return (
-      <div
-        className={cn('grid grid-cols-1 gap-6 md:grid-cols-2 mt-12', alignmentAdjustedClassName)}
-      >
-        {sections.map((sec, idx) => (
-          <div key={idx} className="flex flex-col gap-3">
-            <h3 className="text-[1.25rem] font-normal leading-[160%] text-foreground">
-              {sec.heading}
-            </h3>
-            <hr className="border-primary" />
-            {sec.body.length > 0 && (
-              <p className="text-body-md text-foreground">{sec.body.join(' ')}</p>
-            )}
-          </div>
-        ))}
+      <div {...inspectorProps}>
+        <div
+          className={cn('grid grid-cols-1 gap-6 md:grid-cols-2 mt-12', alignmentAdjustedClassName)}
+        >
+          {sections.map((sec, idx) => (
+            <div key={idx} className="flex flex-col gap-3">
+              <h3 className="text-[1.25rem] font-normal leading-[160%] text-foreground">
+                {sec.heading}
+              </h3>
+              <hr className="border-primary" />
+              {sec.body.length > 0 && (
+                <p className="text-body-md text-foreground">{sec.body.join(' ')}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
-  // Fallback mode
+  // Fallback mode - wrap entire content in single inspector
   return (
-    <div className={cn('[&>*]:mb-0 [&>*]:mt-0', alignmentAdjustedClassName, 'text-left')}>
-      {parseFallback(content)}
+    <div {...inspectorProps}>
+      <div className={cn('[&>*]:mb-0 [&>*]:mt-0', alignmentAdjustedClassName, 'text-left')}>
+        {parseFallback(content)}
+      </div>
     </div>
   );
 };

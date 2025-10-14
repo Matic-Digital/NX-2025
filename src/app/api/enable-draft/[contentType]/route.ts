@@ -25,6 +25,9 @@ import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 import { getMenuById } from '@/components/Menu/MenuApi';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
@@ -38,9 +41,19 @@ const contentTypeMap = {
     previewPath: '/preview/button',
     entityName: 'Button'
   },
+  collection: {
+    fetchFn: getCollectionById,
+    previewPath: '/preview/collection',
+    entityName: 'Collection'
+  },
   content: {
     fetchFn: getContentById,
     previewPath: '/preview/content',
+    entityName: 'Content'
+  },
+  'content-block': {
+    fetchFn: getContentById,
+    previewPath: '/preview/content-block',
     entityName: 'Content'
   },
   'content-grid': {
@@ -132,6 +145,21 @@ const contentTypeMap = {
     fetchFn: getMenuItemById,
     previewPath: '/preview/menu-item',
     entityName: 'MenuItem'
+  },
+  accordion: {
+    fetchFn: getAccordionById,
+    previewPath: '/preview/accordion',
+    entityName: 'Accordion'
+  },
+  'accordion-item': {
+    fetchFn: getAccordionItemById,
+    previewPath: '/preview/accordion-item',
+    entityName: 'AccordionItem'
+  },
+  'contact-card': {
+    fetchFn: getContactCardById,
+    previewPath: '/preview/contact-card',
+    entityName: 'ContactCard'
   }
 } as const;
 

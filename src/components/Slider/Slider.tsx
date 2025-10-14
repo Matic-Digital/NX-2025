@@ -437,13 +437,18 @@ const GenericSlider = ({
             sliderData.itemsCollection.items.length > 1 && {
               align: 'start',
               containScroll: 'trimSnaps'
+            }),
+          ...(isPostSlider &&
+            sliderData.itemsCollection.items.length > 1 && {
+              align: 'center'
             })
         }}
       >
         <CarouselContent
           className={cn(
             isTeamMemberSlider && 'group lg:overflow-visible',
-            isTimelineSlider && 'overflow-hidden'
+            isTimelineSlider && 'overflow-hidden',
+            isPostSlider && 'overflow-visible'
           )}
         >
           {sliderData.itemsCollection.items.map((item, index) => {
@@ -458,17 +463,19 @@ const GenericSlider = ({
                       ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                       : isTeamMemberSlider
                         ? 'basis-[300px]'
-                        : isTimelineSlider
-                          ? 'basis-[calc(100vw-4rem)] lg:basis-full'
-                          : isFullWidth
-                            ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
-                            : isSolutionSlider
-                              ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                              : isTestimonialSlider
-                                ? 'basis-full sm:basis-1/2 lg:basis-1/3'
-                                : isContentSlider
-                                  ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                                  : 'basis-full'
+                      : isTimelineSlider
+                        ? 'basis-[calc(100vw-4rem)] lg:basis-full'
+                      : isPostSlider
+                        ? 'basis-full'
+                        : isFullWidth
+                          ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
+                          : isSolutionSlider
+                            ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                            : isTestimonialSlider
+                              ? 'basis-full sm:basis-1/2 lg:basis-1/3'
+                              : isContentSlider
+                                ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                                : 'basis-full'
                 )}
               >
                 <SliderCard
@@ -1024,11 +1031,7 @@ export function Slider(props: SliderSys) {
             isTestimonialSlider)
         }
         isFullWidth={
-          isPostSlider &&
-          !isImageSlider &&
-          !isTeamMemberSlider &&
-          !isTimelineSliderItemSlider &&
-          !isTestimonialSlider
+          false
         }
         onTeamMemberClick={handleTeamMemberClick}
         context={props.context}

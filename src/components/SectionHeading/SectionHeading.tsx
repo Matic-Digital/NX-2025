@@ -141,7 +141,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           {sectionHeading.overline && (
             <p
               className="text-foreground uppercase"
-              {...inspectorProps({ fieldId: 'heading.overline' })}
+              {...inspectorProps({ fieldId: 'overline' })}
             >
               {sectionHeading.overline}
             </p>
@@ -150,14 +150,14 @@ export function SectionHeading(props: SectionHeadingProps) {
           {componentType === 'banner-hero' ? (
             <h1
               className="text-foreground lg:text-display-lg text-[56px] leading-[100%] tracking-[-1.1px]"
-              {...inspectorProps({ fieldId: 'heading.title' })}
+              {...inspectorProps({ fieldId: 'title' })}
             >
               {sectionHeading.title}
             </h1>
           ) : (
             <h2
               className="text-foreground text-headline-md text-[56px] leading-[100%] tracking-[-1.1px]"
-              {...inspectorProps({ fieldId: 'heading.title' })}
+              {...inspectorProps({ fieldId: 'title' })}
             >
               {sectionHeading.title}
             </h2>
@@ -177,11 +177,11 @@ export function SectionHeading(props: SectionHeadingProps) {
                 content={sectionHeading.description}
                 className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
                 forceLeftAlign={true}
-                {...inspectorProps({ fieldId: 'heading.description' })}
+                {...inspectorProps({ fieldId: 'description' })}
               />
             ) : (
               <p
-                {...inspectorProps({ fieldId: 'heading.description' })}
+                {...inspectorProps({ fieldId: 'description' })}
                 className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
               >
                 {sectionHeading.description}
@@ -250,11 +250,11 @@ export function SectionHeading(props: SectionHeadingProps) {
               content={sectionHeading.description}
               className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
               forceLeftAlign={true}
-              {...inspectorProps({ fieldId: 'heading.description' })}
+              {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
             <p
-              {...inspectorProps({ fieldId: 'heading.description' })}
+              {...inspectorProps({ fieldId: 'description' })}
               className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
             >
               {sectionHeading.description}
@@ -334,11 +334,11 @@ export function SectionHeading(props: SectionHeadingProps) {
               content={sectionHeading.description}
               className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
               forceLeftAlign={true}
-              {...inspectorProps({ fieldId: 'heading.description' })}
+              {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
             <p
-              {...inspectorProps({ fieldId: 'heading.description' })}
+              {...inspectorProps({ fieldId: 'description' })}
               className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
             >
               {sectionHeading.description}
@@ -394,7 +394,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         {sectionHeading.overline && (
           <p
             className="text-foreground uppercase"
-            {...inspectorProps({ fieldId: 'heading.overline' })}
+            {...inspectorProps({ fieldId: 'overline' })}
           >
             {sectionHeading.overline}
           </p>
@@ -402,14 +402,14 @@ export function SectionHeading(props: SectionHeadingProps) {
         {componentType === 'banner-hero' ? (
           <h1
             className="text-display-lg text-foreground leading-tight"
-            {...inspectorProps({ fieldId: 'heading.title' })}
+            {...inspectorProps({ fieldId: 'title' })}
           >
             {sectionHeading.title}
           </h1>
         ) : (
           <h2
             className="text-headline-md text-foreground leading-tight"
-            {...inspectorProps({ fieldId: 'heading.title' })}
+            {...inspectorProps({ fieldId: 'title' })}
           >
             {sectionHeading.title}
           </h2>
@@ -420,10 +420,10 @@ export function SectionHeading(props: SectionHeadingProps) {
               content={sectionHeading.description}
               className="text-foreground"
               forceLeftAlign={true}
-              {...inspectorProps({ fieldId: 'heading.description' })}
+              {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
-            <p className="text-foreground" {...inspectorProps({ fieldId: 'heading.description' })}>
+            <p className="text-foreground" {...inspectorProps({ fieldId: 'description' })}>
               {sectionHeading.description}
             </p>
           ))}

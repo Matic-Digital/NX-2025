@@ -1,5 +1,8 @@
 'use client';
 
+import {
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import { SectionHeading } from './SectionHeading';
 import type { SectionHeading as SectionHeadingType } from './SectionHeadingSchema';
 
@@ -14,6 +17,9 @@ interface SectionHeadingPreviewProps extends Partial<SectionHeadingType> {
  * with a live preview and field breakdown.
  */
 export function SectionHeadingPreview(props: SectionHeadingPreviewProps) {
+  // Contentful Live Preview integration
+  const liveSectionHeading = useContentfulLiveUpdates(props);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}
@@ -27,7 +33,7 @@ export function SectionHeadingPreview(props: SectionHeadingPreviewProps) {
               </span>
             </div>
             <div className="p-8">
-              <SectionHeading {...props} />
+              <SectionHeading {...liveSectionHeading} />
             </div>
           </div>
 

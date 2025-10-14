@@ -9,9 +9,10 @@ interface UseCollectionDataProps {
   sys?: {
     id: string;
   };
+  preview?: boolean;
 }
 
-export function useCollectionData({ collectionData, sys }: UseCollectionDataProps) {
+export function useCollectionData({ collectionData, sys, preview = false }: UseCollectionDataProps) {
   const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
   const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export function useCollectionData({ collectionData, sys }: UseCollectionDataProp
         try {
           setIsLoading(true);
           setError(null);
-          const fetchedCollection = await getCollectionById(sys.id);
+          const fetchedCollection = await getCollectionById(sys.id, preview);
           setCollection(fetchedCollection);
         } catch (err) {
           console.error('Failed to fetch collection:', err);
@@ -38,7 +39,7 @@ export function useCollectionData({ collectionData, sys }: UseCollectionDataProp
 
       void fetchCollection();
     }
-  }, [collectionData, sys?.id]);
+  }, [collectionData, sys?.id, preview]);
 
   const finalCollection = updatedCollection ?? collection;
 

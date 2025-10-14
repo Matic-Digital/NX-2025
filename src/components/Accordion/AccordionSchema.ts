@@ -12,6 +12,8 @@ export const AccordionItemSchema = z.object({
   overline: z.string().optional(),
   title: z.string(),
   description: z.string(),
+  variant: z.string(),
+  tags: z.array(z.string()).optional(),
   image: z.object({
     sys: z.object({
       id: z.string()
@@ -21,11 +23,9 @@ export const AccordionItemSchema = z.object({
     sys: z.object({
       id: z.string()
     }),
-    link: z.string()
-  }),
-  tags: z.array(z.string()).optional(),
-  variant: z.string(),
-  cta: ButtonSchema,
+    link: z.string().optional()
+  }).optional(),
+  cta: ButtonSchema.optional(),
   __typename: z.string().optional()
 });
 

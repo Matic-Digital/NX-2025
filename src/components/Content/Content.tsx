@@ -93,7 +93,7 @@ interface ContentProps extends Content {
 
 export function Content(props: ContentProps) {
   // ===== STATE & HOOKS =====
-  const contentId = props.sys.id;
+  const contentId = props.sys?.id;
   const { ...restProps } = props;
   const [fetchedData, setFetchedData] = useState<Content | null>(null);
   const [loading, setLoading] = useState(!!contentId);
@@ -123,7 +123,9 @@ export function Content(props: ContentProps) {
 
   // ===== CONTENTFUL HOOKS =====
   const content = useContentfulLiveUpdates(fetchedData ?? restProps);
-  const inspectorProps = useContentfulInspectorMode({ entryId: content?.sys?.id });
+  const inspectorProps = useContentfulInspectorMode({ 
+    entryId: content?.sys?.id || undefined 
+  });
 
   console.log('⭐ Content', content);
 
@@ -191,15 +193,10 @@ export function Content(props: ContentProps) {
     );
   }
 
-  if (!content?.sys) {
+  if (!content?.sys?.id) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">No content found</div>
-        <div className="mt-2 text-sm text-gray-500">
-          {content
-            ? `Content exists but liveContent is invalid: ${JSON.stringify(content).substring(0, 100)}...`
-            : 'No content data'}
-        </div>
+      <div className="flex items-center justify-center p-8">
+        <div className="text-gray-500">Content not found or invalid</div>
       </div>
     );
   }

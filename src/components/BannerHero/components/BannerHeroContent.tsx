@@ -31,11 +31,13 @@ export const BannerHeroContent = ({
       {...inspectorProps}
     >
       {/* Background Image */}
-      <AirImage
-        link={bannerHero.backgroundImage.link}
-        altText={bannerHero.backgroundImage.altText}
-        className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
-      />
+      <div {...inspectorProps({ fieldId: 'backgroundImage' })}>
+        <AirImage
+          link={bannerHero.backgroundImage.link}
+          altText={bannerHero.backgroundImage.altText}
+          className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
+        />
+      </div>
 
       {/* Content Overlay */}
       <div className={bannerHeroStyles.getOverlayClasses()}>

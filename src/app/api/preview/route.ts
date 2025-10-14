@@ -136,6 +136,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL(`/product-preview?id=${productId}`, request.url));
   }
 
+
   // If no valid parameters were provided
   return NextResponse.json(
     {

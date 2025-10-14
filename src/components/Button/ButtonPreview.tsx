@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import { Button as ButtonComponent } from '@/components/ui/button';
 import type { Button as ButtonType } from './ButtonSchema';
 
@@ -14,6 +18,10 @@ interface ButtonPreviewProps extends Partial<ButtonType> {
  * with a live preview and field breakdown.
  */
 export function ButtonPreview(props: ButtonPreviewProps) {
+  // Contentful Live Preview integration
+  const liveButton = useContentfulLiveUpdates(props);
+  const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}
@@ -29,14 +37,25 @@ export function ButtonPreview(props: ButtonPreviewProps) {
             <div className="p-8 flex justify-center">
               {(() => {
                 // Check if we have required fields for a valid Button
-                const hasRequiredFields = props.sys && (props.internalText ?? props.text);
+                const hasRequiredFields = liveButton?.sys && (liveButton?.internalText ?? liveButton?.text);
                 
                 if (hasRequiredFields) {
-                  const displayText = props.text ?? props.internalText ?? 'Button';
+                  const displayText = liveButton?.text ?? liveButton?.internalText ?? 'Button';
+                  const textFieldId = liveButton?.text ? 'text' : 'internalText';
+                  
+                  // Determine which link field to target for inspector props
+                  const linkFieldId = liveButton?.internalLink ? 'internalLink' : 
+                                     liveButton?.externalLink ? 'externalLink' : 
+                                     liveButton?.modal ? 'modal' : null;
+                  
                   return (
-                    <ButtonComponent>
-                      {displayText}
-                    </ButtonComponent>
+                    <div {...(linkFieldId ? inspectorProps({ fieldId: linkFieldId }) : {})}>
+                      <ButtonComponent>
+                        <span {...inspectorProps({ fieldId: textFieldId })}>
+                          {displayText}
+                        </span>
+                      </ButtonComponent>
+                    </div>
                   );
                 }
                 

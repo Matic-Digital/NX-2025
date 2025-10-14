@@ -11,6 +11,8 @@ export const ACCORDION_ITEM_GRAPHQL_FIELDS = `
   overline
   title
   description
+  variant
+  tags
   image {
     ${SYS_FIELDS}
   }
@@ -18,11 +20,9 @@ export const ACCORDION_ITEM_GRAPHQL_FIELDS = `
     ${SYS_FIELDS}
     link
   }
-  tags
-  variant
   cta {
-      ${BUTTON_GRAPHQL_FIELDS}
-    }
+    ${BUTTON_GRAPHQL_FIELDS}
+  }
 `;
 
 export const ACCORDION_GRAPHQL_FIELDS = `
@@ -38,45 +38,78 @@ export const ACCORDION_GRAPHQL_FIELDS = `
 `;
 
 export async function getAccordionItemById(
-  itemId: string,
+  id: string,
   preview = false
 ): Promise<AccordionItem | null> {
-  const query = `
-    query GetAccordionItem($id: String!, $preview: Boolean!) {
-      accordionItemCollection(where: { sys: { id: $id } }, preview: $preview, limit: 1) {
-        items {
+  try {
+    const response = await fetchGraphQL<AccordionItem>(
+      `query GetAccordionItemById($id: String!, $preview: Boolean!) {
+        accordionItem(id: $id, preview: $preview) {
           ${ACCORDION_ITEM_GRAPHQL_FIELDS}
         }
-      }
-    }
-  `;
-
-  try {
-    const response = await fetchGraphQL(query, { id: itemId, preview });
+      }`,
+      { id, preview },
+      preview
+    );
 
     if (!response?.data) {
       throw new ContentfulError('Invalid response from Contentful');
     }
 
-    // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as {
-      accordionItemCollection?: { items?: AccordionItem[] };
-    };
+    const data = response.data as unknown as { accordionItem?: AccordionItem };
 
-    // Validate the data structure
-    if (!data.accordionItemCollection?.items?.length) {
-      return null; // Return null if no item found (not an error for single item fetch)
+    if (!data.accordionItem) {
+      return null;
     }
 
-    return data.accordionItemCollection.items[0] ?? null;
+    return data.accordionItem;
   } catch (error) {
     if (error instanceof ContentfulError) {
       throw error;
     }
     if (error instanceof Error) {
-      throw new NetworkError(`getAccordionItemByIdError: fetching AccordionItem: ${error.message}`);
+      throw new NetworkError(`Error fetching AccordionItem: ${error.message}`);
     }
-    throw new Error('getAccordionItemById: Unknown error fetching AccordionItem');
+    throw new Error('Unknown error fetching AccordionItem');
+  }
+}
+
+export async function getAccordionById(
+  accordionId: string,
+  preview = false
+): Promise<Accordion | null> {
+  try {
+    const response = await fetchGraphQL<Accordion>(
+      `query GetAccordionById($id: String!, $preview: Boolean!) {
+        accordionCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            ${ACCORDION_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { id: accordionId, preview },
+      preview
+    );
+
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    const data = response.data as unknown as { accordionCollection?: { items?: Accordion[] } };
+
+    if (!data.accordionCollection?.items?.length) {
+      return null;
+    }
+
+    return data.accordionCollection.items[0] ?? null;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Accordion: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Accordion');
   }
 }
 
