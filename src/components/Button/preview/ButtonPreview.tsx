@@ -1,0 +1,91 @@
+'use client';
+
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
+
+import { Button as ButtonComponent } from '@/components/ui/button';
+
+import { buttonFields } from '@/components/Button/preview/ButtonFields';
+import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
+
+import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
+
+interface ButtonPreviewProps extends Partial<ButtonType> {
+  buttonId?: string;
+}
+
+/**
+ * Button Preview Component
+ *
+ * This component is used in Contentful Live Preview to display Button components
+ * with a live preview and field breakdown.
+ */
+export function ButtonPreview(props: ButtonPreviewProps) {
+  // Contentful Live Preview integration
+  const liveButton = useContentfulLiveUpdates(props);
+  const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Live Component Preview */}
+      <div className="p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+            <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Live Preview</span>
+              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                Button
+              </span>
+            </div>
+            <div className="p-8 flex justify-center">
+              {(() => {
+                // Check if we have required fields for a valid Button
+                const hasRequiredFields =
+                  liveButton?.sys && (liveButton?.internalText ?? liveButton?.text);
+
+                if (hasRequiredFields) {
+                  const displayText = liveButton?.text ?? liveButton?.internalText ?? 'Button';
+                  const textFieldId = liveButton?.text ? 'text' : 'internalText';
+
+                  // Determine which link field to target for inspector props
+                  const linkFieldId = liveButton?.internalLink
+                    ? 'internalLink'
+                    : liveButton?.externalLink
+                      ? 'externalLink'
+                      : liveButton?.modal
+                        ? 'modal'
+                        : null;
+
+                  return (
+                    <div {...(linkFieldId ? inspectorProps({ fieldId: linkFieldId }) : {})}>
+                      <ButtonComponent>
+                        <span {...inspectorProps({ fieldId: textFieldId })}>{displayText}</span>
+                      </ButtonComponent>
+                    </div>
+                  );
+                }
+
+                // Show preview placeholder when fields are missing
+                return (
+                  <div className="text-center text-gray-500">
+                    <p>Preview will appear when required fields are configured:</p>
+                    <ul className="mt-2 text-sm">
+                      {!props.internalText && !props.text && (
+                        <li>• Text or Internal Text is required</li>
+                      )}
+                    </ul>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Field Breakdown */}
+          <FieldBreakdown title="Button Fields" fields={buttonFields} data={liveButton} />
+        </div>
+      </div>
+    </div>
+  );
+}
