@@ -1,21 +1,26 @@
-import { draftMode, cookies } from 'next/headers';
+import { cookies, draftMode } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 // Import all the API functions
+import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
+import { getButtonById } from '@/components/Button/ButtonApi';
+import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
+import { getContentById } from '@/components/Content/ContentApi';
 import {
   getContentGridById,
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
-import { getPageById } from '@/components/Page/PageApi';
-import { getPageListById } from '@/components/PageList/PageListApi';
-import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { getButtonById } from '@/components/Button/ButtonApi';
-import { getContentById } from '@/components/Content/ContentApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getImageById } from '@/components/Image/ImageApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { getMenuById } from '@/components/Menu/MenuApi';
+import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { getPageById } from '@/components/Page/PageApi';
+import { getPageListById } from '@/components/PageList/PageListApi';
 import { getProductById } from '@/components/Product/ProductApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/components/Service/ServiceApi';
@@ -23,14 +28,19 @@ import { getSliderById } from '@/components/Slider/SliderApi';
 import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
-import { getMenuById } from '@/components/Menu/MenuApi';
-import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
-import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
-import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
-import { getCollectionById } from '@/components/Collection/CollectionApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
+  accordion: {
+    fetchFn: getAccordionById,
+    previewPath: '/preview/accordion',
+    entityName: 'Accordion'
+  },
+  'accordion-item': {
+    fetchFn: getAccordionItemById,
+    previewPath: '/preview/accordion-item',
+    entityName: 'AccordionItem'
+  },
   'banner-hero': {
     fetchFn: getBannerHero,
     previewPath: '/preview/banner-hero',
@@ -91,6 +101,16 @@ const contentTypeMap = {
     previewPath: '/preview/image-between',
     entityName: 'ImageBetween'
   },
+  menu: {
+    fetchFn: getMenuById,
+    previewPath: '/preview/menu',
+    entityName: 'Menu'
+  },
+  'menu-item': {
+    fetchFn: getMenuItemById,
+    previewPath: '/preview/menu-item',
+    entityName: 'MenuItem'
+  },
   page: {
     fetchFn: getPageById,
     previewPath: '/preview/page',
@@ -135,26 +155,6 @@ const contentTypeMap = {
     fetchFn: getSolutionById,
     previewPath: '/preview/solution',
     entityName: 'Solution'
-  },
-  menu: {
-    fetchFn: getMenuById,
-    previewPath: '/preview/menu',
-    entityName: 'Menu'
-  },
-  'menu-item': {
-    fetchFn: getMenuItemById,
-    previewPath: '/preview/menu-item',
-    entityName: 'MenuItem'
-  },
-  accordion: {
-    fetchFn: getAccordionById,
-    previewPath: '/preview/accordion',
-    entityName: 'Accordion'
-  },
-  'accordion-item': {
-    fetchFn: getAccordionItemById,
-    previewPath: '/preview/accordion-item',
-    entityName: 'AccordionItem'
   },
   'contact-card': {
     fetchFn: getContactCardById,
