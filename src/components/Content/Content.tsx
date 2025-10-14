@@ -123,8 +123,8 @@ export function Content(props: ContentProps) {
 
   // ===== CONTENTFUL HOOKS =====
   const content = useContentfulLiveUpdates(fetchedData ?? restProps);
-  const inspectorProps = useContentfulInspectorMode({ 
-    entryId: content?.sys?.id || undefined 
+  const inspectorProps = useContentfulInspectorMode({
+    entryId: content?.sys?.id || undefined
   });
 
   console.log('⭐ Content', content);
@@ -143,13 +143,25 @@ export function Content(props: ContentProps) {
   const isContentGridItemData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is ContentGridItemCardData => {
-    return data != null && typeof data === 'object' && 'heading' in data && 'variant' in data && 'ctaCollection' in data;
+    return (
+      data != null &&
+      typeof data === 'object' &&
+      'heading' in data &&
+      'variant' in data &&
+      'ctaCollection' in data
+    );
   };
 
   const isHubspotFormData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is HubspotFormCardData => {
-    return data != null && typeof data === 'object' && 'title' in data && 'description' in data && 'formId' in data;
+    return (
+      data != null &&
+      typeof data === 'object' &&
+      'title' in data &&
+      'description' in data &&
+      'formId' in data
+    );
   };
 
   const isProductData = (
@@ -168,8 +180,12 @@ export function Content(props: ContentProps) {
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is SectionHeadingCardData => {
     return (
-      data != null && typeof data === 'object' &&
-      'overline' in data && 'ctaCollection' in data && !('heading' in data) && !('slug' in data)
+      data != null &&
+      typeof data === 'object' &&
+      'overline' in data &&
+      'ctaCollection' in data &&
+      !('heading' in data) &&
+      !('slug' in data)
     );
   };
 
