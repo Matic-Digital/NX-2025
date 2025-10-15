@@ -55,15 +55,19 @@ export function CtaBanner(props: CtaBanner) {
             // Fallback to flat URL on API failure
             setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
           }
-          setLoading(false);
         } catch (error) {
           setError(error as string);
           console.error('Error fetching nested URL for primary CTA:', error);
           // Fallback to flat URL on error
           setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
+        } finally {
+          setLoading(false);
         }
       } else if (primaryCta?.externalLink) {
         setPrimaryCtaUrl(primaryCta.externalLink);
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
     };
 
