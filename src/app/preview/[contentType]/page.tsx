@@ -74,6 +74,7 @@ import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { MegaMenuPreview } from '@/components/MegaMenu/preview/MegaMenuPreview';
 import { Menu } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
+import { MenuPreview } from '@/components/Menu/preview/MenuPreview';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 import { getModalById } from '@/components/Modals/ModalApi';
@@ -246,6 +247,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   menu: {
     fetchFn: getMenuById,
     component: Menu,
+    previewComponent: MenuPreview,
     entityName: 'Menu',
     containerClass: 'min-h-screen bg-gray-50 p-8'
   },
