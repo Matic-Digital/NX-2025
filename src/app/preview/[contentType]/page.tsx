@@ -51,6 +51,7 @@ import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPreview';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
 import { Event } from '@/components/Event/Event';
 import { getEventById } from '@/components/Event/EventApi';
 import { Footer } from '@/components/Footer/Footer';
@@ -184,6 +185,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'cta-grid': {
     fetchFn: getCtaGridById,
     component: CtaGrid,
+    previewComponent: CtaGridPreview,
     entityName: 'CtaGrid',
     containerClass: 'min-h-screen bg-white'
   },

@@ -69,6 +69,11 @@ const contentTypeMap = {
     previewPath: '/preview/collection',
     entityName: 'Collection'
   },
+  'contact-card': {
+    fetchFn: getContactCardById,
+    previewPath: '/preview/contact-card',
+    entityName: 'ContactCard'
+  },
   content: {
     fetchFn: getContentById,
     previewPath: '/preview/content',
@@ -89,6 +94,16 @@ const contentTypeMap = {
     previewPath: '/preview/cta-banner',
     entityName: 'CtaBanner'
   },
+  'cta-grid': {
+    fetchFn: getCtaGridById,
+    previewPath: '/preview/cta-grid',
+    entityName: 'CtaGrid'
+  },
+  event: {
+    fetchFn: getEventById,
+    previewPath: '/preview/event',
+    entityName: 'Event'
+  },
   footer: {
     fetchFn: getFooterById,
     previewPath: '/preview/footer',
@@ -98,6 +113,11 @@ const contentTypeMap = {
     fetchFn: getHeaderById,
     previewPath: '/preview/header',
     entityName: 'Header'
+  },
+  'hubspot-form': {
+    fetchFn: getHubspotFormById,
+    previewPath: '/preview/hubspot-form',
+    entityName: 'HubspotForm'
   },
   image: {
     fetchFn: getImageById,
@@ -109,6 +129,11 @@ const contentTypeMap = {
     previewPath: '/preview/image-between',
     entityName: 'ImageBetween'
   },
+  'mega-menu': {
+    fetchFn: getMegaMenuById,
+    previewPath: '/preview/mega-menu',
+    entityName: 'MegaMenu'
+  },
   menu: {
     fetchFn: getMenuById,
     previewPath: '/preview/menu',
@@ -118,6 +143,16 @@ const contentTypeMap = {
     fetchFn: getMenuItemById,
     previewPath: '/preview/menu-item',
     entityName: 'MenuItem'
+  },
+  modal: {
+    fetchFn: getModalById,
+    previewPath: '/preview/modal',
+    entityName: 'Modal'
+  },
+  'office-location': {
+    fetchFn: getLocationById,
+    previewPath: '/preview/office-location',
+    entityName: 'OfficeLocation'
   },
   page: {
     fetchFn: getPageById,
@@ -129,10 +164,25 @@ const contentTypeMap = {
     previewPath: '/preview/page-list',
     entityName: 'PageList'
   },
+  post: {
+    fetchFn: getPostById,
+    previewPath: '/preview/post',
+    entityName: 'Post'
+  },
   product: {
     fetchFn: getProductById,
     previewPath: '/preview/product',
     entityName: 'Product'
+  },
+  region: {
+    fetchFn: getRegionsMapById,
+    previewPath: '/preview/region',
+    entityName: 'Region'
+  },
+  'rich-content': {
+    fetchFn: getRichContentById,
+    previewPath: '/preview/rich-content',
+    entityName: 'RichContent'
   },
   'section-heading': {
     fetchFn: getSectionHeadingById,
@@ -164,51 +214,6 @@ const contentTypeMap = {
     previewPath: '/preview/solution',
     entityName: 'Solution'
   },
-  'contact-card': {
-    fetchFn: getContactCardById,
-    previewPath: '/preview/contact-card',
-    entityName: 'ContactCard'
-  },
-  'cta-grid': {
-    fetchFn: getCtaGridById,
-    previewPath: '/preview/cta-grid',
-    entityName: 'CtaGrid'
-  },
-  event: {
-    fetchFn: getEventById,
-    previewPath: '/preview/event',
-    entityName: 'Event'
-  },
-  'hubspot-form': {
-    fetchFn: getHubspotFormById,
-    previewPath: '/preview/hubspot-form',
-    entityName: 'HubspotForm'
-  },
-  'mega-menu': {
-    fetchFn: getMegaMenuById,
-    previewPath: '/preview/mega-menu',
-    entityName: 'MegaMenu'
-  },
-  'office-location': {
-    fetchFn: getLocationById,
-    previewPath: '/preview/office-location',
-    entityName: 'OfficeLocation'
-  },
-  post: {
-    fetchFn: getPostById,
-    previewPath: '/preview/post',
-    entityName: 'Post'
-  },
-  region: {
-    fetchFn: getRegionsMapById,
-    previewPath: '/preview/region',
-    entityName: 'Region'
-  },
-  'rich-content': {
-    fetchFn: getRichContentById,
-    previewPath: '/preview/rich-content',
-    entityName: 'RichContent'
-  },
   'team-member': {
     fetchFn: getTeamMemberById,
     previewPath: '/preview/team-member',
@@ -218,11 +223,6 @@ const contentTypeMap = {
     fetchFn: getTestimonialsById,
     previewPath: '/preview/testimonials',
     entityName: 'Testimonials'
-  },
-  modal: {
-    fetchFn: getModalById,
-    previewPath: '/preview/modal',
-    entityName: 'Modal'
   },
   'timeline-slider-item': {
     fetchFn: (id: string, preview = false) =>
