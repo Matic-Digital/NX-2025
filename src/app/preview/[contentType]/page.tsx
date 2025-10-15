@@ -79,6 +79,8 @@ import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
 import { MenuItemPreview } from '@/components/MenuItem/preview/MenuItemPreview';
 import { getModalById } from '@/components/Modals/ModalApi';
+import { ModalPreview } from '@/components/Modals/preview/ModalPreview';
+import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import { Page } from '@/components/Page/Page';
 import { getPageById } from '@/components/Page/PageApi';
@@ -261,7 +263,8 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   modal: {
     fetchFn: getModalById,
-    component: PostCard, // Using PostCard as placeholder
+    component: RequestAQuoteModal,
+    previewComponent: ModalPreview,
     entityName: 'Modal',
     containerClass: 'min-h-screen bg-gray-50'
   },
