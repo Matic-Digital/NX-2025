@@ -71,6 +71,7 @@ import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
+import { MegaMenuPreview } from '@/components/MegaMenu/preview/MegaMenuPreview';
 import { Menu } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
@@ -238,6 +239,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'mega-menu': {
     fetchFn: getMegaMenuById,
     component: MegaMenu,
+    previewComponent: MegaMenuPreview,
     entityName: 'MegaMenu',
     containerClass: 'min-h-screen bg-white'
   },
