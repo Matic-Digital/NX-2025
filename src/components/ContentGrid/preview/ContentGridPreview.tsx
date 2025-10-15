@@ -6,17 +6,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
 
-interface ContentGridPreviewProps extends Partial<ContentGridType> {
-  contentGridId?: string;
-}
-
 /**
  * ContentGrid Preview Component
  *
  * This component is used in Contentful Live Preview to display ContentGrid components
  * with a live preview and field breakdown.
  */
-export function ContentGridPreview(props: ContentGridPreviewProps) {
+export function ContentGridPreview(props: Partial<ContentGridType>) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}

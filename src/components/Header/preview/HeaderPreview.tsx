@@ -5,20 +5,20 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
-import { ctaBannerFields } from '@/components/CtaBanner/preview/CtaBannerFields';
+import { Header } from '@/components/Header/Header';
+import { headerFields } from '@/components/Header/preview/HeaderFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
-import type { CtaBanner as CtaBannerType } from '@/components/CtaBanner/CtaBannerSchema';
+import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 
 /**
- * This component is used in Contentful Live Preview to display CtaBanner components
+ * This component is used in Contentful Live Preview to display Header components
  * with a live preview and field breakdown.
  */
-export function CtaBannerPreview(props: Partial<CtaBannerType>) {
+export function HeaderPreview(props: Partial<HeaderType>) {
   // Contentful Live Preview integration
-  const liveCtaBanner = useContentfulLiveUpdates(props);
-  const inspectorProps = useContentfulInspectorMode({ entryId: liveCtaBanner?.sys?.id });
+  const liveHeader = useContentfulLiveUpdates(props);
+  const inspectorProps = useContentfulInspectorMode({ entryId: liveHeader?.sys?.id });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,23 +29,18 @@ export function CtaBannerPreview(props: Partial<CtaBannerType>) {
             <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700">Live Preview</span>
               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                CtaBanner
+                Header
               </span>
             </div>
             <div className="overflow-hidden">
               {(() => {
-                // Check if we have all required fields for a valid CtaBanner
-                const hasRequiredFields =
-                  liveCtaBanner?.sys &&
-                  liveCtaBanner?.title &&
-                  liveCtaBanner?.description &&
-                  liveCtaBanner?.primaryCta &&
-                  liveCtaBanner?.backgroundImage;
+                // Check if we have all required fields for a valid Header
+                const hasRequiredFields = liveHeader?.sys && liveHeader?.name && liveHeader?.logo;
 
                 if (hasRequiredFields) {
                   return (
                     <div className="overflow-hidden">
-                      <CtaBanner {...(liveCtaBanner as CtaBannerType)} {...inspectorProps} />
+                      <Header {...(liveHeader as HeaderType)} {...inspectorProps} />
                     </div>
                   );
                 }
@@ -55,10 +50,8 @@ export function CtaBannerPreview(props: Partial<CtaBannerType>) {
                   <div className="p-8 text-center text-gray-500">
                     <p>Preview will appear when all required fields are configured:</p>
                     <ul className="mt-2 text-sm">
-                      {!liveCtaBanner?.title && <li>• Title is required</li>}
-                      {!liveCtaBanner?.description && <li>• Description is required</li>}
-                      {!liveCtaBanner?.primaryCta && <li>• Primary CTA is required</li>}
-                      {!liveCtaBanner?.backgroundImage && <li>• Background Image is required</li>}
+                      {!liveHeader?.name && <li>• Name is required</li>}
+                      {!liveHeader?.logo && <li>• Logo is required</li>}
                     </ul>
                   </div>
                 );
@@ -67,7 +60,7 @@ export function CtaBannerPreview(props: Partial<CtaBannerType>) {
           </div>
 
           {/* Field Breakdown */}
-          <FieldBreakdown fields={ctaBannerFields} data={liveCtaBanner} />
+          <FieldBreakdown fields={headerFields} data={liveHeader} />
         </div>
       </div>
     </div>

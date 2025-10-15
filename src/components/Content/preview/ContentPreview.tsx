@@ -8,17 +8,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Content as ContentType } from '@/components/Content/ContentSchema';
 
-type ContentPreviewProps = (Partial<ContentType> | { item: ContentType }) & {
-  contentId?: string;
-};
-
 /**
  * Content Preview Component
  *
  * This component is used in Contentful Live Preview to display Content components
  * with a live preview and field breakdown.
  */
-export function ContentPreview(props: ContentPreviewProps) {
+export function ContentPreview(props: Partial<ContentType>) {
   // Unwrap the item property if it exists (API returns {item: Content})
   const contentData = 'item' in props && props.item ? props.item : props;
 

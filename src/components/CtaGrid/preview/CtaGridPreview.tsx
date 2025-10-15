@@ -11,15 +11,11 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
 
-interface CtaGridPreviewProps extends Partial<CtaGridType> {
-  ctaGridId?: string;
-}
-
 /**
  * This component is used in Contentful Live Preview to display CtaGrid components
  * with a live preview and field breakdown.
  */
-export function CtaGridPreview(props: CtaGridPreviewProps) {
+export function CtaGridPreview(props: Partial<CtaGridType>) {
   // Contentful Live Preview integration
   const liveData = useContentfulLiveUpdates(props) as CtaGridType | { item: CtaGridType };
   // Access the nested item property if it exists, otherwise use the data directly

@@ -12,17 +12,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
 
-interface ButtonPreviewProps extends Partial<ButtonType> {
-  buttonId?: string;
-}
-
 /**
  * Button Preview Component
  *
  * This component is used in Contentful Live Preview to display Button components
  * with a live preview and field breakdown.
  */
-export function ButtonPreview(props: ButtonPreviewProps) {
+export function ButtonPreview(props: Partial<ButtonType>) {
   // Contentful Live Preview integration
   const liveButton = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });

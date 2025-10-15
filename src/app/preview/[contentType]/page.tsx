@@ -54,12 +54,15 @@ import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
 import { Event } from '@/components/Event/Event';
 import { getEventById } from '@/components/Event/EventApi';
+import { EventPreview } from '@/components/Event/preview/EventPreview';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
+import { FooterPreview } from '@/components/Footer/preview/FooterPreview';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
+import { HeaderPreview } from '@/components/Header/preview/HeaderPreview';
 import { AirImage } from '@/components/Image/AirImage';
 import { getImageById } from '@/components/Image/ImageApi';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
@@ -192,18 +195,21 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   event: {
     fetchFn: getEventById,
     component: Event,
+    previewComponent: EventPreview,
     entityName: 'Event',
     containerClass: 'min-h-screen bg-white'
   },
   footer: {
     fetchFn: getFooterById,
     component: Footer,
+    previewComponent: FooterPreview,
     entityName: 'Footer',
     containerClass: 'bg-white text-white'
   },
   header: {
     fetchFn: getHeaderById,
     component: Header,
+    previewComponent: HeaderPreview,
     entityName: 'Header',
     containerClass: 'bg-white shadow-sm'
   },

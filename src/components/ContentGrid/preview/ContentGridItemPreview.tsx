@@ -11,15 +11,11 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 
-interface ContentGridItemPreviewProps extends Partial<ContentGridItem> {
-  contentGridItemId?: string;
-}
-
 /**
  * This component is used in Contentful Live Preview to display ContentGridItem components
  * with a live preview and field breakdown.
  */
-export function ContentGridItemPreview(props: ContentGridItemPreviewProps) {
+export function ContentGridItemPreview(props: Partial<ContentGridItem>) {
   // Contentful Live Preview integration
   const liveContentGridItem = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveContentGridItem?.sys?.id });
