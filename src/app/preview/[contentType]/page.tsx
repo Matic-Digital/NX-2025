@@ -60,11 +60,13 @@ import { getFooterById } from '@/components/Footer/FooterApi';
 import { FooterPreview } from '@/components/Footer/preview/FooterPreview';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { HubspotFormPreview } from '@/components/Forms/HubspotForm/preview/HubspotFormPreview';
 import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { HeaderPreview } from '@/components/Header/preview/HeaderPreview';
 import { AirImage } from '@/components/Image/AirImage';
 import { getImageById } from '@/components/Image/ImageApi';
+import { ImagePreview } from '@/components/Image/preview/ImagePreview';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
@@ -216,12 +218,14 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'hubspot-form': {
     fetchFn: getHubspotFormById,
     component: HubspotForm,
+    previewComponent: HubspotFormPreview,
     entityName: 'HubspotForm',
     containerClass: 'min-h-screen bg-gray-50'
   },
   image: {
     fetchFn: getImageById,
     component: AirImage,
+    previewComponent: ImagePreview,
     entityName: 'Image',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   },
