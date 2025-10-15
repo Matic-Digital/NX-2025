@@ -82,6 +82,7 @@ import { getModalById } from '@/components/Modals/ModalApi';
 import { ModalPreview } from '@/components/Modals/preview/ModalPreview';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { OfficeLocationPreview } from '@/components/OfficeLocation/preview/OfficeLocationPreview';
 import { Page } from '@/components/Page/Page';
 import { getPageById } from '@/components/Page/PageApi';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
@@ -270,7 +271,8 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   'office-location': {
     fetchFn: getLocationById,
-    component: PostCard, // Using PostCard as placeholder
+    component: OfficeLocationPreview,
+    previewComponent: OfficeLocationPreview,
     entityName: 'OfficeLocation',
     containerClass: 'min-h-screen bg-gray-50'
   },
