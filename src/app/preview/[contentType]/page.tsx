@@ -17,19 +17,25 @@ import {
 } from '@contentful/live-preview/react';
 import { useSearchParams } from 'next/navigation';
 
+import { Accordion } from '@/components/Accordion/Accordion';
 // Component imports
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
 import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
 import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
 import { getButtonById } from '@/components/Button/ButtonApi';
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { ButtonPreview } from '@/components/Button/preview/ButtonPreview';
+import { Collection } from '@/components/Collection/Collection';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
 import { CollectionPreview } from '@/components/Collection/preview/CollectionPreview';
+import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
+import { Content } from '@/components/Content/Content';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentPreview } from '@/components/Content/preview/ContentPreview';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
@@ -38,9 +44,11 @@ import {
   getContentGridItemById
 } from '@/components/ContentGrid/ContentGridApi';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
+import { ContentGridItemPreview } from '@/components/ContentGrid/preview/ContentGridItemPreview';
 import { ContentGridPreview } from '@/components/ContentGrid/preview/ContentGridPreview';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPreview';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { Event } from '@/components/Event/Event';
@@ -105,14 +113,14 @@ interface ContentTypeConfig {
 const contentTypeConfig: Record<string, ContentTypeConfig> = {
   accordion: {
     fetchFn: getAccordionById,
-    component: AccordionPreview, // Accordion only has preview component
+    component: Accordion,
     previewComponent: AccordionPreview,
     entityName: 'Accordion',
     containerClass: 'min-h-screen bg-gray-50'
   },
   'accordion-item': {
     fetchFn: getAccordionItemById,
-    component: AccordionItemPreview, // AccordionItem only has preview component
+    component: AccordionItem,
     previewComponent: AccordionItemPreview,
     entityName: 'AccordionItem',
     containerClass: 'min-h-screen bg-gray-50'
@@ -126,28 +134,28 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   button: {
     fetchFn: getButtonById,
-    component: ButtonPreview, // Button only has preview component
+    component: ModalCtaButton,
     previewComponent: ButtonPreview,
     entityName: 'Button',
     containerClass: 'min-h-screen bg-gray-50'
   },
   collection: {
     fetchFn: getCollectionById,
-    component: CollectionPreview, // Collection only has preview component
+    component: Collection,
     previewComponent: CollectionPreview,
     entityName: 'Collection',
     containerClass: 'min-h-screen bg-gray-50'
   },
   'contact-card': {
     fetchFn: getContactCardById,
-    component: ContactCardPreview, // ContactCard only has preview component
+    component: ContactCard,
     previewComponent: ContactCardPreview,
     entityName: 'ContactCard',
     containerClass: 'min-h-screen bg-gray-50'
   },
   content: {
     fetchFn: getContentById,
-    component: ContentPreview,
+    component: Content,
     previewComponent: ContentPreview,
     entityName: 'Content',
     containerClass: 'min-h-screen bg-white'
@@ -162,12 +170,14 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'content-grid-item': {
     fetchFn: getContentGridItemById,
     component: ContentGridItem,
+    previewComponent: ContentGridItemPreview,
     entityName: 'ContentGridItem',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   },
   'cta-banner': {
     fetchFn: getCtaBannerById,
     component: CtaBanner,
+    previewComponent: CtaBannerPreview,
     entityName: 'CtaBanner',
     containerClass: 'min-h-screen bg-gray-50'
   },
