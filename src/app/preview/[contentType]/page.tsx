@@ -77,6 +77,7 @@ import { getMenuById } from '@/components/Menu/MenuApi';
 import { MenuPreview } from '@/components/Menu/preview/MenuPreview';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { MenuItemPreview } from '@/components/MenuItem/preview/MenuItemPreview';
 import { getModalById } from '@/components/Modals/ModalApi';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import { Page } from '@/components/Page/Page';
@@ -254,6 +255,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'menu-item': {
     fetchFn: getMenuItemById,
     component: MenuItem,
+    previewComponent: MenuItemPreview,
     entityName: 'MenuItem',
     containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
   },
