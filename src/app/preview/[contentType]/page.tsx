@@ -69,6 +69,7 @@ import { getImageById } from '@/components/Image/ImageApi';
 import { ImagePreview } from '@/components/Image/preview/ImagePreview';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
+import { ImageBetweenPreview } from '@/components/ImageBetween/preview/ImageBetweenPreview';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { MegaMenuPreview } from '@/components/MegaMenu/preview/MegaMenuPreview';
@@ -238,6 +239,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'image-between': {
     fetchFn: getImageBetweenById,
     component: ImageBetween,
+    previewComponent: ImageBetweenPreview,
     entityName: 'ImageBetween',
     containerClass: 'min-h-screen bg-white'
   },

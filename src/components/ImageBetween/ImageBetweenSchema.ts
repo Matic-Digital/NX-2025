@@ -21,8 +21,8 @@ export const ImageBetweenSchema = z.object({
   }),
   title: z.string(),
   contentTop: z.union([ContentGridSchema, BannerHeroSchema]),
-  asset: ImageBetweenAssetUnion,
-  backgroundMedia: AssetSchema,
+  asset: ImageBetweenAssetUnion.optional(),
+  backgroundMedia: AssetSchema.optional(),
   contentBottom: ContentGridSchema,
   __typename: z.string().optional()
 });
