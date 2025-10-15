@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 import { ImageSchema } from '@/components/Image/ImageSchema';
-import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([
@@ -31,22 +31,23 @@ export const PostSchema = z.object({
   }),
   title: z.string(),
   slug: z.string(),
+  pageLayout: PageLayoutSchema.optional(),
+  template: z.string(),
   excerpt: z.string().optional(),
   datePublished: z.string().optional(),
-  mainImage: ImageSchema.optional(),
   bannerBackground: ImageSchema.optional(),
+  mainImage: ImageSchema.optional(),
   content: RichTextSchema,
   authorsCollection: z.object({
     items: z.array(TeamMemberSchema)
-  }).optional(),
-  authors: z.array(TeamMemberSchema).optional(), // Keep for backward compatibility
+  }),
+  authors: z.array(TeamMemberSchema), // Keep for backward compatibility
   categories: z.array(PostCategorySchema),
   tags: z.array(z.string()).optional(),
   openGraphImage: ImageSchema.optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoFocusKeyword: z.string().optional(),
-  pageLayout: PageLayoutSchema.optional(),
   __typename: z.string().optional()
 });
 

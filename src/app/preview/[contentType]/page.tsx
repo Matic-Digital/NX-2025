@@ -91,6 +91,7 @@ import { PageList } from '@/components/PageList/PageList';
 import { getPageListById } from '@/components/PageList/PageListApi';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCard } from '@/components/Post/PostCard';
+import { PostPreview } from '@/components/Post/preview/PostPreview';
 import { getProductById } from '@/components/Product/ProductApi';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
 import { RichContent } from '@/components/RichContent/RichContent';
@@ -295,6 +296,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   post: {
     fetchFn: getPostById,
     component: PostCard,
+    previewComponent: PostPreview,
     entityName: 'Post',
     containerClass: 'min-h-screen bg-white'
   },
