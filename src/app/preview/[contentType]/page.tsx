@@ -97,6 +97,12 @@ import { getProductById } from '@/components/Product/ProductApi';
 import { RegionsMapPreview } from '@/components/Region/preview/RegionsMapPreview';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
 import { RegionsMap } from '@/components/Region/RegionsMap';
+import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
+import { RegionStatsPreview } from '@/components/RegionStats/preview/RegionStatsPreview';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
+import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
+import { RegionStatItemPreview } from '@/components/RegionStats/preview/RegionStatItemPreview';
+import { RegionStatItem } from '@/components/RegionStats/RegionStatItem/RegionStatItem';
 import { RichContent } from '@/components/RichContent/RichContent';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -316,6 +322,20 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     component: RegionsMap,
     previewComponent: RegionsMapPreview,
     entityName: 'Region',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'region-stats': {
+    fetchFn: getRegionStatsById,
+    component: RegionStats,
+    previewComponent: RegionStatsPreview,
+    entityName: 'RegionStats',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'region-stat-item': {
+    fetchFn: getRegionStatItemById,
+    component: RegionStatItem,
+    previewComponent: RegionStatItemPreview,
+    entityName: 'RegionStatItem',
     containerClass: 'min-h-screen bg-white'
   },
   'rich-content': {
