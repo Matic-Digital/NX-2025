@@ -130,7 +130,9 @@ import {
   getTestimonialItemById,
   getTestimonialsById
 } from '@/components/Testimonials/TestimonialsApi';
-import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItem';
+import { TimelineSliderItemPreview } from '@/components/TimelineSlider/preview/TimelineSliderItemPreview';
 import { getVideosByIds } from '@/components/Video/VideoApi';
 
 // Content type configuration
@@ -411,9 +413,9 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     containerClass: 'min-h-screen bg-gray-50'
   },
   'timeline-slider-item': {
-    fetchFn: (id: string, preview = false) =>
-      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
-    component: PostCard, // Using PostCard as placeholder
+    fetchFn: getTimelineSliderItemById,
+    component: TimelineSliderItem,
+    previewComponent: TimelineSliderItemPreview,
     entityName: 'TimelineSliderItem',
     containerClass: 'min-h-screen bg-white'
   },

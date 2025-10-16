@@ -44,7 +44,7 @@ import {
   getTestimonialItemById,
   getTestimonialsById
 } from '@/components/Testimonials/TestimonialsApi';
-import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
 import { getVideosByIds } from '@/components/Video/VideoApi';
 
 // Content type to API function mapping
@@ -245,8 +245,7 @@ const contentTypeMap = {
     entityName: 'TestimonialItem'
   },
   'timeline-slider-item': {
-    fetchFn: (id: string, preview = false) =>
-      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
+    fetchFn: getTimelineSliderItemById,
     previewPath: '/preview/timeline-slider-item',
     entityName: 'TimelineSliderItem'
   },

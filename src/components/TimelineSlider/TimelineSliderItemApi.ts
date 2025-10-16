@@ -69,3 +69,11 @@ export async function getTimelineSliderItemsByIds(
     throw new Error('Unknown error fetching TimelineSliderItems');
   }
 }
+
+export async function getTimelineSliderItemById(
+  id: string,
+  preview = false
+): Promise<TimelineSliderItem | null> {
+  const items = await getTimelineSliderItemsByIds([id], preview);
+  return items[0] ?? null;
+}
