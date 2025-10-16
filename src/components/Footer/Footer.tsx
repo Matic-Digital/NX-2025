@@ -11,11 +11,11 @@ import Link from 'next/link';
 
 import { useThemeSync } from '@/hooks/useThemeSync';
 
-import { SvgIcon } from '@/components/ui/svg-icon';
-
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
+
+import { Social } from '@/components/Social/Social';
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 
@@ -33,7 +33,7 @@ export function Footer(props: FooterType) {
   console.log('Footer props:', props);
   console.log('Footer menusCollection:', props.menusCollection);
   console.log('Footer menus items:', props.menusCollection?.items);
-  
+
   // Detailed menu logging
   if (props.menusCollection?.items) {
     props.menusCollection.items.forEach((menu, index) => {
@@ -87,20 +87,7 @@ export function Footer(props: FooterType) {
                 )}
                 <Box direction="row" gap={8}>
                   {footer.socialNetworksCollection?.items?.map((social) => (
-                    <Link
-                      key={social.sys.id}
-                      href={social.link}
-                      aria-label={`Visit our ${social.title} page`}
-                    >
-                      <SvgIcon
-                        src={social.icon.url}
-                        alt={social.title}
-                        width={24}
-                        height={24}
-                        className="text-foreground hover:text-text-primary transition-colors duration-200"
-                      />
-                      <span className="sr-only">{social.title}</span>
-                    </Link>
+                    <Social social={social} key={social.sys.id} />
                   ))}
                 </Box>
               </Box>
@@ -115,64 +102,64 @@ export function Footer(props: FooterType) {
                 {/* Footer sections with links from Menus */}
                 {footer.menusCollection?.items && footer.menusCollection.items.length > 0 ? (
                   footer.menusCollection.items.map((menu) => (
-                  <Box direction="col" gap={4} key={menu.sys.id}>
-                    <h3
-                      className="text-body-sm leading-[160%] tracking-wide text-[#A3A3A3] uppercase"
-                      {...inspectorProps({ entryId: menu.sys.id, fieldId: 'title' })}
-                    >
-                      <span>{menu.title}</span>
-                    </h3>
-
-                    <nav>
-                      <ul
-                        className="flex flex-col gap-5"
-                        {...inspectorProps({
-                          entryId: menu.sys.id,
-                          fieldId: 'itemsCollection'
-                        })}
+                    <Box direction="col" gap={4} key={menu.sys.id}>
+                      <h3
+                        className="text-body-sm leading-[160%] tracking-wide text-[#A3A3A3] uppercase"
+                        {...inspectorProps({ entryId: menu.sys.id, fieldId: 'title' })}
                       >
-                        {menu.itemsCollection?.items
-                          .filter((item): item is NonNullable<typeof item> => item != null)
-                          .map((item, index) => {
-                            // Handle different menu item types
-                            let href = '/';
-                            let isExternal = false;
-                            let displayText = item.title; // Default to title
-                            let fieldId = 'title'; // Default field for inspector
+                        <span>{menu.title}</span>
+                      </h3>
 
-                            if (item.__typename === 'MenuItem') {
-                              displayText = item.text || item.title;
-                              fieldId = 'text';
-                              
-                              if (item.externalLink) {
-                                href = item.externalLink;
-                                isExternal = true;
-                              } else if (item.internalLink?.slug) {
-                                href = `/${item.internalLink.slug}`;
-                              }
-                            }
-
-                            return (
-                              <li
-                                key={item.sys?.id || `menu-item-${index}`}
-                                {...inspectorProps({ entryId: item.sys?.id, fieldId })}
-                              >
-                                <Link
-                                  href={href}
-                                  className="text-foreground hover:text-text-primary text-body-sm tracking-tight"
-                                  {...(isExternal && {
-                                    target: '_blank',
-                                    rel: 'noopener noreferrer'
-                                  })}
-                                >
-                                  {displayText}
-                                </Link>
-                              </li>
-                            );
+                      <nav>
+                        <ul
+                          className="flex flex-col gap-5"
+                          {...inspectorProps({
+                            entryId: menu.sys.id,
+                            fieldId: 'itemsCollection'
                           })}
-                      </ul>
-                    </nav>
-                  </Box>
+                        >
+                          {menu.itemsCollection?.items
+                            .filter((item): item is NonNullable<typeof item> => item != null)
+                            .map((item, index) => {
+                              // Handle different menu item types
+                              let href = '/';
+                              let isExternal = false;
+                              let displayText = item.title; // Default to title
+                              let fieldId = 'title'; // Default field for inspector
+
+                              if (item.__typename === 'MenuItem') {
+                                displayText = item.text || item.title;
+                                fieldId = 'text';
+
+                                if (item.externalLink) {
+                                  href = item.externalLink;
+                                  isExternal = true;
+                                } else if (item.internalLink?.slug) {
+                                  href = `/${item.internalLink.slug}`;
+                                }
+                              }
+
+                              return (
+                                <li
+                                  key={item.sys?.id || `menu-item-${index}`}
+                                  {...inspectorProps({ entryId: item.sys?.id, fieldId })}
+                                >
+                                  <Link
+                                    href={href}
+                                    className="text-foreground hover:text-text-primary text-body-sm tracking-tight"
+                                    {...(isExternal && {
+                                      target: '_blank',
+                                      rel: 'noopener noreferrer'
+                                    })}
+                                  >
+                                    {displayText}
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                        </ul>
+                      </nav>
+                    </Box>
                   ))
                 ) : (
                   <Box direction="col" gap={4}>

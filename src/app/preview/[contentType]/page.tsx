@@ -109,10 +109,11 @@ import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { SectionHeadingPreview } from '@/components/SectionHeading/preview/SectionHeadingPreview';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { getServiceById } from '@/components/Service/ServiceApi';
 import { ServicePreview } from '@/components/Service/preview/ServicePreview';
+import { getServiceById } from '@/components/Service/ServiceApi';
 import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
+import { Social } from '@/components/Social/Social';
 import { getSocialById } from '@/components/Social/SocialApi';
 import { SocialPreview } from '@/components/Social/SocialPreview';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
@@ -368,7 +369,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   social: {
     fetchFn: getSocialById,
-    component: SocialPreview,
+    component: Social,
     previewComponent: SocialPreview,
     entityName: 'Social',
     containerClass: 'min-h-screen bg-gray-50'
