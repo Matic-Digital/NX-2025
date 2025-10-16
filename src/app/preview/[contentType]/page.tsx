@@ -92,8 +92,11 @@ import { getPageListById } from '@/components/PageList/PageListApi';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCard } from '@/components/Post/PostCard';
 import { PostPreview } from '@/components/Post/preview/PostPreview';
+import { ProductPreview } from '@/components/Product/preview/ProductPreview';
 import { getProductById } from '@/components/Product/ProductApi';
+import { RegionsMapPreview } from '@/components/Region/preview/RegionsMapPreview';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { RegionsMap } from '@/components/Region/RegionsMap';
 import { RichContent } from '@/components/RichContent/RichContent';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -303,13 +306,15 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   product: {
     fetchFn: getProductById,
     component: ProductAsPage,
+    previewComponent: ProductPreview,
     entityName: 'Product',
     containerClass: 'min-h-screen',
     usePageLayout: true
   },
-  region: {
+  'regions-map': {
     fetchFn: getRegionsMapById,
-    component: PostCard, // Using PostCard as placeholder
+    component: RegionsMap,
+    previewComponent: RegionsMapPreview,
     entityName: 'Region',
     containerClass: 'min-h-screen bg-white'
   },

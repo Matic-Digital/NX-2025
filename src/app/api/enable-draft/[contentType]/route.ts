@@ -174,10 +174,10 @@ const contentTypeMap = {
     previewPath: '/preview/product',
     entityName: 'Product'
   },
-  region: {
+  'regions-map': {
     fetchFn: getRegionsMapById,
-    previewPath: '/preview/region',
-    entityName: 'Region'
+    previewPath: '/preview/regions-map',
+    entityName: 'RegionsMap'
   },
   'rich-content': {
     fetchFn: getRichContentById,
