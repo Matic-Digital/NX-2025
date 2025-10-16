@@ -113,11 +113,12 @@ import { ServicePreview } from '@/components/Service/preview/ServicePreview';
 import { getServiceById } from '@/components/Service/ServiceApi';
 import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
+import { SocialPreview } from '@/components/Social/preview/SocialPreview';
 import { Social } from '@/components/Social/Social';
 import { getSocialById } from '@/components/Social/SocialApi';
-import { SocialPreview } from '@/components/Social/preview/SocialPreview';
+import { SolutionPreview } from '@/components/Solution/preview/SolutionPreview';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
-import { SolutionPreview } from '@/components/Solution/SolutionPreview';
+import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
@@ -376,7 +377,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   solution: {
     fetchFn: getSolutionById,
-    component: SolutionPreview,
+    component: SolutionCard,
     previewComponent: SolutionPreview,
     entityName: 'Solution',
     containerClass: 'min-h-screen bg-gray-50'

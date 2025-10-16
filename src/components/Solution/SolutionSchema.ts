@@ -27,6 +27,7 @@ export const SolutionSchema = z.object({
   }),
   title: z.string(),
   slug: z.string(),
+  variant: z.string(),
   heading: z.string().optional(),
   subheading: z.string().optional(),
   cardTitle: z.string().optional(),
@@ -39,7 +40,6 @@ export const SolutionSchema = z.object({
       items: z.array(z.unknown())
     })
     .optional(),
-  variant: z.string().optional(),
   __typename: z.string().optional()
 });
 
