@@ -165,19 +165,19 @@ export function Content(props: ContentProps) {
   };
 
   const isProductData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is ProductCardData => {
     return data != null && typeof data === 'object' && 'slug' in data;
   };
 
   const isSectionHeadingCardData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is SectionHeadingCardData => {
     return data != null && typeof data === 'object' && 'variant' in data && 'overline' in data;
   };
 
   const isSectionHeadingData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is SectionHeadingCardData => {
     return (
       data != null &&

@@ -30,8 +30,8 @@ import { getPageListById } from '@/components/PageList/PageListApi';
 import { getPostById } from '@/components/Post/PostApi';
 import { getProductById } from '@/components/Product/ProductApi';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
-import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
 import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
+import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/components/Service/ServiceApi';
@@ -191,10 +191,10 @@ const contentTypeMap = {
     previewPath: '/preview/region-stat-item',
     entityName: 'RegionStatItem'
   },
-  'rich-content': {
+  'rich-text': {
     fetchFn: getRichContentById,
-    previewPath: '/preview/rich-content',
-    entityName: 'RichContent'
+    previewPath: '/preview/rich-text',
+    entityName: 'RichText'
   },
   'section-heading': {
     fetchFn: getSectionHeadingById,

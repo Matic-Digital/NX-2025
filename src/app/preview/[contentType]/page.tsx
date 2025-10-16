@@ -97,17 +97,18 @@ import { getProductById } from '@/components/Product/ProductApi';
 import { RegionsMapPreview } from '@/components/Region/preview/RegionsMapPreview';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
 import { RegionsMap } from '@/components/Region/RegionsMap';
-import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
-import { RegionStatsPreview } from '@/components/RegionStats/preview/RegionStatsPreview';
-import { RegionStats } from '@/components/RegionStats/RegionStats';
-import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
 import { RegionStatItemPreview } from '@/components/RegionStats/preview/RegionStatItemPreview';
+import { RegionStatsPreview } from '@/components/RegionStats/preview/RegionStatsPreview';
 import { RegionStatItem } from '@/components/RegionStats/RegionStatItem/RegionStatItem';
+import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
+import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
+import { RichContentPreview } from '@/components/RichContent/preview/RichContentPreview';
 import { RichContent } from '@/components/RichContent/RichContent';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
+import { SectionHeadingPreview } from '@/components/SectionHeading/preview/SectionHeadingPreview';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { SectionHeadingPreview } from '@/components/SectionHeading/SectionHeadingPreview';
 import { getServiceById } from '@/components/Service/ServiceApi';
 import { ServicePreview } from '@/components/Service/ServicePreview';
 import { Slider } from '@/components/Slider/Slider';
@@ -338,10 +339,11 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'RegionStatItem',
     containerClass: 'min-h-screen bg-white'
   },
-  'rich-content': {
+  'rich-text': {
     fetchFn: getRichContentById,
     component: RichContent,
-    entityName: 'RichContent',
+    previewComponent: RichContentPreview,
+    entityName: 'RichText',
     containerClass: 'min-h-screen bg-white'
   },
   'section-heading': {
