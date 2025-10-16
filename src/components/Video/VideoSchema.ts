@@ -21,7 +21,7 @@ export const VideoSchema = z.object({
   title: z.string(),
   id: z.string(),
   playbackId: z.string(),
-  posterImage: ImageSchema,
+  posterImage: ImageSchema.optional(),
   __typename: z.string().optional()
 });
 

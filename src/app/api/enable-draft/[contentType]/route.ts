@@ -45,7 +45,7 @@ import {
   getTestimonialsById
 } from '@/components/Testimonials/TestimonialsApi';
 import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
-import { getVideosByIds } from '@/components/Video/VideoApi';
+import { getVideoById } from '@/components/Video/VideoApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
@@ -250,8 +250,7 @@ const contentTypeMap = {
     entityName: 'TimelineSliderItem'
   },
   video: {
-    fetchFn: (id: string, preview = false) =>
-      getVideosByIds([id], preview).then((items) => items[0]),
+    fetchFn: getVideoById,
     previewPath: '/preview/video',
     entityName: 'Video'
   }
@@ -290,8 +289,12 @@ export async function GET(
   const { fetchFn, previewPath, entityName } = contentTypeMap[contentType];
 
   try {
+    console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
+    
     // Fetch the content using the appropriate API function
     const content = await fetchFn(id, true);
+    
+    console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
 
     // Type-safe logging - check if content has sys property
     const contentId =
@@ -303,9 +306,10 @@ export async function GET(
       'id' in content.sys
         ? content.sys.id
         : 'unknown';
-    console.log(`enable-draft-${contentType}`, contentId, id);
+    console.log(`⭐ enable-draft-${contentType}`, contentId, id);
 
     if (!content) {
+      console.log(`⭐ enable-draft-${contentType}: Content not found for ID: ${id}`);
       return NextResponse.json({ message: `${entityName} not found` }, { status: 404 });
     }
 
@@ -331,7 +335,7 @@ export async function GET(
     // Redirect to the appropriate preview page
     return NextResponse.redirect(new URL(`${previewPath}?id=${id}`, request.url));
   } catch (error) {
-    console.error(`Error enabling draft for ${contentType}:`, error);
+    console.error(`⭐ Error enabling draft for ${contentType}:`, error);
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });
   }
 }

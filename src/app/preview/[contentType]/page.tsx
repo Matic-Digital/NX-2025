@@ -130,10 +130,12 @@ import {
   getTestimonialItemById,
   getTestimonialsById
 } from '@/components/Testimonials/TestimonialsApi';
-import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
-import { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItem';
 import { TimelineSliderItemPreview } from '@/components/TimelineSlider/preview/TimelineSliderItemPreview';
-import { getVideosByIds } from '@/components/Video/VideoApi';
+import { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItem';
+import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
+import { VideoPreview } from '@/components/Video/preview/VideoPreview';
+import { getVideoById } from '@/components/Video/VideoApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -420,9 +422,9 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     containerClass: 'min-h-screen bg-white'
   },
   video: {
-    fetchFn: (id: string, preview = false) =>
-      getVideosByIds([id], preview).then((items) => items[0]),
-    component: PostCard, // Using PostCard as placeholder
+    fetchFn: getVideoById,
+    component: MuxVideoPlayer,
+    previewComponent: VideoPreview,
     entityName: 'Video',
     containerClass: 'min-h-screen bg-white'
   }
