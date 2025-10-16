@@ -16,26 +16,29 @@ import { getServiceById } from '@/components/Service/ServiceApi';
 
 import type { Service } from '@/components/Service/ServiceSchema';
 
-interface ServiceCardProps {
-  serviceId: string;
-  cardId: string;
+interface ServiceCardProps extends Partial<Service> {
+  serviceId?: string;
+  cardId?: string;
   isFirst?: boolean;
 }
 
 export function ServiceCard(props: ServiceCardProps) {
-  const { serviceId, cardId, isFirst = false } = props;
-  const [serviceData, setServiceData] = useState<Service | null>(null);
-  const [loading, setLoading] = useState(true);
-  const service = useContentfulLiveUpdates(serviceData);
+  const { serviceId, cardId, isFirst = false, ...restProps } = props;
+  const [fetchedData, setFetchedData] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(!!serviceId);
   const { activeCardId, setActiveCardId } = useServiceCard();
 
-  // Fetch service data
+  // Fetch data if serviceId is provided
   useEffect(() => {
+    if (!serviceId) return;
+
     async function fetchServiceData() {
+      if (!serviceId) return;
+      
       try {
         setLoading(true);
-        const data = await getServiceById(serviceId);
-        setServiceData(data);
+        const data = await getServiceById(serviceId, false);
+        setFetchedData(data);
       } catch (error) {
         console.error('Error fetching service data:', error);
       } finally {
@@ -43,23 +46,24 @@ export function ServiceCard(props: ServiceCardProps) {
       }
     }
 
-    if (serviceId) {
-      void fetchServiceData();
-    }
+    void fetchServiceData();
   }, [serviceId]);
+
+  // Use fetched data if available, otherwise use props data
+  const service = useContentfulLiveUpdates(fetchedData ?? restProps);
 
   // Set first card as active on mount if no card is active (desktop only)
   useEffect(() => {
-    if (isFirst && activeCardId === null && window.innerWidth >= 768) {
+    if (isFirst && cardId && activeCardId === null && window.innerWidth >= 768) {
       setActiveCardId(cardId);
     }
   }, [isFirst, cardId, activeCardId, setActiveCardId]);
 
-  const isActive = activeCardId === cardId && window.innerWidth >= 768;
+  const isActive = cardId ? activeCardId === cardId && window.innerWidth >= 768 : false;
 
   const handleMouseEnter = () => {
     // Only handle mouse enter on desktop
-    if (window.innerWidth >= 768) {
+    if (cardId && window.innerWidth >= 768) {
       setActiveCardId(cardId);
     }
   };

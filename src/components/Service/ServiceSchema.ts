@@ -11,7 +11,7 @@ export const ServiceSchema = z.object({
   cardImage: ImageSchema.optional(),
   cardTitle: z.string().optional(),
   cardTags: z.array(z.string()).optional(),
-  cardButtonText: z.string().optional(),
+  cardButtonText: z.string(),
   __typename: z.string().optional()
 });
 

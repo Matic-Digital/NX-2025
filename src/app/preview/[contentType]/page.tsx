@@ -110,7 +110,7 @@ import { SectionHeadingPreview } from '@/components/SectionHeading/preview/Secti
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/components/Service/ServiceApi';
-import { ServicePreview } from '@/components/Service/ServicePreview';
+import { ServicePreview } from '@/components/Service/preview/ServicePreview';
 import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { getSocialById } from '@/components/Social/SocialApi';
