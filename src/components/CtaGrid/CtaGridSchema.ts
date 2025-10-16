@@ -12,13 +12,15 @@ export const CtaGridSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  asset: ImageSchema,
+  asset: ImageSchema.optional(),
   itemsCollection: z.object({
     items: z.array(ContentGridItemSchema)
   }),
-  ctaCollection: z.object({
-    items: z.array(ButtonSchema)
-  }),
+  ctaCollection: z
+    .object({
+      items: z.array(ButtonSchema)
+    })
+    .optional(),
   variant: CtaGridVariantEnum,
   __typename: z.string().optional()
 });

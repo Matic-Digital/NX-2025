@@ -8,11 +8,11 @@ export const SectionHeadingSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
+  variant: z.enum(SECTION_HEADING_VARIANTS),
   icon: AssetSchema.optional(),
   overline: z.string().optional(),
   title: z.string(),
   description: z.string().optional(),
-  variant: z.enum(SECTION_HEADING_VARIANTS).optional(),
   ctaCollection: z
     .object({
       items: z.array(ButtonSchema)

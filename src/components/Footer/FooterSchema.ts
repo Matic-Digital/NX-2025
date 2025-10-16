@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
+import { MenuSchema } from '@/components/Menu/MenuSchema';
 import { PageListSchema } from '@/components/PageList/PageListSchema';
 import { SocialSchema } from '@/components/Social/SocialSchema';
-import { MenuSchema } from '@/components/Menu/MenuSchema';
 
 export const FooterSchema = z.object({
   sys: z.object({
@@ -17,7 +17,7 @@ export const FooterSchema = z.object({
       height: z.number().optional()
     })
     .optional(),
-  description: z.string(),
+  description: z.string().optional(),
   pageListsCollection: z
     .object({
       items: z.array(PageListSchema)
@@ -28,7 +28,7 @@ export const FooterSchema = z.object({
       items: z.array(MenuSchema)
     })
     .optional(),
-  copyright: z.string(),
+  copyright: z.string().optional(),
   legalPageListsCollection: z
     .object({
       items: z.array(PageListSchema)

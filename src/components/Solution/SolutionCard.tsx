@@ -7,6 +7,8 @@ import {
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 
+import { cn } from '@/lib/utils';
+
 import { Button } from '@/components/ui/button';
 
 import { Box } from '@/components/global/matic-ds';
@@ -79,7 +81,18 @@ export function SolutionCard(props: SolutionCardProps) {
   }
 
   const DefaultItem = () => {
-    return <div>default</div>;
+    return (
+      <Box
+        direction="col"
+        gap={4}
+        className={cn('bg-subtle h-full min-h-[350px] w-full p-8 lg:bg-primary')}
+      >
+        <Box direction="col" gap={2}>
+          <h3 className={cn('!text-headline-sm lg:text-text-on-invert')}>{title}</h3>
+          <p className={cn('!text-body-sm lg:text-text-on-invert')}>{description}</p>
+        </Box>
+      </Box>
+    );
   };
 
   const BackgroundPrimaryHoverItem = () => {

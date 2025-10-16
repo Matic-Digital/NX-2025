@@ -45,7 +45,7 @@ export function RegionStats(props: RegionStats) {
             ))}
           </Box>
           <Button variant="outline" className="w-fit">
-            {cta.text}
+            {cta?.text}
           </Button>
         </Box>
       </Box>

@@ -82,17 +82,7 @@ export const collectionAnalyzers = {
     items.some(contentTypeDetectors.isAccordion),
 
   allItemsAreAccordions: (items: ContentGridItemUnion[]): boolean =>
-    items.length > 0 &&
-    items.every(
-      (item) =>
-        contentTypeDetectors.isAccordion(item) ||
-        (contentTypeDetectors.isContentGridItem(item) &&
-          'link' in item &&
-          item.link &&
-          typeof item.link === 'object' &&
-          '__typename' in item.link &&
-          item.link.__typename === 'Accordion')
-    ),
+    items.length > 0 && items.every(contentTypeDetectors.isAccordion),
 
   allItemsAreSolutions: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isSolution),

@@ -11,9 +11,10 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
-import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
+
+import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
 import { AirImage } from '@/components/Image/AirImage';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 
@@ -54,15 +55,19 @@ export function CtaBanner(props: CtaBanner) {
             // Fallback to flat URL on API failure
             setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
           }
-          setLoading(false);
         } catch (error) {
           setError(error as string);
           console.error('Error fetching nested URL for primary CTA:', error);
           // Fallback to flat URL on error
           setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
+        } finally {
+          setLoading(false);
         }
       } else if (primaryCta?.externalLink) {
         setPrimaryCtaUrl(primaryCta.externalLink);
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
     };
 
@@ -90,8 +95,8 @@ export function CtaBanner(props: CtaBanner) {
       <Section className="relative w-full overflow-hidden">
         {/* Background gradient image */}
         <AirImage
-          link={ctaBanner.backgroundMedia.link}
-          altText={ctaBanner.backgroundMedia.altText}
+          link={ctaBanner.backgroundMedia?.link}
+          altText={ctaBanner.backgroundMedia?.altText}
           className="absolute inset-0 h-full w-full object-cover"
         />
 
@@ -114,13 +119,10 @@ export function CtaBanner(props: CtaBanner) {
               className="text-white max-md:items-center md:col-span-2 md:col-start-3 lg:col-span-2 lg:col-start-4"
             >
               <Box direction="col" gap={2} className="max-md:items-center">
-                <h2 
-                  className="text-headline-lg"
-                  {...inspectorProps({ fieldId: 'title' })}
-                >
+                <h2 className="text-headline-lg" {...inspectorProps({ fieldId: 'title' })}>
                   {ctaBanner.title}
                 </h2>
-                <p 
+                <p
                   className="text-text-on-invert max-w-xs max-md:text-center lg:max-w-sm"
                   {...inspectorProps({ fieldId: 'description' })}
                 >

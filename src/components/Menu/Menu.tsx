@@ -125,7 +125,7 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
                     onMouseEnter={handleRegularMenuItemHover}
                   >
                     <Text
-                      className="text-foreground transition-all duration-300 group-hover:text-white"
+                      className="text-foreground transition-all duration-300 group-hover:text-black"
                       style={{
                         textShadow: 'none'
                       }}
@@ -174,7 +174,7 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
                           className="w-full h-full object-cover transition-opacity duration-300 ease-in-out"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ease-in-out" />
-                        <div className="absolute bottom-4 left-4 text-white transition-opacity duration-300 ease-in-out">
+                        <div className="absolute bottom-4 left-4 text-black transition-opacity duration-300 ease-in-out">
                           <h3 className="text-6xl font-normal leading-[90%] tracking-[0.04rem]">
                             {targetItem.text}
                           </h3>
@@ -256,12 +256,12 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
                   href={linkUrl}
                   target={linkTarget}
                   rel={linkRel}
-                  className="group cursor-pointer px-2 xl:px-4 py-2 text-white transition-all duration-300 hover:text-gray-300"
+                  className="group cursor-pointer px-2 xl:px-4 py-2 text-black transition-all duration-300 hover:text-gray-300"
                   onMouseEnter={handleRegularMenuItemHover}
                 >
                   <div className="flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:scale-x-0 after:transition-transform after:duration-200 after:ease-out after:origin-left">
                     <Text
-                      className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
+                      className="text-black transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
                       style={{
                         textShadow: 'none'
                       }}

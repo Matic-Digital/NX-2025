@@ -24,7 +24,7 @@ export const ContentSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  variant: ContentVariantEnum.optional(),
+  variant: ContentVariantEnum,
   asset: ContentAssetUnion.optional(),
   item: ContentItemUnion,
   __typename: z.string().optional()

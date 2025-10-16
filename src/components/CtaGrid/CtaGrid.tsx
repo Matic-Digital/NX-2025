@@ -11,9 +11,10 @@ import { resolveNestedUrls } from '@/lib/page-link-utils';
 
 import { Button } from '@/components/ui/button';
 
-import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container } from '@/components/global/matic-ds';
+
+import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { AirImage } from '@/components/Image/AirImage';
 
 import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
@@ -49,7 +50,7 @@ export function CtaGrid(props: CtaGrid) {
   // This ensures all CTA grid items link to proper nested URLs when parent PageLists exist
   useEffect(() => {
     const fetchNestedUrls = async () => {
-      const ctaItems = liveCtaGrid.ctaCollection?.items || [];
+      const ctaItems = liveCtaGrid.ctaCollection?.items ?? [];
       const urlMap = await resolveNestedUrls(ctaItems, (cta) => ({
         sys: cta.sys,
         internalLink: cta.internalLink,
@@ -102,15 +103,20 @@ export function CtaGrid(props: CtaGrid) {
                 <Box direction="col" gap={6}>
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
-                      <h3 className="leading-[130%]" style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>{item.heading}</h3>
+                      <h3
+                        className="leading-[130%]"
+                        style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                      >
+                        {item.heading}
+                      </h3>
                       <p className="text-body-sm leading-relaxed opacity-90">{item.description}</p>
                     </div>
                   ))}
                 </Box>
                 {/* CTA Button */}
-                {liveCtaGrid.ctaCollection?.items?.length > 0 && (
+                {(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 && (
                   <div className="mt-8">
-                    {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                    {liveCtaGrid.ctaCollection?.items?.map((cta, index) => {
                       const isProduct = cta.internalLink?.__typename === 'Product';
                       return (
                         <Button
@@ -149,9 +155,9 @@ export function CtaGrid(props: CtaGrid) {
           // Mobile: Overlay style, Desktop: Side-by-side layout using CSS Grid
           <>
             {/* CTA Button - Mobile only: above image */}
-            {liveCtaGrid.ctaCollection?.items?.length > 0 && (
+            {(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 && (
               <div className="mb-6 flex justify-center px-6 sm:px-6 md:px-9 xl:hidden">
-                {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                {liveCtaGrid.ctaCollection?.items?.map((cta, index) => {
                   const isProduct = cta.internalLink?.__typename === 'Product';
                   return (
                     <Button
@@ -199,44 +205,63 @@ export function CtaGrid(props: CtaGrid) {
                 </div>
 
                 {/* Content Overlay - Mobile: conditional styling based on CTA presence */}
-                <div className={`absolute inset-0 flex ${
-                  liveCtaGrid.ctaCollection?.items?.length > 0 
-                    ? 'items-end px-6 sm:px-6 md:px-9' 
-                    : 'items-end'
-                }`}>
-                  <div className={`w-full ${liveCtaGrid.ctaCollection?.items?.length > 0 ? 'pb-4' : ''}`}>
-                    <Box direction="col" gap={liveCtaGrid.ctaCollection?.items?.length > 0 ? 4 : 6} className="w-full">
+                <div
+                  className={`absolute inset-0 flex ${
+                    (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                      ? 'items-end px-6 sm:px-6 md:px-9'
+                      : 'items-end'
+                  }`}
+                >
+                  <div
+                    className={`w-full ${(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 ? 'pb-4' : ''}`}
+                  >
+                    <Box
+                      direction="col"
+                      gap={(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 ? 4 : 6}
+                      className="w-full"
+                    >
                       {/* Content Grid Items */}
                       {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                         <div
                           key={item.sys?.id || index}
                           className={`space-y-3 ${
-                            liveCtaGrid.ctaCollection?.items?.length > 0 
-                              ? 'p-6 backdrop-blur-[14px]' 
+                            (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                              ? 'p-6 backdrop-blur-[14px]'
                               : 'bg-subtle p-10'
                           }`}
-                          style={liveCtaGrid.ctaCollection?.items?.length > 0 ? {
-                            background:
-                              'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-                          } : {}}
+                          style={
+                            (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                              ? {
+                                  background:
+                                    'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+                                }
+                              : {}
+                          }
                         >
-                          <h3 className={`leading-[130%] ${
-                            liveCtaGrid.ctaCollection?.items?.length > 0 
-                              ? 'text-text-on-invert' 
-                              : ''
-                          }`} style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>
+                          <h3
+                            className={`leading-[130%] ${
+                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                                ? 'text-text-on-invert'
+                                : ''
+                            }`}
+                            style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                          >
                             {item.heading}
                           </h3>
-                          <div className={`h-px w-full ${
-                            liveCtaGrid.ctaCollection?.items?.length > 0 
-                              ? 'bg-white/30' 
-                              : 'bg-border'
-                          }`}></div>
-                          <p className={`leading-relaxed ${
-                            liveCtaGrid.ctaCollection?.items?.length > 0 
-                              ? 'text-body-xxs text-text-on-invert' 
-                              : 'text-body-sm text-text-subtle'
-                          }`}>
+                          <div
+                            className={`h-px w-full ${
+                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                                ? 'bg-white/30'
+                                : 'bg-border'
+                            }`}
+                          ></div>
+                          <p
+                            className={`leading-relaxed ${
+                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
+                                ? 'text-body-xxs text-text-on-invert'
+                                : 'text-body-sm text-text-subtle'
+                            }`}
+                          >
                             {item.description}
                           </p>
                         </div>
@@ -261,7 +286,10 @@ export function CtaGrid(props: CtaGrid) {
                 <Box direction="col" gap={6} className="flex-1 justify-end">
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
-                      <h3 className="leading-[130%]" style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}>
+                      <h3
+                        className="leading-[130%]"
+                        style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                      >
                         {item.heading}
                       </h3>
                       <div className="bg-border h-px w-full"></div>
@@ -272,9 +300,9 @@ export function CtaGrid(props: CtaGrid) {
                   ))}
                 </Box>
                 {/* CTA Button */}
-                {liveCtaGrid.ctaCollection?.items?.length > 0 && (
+                {(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 && (
                   <div className="mt-auto">
-                    {liveCtaGrid.ctaCollection.items.map((cta, index) => {
+                    {liveCtaGrid.ctaCollection?.items?.map((cta, index) => {
                       const isProduct = cta.internalLink?.__typename === 'Product';
                       return (
                         <Button

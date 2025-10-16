@@ -20,8 +20,10 @@ interface EventProps extends Event {
 }
 
 export function Event(props: EventProps) {
-  const { eventId } = props;
-  const { event, loading, error, inspectorProps } = useEventData(eventId);
+  const { eventId, ...eventData } = props;
+  // If we have event data (preview mode), pass it as initialData to skip fetching
+  const initialData = eventData.sys ? (eventData as Event) : undefined;
+  const { event, loading, error, inspectorProps } = useEventData(eventId, initialData);
 
   if (loading) {
     return <LoadingState />;
@@ -42,7 +44,9 @@ export function Event(props: EventProps) {
       className="group relative w-full hover:bg-primary p-6 lg:py-12 lg:px-8 text-text-subtle hover:text-text-on-invert items-start lg:border-b-2 lg:hover:border-transparent bg-surface lg:bg-transparent"
       {...inspectorProps}
     >
-      <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">{formatDate(event.dateTime, true)}</div>
+      <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">
+        {formatDate(event.dateTime, true)}
+      </div>
       <Box direction="col" gap={1}>
         <h5 className="uppercase text-text-body-xs text-text-primary-active group-hover:text-text-on-invert">
           Event

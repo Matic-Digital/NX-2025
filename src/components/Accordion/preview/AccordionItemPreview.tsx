@@ -13,16 +13,12 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
-interface AccordionItemPreviewProps extends Partial<AccordionItemType> {
-  accordionItemId?: string;
-}
-
 /**
  *
  * This component is used in Contentful Live Preview to display AccordionItem components
  * with a live preview and field breakdown.
  */
-export function AccordionItemPreview(props: AccordionItemPreviewProps) {
+export function AccordionItemPreview(props: Partial<AccordionItemType>) {
   // Contentful Live Preview integration
   const liveAccordionItem = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveAccordionItem?.sys?.id });

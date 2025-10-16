@@ -6,6 +6,7 @@
 
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import type { RichContent, RichContentResponse } from '@/components/RichContent/RichContentSchema';
 
@@ -68,22 +69,40 @@ export async function getAllRichContents(
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to rich content item or null if not found
  */
-export async function getRichContentById(id: string, preview = false): Promise<RichContent | null> {
-  const response = await fetchGraphQL(
-    `query GetRichContentById($id: String!, $preview: Boolean!) {
-      contentTypeRichText(id: $id, preview: $preview) {
-        ${RICHCONTENT_GRAPHQL_FIELDS}
-      }
-    }`,
-    { id, preview },
-    preview
-  );
+export const getRichContentById = async (
+  id: string,
+  preview: boolean
+): Promise<RichContent | null> => {
+  try {
+    const response = await fetchGraphQL<RichContent>(
+      `query GetRichContentById($preview: Boolean!, $id: String!) {
+        contentTypeRichText(id: $id, preview: $preview) {
+          ${RICHCONTENT_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const typedResponse = response as any;
+    const data = response.data as unknown as {
+      contentTypeRichText?: RichContent;
+    };
 
-  return typedResponse.contentTypeRichText ?? null;
-}
+    if (!data?.contentTypeRichText) {
+      throw new ContentfulError('Failed to fetch rich content from Contentful');
+    }
+
+    return data.contentTypeRichText;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching rich content: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching rich content');
+  }
+};
 
 /**
  * Fetches rich content items by a list of IDs
