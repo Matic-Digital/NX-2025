@@ -119,6 +119,7 @@ import { getSocialById } from '@/components/Social/SocialApi';
 import { SolutionPreview } from '@/components/Solution/preview/SolutionPreview';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 import { SolutionCard } from '@/components/Solution/SolutionCard';
+import { TeamMemberPreview } from '@/components/TeamMember/preview/TeamMemberPreview';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
@@ -385,6 +386,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   'team-member': {
     fetchFn: getTeamMemberById,
     component: TeamMemberModal,
+    previewComponent: TeamMemberPreview,
     entityName: 'TeamMember',
     containerClass: 'min-h-screen bg-gray-50'
   },
