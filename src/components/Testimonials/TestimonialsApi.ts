@@ -2,10 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import {
-  TestimonialItemSchema,
-  TestimonialsSchema
-} from '@/components/Testimonials/TestimonialsSchema';
+import { TestimonialsSchema } from '@/components/Testimonials/TestimonialsSchema';
 
 import type { TestimonialItem, Testimonials } from '@/components/Testimonials/TestimonialsSchema';
 
