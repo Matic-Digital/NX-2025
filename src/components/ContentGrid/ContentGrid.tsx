@@ -121,7 +121,7 @@ export function ContentGrid(props: ContentGridProps) {
   const itemIds =
     contentGrid.itemsCollection?.items
       ?.map((item) => item?.sys?.id)
-      .filter((id): id is string => Boolean(id)) || [];
+      .filter((id): id is string => Boolean(id)) ?? [];
   const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
   if (duplicateIds.length > 0) {
     console.warn(`ContentGrid render ${renderKey} - Duplicate items found:`, duplicateIds);
