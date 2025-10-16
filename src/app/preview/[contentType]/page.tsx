@@ -115,7 +115,7 @@ import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
 import { Social } from '@/components/Social/Social';
 import { getSocialById } from '@/components/Social/SocialApi';
-import { SocialPreview } from '@/components/Social/SocialPreview';
+import { SocialPreview } from '@/components/Social/preview/SocialPreview';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 import { SolutionPreview } from '@/components/Solution/SolutionPreview';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
