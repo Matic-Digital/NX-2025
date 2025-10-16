@@ -139,7 +139,7 @@ export const contentRenderers = {
   ),
 
   renderTestimonials: (item: TestimonialsType, context: RenderContext) => (
-    <Testimonials key={item.sys?.id ?? context.index} {...item} />
+    <Testimonials key={item.sys?.id ?? context.index} sys={item.sys} />
   ),
 
   renderVideo: (item: VideoType, context: RenderContext) => (

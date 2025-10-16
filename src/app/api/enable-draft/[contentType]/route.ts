@@ -40,7 +40,10 @@ import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
-import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+import {
+  getTestimonialItemById,
+  getTestimonialsById
+} from '@/components/Testimonials/TestimonialsApi';
 import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
 import { getVideosByIds } from '@/components/Video/VideoApi';
 
@@ -235,6 +238,11 @@ const contentTypeMap = {
     fetchFn: getTestimonialsById,
     previewPath: '/preview/testimonials',
     entityName: 'Testimonials'
+  },
+  'testimonial-item': {
+    fetchFn: getTestimonialItemById,
+    previewPath: '/preview/testimonial-item',
+    entityName: 'TestimonialItem'
   },
   'timeline-slider-item': {
     fetchFn: (id: string, preview = false) =>
