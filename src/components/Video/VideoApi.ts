@@ -46,9 +46,9 @@ export async function getVideosByIds(videoIds: string[], preview = false): Promi
       videoCollection?: { items?: Video[] };
     };
 
-    // Return empty array if no videos found (this is normal)
+    // Validate the data structure
     if (!data.videoCollection?.items?.length) {
-      return [];
+      throw new ContentfulError('Failed to fetch Videos from Contentful');
     }
 
     return data.videoCollection.items;

@@ -290,10 +290,10 @@ export async function GET(
 
   try {
     console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
-    
+
     // Fetch the content using the appropriate API function
     const content = await fetchFn(id, true);
-    
+
     console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
 
     // Type-safe logging - check if content has sys property
