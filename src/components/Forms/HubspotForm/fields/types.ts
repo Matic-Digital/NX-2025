@@ -34,6 +34,7 @@ export interface FieldRendererProps {
   value: string | number | boolean | null | undefined;
   onChange: (value: string | number | boolean | null | undefined) => void;
   error?: string | string[];
+  theme?: 'light' | 'dark';
 }
 
 export interface FormStep {

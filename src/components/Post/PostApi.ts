@@ -4,6 +4,8 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
 
 import type { Post, PostResponse } from '@/components/Post/PostSchema';
 
@@ -38,6 +40,7 @@ export const POST_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
+  template
   excerpt
   datePublished
   mainImage {
@@ -103,6 +106,12 @@ export const POST_GRAPHQL_FIELDS = `
         id
       }
     }
+  }
+  gatedContentForm {
+    ${HUBSPOTFORM_GRAPHQL_FIELDS}
+  }
+  testimonial {
+    ${TESTIMONIALITEM_GRAPHQL_FIELDS}
   }
 `;
 

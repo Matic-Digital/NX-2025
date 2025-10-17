@@ -7,7 +7,7 @@ import type { FieldRendererProps } from '../types';
 export const CheckboxField: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
   return (
     <div className="space-y-2">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-start space-x-2">
         <div className="relative flex items-center justify-center">
           <input
             id={field.name}
