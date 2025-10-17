@@ -6,8 +6,8 @@ export const TestimonialItemSchema = z.object({
     id: z.string()
   }),
   __typename: z.literal('TestimonialItem').optional(),
-  title: z.string().optional(),
-  quote: z.string().optional(),
+  title: z.string(),
+  quote: z.string(),
   authorName: z.string().optional(),
   authorTitle: z.string().optional(),
   headshot: z
@@ -29,11 +29,9 @@ export const TestimonialsSchema = z.object({
   }),
   __typename: z.literal('Testimonials').optional(),
   title: z.string(),
-  itemsCollection: z
-    .object({
-      items: z.array(TestimonialItemSchema)
-    })
-    .optional()
+  itemsCollection: z.object({
+    items: z.array(TestimonialItemSchema)
+  })
 });
 
 export type TestimonialItem = z.infer<typeof TestimonialItemSchema>;

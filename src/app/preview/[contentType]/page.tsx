@@ -122,10 +122,20 @@ import { SolutionCard } from '@/components/Solution/SolutionCard';
 import { TeamMemberPreview } from '@/components/TeamMember/preview/TeamMemberPreview';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
+import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
+import { TestimonialItemPreview } from '@/components/Testimonials/preview/TestimonialItemPreview';
+import { TestimonialsPreview } from '@/components/Testimonials/preview/TestimonialsPreview';
 import { Testimonials } from '@/components/Testimonials/Testimonials';
-import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
-import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
-import { getVideosByIds } from '@/components/Video/VideoApi';
+import {
+  getTestimonialItemById,
+  getTestimonialsById
+} from '@/components/Testimonials/TestimonialsApi';
+import { TimelineSliderItemPreview } from '@/components/TimelineSlider/preview/TimelineSliderItemPreview';
+import { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItem';
+import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
+import { VideoPreview } from '@/components/Video/preview/VideoPreview';
+import { getVideoById } from '@/components/Video/VideoApi';
 
 // Content type configuration
 interface ContentTypeConfig {
@@ -281,7 +291,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   modal: {
     fetchFn: getModalById,
     component: RequestAQuoteModal,
-    previewComponent: ModalPreview,
+    previewComponent: ButtonPreview,
     entityName: 'Modal',
     containerClass: 'min-h-screen bg-gray-50'
   },
@@ -393,20 +403,28 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   testimonials: {
     fetchFn: getTestimonialsById,
     component: Testimonials,
+    previewComponent: TestimonialsPreview,
     entityName: 'Testimonials',
     containerClass: 'min-h-screen bg-white'
   },
+  'testimonial-item': {
+    fetchFn: getTestimonialItemById,
+    component: TestimonialItem,
+    previewComponent: TestimonialItemPreview,
+    entityName: 'TestimonialItem',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
   'timeline-slider-item': {
-    fetchFn: (id: string, preview = false) =>
-      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
-    component: PostCard, // Using PostCard as placeholder
+    fetchFn: getTimelineSliderItemById,
+    component: TimelineSliderItem,
+    previewComponent: TimelineSliderItemPreview,
     entityName: 'TimelineSliderItem',
     containerClass: 'min-h-screen bg-white'
   },
   video: {
-    fetchFn: (id: string, preview = false) =>
-      getVideosByIds([id], preview).then((items) => items[0]),
-    component: PostCard, // Using PostCard as placeholder
+    fetchFn: getVideoById,
+    component: MuxVideoPlayer,
+    previewComponent: VideoPreview,
     entityName: 'Video',
     containerClass: 'min-h-screen bg-white'
   }

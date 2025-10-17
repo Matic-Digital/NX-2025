@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
+
 import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
 
 /**
@@ -21,7 +22,8 @@ export const useTestimonialsData = (sysId: string) => {
         setError(null);
 
         const data = await getTestimonialsById(sysId);
-        
+        console.log('⭐ data', data);
+
         if (data) {
           setTestimonials(data);
         } else {

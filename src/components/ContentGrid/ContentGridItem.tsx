@@ -472,7 +472,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         )}
         <Box direction="col" gap={2} className="bg-zinc-800 p-6 relative">
           <AirImage
-            link="https://air-prod.imgix.net/9767136e-c070-4bd1-9f65-cbbdacbc196e.jpg?w=1340&h=304&fm=webp&fit=crop&auto=auto"
+            link="https://air-prod.imgix.net/1cd01021-40e4-4f15-add7-a864a7866f51.jpg?w=4000&h=3078&fm=webp&fit=crop&auto=auto"
             altText={heading}
             className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
           />
