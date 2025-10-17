@@ -42,7 +42,7 @@ export function MegaMenuPreview(props: Partial<MegaMenuType>) {
                 if (hasRequiredFields) {
                   return (
                     <MegaMenuProvider>
-                      <div className="overflow-hidden p-6">
+                      <div className="overflow-hidden p-6 mt-12">
                         <MegaMenu
                           megaMenu={liveMegaMenu as MegaMenuType}
                           title={liveMegaMenu.title}

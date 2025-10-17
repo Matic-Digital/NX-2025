@@ -45,16 +45,9 @@ export function ModalPreview(props: Partial<Modal>) {
                 if (hasRequiredFields) {
                   return (
                     <div className="p-8 text-center">
-                      <p className="text-gray-600 mb-4">
-                        Click the button below to preview the modal:
-                      </p>
-                      <Button onClick={() => setIsModalOpen(true)} {...inspectorProps}>
-                        Open Modal Preview
-                      </Button>
-
                       {/* Modal Component */}
                       <RequestAQuoteModal
-                        isOpen={isModalOpen}
+                        isOpen={true}
                         onOpenChange={setIsModalOpen}
                         formId={liveModal?.form?.formId}
                         title={liveModal.title}

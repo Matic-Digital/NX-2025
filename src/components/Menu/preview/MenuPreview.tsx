@@ -7,6 +7,8 @@ import {
 
 import { MegaMenuProvider } from '@/contexts/MegaMenuContext';
 
+import { Container } from '@/components/global/matic-ds';
+
 import { Menu } from '@/components/Menu/Menu';
 import { menuFields } from '@/components/Menu/preview/MenuFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
@@ -43,9 +45,11 @@ export function MenuPreview(props: Partial<MenuType>) {
                 if (hasRequiredFields) {
                   return (
                     <MegaMenuProvider>
-                      <div className="overflow-hidden p-6">
-                        <Menu menu={liveMenu as MenuType} {...inspectorProps} />
-                      </div>
+                      <header className="relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full">
+                        <div className="overflow-hidden p-6 bg-black/40 backdrop-blur-2xl">
+                          <Menu menu={liveMenu as MenuType} {...inspectorProps} />
+                        </div>
+                      </header>
                     </MegaMenuProvider>
                   );
                 }
