@@ -1,5 +1,6 @@
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { TestimonialsSchema } from '@/components/Testimonials/TestimonialsSchema';
@@ -74,43 +75,39 @@ export async function getTestimonialsById(
   id: string,
   preview = false
 ): Promise<Testimonials | null> {
-  const query = `
-    query GetTestimonialsById($id: String!, $preview: Boolean!) {
-      testimonials(id: $id, preview: $preview) {
-        ${TESTIMONIALS_GRAPHQL_FIELDS}
-      }
-    }
-  `;
-
   try {
-    const response = await fetchGraphQL(query, { id, preview });
-    console.log('🔍 GraphQL Response:', response);
+    const response = await fetchGraphQL(
+      `query GetTestimonialsById($id: String!, $preview: Boolean!) {
+        testimonials(id: $id, preview: $preview) {
+          ${TESTIMONIALS_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
 
+    // Check for valid response
     if (!response?.data) {
-      console.warn('No data in response');
-      return null;
+      throw new ContentfulError('Invalid response from Contentful');
     }
 
+    // Access data using type assertion to help TypeScript understand the structure
     const data = response.data as unknown as { testimonials?: Testimonials };
-    console.log('🔍 Testimonials data:', data.testimonials);
 
+    // Return null if testimonials not found
     if (!data.testimonials) {
-      console.warn('No testimonials in response');
       return null;
     }
 
-    try {
-      const parsed = TestimonialsSchema.parse(data.testimonials);
-      console.log('✅ Successfully parsed testimonials');
-      return parsed;
-    } catch (error) {
-      console.error('❌ Zod validation error:', error);
-      console.error('❌ Failed data:', JSON.stringify(data.testimonials, null, 2));
+    return data.testimonials;
+  } catch (error) {
+    if (error instanceof ContentfulError) {
       throw error;
     }
-  } catch (error) {
-    console.error('❌ GraphQL fetch error:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Testimonials: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Testimonials');
   }
 }
 
@@ -121,31 +118,44 @@ export async function getTestimonialsByTitle(
   title: string,
   preview = false
 ): Promise<Testimonials | null> {
-  const query = `
-    query GetTestimonialsByTitle($title: String!, $preview: Boolean!) {
-      testimonialsCollection(where: { title: $title }, preview: $preview, limit: 1) {
-        items {
-          ${TESTIMONIALS_GRAPHQL_FIELDS}
+  try {
+    const response = await fetchGraphQL(
+      `query GetTestimonialsByTitle($title: String!, $preview: Boolean!) {
+        testimonialsCollection(where: { title: $title }, preview: $preview, limit: 1) {
+          items {
+            ${TESTIMONIALS_GRAPHQL_FIELDS}
+          }
         }
-      }
+      }`,
+      { title, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
     }
-  `;
 
-  const response = await fetchGraphQL(query, { title, preview });
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as {
+      testimonialsCollection?: { items?: Testimonials[] };
+    };
 
-  if (!response?.data) {
-    return null;
+    // Return null if testimonials not found
+    if (!data.testimonialsCollection?.items?.[0]) {
+      return null;
+    }
+
+    return data.testimonialsCollection.items[0];
+  } catch (error) {
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching Testimonials: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching Testimonials');
   }
-
-  const data = response.data as unknown as {
-    testimonialsCollection?: { items?: Testimonials[] };
-  };
-
-  if (!data.testimonialsCollection?.items?.[0]) {
-    return null;
-  }
-
-  return TestimonialsSchema.parse(data.testimonialsCollection.items[0]);
 }
 
 /**
@@ -155,31 +165,38 @@ export async function getTestimonialItemById(
   id: string,
   preview = false
 ): Promise<TestimonialItem | null> {
-  const query = `
-    query GetTestimonialItemById($id: String!, $preview: Boolean!) {
-      testimonialItem(id: $id, preview: $preview) {
-        ${TESTIMONIALITEM_GRAPHQL_FIELDS}
-      }
-    }
-  `;
-
-  const response = await fetchGraphQL(query, { id, preview });
-
-  if (!response?.data) {
-    return null;
-  }
-
-  const data = response.data as unknown as { testimonialItem?: TestimonialItem };
-
-  if (!data.testimonialItem) {
-    return null;
-  }
-
   try {
+    const response = await fetchGraphQL(
+      `query GetTestimonialItemById($id: String!, $preview: Boolean!) {
+        testimonialItem(id: $id, preview: $preview) {
+          ${TESTIMONIALITEM_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { testimonialItem?: TestimonialItem };
+
+    // Return null if testimonial item not found
+    if (!data.testimonialItem) {
+      return null;
+    }
+
     return data.testimonialItem;
   } catch (error) {
-    console.error('Zod validation error:', error);
-    console.error('Failed data:', JSON.stringify(data.testimonialItem, null, 2));
-    throw error;
+    if (error instanceof ContentfulError) {
+      throw error;
+    }
+    if (error instanceof Error) {
+      throw new NetworkError(`Error fetching TestimonialItem: ${error.message}`);
+    }
+    throw new Error('Unknown error fetching TestimonialItem');
   }
 }
