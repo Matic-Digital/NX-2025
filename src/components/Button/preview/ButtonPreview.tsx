@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { ModalCtaButton } from '../ModalCtaButton';
 import {
   useContentfulInspectorMode,
@@ -11,7 +10,6 @@ import { buttonFields } from '@/components/Button/preview/ButtonFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
-import type { Modal } from '@/components/Modals/Modal';
 
 /**
  * Button Preview Component
@@ -23,14 +21,6 @@ export function ButtonPreview(props: Partial<ButtonType>) {
   // Contentful Live Preview integration
   const liveButton = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [_selectedModal, setSelectedModal] = useState<Modal | null>(null);
-
-  const handleModalOpen = (modal: Modal, _modalType: 'quote' | 'support') => {
-    setSelectedModal(modal);
-    setModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -78,10 +68,6 @@ export function ButtonPreview(props: Partial<ButtonType>) {
                         }}
                         variant="white"
                         className="border-border-input w-full justify-center border-1"
-                        onModalOpen={handleModalOpen}
-                        setModalOpen={setModalOpen}
-                        modalOpen={modalOpen}
-                        selectedModal={liveButton?.modal ?? null}
                       />
                     </div>
                   );

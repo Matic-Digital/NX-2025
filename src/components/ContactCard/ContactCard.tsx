@@ -19,7 +19,6 @@ import { ContactCardSkeleton } from '@/components/ContactCard/components/Contact
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 
 import type { ContactCard } from '@/components/ContactCard/ContactCardSchema';
-import type { Modal } from '@/components/Modals/Modal';
 
 interface ContactCardProps extends Partial<ContactCard> {
   contactCardId?: string;
@@ -30,13 +29,6 @@ export function ContactCard(props: ContactCardProps) {
   const [fetchedData, setFetchedData] = useState<ContactCard | null>(null);
   const [loading, setLoading] = useState(!!contactCardId);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
-
-  const handleModalOpen = (modal: Modal, _type: 'quote' | 'support') => {
-    setSelectedModal(modal);
-    setModalOpen(true);
-  };
 
   // Fetch data if contactCardId is provided
   useEffect(() => {
@@ -165,10 +157,6 @@ export function ContactCard(props: ContactCardProps) {
               cta={contactCard.cta}
               variant="white"
               className="border-border-input w-full justify-center border-1"
-              setModalOpen={setModalOpen}
-              onModalOpen={handleModalOpen}
-              modalOpen={modalOpen}
-              selectedModal={selectedModal}
             />
           </div>
         )}

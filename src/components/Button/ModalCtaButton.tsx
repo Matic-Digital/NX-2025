@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 
 import { ModalButtonContent } from '@/components/Button/components/ModalButtonContent';
@@ -13,10 +14,10 @@ export type ModalType = 'quote' | 'support';
 interface ModalCtaButtonProps {
   cta: ButtonType;
   variant: 'primary' | 'secondary' | 'outline' | 'white' | 'outlineWhite';
-  setModalOpen: (open: boolean) => void;
-  onModalOpen: (modal: Modal, modalType: ModalType) => void;
-  modalOpen: boolean;
-  selectedModal: Modal | null;
+  setModalOpen?: (open: boolean) => void;
+  onModalOpen?: (modal: Modal, modalType: ModalType) => void;
+  modalOpen?: boolean;
+  selectedModal?: Modal | null;
   className?: string;
 }
 
@@ -38,7 +39,27 @@ export function ModalCtaButton({
   selectedModal,
   className
 }: ModalCtaButtonProps) {
+  // Internal state for when external props aren't provided
+  const [internalModalOpen, setInternalModalOpen] = useState(false);
+  const [internalSelectedModal, setInternalSelectedModal] = useState<Modal | null>(null);
+
   const modalType = determineModalType(cta);
+
+  // Use external state if provided, otherwise use internal state
+  const isModalOpenState = modalOpen ?? internalModalOpen;
+  const selectedModalState = selectedModal ?? internalSelectedModal;
+  const setModalOpenState = setModalOpen ?? setInternalModalOpen;
+
+  // Handle modal opening
+  const handleInternalModalOpen = (modal: Modal, type: ModalType) => {
+    if (onModalOpen) {
+      onModalOpen(modal, type);
+    } else {
+      setInternalSelectedModal(modal);
+      setInternalModalOpen(true);
+    }
+  };
+
   // Business logic layer
   const { isModalButton, linkProps, handleModalClick } = useModalButtonLogic(cta, modalType);
 
@@ -46,7 +67,7 @@ export function ModalCtaButton({
   const inspectorProps = useContentfulInspectorMode({ entryId: cta.sys?.id });
 
   // Handle modal click
-  const onClick = () => handleModalClick(onModalOpen);
+  const onClick = () => handleModalClick(handleInternalModalOpen);
 
   return (
     <>
@@ -61,26 +82,26 @@ export function ModalCtaButton({
       />
 
       {/* Modals */}
-      {selectedModal && modalType === 'quote' && (
+      {selectedModalState && modalType === 'quote' && (
         <RequestAQuoteModal
-          isOpen={modalOpen}
-          onOpenChange={setModalOpen}
-          title={selectedModal.title ?? 'Request a Quote'}
+          isOpen={isModalOpenState}
+          onOpenChange={setModalOpenState}
+          title={selectedModalState.title ?? 'Request a Quote'}
           description={
-            selectedModal.description ??
+            selectedModalState.description ??
             'Please fill out the form below and we will get back to you shortly.'
           }
           formId={cta.modal?.form?.formId}
         />
       )}
 
-      {selectedModal && modalType === 'support' && (
+      {selectedModalState && modalType === 'support' && (
         <RequestSupportModal
-          isOpen={modalOpen}
-          onOpenChange={setModalOpen}
-          title={selectedModal.title ?? 'Request Support'}
+          isOpen={isModalOpenState}
+          onOpenChange={setModalOpenState}
+          title={selectedModalState.title ?? 'Request Support'}
           description={
-            selectedModal.description ??
+            selectedModalState.description ??
             'Please fill out the form below and we will get back to you shortly.'
           }
           formId={cta.modal?.form?.formId}

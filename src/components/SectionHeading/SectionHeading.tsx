@@ -23,7 +23,6 @@ import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHea
 
 // Types
 import type { SectionHeading, SectionHeadingVariant } from './SectionHeadingSchema';
-import type { Modal } from '@/components/Modals/Modal';
 
 interface SectionHeadingProps extends Partial<SectionHeading> {
   sectionHeadingId?: string;
@@ -43,13 +42,6 @@ export function SectionHeading(props: SectionHeadingProps) {
   const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
-
-  const handleModalOpen = (modal: Modal, _modalType: 'quote' | 'support') => {
-    setSelectedModal(modal);
-    setModalOpen(true);
-  };
 
   // Fetch data if sectionHeadingId is provided
   useEffect(() => {
@@ -203,10 +195,6 @@ export function SectionHeading(props: SectionHeadingProps) {
                     <ModalCtaButton
                       cta={cta}
                       variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                      onModalOpen={handleModalOpen}
-                      setModalOpen={setModalOpen}
-                      modalOpen={modalOpen}
-                      selectedModal={selectedModal}
                     />
                   </div>
                 );
@@ -275,10 +263,6 @@ export function SectionHeading(props: SectionHeadingProps) {
                   <ModalCtaButton
                     cta={cta}
                     variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                    onModalOpen={handleModalOpen}
-                    setModalOpen={setModalOpen}
-                    modalOpen={modalOpen}
-                    selectedModal={selectedModal}
                   />
                 </div>
               );
@@ -366,10 +350,6 @@ export function SectionHeading(props: SectionHeadingProps) {
                   <ModalCtaButton
                     cta={cta}
                     variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                    onModalOpen={handleModalOpen}
-                    setModalOpen={setModalOpen}
-                    modalOpen={modalOpen}
-                    selectedModal={selectedModal}
                   />
                 </div>
               );
@@ -453,10 +433,6 @@ export function SectionHeading(props: SectionHeadingProps) {
                 <ModalCtaButton
                   cta={cta}
                   variant={getButtonVariant(index, totalButtons, defaultVariant)}
-                  onModalOpen={handleModalOpen}
-                  setModalOpen={setModalOpen}
-                  modalOpen={modalOpen}
-                  selectedModal={selectedModal}
                 />
               </div>
             );

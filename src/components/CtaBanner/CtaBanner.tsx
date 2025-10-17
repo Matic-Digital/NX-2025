@@ -24,7 +24,6 @@ export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: ctaBanner?.sys?.id });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,10 +72,6 @@ export function CtaBanner(props: CtaBanner) {
 
     void fetchNestedUrl();
   }, [ctaBanner.primaryCta]);
-
-  const handleModalTrigger = () => {
-    setIsModalOpen(true);
-  };
 
   if (loading) {
     return <CtaBannerSkeleton />;
@@ -142,14 +137,7 @@ export function CtaBanner(props: CtaBanner) {
                   </Link>
                 )}
                 {ctaBanner.secondaryCta && (
-                  <ModalCtaButton
-                    cta={ctaBanner.secondaryCta}
-                    setModalOpen={setIsModalOpen}
-                    onModalOpen={handleModalTrigger}
-                    modalOpen={isModalOpen}
-                    selectedModal={ctaBanner.secondaryCta.modal ?? null}
-                    variant="secondary"
-                  />
+                  <ModalCtaButton cta={ctaBanner.secondaryCta} variant="secondary" />
                 )}
               </Box>
             </Box>

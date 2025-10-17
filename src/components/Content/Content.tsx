@@ -21,8 +21,6 @@ import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-import type { ModalType } from '../Button/ModalCtaButton';
-import type { Modal } from '../Modals/Modal';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
@@ -91,8 +89,6 @@ export function Content(props: ContentProps) {
   const [fetchedData, setFetchedData] = useState<Content | null>(null);
   const [loading, setLoading] = useState(!!contentId);
   const [error, setError] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
 
   // Fetch data if contentId is provided
   useEffect(() => {
@@ -119,19 +115,6 @@ export function Content(props: ContentProps) {
   const inspectorProps = useContentfulInspectorMode({
     entryId: content?.sys?.id || undefined
   });
-
-  console.log('⭐ Content', content);
-
-  // ===== HANDLERS =====
-  const handleModalOpen = (modal: Modal, _modalType: ModalType) => {
-    // setActiveModal({
-    //   title: modal.title ?? 'Request a Quote',
-    //   description: modal.description ?? 'Please fill out the form below to request a quote.',
-    //   sys: modal.sys ?? { id: 'modal-' + Date.now() }
-    // });
-    setSelectedModal(modal);
-    setModalOpen(true);
-  };
 
   // ===== HELPER FUNCTIONS =====
   const isContentGridItemData = (
@@ -331,10 +314,6 @@ export function Content(props: ContentProps) {
                     <ModalCtaButton
                       cta={data.ctaCollection.items[0]}
                       variant="white"
-                      onModalOpen={handleModalOpen}
-                      setModalOpen={setModalOpen}
-                      modalOpen={modalOpen}
-                      selectedModal={selectedModal}
                       className="w-fit"
                     />
                   )}
@@ -354,10 +333,6 @@ export function Content(props: ContentProps) {
                     <ModalCtaButton
                       cta={data.ctaCollection.items[0]}
                       variant="white"
-                      onModalOpen={handleModalOpen}
-                      setModalOpen={setModalOpen}
-                      modalOpen={modalOpen}
-                      selectedModal={selectedModal}
                       className="w-fit"
                     />
                   )}
@@ -435,10 +410,6 @@ export function Content(props: ContentProps) {
                             ? 'primary'
                             : 'white'
                       }
-                      onModalOpen={handleModalOpen}
-                      setModalOpen={setModalOpen}
-                      modalOpen={modalOpen}
-                      selectedModal={selectedModal}
                     />
                   ))
                 )}

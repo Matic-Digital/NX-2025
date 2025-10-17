@@ -14,6 +14,8 @@ import { SvgIcon } from '@/components/ui/svg-icon';
 
 import { Box } from '@/components/global/matic-ds';
 
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+
 import {
   getContentGridItemById,
   getContentGridItemLink
@@ -480,12 +482,13 @@ export function ContentGridItem(props: ContentGridItemProps) {
             <h3 className="text-headline-sm text-white">{heading}</h3>
             <Box gap={4} className="items-end">
               <p className="text-body-xs text-white">{description}</p>
-              <Button
-                variant="outlineTrasparentWhite"
-                className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
-              >
-                {ctaCollection?.items?.[0]?.text}
-              </Button>
+              {ctaCollection?.items?.[0] && (
+                <ModalCtaButton
+                  cta={ctaCollection.items[0]}
+                  variant="outlineWhite"
+                  className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
+                />
+              )}
             </Box>
           </div>
         </Box>
