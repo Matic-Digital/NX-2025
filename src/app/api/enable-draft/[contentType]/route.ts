@@ -31,6 +31,8 @@ import { getPageListById } from '@/components/PageList/PageListApi';
 import { getPostById } from '@/components/Post/PostApi';
 import { getProductById } from '@/components/Product/ProductApi';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
+import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
+import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { getServiceById } from '@/components/Service/ServiceApi';
@@ -39,9 +41,12 @@ import { getSliderItemById } from '@/components/Slider/SliderItemApi';
 import { getSocialById } from '@/components/Social/SocialApi';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
-import { getTestimonialsById } from '@/components/Testimonials/TestimonialsApi';
-import { getTimelineSliderItemsByIds } from '@/components/TimelineSlider/TimelineSliderItemApi';
-import { getVideosByIds } from '@/components/Video/VideoApi';
+import {
+  getTestimonialItemById,
+  getTestimonialsById
+} from '@/components/Testimonials/TestimonialsApi';
+import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
+import { getVideoById } from '@/components/Video/VideoApi';
 
 // Content type to API function mapping
 const contentTypeMap = {
@@ -75,14 +80,14 @@ const contentTypeMap = {
     previewPath: '/preview/collection',
     entityName: 'Collection'
   },
+  'contact-card': {
+    fetchFn: getContactCardById,
+    previewPath: '/preview/contact-card',
+    entityName: 'ContactCard'
+  },
   content: {
     fetchFn: getContentById,
     previewPath: '/preview/content',
-    entityName: 'Content'
-  },
-  'content-block': {
-    fetchFn: getContentById,
-    previewPath: '/preview/content-block',
     entityName: 'Content'
   },
   'content-grid': {
@@ -100,6 +105,16 @@ const contentTypeMap = {
     previewPath: '/preview/cta-banner',
     entityName: 'CtaBanner'
   },
+  'cta-grid': {
+    fetchFn: getCtaGridById,
+    previewPath: '/preview/cta-grid',
+    entityName: 'CtaGrid'
+  },
+  event: {
+    fetchFn: getEventById,
+    previewPath: '/preview/event',
+    entityName: 'Event'
+  },
   footer: {
     fetchFn: getFooterById,
     previewPath: '/preview/footer',
@@ -109,6 +124,11 @@ const contentTypeMap = {
     fetchFn: getHeaderById,
     previewPath: '/preview/header',
     entityName: 'Header'
+  },
+  'hubspot-form': {
+    fetchFn: getHubspotFormById,
+    previewPath: '/preview/hubspot-form',
+    entityName: 'HubspotForm'
   },
   image: {
     fetchFn: getImageById,
@@ -120,6 +140,11 @@ const contentTypeMap = {
     previewPath: '/preview/image-between',
     entityName: 'ImageBetween'
   },
+  'mega-menu': {
+    fetchFn: getMegaMenuById,
+    previewPath: '/preview/mega-menu',
+    entityName: 'MegaMenu'
+  },
   menu: {
     fetchFn: getMenuById,
     previewPath: '/preview/menu',
@@ -129,6 +154,16 @@ const contentTypeMap = {
     fetchFn: getMenuItemById,
     previewPath: '/preview/menu-item',
     entityName: 'MenuItem'
+  },
+  modal: {
+    fetchFn: getModalById,
+    previewPath: '/preview/modal',
+    entityName: 'Modal'
+  },
+  'office-location': {
+    fetchFn: getLocationById,
+    previewPath: '/preview/office-location',
+    entityName: 'OfficeLocation'
   },
   page: {
     fetchFn: getPageById,
@@ -140,10 +175,35 @@ const contentTypeMap = {
     previewPath: '/preview/page-list',
     entityName: 'PageList'
   },
+  post: {
+    fetchFn: getPostById,
+    previewPath: '/preview/post',
+    entityName: 'Post'
+  },
   product: {
     fetchFn: getProductById,
     previewPath: '/preview/product',
     entityName: 'Product'
+  },
+  'regions-map': {
+    fetchFn: getRegionsMapById,
+    previewPath: '/preview/regions-map',
+    entityName: 'RegionsMap'
+  },
+  'region-stats': {
+    fetchFn: getRegionStatsById,
+    previewPath: '/preview/region-stats',
+    entityName: 'RegionStats'
+  },
+  'region-stat-item': {
+    fetchFn: getRegionStatItemById,
+    previewPath: '/preview/region-stat-item',
+    entityName: 'RegionStatItem'
+  },
+  'rich-text': {
+    fetchFn: getRichContentById,
+    previewPath: '/preview/rich-text',
+    entityName: 'RichText'
   },
   'section-heading': {
     fetchFn: getSectionHeadingById,
@@ -175,52 +235,6 @@ const contentTypeMap = {
     previewPath: '/preview/solution',
     entityName: 'Solution'
   },
-  'contact-card': {
-    fetchFn: getContactCardById,
-    previewPath: '/preview/contact-card',
-    entityName: 'ContactCard'
-  },
-  'cta-grid': {
-    fetchFn: getCtaGridById,
-    previewPath: '/preview/cta-grid',
-    entityName: 'CtaGrid'
-  },
-  event: {
-    fetchFn: getEventById,
-    previewPath: '/events',
-    entityName: 'Event',
-    useSlug: true
-  },
-  'hubspot-form': {
-    fetchFn: getHubspotFormById,
-    previewPath: '/preview/hubspot-form',
-    entityName: 'HubspotForm'
-  },
-  'mega-menu': {
-    fetchFn: getMegaMenuById,
-    previewPath: '/preview/mega-menu',
-    entityName: 'MegaMenu'
-  },
-  'office-location': {
-    fetchFn: getLocationById,
-    previewPath: '/preview/office-location',
-    entityName: 'OfficeLocation'
-  },
-  post: {
-    fetchFn: getPostById,
-    previewPath: '/preview/post',
-    entityName: 'Post'
-  },
-  region: {
-    fetchFn: getRegionsMapById,
-    previewPath: '/preview/region',
-    entityName: 'Region'
-  },
-  'rich-content': {
-    fetchFn: getRichContentById,
-    previewPath: '/preview/rich-content',
-    entityName: 'RichContent'
-  },
   'team-member': {
     fetchFn: getTeamMemberById,
     previewPath: '/preview/team-member',
@@ -231,20 +245,18 @@ const contentTypeMap = {
     previewPath: '/preview/testimonials',
     entityName: 'Testimonials'
   },
-  modal: {
-    fetchFn: getModalById,
-    previewPath: '/preview/modal',
-    entityName: 'Modal'
+  'testimonial-item': {
+    fetchFn: getTestimonialItemById,
+    previewPath: '/preview/testimonial-item',
+    entityName: 'TestimonialItem'
   },
   'timeline-slider-item': {
-    fetchFn: (id: string, preview = false) =>
-      getTimelineSliderItemsByIds([id], preview).then((items) => items[0]),
+    fetchFn: getTimelineSliderItemById,
     previewPath: '/preview/timeline-slider-item',
     entityName: 'TimelineSliderItem'
   },
   video: {
-    fetchFn: (id: string, preview = false) =>
-      getVideosByIds([id], preview).then((items) => items[0]),
+    fetchFn: getVideoById,
     previewPath: '/preview/video',
     entityName: 'Video'
   }
@@ -283,8 +295,12 @@ export async function GET(
   const { fetchFn, previewPath, entityName } = contentTypeMap[contentType];
 
   try {
+    console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
+
     // Fetch the content using the appropriate API function
-    const content = await fetchFn(id, true) as Record<string, unknown> | null;
+    const content = await fetchFn(id, true);
+
+    console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
 
     // Type-safe logging - check if content has sys property
     const contentId =
@@ -296,9 +312,10 @@ export async function GET(
       'id' in (content.sys as Record<string, unknown>)
         ? (content.sys as Record<string, unknown>).id as string
         : 'unknown';
-    console.log(`enable-draft-${contentType}`, contentId, id);
+    console.log(`⭐ enable-draft-${contentType}`, contentId, id);
 
     if (!content) {
+      console.log(`⭐ enable-draft-${contentType}: Content not found for ID: ${id}`);
       return NextResponse.json({ message: `${entityName} not found` }, { status: 404 });
     }
 
@@ -324,7 +341,7 @@ export async function GET(
     // Redirect to the appropriate preview page
     return NextResponse.redirect(new URL(`${previewPath}?id=${id}`, request.url));
   } catch (error) {
-    console.error(`Error enabling draft for ${contentType}:`, error);
+    console.error(`⭐ Error enabling draft for ${contentType}:`, error);
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });
   }
 }

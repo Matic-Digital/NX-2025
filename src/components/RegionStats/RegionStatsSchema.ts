@@ -13,7 +13,7 @@ export const RegionStatsSchema = z.object({
   itemsCollection: z.object({
     items: z.array(RegionStatItemSchema)
   }),
-  cta: ButtonSchema,
+  cta: ButtonSchema.optional(),
   __typename: z.string()
 });
 

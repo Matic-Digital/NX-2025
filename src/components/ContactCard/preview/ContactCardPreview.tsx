@@ -8,17 +8,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
 
-interface ContactCardPreviewProps extends Partial<ContactCardType> {
-  contactCardId?: string;
-}
-
 /**
  * ContactCard Preview Component
  *
  * This component is used in Contentful Live Preview to display ContactCard components
  * with a live preview and field breakdown.
  */
-export function ContactCardPreview(props: ContactCardPreviewProps) {
+export function ContactCardPreview(props: Partial<ContactCardType>) {
   // Contentful Live Preview integration
   const liveContactCard = useContentfulLiveUpdates(props);
 

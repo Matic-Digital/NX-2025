@@ -8,8 +8,8 @@ export const ModalSchema = z.object({
       id: z.string()
     })
     .optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
+  title: z.string(),
+  description: z.string(),
   form: HubspotFormSchema.optional()
 });
 

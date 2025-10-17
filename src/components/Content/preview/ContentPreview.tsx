@@ -8,22 +8,23 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Content as ContentType } from '@/components/Content/ContentSchema';
 
-interface ContentPreviewProps extends Partial<ContentType> {
-  contentId?: string;
-}
-
 /**
  * Content Preview Component
  *
  * This component is used in Contentful Live Preview to display Content components
  * with a live preview and field breakdown.
  */
-export function ContentPreview(props: ContentPreviewProps) {
+export function ContentPreview(props: Partial<ContentType>) {
+  // Unwrap the item property if it exists (API returns {item: Content})
+  const contentData = 'item' in props && props.item ? props.item : props;
+
   // Contentful Live Preview integration
-  const liveContent = useContentfulLiveUpdates(props);
+  const rawLiveContent = useContentfulLiveUpdates(contentData);
+  const liveContent = rawLiveContent as Partial<ContentType>;
 
   // Debug logging
   console.log('ContentPreview - props:', props);
+  console.log('ContentPreview - contentData:', contentData);
   console.log('ContentPreview - liveContent:', liveContent);
 
   return (
@@ -39,7 +40,10 @@ export function ContentPreview(props: ContentPreviewProps) {
               </span>
             </div>
             <div className="p-8">
-              {liveContent?.sys && liveContent?.title && liveContent?.item ? (
+              {liveContent?.sys &&
+              liveContent?.title &&
+              liveContent?.variant &&
+              liveContent?.item ? (
                 <Content {...(liveContent as ContentType)} />
               ) : (
                 <div className="p-8 text-center text-gray-500">
@@ -47,13 +51,15 @@ export function ContentPreview(props: ContentPreviewProps) {
                   <ul className="mt-2 text-sm">
                     {!liveContent?.sys && <li>• Content ID is required</li>}
                     {!liveContent?.title && <li>• Title is required</li>}
+                    {!liveContent?.variant && <li>• Variant is required</li>}
                     {!liveContent?.item && <li>• Item is required</li>}
                   </ul>
                   {/* Debug info */}
                   <div className="mt-4 text-xs text-gray-400">
                     <p>
                       Debug: sys={liveContent?.sys?.id ? '✓' : '✗'}, title=
-                      {liveContent?.title ? '✓' : '✗'}, item={liveContent?.item ? '✓' : '✗'}
+                      {liveContent?.title ? '✓' : '✗'}, variant=
+                      {liveContent?.variant ? '✓' : '✗'}, item={liveContent?.item ? '✓' : '✗'}
                     </p>
                   </div>
                 </div>

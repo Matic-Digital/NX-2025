@@ -57,8 +57,13 @@ export async function getVideosByIds(videoIds: string[], preview = false): Promi
       throw error;
     }
     if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Sliders: ${error.message}`);
+      throw new NetworkError(`Error fetching Videos: ${error.message}`);
     }
-    throw new Error('Unknown error fetching Sliders');
+    throw new Error('Unknown error fetching Videos');
   }
+}
+
+export async function getVideoById(id: string, preview = false): Promise<Video | null> {
+  const videos = await getVideosByIds([id], preview);
+  return videos[0] ?? null;
 }

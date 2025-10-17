@@ -42,13 +42,13 @@ export const PostSchema = z.object({
   template: PostTemplateSchema,
   excerpt: z.string().optional(),
   datePublished: z.string().optional(),
-  mainImage: ImageSchema.optional(),
   bannerBackground: ImageSchema.optional(),
+  mainImage: ImageSchema.optional(),
   content: RichTextSchema,
   authorsCollection: z.object({
     items: z.array(TeamMemberSchema)
-  }).optional(),
-  authors: z.array(TeamMemberSchema).optional(), // Keep for backward compatibility
+  }),
+  authors: z.array(TeamMemberSchema), // Keep for backward compatibility
   categories: z.array(PostCategorySchema),
   tags: z.array(z.string()).optional(),
   openGraphImage: ImageSchema.optional(),

@@ -10,16 +10,18 @@ export const ContentGridItemSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
+  variant: z.string().optional(),
   heading: z.string(),
+  subHeading: z.string().optional(),
   ctaCollection: z
     .object({
       items: z.array(ButtonSchema)
     })
     .optional(),
+  link: z.string().optional(),
   description: z.string().optional(),
   icon: AssetSchema.optional(),
   image: ImageSchema.optional(),
-  variant: z.string().optional(),
   __typename: z.string().optional()
 });
 

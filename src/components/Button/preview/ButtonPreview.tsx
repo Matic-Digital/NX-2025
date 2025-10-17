@@ -1,20 +1,15 @@
 'use client';
 
+import { ModalCtaButton } from '../ModalCtaButton';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { Button as ButtonComponent } from '@/components/ui/button';
-
 import { buttonFields } from '@/components/Button/preview/ButtonFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
-
-interface ButtonPreviewProps extends Partial<ButtonType> {
-  buttonId?: string;
-}
 
 /**
  * Button Preview Component
@@ -22,7 +17,7 @@ interface ButtonPreviewProps extends Partial<ButtonType> {
  * This component is used in Contentful Live Preview to display Button components
  * with a live preview and field breakdown.
  */
-export function ButtonPreview(props: ButtonPreviewProps) {
+export function ButtonPreview(props: Partial<ButtonType>) {
   // Contentful Live Preview integration
   const liveButton = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
@@ -47,7 +42,6 @@ export function ButtonPreview(props: ButtonPreviewProps) {
 
                 if (hasRequiredFields) {
                   const displayText = liveButton?.text ?? liveButton?.internalText ?? 'Button';
-                  const textFieldId = liveButton?.text ? 'text' : 'internalText';
 
                   // Determine which link field to target for inspector props
                   const linkFieldId = liveButton?.internalLink
@@ -60,9 +54,21 @@ export function ButtonPreview(props: ButtonPreviewProps) {
 
                   return (
                     <div {...(linkFieldId ? inspectorProps({ fieldId: linkFieldId }) : {})}>
-                      <ButtonComponent>
-                        <span {...inspectorProps({ fieldId: textFieldId })}>{displayText}</span>
-                      </ButtonComponent>
+                      <ModalCtaButton
+                        cta={{
+                          sys: {
+                            id: liveButton?.sys?.id ?? ''
+                          },
+                          internalText: displayText,
+                          text: displayText,
+                          internalLink: liveButton?.internalLink,
+                          externalLink: liveButton?.externalLink,
+                          modal: liveButton?.modal,
+                          icon: liveButton?.icon
+                        }}
+                        variant="white"
+                        className="border-border-input w-full justify-center border-1"
+                      />
                     </div>
                   );
                 }
@@ -83,7 +89,7 @@ export function ButtonPreview(props: ButtonPreviewProps) {
           </div>
 
           {/* Field Breakdown */}
-          <FieldBreakdown title="Button Fields" fields={buttonFields} data={liveButton} />
+          <FieldBreakdown fields={buttonFields} data={liveButton} />
         </div>
       </div>
     </div>

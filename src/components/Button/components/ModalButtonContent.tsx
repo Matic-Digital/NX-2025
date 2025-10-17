@@ -8,7 +8,7 @@ import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
 
 interface ModalButtonContentProps {
   cta: ButtonType;
-  variant: 'primary' | 'outline' | 'white' | 'outlineWhite';
+  variant: 'primary' | 'secondary' | 'outline' | 'white' | 'outlineWhite';
   className?: string;
   isModalButton: boolean;
   linkProps: {
@@ -49,12 +49,11 @@ export const ModalButtonContent = ({
 
   // Link button rendering
   return (
-    <Link href={linkProps.href} {...(linkProps.target ? { target: linkProps.target, rel: linkProps.rel } : {})}>
-      <Button 
-        variant={variant} 
-        className={className}
-        {...inspectorProps({ fieldId: 'text' })}
-      >
+    <Link
+      href={linkProps.href}
+      {...(linkProps.target ? { target: linkProps.target, rel: linkProps.rel } : {})}
+    >
+      <Button variant={variant} className={className} {...inspectorProps({ fieldId: 'text' })}>
         {cta.text}
         {renderIcon(cta.icon)}
       </Button>

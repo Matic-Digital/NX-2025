@@ -10,10 +10,10 @@ export const CtaBannerSchema = z.object({
   }),
   title: z.string(),
   description: z.string(),
-  backgroundImage: AssetSchema,
-  backgroundMedia: ImageSchema,
   primaryCta: ButtonSchema,
-  secondaryCta: ButtonSchema,
+  secondaryCta: ButtonSchema.optional(),
+  backgroundMedia: ImageSchema.optional(),
+  backgroundImage: AssetSchema,
   __typename: z.string().optional()
 });
 

@@ -7,9 +7,9 @@ export const TimelineSliderItemSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
-  year: z.string(),
-  description: z.string(),
-  asset: z.union([ImageSchema, VideoSchema]),
+  year: z.string().optional(),
+  description: z.string().optional(),
+  asset: z.union([ImageSchema, VideoSchema]).optional(),
   __typename: z.string().optional()
 });
 

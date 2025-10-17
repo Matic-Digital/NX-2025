@@ -8,17 +8,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
 
-interface BannerHeroPreviewProps extends Partial<BannerHeroType> {
-  bannerHeroId?: string;
-}
-
 /**
  * BannerHero Preview Component
  *
  * This component is used in Contentful Live Preview to display BannerHero components
  * with a live preview and field breakdown.
  */
-export function BannerHeroPreview(props: BannerHeroPreviewProps) {
+export function BannerHeroPreview(props: Partial<BannerHeroType>) {
   // Contentful Live Preview integration
   const liveBannerHero = useContentfulLiveUpdates(props);
 

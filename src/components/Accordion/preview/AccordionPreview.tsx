@@ -21,17 +21,13 @@ import type {
   Accordion as AccordionType
 } from '@/components/Accordion/AccordionSchema';
 
-interface AccordionPreviewProps extends Partial<AccordionType> {
-  accordionId?: string;
-}
-
 /**
  * Accordion Preview Component
  *
  * This component is used in Contentful Live Preview to display Accordion components
  * with a live preview and field breakdown.
  */
-export function AccordionPreview(props: AccordionPreviewProps) {
+export function AccordionPreview(props: Partial<AccordionType>) {
   const [accordionItems, setAccordionItems] = useState<AccordionItemType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

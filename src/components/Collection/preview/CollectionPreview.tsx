@@ -8,17 +8,13 @@ import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
 
-interface CollectionPreviewProps extends Partial<CollectionType> {
-  collectionId?: string;
-}
-
 /**
  * Collection Preview Component
  *
  * This component is used in Contentful Live Preview to display Collection components
  * with a live preview and field breakdown.
  */
-export function CollectionPreview(props: CollectionPreviewProps) {
+export function CollectionPreview(props: Partial<CollectionType>) {
   // Contentful Live Preview integration
   const liveCollection = useContentfulLiveUpdates(props);
 

@@ -20,8 +20,10 @@ interface EventProps extends Event {
 }
 
 export function Event(props: EventProps) {
-  const { eventId } = props;
-  const { event, loading, error, inspectorProps } = useEventData(eventId);
+  const { eventId, ...eventData } = props;
+  // If we have event data (preview mode), pass it as initialData to skip fetching
+  const initialData = eventData.sys ? (eventData as Event) : undefined;
+  const { event, loading, error, inspectorProps } = useEventData(eventId, initialData);
 
   if (loading) {
     return <LoadingState />;

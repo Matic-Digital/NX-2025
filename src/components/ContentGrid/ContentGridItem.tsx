@@ -14,6 +14,8 @@ import { SvgIcon } from '@/components/ui/svg-icon';
 
 import { Box } from '@/components/global/matic-ds';
 
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
+
 import {
   getContentGridItemById,
   getContentGridItemLink
@@ -472,7 +474,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         )}
         <Box direction="col" gap={2} className="bg-zinc-800 p-6 relative">
           <AirImage
-            link="https://air-prod.imgix.net/9767136e-c070-4bd1-9f65-cbbdacbc196e.jpg?w=1340&h=304&fm=webp&fit=crop&auto=auto"
+            link="https://air-prod.imgix.net/1cd01021-40e4-4f15-add7-a864a7866f51.jpg?w=4000&h=3078&fm=webp&fit=crop&auto=auto"
             altText={heading}
             className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
           />
@@ -480,12 +482,13 @@ export function ContentGridItem(props: ContentGridItemProps) {
             <h3 className="text-headline-sm text-white">{heading}</h3>
             <Box gap={4} className="items-end">
               <p className="text-body-xs text-white">{description}</p>
-              <Button
-                variant="outlineTrasparentWhite"
-                className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
-              >
-                {ctaCollection?.items?.[0]?.text}
-              </Button>
+              {ctaCollection?.items?.[0] && (
+                <ModalCtaButton
+                  cta={ctaCollection.items[0]}
+                  variant="outlineWhite"
+                  className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
+                />
+              )}
             </Box>
           </div>
         </Box>

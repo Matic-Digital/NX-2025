@@ -40,6 +40,7 @@ export function ImageBetween(props: ImageBetween) {
 
   // Check if the slider contains Post items
   const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
+  const isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
 
   // Fetch full data for contentTop
   useEffect(() => {
@@ -168,8 +169,8 @@ export function ImageBetween(props: ImageBetween) {
                 'mb-24 lg:mb-56 xl:mb-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
               imageBetween.asset && imageBetween.asset.__typename === 'ContentGrid' && 'mb-0',
-              isBannerHero && !isPostSlider && 'mb-0 pb-0',
-              isBannerHero && isPostSlider && 'mb-0 pb-16'
+              isBannerHero && isPostSlider ? 'mb-0 pb-16' : 'mb-0 pb-0',
+              isBannerHero && isImageSlider && 'mb-14 pb-14'
             )}
           >
             {/* Top Content Grid */}
@@ -241,7 +242,10 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.asset &&
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
-                <Container className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute" {...inspectorProps({ fieldId: 'asset' })}>
+                <Container
+                  className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute"
+                  {...inspectorProps({ fieldId: 'asset' })}
+                >
                   <ContentGrid
                     {...assetContentGrid}
                     componentType={imageBetween.__typename}

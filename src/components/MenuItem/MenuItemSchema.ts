@@ -36,9 +36,9 @@ export const MenuItemSchema = z.object({
   associatedImage: ImageSchema.optional(),
   title: z.string(),
   text: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   internalLink: MenuItemInternalLinkSchema.optional(),
-  externalLink: z.optional(z.string().url())
+  externalLink: z.string().url().optional()
 });
 
 export type MenuItem = z.infer<typeof MenuItemSchema>;

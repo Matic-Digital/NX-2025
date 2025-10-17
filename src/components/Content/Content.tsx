@@ -18,12 +18,9 @@ import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-import type { ModalType } from '../Button/ModalCtaButton';
-import type { Modal } from '../Modals/Modal';
 import type {
   SectionHeading as SectionHeadingType,
   SectionHeadingVariant
@@ -68,12 +65,6 @@ type SectionHeadingCardData = Pick<
   };
 };
 
-type ModalData = {
-  title?: string;
-  description?: string;
-  sys?: { id: string };
-};
-
 interface ContentCardProps {
   data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData;
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
@@ -98,8 +89,6 @@ export function Content(props: ContentProps) {
   const [fetchedData, setFetchedData] = useState<Content | null>(null);
   const [loading, setLoading] = useState(!!contentId);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<ModalData | null>(null);
 
   // Fetch data if contentId is provided
   useEffect(() => {
@@ -123,53 +112,57 @@ export function Content(props: ContentProps) {
 
   // ===== CONTENTFUL HOOKS =====
   const content = useContentfulLiveUpdates(fetchedData ?? restProps);
-  const inspectorProps = useContentfulInspectorMode({ 
-    entryId: content?.sys?.id || undefined 
+  const inspectorProps = useContentfulInspectorMode({
+    entryId: content?.sys?.id || undefined
   });
-
-  console.log('⭐ Content', content);
-
-  // ===== HANDLERS =====
-  const handleModalOpen = (modal: Modal, _modalType: ModalType) => {
-    setActiveModal({
-      title: modal.title ?? 'Request a Quote',
-      description: modal.description ?? 'Please fill out the form below to request a quote.',
-      sys: modal.sys ?? { id: 'modal-' + Date.now() }
-    });
-    setIsModalOpen(true);
-  };
 
   // ===== HELPER FUNCTIONS =====
   const isContentGridItemData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
   ): data is ContentGridItemCardData => {
-    return data != null && typeof data === 'object' && 'heading' in data && 'variant' in data && 'ctaCollection' in data;
+    return (
+      data != null &&
+      typeof data === 'object' &&
+      'heading' in data &&
+      'variant' in data &&
+      'ctaCollection' in data
+    );
   };
 
   const isHubspotFormData = (
     data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is HubspotFormCardData => {
-    return data != null && typeof data === 'object' && 'title' in data && 'description' in data && 'formId' in data;
+    return (
+      data != null &&
+      typeof data === 'object' &&
+      'title' in data &&
+      'description' in data &&
+      'formId' in data
+    );
   };
 
   const isProductData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is ProductCardData => {
     return data != null && typeof data === 'object' && 'slug' in data;
   };
 
   const isSectionHeadingCardData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is SectionHeadingCardData => {
     return data != null && typeof data === 'object' && 'variant' in data && 'overline' in data;
   };
 
   const isSectionHeadingData = (
-    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData
+    data: ProductCardData | SectionHeadingCardData | ContentGridItemCardData | HubspotFormCardData
   ): data is SectionHeadingCardData => {
     return (
-      data != null && typeof data === 'object' &&
-      'overline' in data && 'ctaCollection' in data && !('heading' in data) && !('slug' in data)
+      data != null &&
+      typeof data === 'object' &&
+      'overline' in data &&
+      'ctaCollection' in data &&
+      !('heading' in data) &&
+      !('slug' in data)
     );
   };
 
@@ -321,8 +314,6 @@ export function Content(props: ContentProps) {
                     <ModalCtaButton
                       cta={data.ctaCollection.items[0]}
                       variant="white"
-                      modalType="quote"
-                      onModalOpen={handleModalOpen}
                       className="w-fit"
                     />
                   )}
@@ -342,8 +333,6 @@ export function Content(props: ContentProps) {
                     <ModalCtaButton
                       cta={data.ctaCollection.items[0]}
                       variant="white"
-                      modalType="quote"
-                      onModalOpen={handleModalOpen}
                       className="w-fit"
                     />
                   )}
@@ -421,8 +410,6 @@ export function Content(props: ContentProps) {
                             ? 'primary'
                             : 'white'
                       }
-                      modalType="quote"
-                      onModalOpen={handleModalOpen}
                     />
                   ))
                 )}
@@ -457,16 +444,6 @@ export function Content(props: ContentProps) {
   const getVariant = (): ContentVariant | null => {
     return content.variant ?? null;
   };
-
-  const renderModal = () => (
-    <RequestAQuoteModal
-      isOpen={isModalOpen}
-      onOpenChange={setIsModalOpen}
-      title={activeModal?.title ?? 'Request a Quote'}
-      description={activeModal?.description ?? 'Please fill out the form below to request a quote.'}
-      formId={activeModal?.sys?.id ?? 'default-form-id'}
-    />
-  );
 
   // ===== MAIN CONTENT RENDERING =====
   if (content && 'item' in content && content.item) {
@@ -543,7 +520,6 @@ export function Content(props: ContentProps) {
             inspectorProps={inspectorProps}
             variant={variant}
           />
-          {renderModal()}
         </>
       );
     }
@@ -576,7 +552,6 @@ export function Content(props: ContentProps) {
               inspectorProps={inspectorProps}
               variant={variant}
             />
-            {renderModal()}
           </>
         );
       }
@@ -590,7 +565,6 @@ export function Content(props: ContentProps) {
             description={sectionHeading.description}
             ctaCollection={sectionHeading.ctaCollection}
           />
-          {renderModal()}
         </>
       );
     }
@@ -625,26 +599,5 @@ export function Content(props: ContentProps) {
         );
       }
     }
-
-    // ===== GENERIC CONTENT FALLBACK =====
-    return (
-      <>
-        <article className="prose max-w-none">
-          <h2 {...inspectorProps({ fieldId: 'title' })}>{content.title}</h2>
-          <p className="text-sm text-gray-500">Content type: {content.__typename}</p>
-        </article>
-
-        {/* Request a Quote Modal */}
-        <RequestAQuoteModal
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          title={activeModal?.title ?? 'Request a Quote'}
-          description={
-            activeModal?.description ?? 'Please fill out the form below to request a quote.'
-          }
-          formId={activeModal?.sys?.id ?? 'default-form-id'}
-        />
-      </>
-    );
   }
 }
