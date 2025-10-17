@@ -96,7 +96,7 @@ export function ContactCard(props: ContactCardProps) {
     <Box
       direction="col"
       gap={3}
-      className="bg-surface-invert h-full p-10 "
+      className="bg-subtle h-full p-10 "
       {...inspectorProps({ fieldId: 'title' })}
     >
       {/* Title */}

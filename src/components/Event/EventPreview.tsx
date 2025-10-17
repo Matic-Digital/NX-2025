@@ -227,19 +227,6 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
           </div>
         )}
 
-        {/* Contact Location */}
-        {event.contactLocation && (
-          <div>
-            <label className="block text-sm font-medium mb-2">Contact Location (Optional)</label>
-            <p 
-              className="px-3 py-1 bg-secondary/10 text-secondary-foreground rounded-full inline-block text-sm"
-              {...inspectorProps({ fieldId: 'contactLocation' })}
-            >
-              {event.contactLocation ?? ''}
-            </p>
-          </div>
-        )}
-
         {/* Layout */}
         {event.layout && (
           <div>

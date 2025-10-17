@@ -8,6 +8,9 @@ import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/Hubsp
 import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
+import { LOCATION_GRAPHQL_FIELDS } from '@/components/OfficeLocation/OfficeLocationApi';
+import { CONTACT_CARD_GRAPHQL_FIELDS } from '@/components/ContactCard/ContactCardApi';
+import { SLIDER_GRAPHQL_FIELDS_SIMPLE } from '@/components/Slider/SliderApi';
 
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
 
@@ -60,7 +63,6 @@ export const EVENT_GRAPHQL_FIELDS = `
     ${IMAGE_GRAPHQL_FIELDS}
   }
   mainImageCaption
-  contactLocation
   formCta {
     ${HUBSPOTFORM_GRAPHQL_FIELDS}
   }
@@ -84,6 +86,18 @@ export const EVENT_GRAPHQL_FIELDS = `
   }
   sectionRichContent {
     json
+  }
+  contactHeadline
+  officeLocation {
+    ${LOCATION_GRAPHQL_FIELDS}
+  }
+  contactCardsCollection {
+    items {
+      ${CONTACT_CARD_GRAPHQL_FIELDS}
+    }
+  }
+  slider {
+    ${SLIDER_GRAPHQL_FIELDS_SIMPLE}
   }
 `;
 

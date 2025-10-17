@@ -21,6 +21,9 @@ import type { Post } from '@/components/Post/PostSchema';
 import { PostCard } from '@/components/Post/PostCard';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
+import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { Slider } from '@/components/Slider/Slider';
 
 interface EventDetailWithLayoutProps {
   event: Event;
@@ -342,6 +345,13 @@ export function EventDetail({ event, header = null, footer = null }: EventDetail
               <NewsPosts />
             </div>
 
+            {/* Slider */}
+            {event.slider && (
+              <div className="mt-[6rem]">
+                <Slider {...event.slider} />
+              </div>
+            )}
+
             {/* Form CTA */}
             {event.formCta && (
               <div className="mt-[6rem]">
@@ -464,6 +474,13 @@ export function EventDetail({ event, header = null, footer = null }: EventDetail
              <NewsPosts />
            </div>
 
+            {/* Slider */}
+            {event.slider && (
+              <div className="mt-[6rem]">
+                <Slider {...event.slider} />
+              </div>
+            )}
+
             {/* Form CTA */}
             {event.formCta && (
               <div className="mt-[4rem]">
@@ -488,7 +505,7 @@ export function EventDetail({ event, header = null, footer = null }: EventDetail
             } : undefined}
             contentTop={
               <Container className='h-[40.75rem] flex flex-col justify-center'>
-                <h1 className='text-[3rem] text-white font-normal tracking-[-0.03rem] leading-[120%] drop-shadow-lg text-left'>{event.title ?? ''}</h1>
+                <h1 className='text-display-md'>{event.title ?? ''}</h1>
               </Container>
             }
             asset={
@@ -572,11 +589,89 @@ export function EventDetail({ event, header = null, footer = null }: EventDetail
               </div>
             )}
 
-            {/* In the News Section */}
-            <div className="mt-[6rem]">
-              <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
-              <NewsPosts />
-            </div>
+            {/* Referenced Posts Section */}
+            {event.referencedPostsCollection?.items && event.referencedPostsCollection.items.length > 0 && (
+              <div className="mt-[6rem]">
+                <div className="space-y-6">
+                  {event.referencedPostsCollection.items.map((post, index) => (
+                    <div key={post.sys.id} className={`flex flex-col md:flex-row gap-6 md:h-[34.125rem] ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                      {/* Main Image */}
+                      {post.mainImage && (
+                        <div className="flex-grow">
+                          <div className="w-full overflow-hidden h-64 md:h-full max-h-[34.125rem]">
+                            <AirImage
+                              link={post.mainImage.link ?? ''}
+                              altText={post.mainImage.altText ?? post.mainImage.title ?? post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Content */}
+                      <div className="flex-shrink-0 md:w-[30rem] space-y-3 bg-subtle p-[2.5rem] flex flex-col justify-between">
+                        {/* Title */}
+                        <h3 
+                          className="leading-[130%]"
+                          style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                        >
+                          {post.title}
+                        </h3>
+                        
+                        {/* Divider */}
+                        <div className="h-px w-full bg-border"></div>
+                        
+                        {/* Excerpt */}
+                        {post.excerpt && (
+                          <p className="text-body-sm text-text-subtle leading-relaxed">
+                            {post.excerpt}
+                          </p>
+                        )}
+                        
+                        {/* Button */}
+                        <div className="pt-3">
+                          <Link href={`/posts/${post.slug}`}>
+                            <Button>
+                              Read More
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Contact Section */}
+            {(event.contactHeadline ?? event.officeLocation ?? (event.contactCardsCollection?.items && event.contactCardsCollection.items.length > 0)) && (
+              <div className="mt-[6rem]">
+                {/* Contact Headline */}
+                {event.contactHeadline && (
+                  <h2 className="text-[3rem] font-normal leading-[120%] mb-8">{event.contactHeadline}</h2>
+                )}
+
+                {/* Office Location */}
+                {event.officeLocation && (
+                  <div className="mb-8">
+                    <Location {...event.officeLocation} variant="featured" />
+                  </div>
+                )}
+
+                {/* Contact Cards */}
+                {event.contactCardsCollection?.items && event.contactCardsCollection.items.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {event.contactCardsCollection.items.map((contactCard) => (
+                      <div key={contactCard.sys.id} className="[&_.bg-subtle]:!bg-white [&_.bg-subtle]:!text-black [&_button]:!bg-white [&_button]:!text-black [&_button]:!border-gray-300 [&_button:hover]:!bg-gray-50">
+                        <ContactCard 
+                          contactCardId={contactCard.sys.id}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Form CTA */}
             {event.formCta && (

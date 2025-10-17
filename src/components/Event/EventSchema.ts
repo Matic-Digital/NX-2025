@@ -9,18 +9,13 @@ import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSch
 import { PostSchema } from '@/components/Post/PostSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 import { VideoSchema } from '@/components/Video/VideoSchema';
+import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
+import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
+import { SliderSysSchema } from '@/components/Slider/SliderSchema';
 
 // Event template options as defined in the content model
 const EventTemplateSchema = z.enum(['Landing 1', 'Landing 2', 'Landing 3', 'Agenda']);
 
-// Contact location options
-const ContactLocationSchema = z.enum([
-  'Americas',
-  'Europe', 
-  'Latin America',
-  'Australian Pacific',
-  'Middle East, India, & North Africa'
-]);
 
 export const EventSchema = z.object({
   sys: z.object({
@@ -44,7 +39,6 @@ export const EventSchema = z.object({
   bannerImage: ImageSchema.optional(),
   mainImage: ImageSchema.optional(),
   mainImageCaption: z.string().optional(),
-  contactLocation: ContactLocationSchema.optional(),
   formCta: HubspotFormSchema.optional(),
   referencedPostsCollection: z.object({
     items: z.array(PostSchema)
@@ -56,12 +50,17 @@ export const EventSchema = z.object({
   sectionRichContent: z.object({
     json: z.unknown()
   }).optional(),
+  contactHeadline: z.string().optional(),
+  officeLocation: OfficeLocationSchema.optional(),
+  contactCardsCollection: z.object({
+    items: z.array(ContactCardSchema)
+  }).optional(),
+  slider: SliderSysSchema.optional(),
   __typename: z.string().optional()
 });
 
 export type Event = z.infer<typeof EventSchema>;
 export type EventTemplate = z.infer<typeof EventTemplateSchema>;
-export type ContactLocation = z.infer<typeof ContactLocationSchema>;
 
 export interface EventResponse {
   items: Event[];
