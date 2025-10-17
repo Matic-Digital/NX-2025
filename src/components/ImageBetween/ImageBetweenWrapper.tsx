@@ -21,6 +21,8 @@ interface ImageBetweenWrapperProps {
     link: string;
     altText?: string;
   };
+  // Variant for different spacing patterns
+  variant?: 'article' | 'default';
 }
 
 /**
@@ -37,7 +39,8 @@ export function ImageBetweenWrapper({
   darkSectionClassName,
   lightSectionClassName,
   assetClassName,
-  backgroundImage
+  backgroundImage,
+  variant = 'article'
 }: ImageBetweenWrapperProps) {
   return (
     <ErrorBoundary>
@@ -54,25 +57,37 @@ export function ImageBetweenWrapper({
               className="absolute inset-0 w-full h-full object-cover z-0"
             />
           )}
-          <Box
-            direction="col"
-            gap={8}
-            className={cn(
-              'mb-72 mt-24 lg:mb-56 lg:mt-24 xl:mb-72 xl:mt-24 w-full max-w-full lg:max-w-[71.3rem] mx-auto'
-            )}
-          >
-            {/* Top Content */}
-            {contentTop && (
-              <div className="relative z-10">
+          {variant === 'article' ? (
+            <Box
+              direction="col"
+              gap={8}
+              className={cn(
+                'mb-72 mt-24 lg:mb-56 lg:mt-24 xl:mb-72 xl:mt-24 w-full max-w-full lg:max-w-[71.3rem] mx-auto'
+              )}
+            >
+              {/* Top Content */}
+              {contentTop && (
+                <div className="relative z-10">
+                  {contentTop}
+                </div>
+              )}
+            </Box>
+          ) : (
+            /* Default variant - no article spacing */
+            contentTop && (
+              <div className="relative z-10 w-full pb-24">
                 {contentTop}
               </div>
-            )}
-          </Box>
+            )
+          )}
         </Section>
 
         {/* Central Asset */}
         {asset && (
-          <div className="relative flex items-center justify-center max-w-full lg:max-w-[71.3rem] w-full mx-auto">
+          <div className={cn(
+            'relative flex items-center justify-center w-full mx-auto',
+            variant === 'article' ? 'max-w-full lg:max-w-[71.3rem]' : 'max-w-full'
+          )}>
             <Container className={cn('absolute z-20', assetClassName)}>
               {asset}
             </Container>
@@ -84,16 +99,25 @@ export function ImageBetweenWrapper({
           'relative h-full w-full overflow-hidden',
           lightSectionClassName
         )}>
-          <div className="mt-40 lg:mt-52 xl:mt-56">
-            <Box direction="col" gap={8}>
-              {/* Bottom Content */}
-              {contentBottom && (
-                <div className="relative z-10 w-full max-w-full lg:max-w-[71.3rem] mx-auto">
-                  {contentBottom}
-                </div>
-              )}
-            </Box>
-          </div>
+          {variant === 'article' ? (
+            <div className="mt-40 lg:mt-52 xl:mt-56">
+              <Box direction="col" gap={8}>
+                {/* Bottom Content */}
+                {contentBottom && (
+                  <div className="relative z-10 w-full max-w-full lg:max-w-[71.3rem] mx-auto">
+                    {contentBottom}
+                  </div>
+                )}
+              </Box>
+            </div>
+          ) : (
+            /* Default variant - no article spacing */
+            contentBottom && (
+              <div className="relative z-10 w-full pt-24">
+                {contentBottom}
+              </div>
+            )
+          )}
         </Section>
       </div>
     </ErrorBoundary>

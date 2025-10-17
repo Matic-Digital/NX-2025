@@ -5,6 +5,10 @@ import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { AgendaItemSchema } from '@/components/AgendaItem/AgendaItemSchema';
+import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { PostSchema } from '@/components/Post/PostSchema';
+import { ButtonSchema } from '@/components/Button/ButtonSchema';
+import { VideoSchema } from '@/components/Video/VideoSchema';
 
 // Event template options as defined in the content model
 const EventTemplateSchema = z.enum(['Landing 1', 'Landing 2', 'Landing 3', 'Agenda']);
@@ -27,13 +31,6 @@ export const EventSchema = z.object({
   dateIcon: AssetSchema.optional(),
   dateTime: z.string(),
   endDateTime: z.string().optional(),
-  link: z.object({
-    sys: z.object({
-      id: z.string()
-    }),
-    slug: z.string().optional(),
-    __typename: z.string().optional()
-  }).optional(),
   addressIcon: AssetSchema.optional(),
   address: z.string().optional(),
   addressSubline: z.string().optional(),
@@ -45,9 +42,20 @@ export const EventSchema = z.object({
   layout: PageLayoutSchema.optional(),
   template: EventTemplateSchema.default('Landing 1'),
   bannerImage: ImageSchema.optional(),
-  mainImage: ImageSchema,
+  mainImage: ImageSchema.optional(),
   mainImageCaption: z.string().optional(),
   contactLocation: ContactLocationSchema.optional(),
+  formCta: HubspotFormSchema.optional(),
+  referencedPostsCollection: z.object({
+    items: z.array(PostSchema)
+  }).optional(),
+  sectionHeadingTitle: z.string().optional(),
+  sectionHeadingDescription: z.string().optional(),
+  sectionHeadingButton: ButtonSchema.optional(),
+  landing1Asset: z.union([ImageSchema, VideoSchema]).optional(),
+  sectionRichContent: z.object({
+    json: z.unknown()
+  }).optional(),
   __typename: z.string().optional()
 });
 

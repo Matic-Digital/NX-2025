@@ -49,7 +49,7 @@ export function Event(props: EventProps) {
         </h5>
         <div className="text-2xl">{event.title ?? ''}</div>
         <Button variant="white" className="mt-4 flex lg:hidden">
-          <Link href={event.link?.slug ? `/${event.link.slug}` : `/events/${event.slug ?? ''}`}>See Details</Link>
+          <Link href={`/events/${event.slug ?? ''}`}>See Details</Link>
         </Button>
       </Box>
       <div className="hidden group-hover:flex items-center justify-center absolute top-0 right-0 bg-white text-black p-2">

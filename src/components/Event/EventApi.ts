@@ -4,6 +4,10 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { AGENDA_ITEM_GRAPHQL_FIELDS } from '@/components/AgendaItem/AgendaItemApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';
+import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
+import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
 
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
 
@@ -27,13 +31,6 @@ export const EVENT_GRAPHQL_FIELDS = `
   }
   dateTime
   endDateTime
-  link {
-    ${SYS_FIELDS}
-    __typename
-    ... on Page {
-      slug
-    }
-  }
   addressIcon {
     ${ASSET_FIELDS}
   }
@@ -64,6 +61,30 @@ export const EVENT_GRAPHQL_FIELDS = `
   }
   mainImageCaption
   contactLocation
+  formCta {
+    ${HUBSPOTFORM_GRAPHQL_FIELDS}
+  }
+  referencedPostsCollection {
+    items {
+      ${POST_GRAPHQL_FIELDS_SIMPLE}
+    }
+  }
+  sectionHeadingTitle
+  sectionHeadingDescription
+  sectionHeadingButton {
+    ${BUTTON_GRAPHQL_FIELDS}
+  }
+  landing1Asset {
+    ... on Image {
+      ${IMAGE_GRAPHQL_FIELDS}
+    }
+    ... on Video {
+      ${VIDEO_GRAPHQL_FIELDS}
+    }
+  }
+  sectionRichContent {
+    json
+  }
 `;
 
 /**
