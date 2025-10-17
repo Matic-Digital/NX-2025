@@ -14,9 +14,9 @@ import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
 import { AirImage } from '@/components/Image/AirImage';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 
 import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 
@@ -24,7 +24,6 @@ export function CtaBanner(props: CtaBanner) {
   const ctaBanner = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: ctaBanner?.sys?.id });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,10 +72,6 @@ export function CtaBanner(props: CtaBanner) {
 
     void fetchNestedUrl();
   }, [ctaBanner.primaryCta]);
-
-  const handleModalTrigger = () => {
-    setIsModalOpen(true);
-  };
 
   if (loading) {
     return <CtaBannerSkeleton />;
@@ -142,32 +137,13 @@ export function CtaBanner(props: CtaBanner) {
                   </Link>
                 )}
                 {ctaBanner.secondaryCta && (
-                  <Button
-                    variant="secondary"
-                    {...inspectorProps({ fieldId: 'secondaryCta' })}
-                    onClick={ctaBanner.secondaryCta.modal && handleModalTrigger}
-                  >
-                    {ctaBanner.secondaryCta.text}
-                  </Button>
+                  <ModalCtaButton cta={ctaBanner.secondaryCta} variant="secondary" />
                 )}
               </Box>
             </Box>
           </Box>
         </Container>
       </Section>
-
-      {ctaBanner.secondaryCta && (
-        <RequestAQuoteModal
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          title={ctaBanner.secondaryCta.modal?.title ?? 'Request a Quote'}
-          description={
-            ctaBanner.secondaryCta.modal?.description ??
-            'Please fill out the form below to request a quote.'
-          }
-          formId={ctaBanner.secondaryCta.modal?.sys?.id ?? 'default-form-id'}
-        />
-      )}
     </ErrorBoundary>
   );
 }

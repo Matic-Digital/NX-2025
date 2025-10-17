@@ -1,20 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import { ModalCtaButton } from '../ModalCtaButton';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { Button as ButtonComponent } from '@/components/ui/button';
-
 import { buttonFields } from '@/components/Button/preview/ButtonFields';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
-import type { Modal } from '@/components/Modals/Modal';
 
 /**
  * Button Preview Component
@@ -26,14 +21,6 @@ export function ButtonPreview(props: Partial<ButtonType>) {
   // Contentful Live Preview integration
   const liveButton = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
-
-  const handleModalOpen = (modal: Modal, _modalType: 'quote' | 'support') => {
-    setSelectedModal(modal);
-    setModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,7 +42,6 @@ export function ButtonPreview(props: Partial<ButtonType>) {
 
                 if (hasRequiredFields) {
                   const displayText = liveButton?.text ?? liveButton?.internalText ?? 'Button';
-                  const textFieldId = liveButton?.text ? 'text' : 'internalText';
 
                   // Determine which link field to target for inspector props
                   const linkFieldId = liveButton?.internalLink
@@ -69,9 +55,19 @@ export function ButtonPreview(props: Partial<ButtonType>) {
                   return (
                     <div {...(linkFieldId ? inspectorProps({ fieldId: linkFieldId }) : {})}>
                       <ModalCtaButton
-                        cta={liveButton as ButtonType}
-                        variant="primary"
-                        onModalOpen={handleModalOpen}
+                        cta={{
+                          sys: {
+                            id: liveButton?.sys?.id ?? ''
+                          },
+                          internalText: displayText,
+                          text: displayText,
+                          internalLink: liveButton?.internalLink,
+                          externalLink: liveButton?.externalLink,
+                          modal: liveButton?.modal,
+                          icon: liveButton?.icon
+                        }}
+                        variant="white"
+                        className="border-border-input w-full justify-center border-1"
                       />
                     </div>
                   );

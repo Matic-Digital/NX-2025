@@ -6,8 +6,6 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { Button } from '@/components/ui/button';
-
 import { modalFields } from '@/components/Modals/preview/ModalFields';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
@@ -47,11 +45,12 @@ export function ModalPreview(props: Partial<Modal>) {
                     <div className="p-8 text-center">
                       {/* Modal Component */}
                       <RequestAQuoteModal
-                        isOpen={true}
+                        isOpen={isModalOpen}
                         onOpenChange={setIsModalOpen}
                         formId={liveModal?.form?.formId}
                         title={liveModal.title}
                         description={liveModal.description}
+                        {...inspectorProps({ fieldId: 'modal' })}
                       />
 
                       {/* Show configuration status */}
