@@ -31,34 +31,39 @@ export const MODAL_MINIMAL_FIELDS = `
 // ============================================================================
 
 export async function getModalById(id: string, preview = false): Promise<Modal | null> {
-  const query = `
-    query GetModalById($id: String!, $preview: Boolean!) {
-      modal(id: $id, preview: $preview) {
-        ${MODAL_GRAPHQL_FIELDS}
-      }
-    }
-  `;
-
   try {
-    const response = await fetchGraphQL(query, { id, preview });
+    const response = await fetchGraphQL(
+      `query GetModalById($id: String!, $preview: Boolean!) {
+        modal(id: $id, preview: $preview) {
+          ${MODAL_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
 
+    // Check for valid response
     if (!response?.data) {
       throw new ContentfulError('Invalid response from Contentful');
     }
 
-    const data = response.data as unknown as {
-      modal?: Modal;
-    };
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { modal?: Modal };
 
-    return data.modal ?? null;
+    // Return null if modal not found
+    if (!data.modal) {
+      return null;
+    }
+
+    return data.modal;
   } catch (error) {
     if (error instanceof ContentfulError) {
       throw error;
     }
     if (error instanceof Error) {
-      throw new NetworkError(`getModalByIdError: fetching Modal: ${error.message}`);
+      throw new NetworkError(`Error fetching Modal: ${error.message}`);
     }
-    throw new Error('getModalById: Unknown error fetching Modal');
+    throw new Error('Unknown error fetching Modal');
   }
 }
 
