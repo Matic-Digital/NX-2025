@@ -7,8 +7,6 @@ import {
 
 import { MegaMenuProvider } from '@/contexts/MegaMenuContext';
 
-import { Container } from '@/components/global/matic-ds';
-
 import { Menu } from '@/components/Menu/Menu';
 import { menuFields } from '@/components/Menu/preview/MenuFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';

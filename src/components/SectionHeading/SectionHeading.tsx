@@ -17,7 +17,6 @@ import { SvgIcon } from '@/components/ui/svg-icon';
 import { Box } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
@@ -139,10 +138,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           className="col-span-2 w-full max-w-sm md:max-w-lg lg:max-w-3xl"
         >
           {sectionHeading.overline && (
-            <p
-              className="text-foreground uppercase"
-              {...inspectorProps({ fieldId: 'overline' })}
-            >
+            <p className="text-foreground uppercase" {...inspectorProps({ fieldId: 'overline' })}>
               {sectionHeading.overline}
             </p>
           )}
@@ -208,6 +204,9 @@ export function SectionHeading(props: SectionHeadingProps) {
                       cta={cta}
                       variant={getButtonVariant(index, totalButtons, defaultVariant)}
                       onModalOpen={handleModalOpen}
+                      setModalOpen={setModalOpen}
+                      modalOpen={modalOpen}
+                      selectedModal={selectedModal}
                     />
                   </div>
                 );
@@ -277,6 +276,9 @@ export function SectionHeading(props: SectionHeadingProps) {
                     cta={cta}
                     variant={getButtonVariant(index, totalButtons, defaultVariant)}
                     onModalOpen={handleModalOpen}
+                    setModalOpen={setModalOpen}
+                    modalOpen={modalOpen}
+                    selectedModal={selectedModal}
                   />
                 </div>
               );
@@ -365,6 +367,9 @@ export function SectionHeading(props: SectionHeadingProps) {
                     cta={cta}
                     variant={getButtonVariant(index, totalButtons, defaultVariant)}
                     onModalOpen={handleModalOpen}
+                    setModalOpen={setModalOpen}
+                    modalOpen={modalOpen}
+                    selectedModal={selectedModal}
                   />
                 </div>
               );
@@ -392,10 +397,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         )}
       >
         {sectionHeading.overline && (
-          <p
-            className="text-foreground uppercase"
-            {...inspectorProps({ fieldId: 'overline' })}
-          >
+          <p className="text-foreground uppercase" {...inspectorProps({ fieldId: 'overline' })}>
             {sectionHeading.overline}
           </p>
         )}
@@ -452,6 +454,9 @@ export function SectionHeading(props: SectionHeadingProps) {
                   cta={cta}
                   variant={getButtonVariant(index, totalButtons, defaultVariant)}
                   onModalOpen={handleModalOpen}
+                  setModalOpen={setModalOpen}
+                  modalOpen={modalOpen}
+                  selectedModal={selectedModal}
                 />
               </div>
             );
@@ -474,18 +479,6 @@ export function SectionHeading(props: SectionHeadingProps) {
             return <DefaultSectionHeading />;
         }
       })()}
-
-      {selectedModal && (
-        <RequestAQuoteModal
-          isOpen={modalOpen}
-          onOpenChange={setModalOpen}
-          title={selectedModal.title ?? 'Request a Quote'}
-          description={
-            selectedModal.description ??
-            'Please fill out the form below and we will get back to you shortly.'
-          }
-        />
-      )}
     </>
   );
 }

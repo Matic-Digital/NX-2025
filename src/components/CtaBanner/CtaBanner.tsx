@@ -14,9 +14,9 @@ import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 
+import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
 import { AirImage } from '@/components/Image/AirImage';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 
 import type { CtaBanner } from '@/components/CtaBanner/CtaBannerSchema';
 
@@ -142,32 +142,20 @@ export function CtaBanner(props: CtaBanner) {
                   </Link>
                 )}
                 {ctaBanner.secondaryCta && (
-                  <Button
+                  <ModalCtaButton
+                    cta={ctaBanner.secondaryCta}
+                    setModalOpen={setIsModalOpen}
+                    onModalOpen={handleModalTrigger}
+                    modalOpen={isModalOpen}
+                    selectedModal={ctaBanner.secondaryCta.modal ?? null}
                     variant="secondary"
-                    {...inspectorProps({ fieldId: 'secondaryCta' })}
-                    onClick={ctaBanner.secondaryCta.modal && handleModalTrigger}
-                  >
-                    {ctaBanner.secondaryCta.text}
-                  </Button>
+                  />
                 )}
               </Box>
             </Box>
           </Box>
         </Container>
       </Section>
-
-      {ctaBanner.secondaryCta && (
-        <RequestAQuoteModal
-          isOpen={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          title={ctaBanner.secondaryCta.modal?.title ?? 'Request a Quote'}
-          description={
-            ctaBanner.secondaryCta.modal?.description ??
-            'Please fill out the form below to request a quote.'
-          }
-          formId={ctaBanner.secondaryCta.modal?.sys?.id ?? 'default-form-id'}
-        />
-      )}
     </ErrorBoundary>
   );
 }

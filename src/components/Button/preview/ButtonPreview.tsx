@@ -7,10 +7,7 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { Button as ButtonComponent } from '@/components/ui/button';
-
 import { buttonFields } from '@/components/Button/preview/ButtonFields';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Button as ButtonType } from '@/components/Button/ButtonSchema';
@@ -28,7 +25,7 @@ export function ButtonPreview(props: Partial<ButtonType>) {
   const inspectorProps = useContentfulInspectorMode({ entryId: liveButton?.sys?.id });
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedModal, setSelectedModal] = useState<Modal | null>(null);
+  const [_selectedModal, setSelectedModal] = useState<Modal | null>(null);
 
   const handleModalOpen = (modal: Modal, _modalType: 'quote' | 'support') => {
     setSelectedModal(modal);
@@ -55,7 +52,6 @@ export function ButtonPreview(props: Partial<ButtonType>) {
 
                 if (hasRequiredFields) {
                   const displayText = liveButton?.text ?? liveButton?.internalText ?? 'Button';
-                  const textFieldId = liveButton?.text ? 'text' : 'internalText';
 
                   // Determine which link field to target for inspector props
                   const linkFieldId = liveButton?.internalLink
@@ -69,9 +65,23 @@ export function ButtonPreview(props: Partial<ButtonType>) {
                   return (
                     <div {...(linkFieldId ? inspectorProps({ fieldId: linkFieldId }) : {})}>
                       <ModalCtaButton
-                        cta={liveButton as ButtonType}
-                        variant="primary"
+                        cta={{
+                          sys: {
+                            id: liveButton?.sys?.id ?? ''
+                          },
+                          internalText: displayText,
+                          text: displayText,
+                          internalLink: liveButton?.internalLink,
+                          externalLink: liveButton?.externalLink,
+                          modal: liveButton?.modal,
+                          icon: liveButton?.icon
+                        }}
+                        variant="white"
+                        className="border-border-input w-full justify-center border-1"
                         onModalOpen={handleModalOpen}
+                        setModalOpen={setModalOpen}
+                        modalOpen={modalOpen}
+                        selectedModal={liveButton?.modal ?? null}
                       />
                     </div>
                   );
