@@ -45,7 +45,7 @@ export function ModalPreview(props: Partial<Modal>) {
                     <div className="p-8 text-center">
                       {/* Modal Component */}
                       <RequestAQuoteModal
-                        isOpen={isModalOpen}
+                        isOpen={true}
                         onOpenChange={setIsModalOpen}
                         formId={liveModal?.form?.formId}
                         title={liveModal.title}

@@ -291,7 +291,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   modal: {
     fetchFn: getModalById,
     component: RequestAQuoteModal,
-    previewComponent: ModalPreview,
+    previewComponent: ButtonPreview,
     entityName: 'Modal',
     containerClass: 'min-h-screen bg-gray-50'
   },
