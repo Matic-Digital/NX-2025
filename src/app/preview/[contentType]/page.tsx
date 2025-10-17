@@ -19,6 +19,8 @@ import { useSearchParams } from 'next/navigation';
 
 // Component imports
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getAgendaItemById } from '@/components/AgendaItem/AgendaItemApi';
+import { AgendaItemPreview } from '@/components/AgendaItem/AgendaItemPreview';
 import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
 import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
@@ -42,8 +44,8 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
-import { Event } from '@/components/Event/Event';
 import { getEventById } from '@/components/Event/EventApi';
+import { EventPreview } from '@/components/Event/EventPreview';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
@@ -225,6 +227,13 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     entityName: 'AccordionItem',
     containerClass: 'min-h-screen bg-gray-50'
   },
+  'agenda-item': {
+    fetchFn: getAgendaItemById,
+    component: AgendaItemPreview,
+    previewComponent: AgendaItemPreview,
+    entityName: 'AgendaItem',
+    containerClass: 'min-h-screen bg-gray-50'
+  },
   'contact-card': {
     fetchFn: getContactCardById,
     component: ContactCardPreview, // ContactCard only has preview component
@@ -246,7 +255,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   event: {
     fetchFn: getEventById,
-    component: Event,
+    component: EventPreview,
     entityName: 'Event',
     containerClass: 'min-h-screen bg-white'
   },

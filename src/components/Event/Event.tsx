@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
 
-import { formatDate } from '@/lib/utils';
+import { formatDateRange } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 
@@ -42,14 +42,14 @@ export function Event(props: EventProps) {
       className="group relative w-full hover:bg-primary p-6 lg:py-12 lg:px-8 text-text-subtle hover:text-text-on-invert items-start lg:border-b-2 lg:hover:border-transparent bg-surface lg:bg-transparent"
       {...inspectorProps}
     >
-      <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">{formatDate(event.dateTime, true)}</div>
+      <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">{formatDateRange(event.dateTime ?? '', event.endDateTime ?? undefined, true)}</div>
       <Box direction="col" gap={1}>
         <h5 className="uppercase text-text-body-xs text-text-primary-active group-hover:text-text-on-invert">
           Event
         </h5>
-        <div className="text-2xl">{event.title}</div>
+        <div className="text-2xl">{event.title ?? ''}</div>
         <Button variant="white" className="mt-4 flex lg:hidden">
-          <Link href={event.link}>See Details</Link>
+          <Link href={event.link?.slug ? `/${event.link.slug}` : `/events/${event.slug ?? ''}`}>See Details</Link>
         </Button>
       </Box>
       <div className="hidden group-hover:flex items-center justify-center absolute top-0 right-0 bg-white text-black p-2">

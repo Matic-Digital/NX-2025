@@ -209,7 +209,10 @@ export function ImageBetween(props: ImageBetween) {
 
         {/* Central Image */}
         {imageBetween.asset && (
-          <div className="relative flex items-center justify-center">
+          <div className={cn(
+            "relative flex items-center justify-center",
+            imageBetween.asset.__typename === 'Image' && "-mt-12 -mb-8 lg:-mt-28 lg:-mb-16 xl:-mt-48 xl:-mb-24"
+          )}>
             {/* Render asset based on type */}
             {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
               <Container className="absolute z-20">
