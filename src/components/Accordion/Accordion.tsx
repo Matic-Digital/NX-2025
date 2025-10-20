@@ -2,6 +2,8 @@
 
 import { Accordion as AccordionPrimitive } from '@/components/ui/accordion';
 
+import { AccordionProvider } from '@/contexts/AccordionContext';
+
 import { Box } from '@/components/global/matic-ds';
 
 import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
@@ -11,7 +13,6 @@ import {
   LoadingState
 } from '@/components/Accordion/components/AccordionStates';
 import { useAccordionData } from '@/components/Accordion/hooks/UseAccordionData';
-import { useAccordionLogic } from '@/components/Accordion/hooks/UseAccordionLogic';
 import { useAccordionState } from '@/components/Accordion/hooks/UseAccordionState';
 
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
@@ -28,9 +29,6 @@ interface AccordionProps {
 export function Accordion({ sys }: AccordionProps) {
   // Data layer
   const { accordionItems, loading, error } = useAccordionData(sys.id);
-
-  // Business logic layer
-  const { handleHover, handleMouseLeave, getItemDisplayState } = useAccordionLogic(accordionItems);
 
   // State layer
   const { currentState } = useAccordionState(accordionItems, loading, error);
@@ -49,25 +47,27 @@ export function Accordion({ sys }: AccordionProps) {
   }
 
   return (
-    <div onMouseLeave={handleMouseLeave}>
-      <AccordionPrimitive type="single" collapsible>
-        <Box direction="col" gap={6}>
-          {accordionItems.map((item, index) => {
-            const displayState = getItemDisplayState(index, `item-${index}`);
-
-            return (
-              <AccordionItem
-                key={`accordion-${index}-item-${item.sys.id}`}
-                item={item}
-                index={index}
-                isHovered={displayState.isHovered}
-                shouldShowExpanded={displayState.shouldShowExpanded}
-                onHover={handleHover}
-              />
-            );
-          })}
-        </Box>
-      </AccordionPrimitive>
-    </div>
+    <AccordionProvider>
+      <div>
+        <AccordionPrimitive type="single" collapsible>
+          <Box direction="col" gap={6}>
+            {accordionItems.map((item, index) => {
+              return (
+                <AccordionItem
+                  key={`accordion-${index}-item-${item.sys.id}`}
+                  item={item}
+                  index={index}
+                  isFirst={index === 0}
+                  itemId={`item-${index}`}
+                  isHovered={false}
+                  shouldShowExpanded={false}
+                  onHover={() => undefined}
+                />
+              );
+            })}
+          </Box>
+        </AccordionPrimitive>
+      </div>
+    </AccordionProvider>
   );
 }

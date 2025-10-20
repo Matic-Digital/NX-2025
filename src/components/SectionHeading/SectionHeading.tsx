@@ -280,12 +280,12 @@ export function SectionHeading(props: SectionHeadingProps) {
       {...inspectorProps({ fieldId: 'heading' })}
     >
       {sectionHeading.icon && (
-        <div className="bg-black p-2" {...inspectorProps({ fieldId: 'icon' })}>
+        <div className="bg-black p-2 w-[6rem] aspect-square items-center flex justify-center" {...inspectorProps({ fieldId: 'icon' })}>
           <SvgIcon
             src={sectionHeading.icon.url}
             alt={sectionHeading.title}
-            width={40}
-            height={40}
+            width={64}
+            height={64}
             className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
           />
         </div>

@@ -201,8 +201,10 @@ export async function getEventById(id: string, preview = false): Promise<Event |
   try {
     const response = await fetchGraphQL<Event>(
       `query GetEventById($id: String!, $preview: Boolean!) {
-        event(id: $id, preview: $preview) {
-          ${EVENT_GRAPHQL_FIELDS}
+        eventCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
+          items {
+            ${EVENT_GRAPHQL_FIELDS}
+          }
         }
       }`,
       { id, preview },
@@ -217,8 +219,7 @@ export async function getEventById(id: string, preview = false): Promise<Event |
     // Access data using the properly typed GraphQL response
     const data = response.data;
 
-    // For single event queries, the data structure is different
-    // We need to get the first item from eventCollection
+    // For single event queries, get the first item from eventCollection
     if (!data.eventCollection?.items?.length) {
       return null;
     }

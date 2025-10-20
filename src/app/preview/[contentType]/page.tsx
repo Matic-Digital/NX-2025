@@ -52,9 +52,9 @@ import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPrevie
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
-import { Event } from '@/components/Event/Event';
+import { EventDetail } from '@/components/Event/EventDetail';
 import { getEventById } from '@/components/Event/EventApi';
-import { EventPreview } from '@/components/Event/preview/EventPreview';
+import { EventDetailPreview } from '@/components/Event/preview';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { FooterPreview } from '@/components/Footer/preview/FooterPreview';
@@ -227,9 +227,16 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   event: {
     fetchFn: getEventById,
-    component: Event,
-    previewComponent: EventPreview,
+    component: EventDetail,
+    previewComponent: EventDetailPreview,
     entityName: 'Event',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'event-detail': {
+    fetchFn: getEventById,
+    component: EventDetail,
+    previewComponent: EventDetailPreview,
+    entityName: 'Event Detail',
     containerClass: 'min-h-screen bg-white'
   },
   footer: {

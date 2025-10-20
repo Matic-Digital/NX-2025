@@ -87,7 +87,7 @@ export function CtaBanner(props: CtaBanner) {
 
   return (
     <ErrorBoundary>
-      <Section className="relative w-full overflow-hidden">
+      <Section className="relative w-full overflow-hidden ">
         {/* Background gradient image */}
         <AirImage
           link={ctaBanner.backgroundMedia?.link}
@@ -101,12 +101,12 @@ export function CtaBanner(props: CtaBanner) {
             src={ctaBanner.backgroundImage.url}
             alt={ctaBanner.backgroundImage.description}
             fill
-            className="object-cover"
+            className="object-cover brightness-0 invert"
             loading="lazy"
           />
         </div>
 
-        <Container className="relative z-20 h-[335px]">
+        <Container className="relative z-20 min-h-[335px] py-[11.75rem] md:py-0">
           <Box cols={{ base: 1, md: 4, lg: 5 }} className="h-[335px] items-center">
             <Box
               direction="col"

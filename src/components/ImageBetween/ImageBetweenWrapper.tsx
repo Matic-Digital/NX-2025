@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
+import type { z } from 'zod';
+import type { MobileOriginSchema } from '@/components/Image/ImageSchema';
 
 interface ImageBetweenWrapperProps {
   contentTop?: React.ReactNode;
@@ -20,6 +22,7 @@ interface ImageBetweenWrapperProps {
   backgroundImage?: {
     link: string;
     altText?: string;
+    mobileOrigin?: z.infer<typeof MobileOriginSchema>;
   };
   // Variant for different spacing patterns
   variant?: 'article' | 'default';
@@ -54,7 +57,8 @@ export function ImageBetweenWrapper({
             <AirImage
               link={backgroundImage.link}
               altText={backgroundImage.altText ?? ''}
-              className="absolute inset-0 w-full h-full object-cover z-0"
+              mobileOrigin={backgroundImage.mobileOrigin}
+              className="absolute inset-0 w-full h-full z-0"
             />
           )}
           {variant === 'article' ? (

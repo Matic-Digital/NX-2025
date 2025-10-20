@@ -8,7 +8,6 @@ import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Solution } from '@/components/Solution/SolutionSchema';
 
@@ -22,7 +21,10 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   cardTitle
   description
   backgroundImage {
-    ${IMAGE_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
+    title
+    link
+    altText
   }
   cta {
     ${BUTTON_GRAPHQL_FIELDS}

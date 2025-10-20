@@ -25,6 +25,8 @@ import {
 import { Box, Container } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
+import type { z } from 'zod';
+import type { MobileOriginSchema } from '@/components/Image/ImageSchema';
 import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
 import { PostSliderCard } from '@/components/Post/PostSliderCard';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
@@ -161,7 +163,8 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
         <AirImage
           link={imageItem.link}
           altText={imageItem.altText}
-          className="absolute h-full w-full object-cover object-left md:object-cover"
+          mobileOrigin={imageItem.mobileOrigin}
+          className="absolute h-full w-full"
         />
       </div>
     );
@@ -197,14 +200,15 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
                 ? (() => {
                     const videoAsset = timelineItem.asset as {
                       __typename: 'Video';
-                      posterImage: { link?: string; altText?: string };
+                      posterImage: { link?: string; altText?: string; mobileOrigin?: z.infer<typeof MobileOriginSchema> };
                     };
                     return (
                       <div className="relative h-full w-full">
                         <AirImage
                           link={videoAsset?.posterImage?.link ?? ''}
                           altText={videoAsset?.posterImage?.altText ?? 'Video thumbnail'}
-                          className="absolute h-full w-full object-cover"
+                          mobileOrigin={videoAsset?.posterImage?.mobileOrigin}
+                          className="absolute h-full w-full"
                         />
                         {/* Video Play Button Overlay */}
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -227,12 +231,14 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
                         __typename: 'Image';
                         link?: string;
                         altText?: string;
+                        mobileOrigin?: z.infer<typeof MobileOriginSchema>;
                       };
                       return (
                         <AirImage
                           link={imageAsset?.link ?? ''}
                           altText={imageAsset?.altText ?? ''}
-                          className="h-full w-full object-cover"
+                          mobileOrigin={imageAsset?.mobileOrigin}
+                          className="h-full w-full"
                         />
                       );
                     })()
@@ -535,7 +541,7 @@ const GenericSlider = ({
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className={cn('h-full w-12 cursor-pointer bg-[#171717] opacity-30', {
+              className={cn('h-full w-12 cursor-pointer bg-gray-400 opacity-70', {
                 'bg-[#F5B12D] opacity-100': current === index + 1
               })}
               aria-label={`Go to slide ${index + 1}`}

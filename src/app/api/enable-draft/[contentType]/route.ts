@@ -115,6 +115,11 @@ const contentTypeMap = {
     previewPath: '/preview/event',
     entityName: 'Event'
   },
+  'event-detail': {
+    fetchFn: getEventById,
+    previewPath: '/preview/event-detail',
+    entityName: 'Event Detail'
+  },
   footer: {
     fetchFn: getFooterById,
     previewPath: '/preview/footer',

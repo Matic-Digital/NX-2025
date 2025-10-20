@@ -232,7 +232,7 @@ export const calculateGridConfig = (items: ContentGridItemUnion[], variant?: str
     return {
       analysis,
       cols: { base: 1, md: 2, lg: 4 }, // 4 columns for FourColumns grid
-      gap: 12,
+      gap: 4,
       direction: 'col' as const,
       variant: 'FourColumn'
     };

@@ -390,7 +390,7 @@ function renderContentByType(
 
         {contentType === 'Service' && (
           <div>
-            <p>{(contentItem as Service).cardTitle}</p>
+            <p>{(contentItem as Service).title}</p>
             {/* Add more Service-specific rendering here */}
           </div>
         )}

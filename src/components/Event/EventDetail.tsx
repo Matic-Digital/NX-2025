@@ -1,6 +1,7 @@
 'use client';
 
 import { formatDateRange, formatDate } from '@/lib/utils';
+import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
 
 import { AgendaList } from '@/components/AgendaItem/AgendaItem';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
@@ -88,7 +89,11 @@ function NewsPosts() {
   );
 }
 
-export function EventDetail({ event, header = null, footer = null }: EventDetailWithLayoutProps) {
+export function EventDetail({ event: initialEvent, header = null, footer = null }: EventDetailWithLayoutProps) {
+  // Contentful Live Preview integration
+  const event = useContentfulLiveUpdates(initialEvent);
+  const _inspectorProps = useContentfulInspectorMode({ entryId: event?.sys?.id });
+  
   const _formattedDateTime = formatDateRange(event.dateTime, event.endDateTime ?? undefined, true);
   
   // Format date and time separately for two-line display

@@ -74,8 +74,24 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
   // Use full image data if available, otherwise fall back to props
   const imageData = fullImageData ?? props;
-  const { sys, link, altText, width, height, priority = false } = imageData;
+  const { sys, link, altText, width, height, priority = false, mobileOrigin } = imageData;
   const { className } = props;
+
+  // Generate alignment classes based on mobileOrigin
+  const getAlignmentClasses = (origin?: string): string => {
+    switch (origin) {
+      case 'Left':
+        return 'object-cover !object-left md:!object-center';
+      case 'Center':
+        return 'object-cover !object-center';
+      case 'Right':
+        return 'object-cover !object-right md:!object-center';
+      default:
+        return 'object-cover !object-center'; // Default to center if not specified
+    }
+  };
+
+  const alignmentClasses = getAlignmentClasses(mobileOrigin);
 
   // Fetch full image data if we only have sys fields (no link)
   useEffect(() => {
@@ -127,18 +143,22 @@ export const AirImage: React.FC<AirImageType> = (props) => {
     ? link // Keep original Air URL completely unchanged
     : optimizeContentfulImage(link, intrinsicWidth, intrinsicHeight, 85);
 
+  // Combine alignment classes with existing className
+  const combinedClassName = className 
+    ? `${className} ${alignmentClasses}` 
+    : alignmentClasses;
+
   // For Air images, use unoptimized to preserve intrinsic dimensions
   return (
     <Image
       src={optimizedSrc}
       alt={altText ?? ''}
-      className={className}
+      className={combinedClassName}
       width={intrinsicWidth}
       height={intrinsicHeight}
       priority={priority}
       loading={priority ? 'eager' : 'lazy'}
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      style={{ objectFit: 'cover' }}
       unoptimized={!!airDimensions} // Disable Next.js optimization for Air images
     />
   );
