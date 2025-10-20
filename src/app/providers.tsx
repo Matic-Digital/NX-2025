@@ -17,7 +17,7 @@ import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
 // Utils
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // import { DevTools } from 'jotai-devtools';
-import 'jotai-devtools/styles.css';
+// import 'jotai-devtools/styles.css';
 
 /**
  * Global providers wrapper component

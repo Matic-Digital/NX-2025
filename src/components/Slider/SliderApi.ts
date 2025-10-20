@@ -18,7 +18,17 @@ export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
 `;
 
 // Full slider fields for dedicated slider queries
-export const SLIDER_GRAPHQL_FIELDS = SLIDER_GRAPHQL_FIELDS_SIMPLE;
+export const SLIDER_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  autoplay
+  delay
+  itemsCollection(limit: 10) {
+    items {
+      ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
+    }
+  }
+`;
 
 /**
  * Fetches Slider data separately by IDs to avoid QUERY_TOO_BIG errors

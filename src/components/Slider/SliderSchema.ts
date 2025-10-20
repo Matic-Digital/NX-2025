@@ -43,6 +43,8 @@ export const SliderSchema = z.object({
   itemsCollection: z.object({
     items: z.array(SliderItemUnion)
   }),
+  autoplay: z.boolean().optional(),
+  delay: z.number().optional(),
   __typename: z.string().optional()
 });
 

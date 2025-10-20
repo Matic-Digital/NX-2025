@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { useIntersectionObserver } from '@uidotdev/usehooks';
+
+import { cn } from '@/lib/utils';
 
 import { ArrowUpRight, Plus } from 'lucide-react';
 
 import { resolveNestedUrls } from '@/lib/page-link-utils';
-import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -108,9 +109,9 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
       >
         {sliderItem.icon && (
           <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'lg:bg-white')}>
-            <Image
-              src={sliderItem.icon?.url ?? ''}
-              alt={sliderItem.title}
+            <AirImage
+              link={sliderItem.icon?.url ?? ''}
+              altText={sliderItem.title}
               className={cn('filter', isCurrentSlide ? 'lg:invert' : '')}
               width={60}
               height={60}
@@ -403,6 +404,43 @@ const GenericSlider = ({
   const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
   const isServiceSlider = sliderData.itemsCollection.items[0]?.__typename === 'Service';
   const isTestimonialSlider = sliderData.itemsCollection.items[0]?.__typename === 'TestimonialItem';
+
+  // Create infinite loop items for post sliders
+  const getInfiniteLoopItems = () => {
+    if (!isPostSlider || sliderData.itemsCollection.items.length <= 1) {
+      return sliderData.itemsCollection.items;
+    }
+    
+    const originalItems = sliderData.itemsCollection.items;
+    // Duplicate items: [original] + [original] + [original] for seamless infinite loop
+    return [...originalItems, ...originalItems, ...originalItems];
+  };
+
+  const displayItems = getInfiniteLoopItems();
+  
+  // Helper functions for pagination with infinite loop
+  const getPaginationIndex = (currentIndex: number) => {
+    if (!isPostSlider || sliderData.itemsCollection.items.length <= 1) {
+      return currentIndex;
+    }
+    const originalItemCount = sliderData.itemsCollection.items.length;
+    return currentIndex % originalItemCount;
+  };
+
+  const handlePaginationClick = (targetIndex: number) => {
+    if (!api) return;
+    
+    if (isPostSlider && sliderData.itemsCollection.items.length > 1) {
+      const originalItemCount = sliderData.itemsCollection.items.length;
+      const currentSlide = api.selectedScrollSnap();
+      const currentSet = Math.floor(currentSlide / originalItemCount);
+      const targetSlide = (currentSet * originalItemCount) + targetIndex;
+      api.scrollTo(targetSlide);
+    } else {
+      api.scrollTo(targetIndex);
+    }
+  };
+
   // const hasOnePostSlide =
   //   sliderData.itemsCollection.items.filter((item) => item.__typename === 'Post').length === 1;
   const hasOnlyOneSlide = sliderData.itemsCollection.items.length === 1;
@@ -410,7 +448,7 @@ const GenericSlider = ({
   return (
     <div
       className={cn(
-        hasOnlyOneSlide ? 'relative w-full' : isFullWidth ? 'relative w-screen' : 'relative'
+        hasOnlyOneSlide ? 'relative w-full' : isFullWidth ? 'relative w-screen overflow-hidden md:overflow-visible' : 'relative'
       )}
       style={{
         marginLeft: isFullWidth && !hasOnlyOneSlide ? 'calc(-50vw + 50%)' : ''
@@ -428,7 +466,7 @@ const GenericSlider = ({
                 : 'w-full'
         )}
         opts={{
-          loop: sliderData.itemsCollection.items.length > 1,
+          loop: isPostSlider ? false : sliderData.itemsCollection.items.length > 1, // Disable built-in loop for post sliders
           align: sliderData.itemsCollection.items.length === 1 ? 'center' : 'center',
           ...(isTeamMemberSlider &&
             sliderData.itemsCollection.items.length > 1 && {
@@ -457,7 +495,7 @@ const GenericSlider = ({
             isPostSlider && 'overflow-visible'
           )}
         >
-          {sliderData.itemsCollection.items.map((item, index) => {
+          {displayItems.map((item, index) => {
             return (
               <CarouselItem
                 key={`${item.sys.id}-${index}`}
@@ -536,17 +574,26 @@ const GenericSlider = ({
       </Carousel>
 
       {showIndicators && (
-        <div className="absolute bottom-6 left-1/2 z-20 flex h-1 -translate-x-1/2 items-center gap-4">
-          {sliderData.itemsCollection.items.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              className={cn('h-full w-12 cursor-pointer bg-gray-400 opacity-70', {
-                'bg-[#F5B12D] opacity-100': current === index + 1
-              })}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        <div className="absolute bottom-6 left-1/2 z-20 flex h-1 -translate-x-1/2 items-center gap-2 sm:gap-4 max-w-[calc(100vw-2rem)] px-4">
+          {sliderData.itemsCollection.items.map((_, index) => {
+            const currentPaginationIndex = getPaginationIndex(current - 1);
+            const isActive = currentPaginationIndex === index;
+            const itemCount = sliderData.itemsCollection.items.length;
+            
+            return (
+              <button
+                key={index}
+                onClick={() => handlePaginationClick(index)}
+                className={cn('h-full cursor-pointer bg-gray-400 opacity-70 flex-1 min-w-0', {
+                  'bg-[#F5B12D] opacity-100': isActive
+                }, 
+                // Responsive width based on item count
+                itemCount <= 3 ? 'w-12' : itemCount <= 6 ? 'w-8 sm:w-12' : 'w-6 sm:w-8'
+                )}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -581,15 +628,14 @@ const GenericSlider = ({
               )}
             >
               {sliderData.itemsCollection.items.map((_, index) => {
-                // For testimonial sliders on desktop, calculate which group is active
-                const isActive = current === index + 1;
+                // For post sliders with infinite loop, calculate correct pagination index
+                const currentPaginationIndex = getPaginationIndex(current - 1);
+                const isActive = currentPaginationIndex === index;
 
                 return (
                   <button
                     key={index}
-                    onClick={() => {
-                      api?.scrollTo(index);
-                    }}
+                    onClick={() => handlePaginationClick(index)}
                     className={cn('h-full flex-1 cursor-pointer bg-neutral-300', {
                       'bg-surface-invert': isActive
                     })}
@@ -825,8 +871,12 @@ export function Slider(props: SliderSys) {
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const [sliderRef, entry] = useIntersectionObserver({
+    threshold: 0.3,
+    root: null,
+    rootMargin: "0px",
+  });
+  const isInView = entry?.isIntersecting ?? false;
 
   const handleTeamMemberClick = (teamMember: TeamMember) => {
     setSelectedTeamMember(teamMember);
@@ -850,31 +900,17 @@ export function Slider(props: SliderSys) {
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1);
     });
-  }, [api]);
 
-  // Intersection Observer to track if slider is in view
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry) {
-          setIsInView(entry.isIntersecting);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const currentRef = sliderRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+    // Initialize post sliders at the middle set for infinite loop
+    if (sliderData && sliderData.itemsCollection.items.length > 1) {
+      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+      if (isPostSlider) {
+        const originalItemCount = sliderData.itemsCollection.items.length;
+        api.scrollTo(originalItemCount, false); // Start at the middle set without animation
       }
-    };
-  }, []);
+    }
+  }, [api, sliderData]);
+
 
   // Global keyboard navigation
   useEffect(() => {
@@ -893,6 +929,54 @@ export function Slider(props: SliderSys) {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [api, isInView]);
+
+  // Autoplay functionality
+  useEffect(() => {
+    // Default autoplay to true if not explicitly set to false
+    const shouldAutoplay = sliderData?.autoplay !== false;
+    
+    // Don't autoplay if there's only one slide
+    const hasMultipleSlides = sliderData && sliderData.itemsCollection.items.length > 1;
+    
+    if (!api || !shouldAutoplay || !sliderData || !hasMultipleSlides || !isInView) {
+      return;
+    }
+
+    const delay = sliderData.delay ?? 5000; // Default to 5 seconds if no delay specified
+    
+    const interval = setInterval(() => {
+      const currentSlide = api.selectedScrollSnap();
+      const totalSlides = api.scrollSnapList().length;
+      const originalItemCount = sliderData.itemsCollection.items.length;
+      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+      
+      // For post sliders with infinite loop
+      if (isPostSlider && originalItemCount > 1) {
+        // Check if we're at the last slide of the second set
+        if (currentSlide === (originalItemCount * 2) - 1) {
+          // Jump to the beginning of the second set to continue the loop
+          api.scrollTo(originalItemCount, false); // Jump without animation
+        } else if (currentSlide >= originalItemCount * 2) {
+          // If somehow we're beyond the second set, jump back to second set
+          api.scrollTo(originalItemCount, false);
+        } else {
+          // Normal forward movement
+          api.scrollNext();
+        }
+      } else {
+        // Regular slider behavior
+        if (currentSlide === totalSlides - 1) {
+          api.scrollTo(0);
+        } else {
+          api.scrollNext();
+        }
+      }
+    }, delay);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [api, sliderData, isInView]);
 
   useEffect(() => {
     async function fetchSliderData() {
