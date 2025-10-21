@@ -38,6 +38,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 
 import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
 import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
+import type { LocaleOption } from '@/lib/server-locales';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { Menu as MenuComponent } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
@@ -45,6 +46,11 @@ import { getMenuById } from '@/components/Menu/MenuApi';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Page } from '@/components/Page/PageSchema';
+
+// Interface for locale API response
+interface LocaleApiResponse {
+  locales: LocaleOption[];
+}
 
 // No need for an empty interface, just use the HeaderType directly
 type HeaderProps = HeaderType;
@@ -69,6 +75,7 @@ function HeaderContent(props: HeaderProps) {
     Array<{ id: string; name: string }> | undefined
   >(undefined);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [locales, setLocales] = useState<LocaleOption[]>([]);
   const [loadedMegaMenus, setLoadedMegaMenus] = useState<Record<string, MenuType>>({});
   const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
   const [overflowAnimating, setOverflowAnimating] = useState(false);
@@ -249,6 +256,48 @@ function HeaderContent(props: HeaderProps) {
       window.removeEventListener('resize', handleResize);
     };
   }, [isSheetOpen]);
+
+  // Load available locales on mount
+  useEffect(() => {
+    const loadLocales = async () => {
+      try {
+        console.log('🌐 [Header] Loading locales from API...');
+        const response = await fetch('/api/locales');
+        
+        console.log('🌐 [Header] API response status:', response.status);
+        console.log('🌐 [Header] API response ok:', response.ok);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('🌐 [Header] API error response:', errorText);
+          throw new Error(`Failed to fetch locales: ${response.statusText}`);
+        }
+        
+        const data = await response.json() as LocaleApiResponse;
+        console.log('🌐 [Header] Raw API response:', data);
+        
+        if (data.locales && Array.isArray(data.locales)) {
+          console.log('🌐 [Header] Setting locales state:', data.locales);
+          setLocales(data.locales);
+          console.log('🌐 [Header] Loaded locales:', data.locales.map((l) => l.code));
+          console.log('🌐 [Header] Full locales data:', data.locales);
+        } else {
+          console.error('🌐 [Header] Invalid locales response:', data);
+          throw new Error('Invalid locales response format');
+        }
+      } catch (error) {
+        console.error('🌐 [Header] Failed to load locales:', error);
+        // Fallback to minimal locale set
+        setLocales([
+          { code: 'en-US', name: 'English (US)', default: true },
+          { code: 'pt-BR', name: 'Português (Brasil)', default: false },
+          { code: 'es', name: 'Español', default: false },
+        ]);
+      }
+    };
+
+    void loadLocales();
+  }, []);
 
   // Function to check if a link is active
   const _isActivePage = (page: Page) => pathname === `/${page.slug}`;
@@ -448,7 +497,7 @@ function HeaderContent(props: HeaderProps) {
               {menuLoading ? (
                 <div className="px-4 py-2 text-white">Loading menu...</div>
               ) : menu ? (
-                <MenuComponent menu={menu} />
+                <MenuComponent menu={menu} locales={locales} />
               ) : (
                 <div className="px-4 py-2 text-white">
                   No menu available (Header menu ID: {header?.menu?.sys?.id ?? 'none'})
@@ -544,6 +593,7 @@ function HeaderContent(props: HeaderProps) {
                                 menu={overflowMenu}
                                 variant="overflow"
                                 megaMenuTags={overflowMenuTags}
+                                locales={locales}
                               />
                             ) : (
                               <div className="text-white">No overflow menu available</div>
@@ -789,7 +839,15 @@ function HeaderContent(props: HeaderProps) {
                       <div className="space-y-4">
                         {/* LocaleDropdown - Centered above overflow items */}
                         <div className="flex justify-center">
-                          <LocaleDropdown className="rounded-md px-4 py-2" />
+                          {(() => {
+                            console.log('🌐 [Header] Passing locales to LocaleDropdown:', locales);
+                            return (
+                              <LocaleDropdown 
+                                locales={locales} 
+                                className="rounded-md px-4 py-2" 
+                              />
+                            );
+                          })()}
                         </div>
 
                         {/* Overflow Menu Items */}

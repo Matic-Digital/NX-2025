@@ -4,30 +4,52 @@ import { draftMode } from 'next/headers';
 import { getPostBySlug, getAllPostsMinimal } from '@/components/Post/PostApi';
 import { PostDetail } from '@/components/Post/PostDetail';
 
+// Enable dynamic routing for localized slugs that might not be pre-generated
+export const dynamic = 'force-dynamic';
+
 interface PostPageProps {
   params: Promise<{
     category: string;
     slug: string;
   }>;
+  searchParams: Promise<{
+    locale?: string;
+  }>;
 }
 
 export async function generateStaticParams() {
-  const postsResponse = await getAllPostsMinimal();
+  const locales = ['en-US', 'pt-BR', 'es']; // Add your available locales
+  const allParams: { category: string; slug: string }[] = [];
   
-  return postsResponse.items.map((post) => {
-    // Get the first category as the primary category for the URL
-    const primaryCategory = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
-    
-    return {
-      category: primaryCategory,
-      slug: post.slug,
-    };
-  });
+  // Generate params for each locale
+  for (const locale of locales) {
+    try {
+      // Fetch posts for this specific locale
+      const postsResponse = await getAllPostsMinimal(false, locale);
+      
+      const localeParams = postsResponse.items.map((post) => {
+        // Get the first category as the primary category for the URL
+        const primaryCategory = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
+        
+        return {
+          category: primaryCategory,
+          slug: post.slug,
+        };
+      });
+      
+      allParams.push(...localeParams);
+    } catch (error) {
+      console.error(`Error generating params for locale ${locale}:`, error);
+    }
+  }
+  
+  return allParams;
 }
 
-export async function generateMetadata({ params }: PostPageProps) {
+export async function generateMetadata({ params, searchParams }: PostPageProps) {
   const resolvedParams = await params;
-  const post = await getPostBySlug(resolvedParams.slug);
+  const resolvedSearchParams = await searchParams;
+  const post = await getPostBySlug(resolvedParams.slug, false, resolvedSearchParams.locale);
   
   if (!post) {
     return {
@@ -55,14 +77,21 @@ export async function generateMetadata({ params }: PostPageProps) {
   };
 }
 
-export default async function PostPage({ params }: PostPageProps) {
+export default async function PostPage({ params, searchParams }: PostPageProps) {
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
   const { isEnabled } = await draftMode();
-  const post = await getPostBySlug(resolvedParams.slug, isEnabled);
+  
+  console.log(`🔍 PostPage: Loading post with slug "${resolvedParams.slug}" and locale "${resolvedSearchParams.locale ?? 'auto-detect'}"`);
+  
+  const post = await getPostBySlug(resolvedParams.slug, isEnabled, resolvedSearchParams.locale);
 
   if (!post) {
+    console.log(`❌ Post not found for slug: ${resolvedParams.slug} in locale: ${resolvedSearchParams.locale ?? 'auto-detect'}`);
     notFound();
   }
+  
+  console.log(`✅ Post loaded successfully: ${post.title}`);
 
   // Verify the category matches (optional validation)
   const primaryCategory = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';

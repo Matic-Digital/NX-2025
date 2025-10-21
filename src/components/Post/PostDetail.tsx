@@ -8,6 +8,7 @@ import {
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getPostById, getRelatedPosts } from '@/components/Post/PostApi';
+import { getCurrentLocale } from '@/lib/contentful-locale';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
 import { PostCard } from '@/components/Post/PostCard';
@@ -36,8 +37,16 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
       }
 
       try {
-        const fullData = await getPostById(post.sys.id);
+        // Get current locale from URL or localStorage
+        const currentLocale = getCurrentLocale();
+        console.log(`🔍 PostDetail: Fetching full post data in locale: ${currentLocale}`);
+        
+        const fullData = await getPostById(post.sys.id, false, currentLocale);
         if (fullData) {
+          console.log(`✅ PostDetail: Received full post data in ${currentLocale}:`, {
+            title: fullData.title,
+            hasContent: !!fullData.content
+          });
           setFullPostData(fullData);
           
           // Fetch related posts if we have categories
@@ -56,7 +65,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     };
 
     void fetchFullPostData();
-  }, [post.sys.id]);
+  }, [post.sys.id]); // Re-run when post ID changes
 
   // Use full post data if available, otherwise fall back to initial post
   const displayPost = fullPostData ?? post;

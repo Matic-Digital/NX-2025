@@ -31,7 +31,6 @@ export async function fetchGraphQL<T>(
         ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
 
-    // Debug: Log the environment variable value
     const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'development';
 
     const response = await fetch(

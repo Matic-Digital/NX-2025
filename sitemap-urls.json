@@ -3,7 +3,7 @@
     "loc": "https://nx-2025.vercel.app",
     "changefreq": "daily",
     "priority": 1,
-    "lastmod": "2025-09-25"
+    "lastmod": "2025-10-21"
   },
   {
     "loc": "https://nx-2025.vercel.app/400-mw-mammoth-north-solar-project",
@@ -36,6 +36,26 @@
     "priority": 0.6
   },
   {
+    "loc": "https://nx-2025.vercel.app/ai-and-energy-transition",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/americas",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/asia-pacific",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/bankability",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
     "loc": "https://nx-2025.vercel.app/busting-the-myth-renewables-can-power-the-data-center-surge",
     "changefreq": "weekly",
     "priority": 0.6
@@ -56,6 +76,11 @@
     "priority": 0.6
   },
   {
+    "loc": "https://nx-2025.vercel.app/cold-climates",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
     "loc": "https://nx-2025.vercel.app/company",
     "changefreq": "weekly",
     "priority": 0.8
@@ -71,19 +96,19 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/controls/controls-product",
+    "loc": "https://nx-2025.vercel.app/controls-product",
     "changefreq": "monthly",
     "priority": 0.7
   },
   {
-    "loc": "https://nx-2025.vercel.app/deploy",
+    "loc": "https://nx-2025.vercel.app/decarbonization-lever",
     "changefreq": "monthly",
-    "priority": 0.6
+    "priority": 0.7
   },
   {
-    "loc": "https://nx-2025.vercel.app/design",
+    "loc": "https://nx-2025.vercel.app/desert-climates",
     "changefreq": "monthly",
-    "priority": 0.6
+    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/digital",
@@ -91,7 +116,12 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/digital/digital-product",
+    "loc": "https://nx-2025.vercel.app/diverse-soil-conditions",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/dual-land-use",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -101,7 +131,12 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/ebos/ebos-product",
+    "loc": "https://nx-2025.vercel.app/ebos-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/enable-dual-value",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -111,9 +146,24 @@
     "priority": 0.8
   },
   {
+    "loc": "https://nx-2025.vercel.app/europe",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
     "loc": "https://nx-2025.vercel.app/foundations",
     "changefreq": "weekly",
     "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/foundations-case-study",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/foundations-product",
+    "changefreq": "monthly",
+    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/honoring-service-beyond-the-battlefield-from-defending-freedom-to-powering-a-clean-energy-future",
@@ -129,6 +179,11 @@
     "loc": "https://nx-2025.vercel.app/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry",
     "changefreq": "weekly",
     "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/land-use-and-permitting",
+    "changefreq": "monthly",
+    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/legal",
@@ -151,6 +206,11 @@
     "priority": 0.7
   },
   {
+    "loc": "https://nx-2025.vercel.app/localized-supply-chain",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
     "loc": "https://nx-2025.vercel.app/mammoth-north-solar-project-celebrates-upcoming-commercial-operations",
     "changefreq": "weekly",
     "priority": 0.6
@@ -166,6 +226,16 @@
     "priority": 0.6
   },
   {
+    "loc": "https://nx-2025.vercel.app/maximizing-uptime",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/middle-east-africa-and-india",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
     "loc": "https://nx-2025.vercel.app/mitigate-risk",
     "changefreq": "weekly",
     "priority": 0.8
@@ -179,11 +249,6 @@
     "loc": "https://nx-2025.vercel.app/module-mounting",
     "changefreq": "weekly",
     "priority": 0.8
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/module-mounting/module-mounting-product",
-    "changefreq": "monthly",
-    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/newsroom",
@@ -212,11 +277,6 @@
   },
   {
     "loc": "https://nx-2025.vercel.app/nextracker-agrivoltaics-a-win-win-for-all",
-    "changefreq": "weekly",
-    "priority": 0.6
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
     "changefreq": "weekly",
     "priority": 0.6
   },
@@ -351,12 +411,72 @@
     "priority": 0.6
   },
   {
-    "loc": "https://nx-2025.vercel.app/placeholder-service",
-    "changefreq": "monthly",
+    "loc": "https://nx-2025.vercel.app/nx-agripv",
+    "changefreq": "weekly",
     "priority": 0.6
   },
   {
+    "loc": "https://nx-2025.vercel.app/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/nx-earth-truss",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/nx-navigator",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/nx-one",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/nx-pulse",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/optimizing-module-technology",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/placeholder-post",
+    "changefreq": "weekly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/ppa-partnerships",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
     "loc": "https://nx-2025.vercel.app/products",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/controls",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/digital",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/digital/digital-product",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/ebos",
     "changefreq": "weekly",
     "priority": 0.8
   },
@@ -366,7 +486,42 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/products/foundations/foundations-product",
+    "loc": "https://nx-2025.vercel.app/products/foundations/nx-anchor",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/module-mounting",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/module-mounting/nx-frame",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/products/trackers",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/products/trackers/products/trackers/nx-horizon",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/products/trackers/products/trackers/nx-horizon-hall-pro",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/products/trackers/products/trackers/nx-horizon-low-carbon",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/products/products/trackers/products/trackers/nx-horizon-xtr",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -374,26 +529,6 @@
     "loc": "https://nx-2025.vercel.app/products/trackers",
     "changefreq": "weekly",
     "priority": 0.8
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/products/trackers/nx-horizon",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/products/trackers/nx-horizon-hall-pro",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/products/trackers/nx-horizon-low-carbon",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/products/trackers/nx-horizon-xtr",
-    "changefreq": "monthly",
-    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/pv-magazine-acwa-power-lt-select-nextracker-for-1-17-gw-solar-plant-in-saudi-arabia",
@@ -411,31 +546,6 @@
     "priority": 0.6
   },
   {
-    "loc": "https://nx-2025.vercel.app/regions",
-    "changefreq": "weekly",
-    "priority": 0.8
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/regions/americas",
-    "changefreq": "weekly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/regions/asia-pacific",
-    "changefreq": "weekly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/regions/europe",
-    "changefreq": "weekly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/regions/middle-east-africa-and-india",
-    "changefreq": "weekly",
-    "priority": 0.7
-  },
-  {
     "loc": "https://nx-2025.vercel.app/renewables-now-nextracker-teams-up-with-orrcon-steel-for-australian-components",
     "changefreq": "weekly",
     "priority": 0.6
@@ -446,7 +556,32 @@
     "priority": 0.8
   },
   {
+    "loc": "https://nx-2025.vercel.app/search",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
     "loc": "https://nx-2025.vercel.app/services",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/services/design",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/services/services/design",
+    "changefreq": "weekly",
+    "priority": 0.8
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/services/services/design/services/design/placeholder-service",
+    "changefreq": "monthly",
+    "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/showcase",
     "changefreq": "weekly",
     "priority": 0.8
   },
@@ -471,22 +606,7 @@
     "priority": 0.7
   },
   {
-    "loc": "https://nx-2025.vercel.app/solutions/accelerate-deployment/diverse-soil-conditions",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
     "loc": "https://nx-2025.vercel.app/solutions/accelerate-deployment/efficient-installation",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/accelerate-deployment/land-use-and-permitting",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/accelerate-deployment/localized-supply-chain",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -496,27 +616,7 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/ai-and-energy-transition",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/decarbonization-lever",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/dual-land-use",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/ppa-partnerships",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/speed-to-deploy",
+    "loc": "https://nx-2025.vercel.app/solutions/energy-and-ai/behind-the-meter-energy",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -526,27 +626,7 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/solutions/maximize-energy/enable-dual-value",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
     "loc": "https://nx-2025.vercel.app/solutions/maximize-energy/harnessing-diffuse-light",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/maximize-energy/maximizing-uptime",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/maximize-energy/optimizing-module-technology",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/maximize-energy/solving-for-complex-terrain",
     "changefreq": "monthly",
     "priority": 0.7
   },
@@ -554,21 +634,6 @@
     "loc": "https://nx-2025.vercel.app/solutions/mitigate-risk",
     "changefreq": "weekly",
     "priority": 0.8
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/mitigate-risk/bankability",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/mitigate-risk/cold-climates",
-    "changefreq": "monthly",
-    "priority": 0.7
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/solutions/mitigate-risk/desert-climates",
-    "changefreq": "monthly",
-    "priority": 0.7
   },
   {
     "loc": "https://nx-2025.vercel.app/solutions/mitigate-risk/high-winds",
@@ -581,9 +646,24 @@
     "priority": 0.7
   },
   {
+    "loc": "https://nx-2025.vercel.app/solving-for-complex-terrain",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/speed-to-deploy",
+    "changefreq": "monthly",
+    "priority": 0.7
+  },
+  {
     "loc": "https://nx-2025.vercel.app/sterling-wilson-renewable-energy-selects-nextracker-nx-horizon-solar-trackers-for-nearly-two-gigawatts-in-india",
     "changefreq": "weekly",
     "priority": 0.6
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/thank-you",
+    "changefreq": "weekly",
+    "priority": 0.8
   },
   {
     "loc": "https://nx-2025.vercel.app/the-economic-times-sterling-and-wilson-places-orders-with-nextracker-for-solar-trackers",
@@ -601,17 +681,7 @@
     "priority": 0.6
   },
   {
-    "loc": "https://nx-2025.vercel.app/trackers",
-    "changefreq": "weekly",
-    "priority": 0.8
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report-2",
-    "changefreq": "weekly",
-    "priority": 0.6
-  },
-  {
-    "loc": "https://nx-2025.vercel.app/truecapture-supera-las-proyecciones-de-rendimiento-energetico-modeladas-en-el-analisis-de-icf",
+    "loc": "https://nx-2025.vercel.app/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
     "changefreq": "weekly",
     "priority": 0.6
   },
@@ -626,13 +696,18 @@
     "priority": 0.8
   },
   {
-    "loc": "https://nx-2025.vercel.app/what-we-do/services",
+    "loc": "https://nx-2025.vercel.app/what-we-do/what-we-do/deploy",
     "changefreq": "weekly",
-    "priority": 0.8
+    "priority": 0.7
   },
   {
-    "loc": "https://nx-2025.vercel.app/what-we-do/services/operate",
-    "changefreq": "monthly",
-    "priority": 0.6
+    "loc": "https://nx-2025.vercel.app/what-we-do/what-we-do/design",
+    "changefreq": "weekly",
+    "priority": 0.7
+  },
+  {
+    "loc": "https://nx-2025.vercel.app/what-we-do/what-we-do/operate",
+    "changefreq": "weekly",
+    "priority": 0.7
   }
 ]

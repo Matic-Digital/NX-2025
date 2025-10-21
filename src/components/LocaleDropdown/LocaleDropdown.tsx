@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getAvailableLocales, getCurrentLocale } from './LocaleDropdownApi';
-
+import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -10,62 +8,127 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import type { Locale, LocaleDropdownProps } from './LocaleDropdownSchema';
+import { getCurrentLocale } from '@/lib/contentful-locale';
+import type { LocaleOption } from '@/lib/server-locales';
+
+interface LocaleDropdownProps {
+  locales?: LocaleOption[]; // Server-provided locales (may be undefined during loading)
+  className?: string;
+}
 
 /**
  * LocaleDropdown Component
  * Displays available locales and allows users to switch between them
  */
 export function LocaleDropdown({
-  currentLocale: propCurrentLocale,
+  locales,
   className
 }: LocaleDropdownProps) {
-  const [locales, setLocales] = useState<Locale[]>([]);
-  const [currentLocale, setCurrentLocale] = useState<string>(propCurrentLocale ?? 'en-US');
-  const [loading, setLoading] = useState(true);
+  const [currentLocale, setCurrentLocale] = useState<string>('en-US');
 
-  // Load available locales on mount
+  // Initialize locale on mount and listen for changes
   useEffect(() => {
-    const loadLocales = async () => {
-      try {
-        const availableLocales = await getAvailableLocales();
-        setLocales(availableLocales);
+    const initializeLocale = () => {
+      const detectedLocale = getCurrentLocale();
+      setCurrentLocale(detectedLocale);
+      console.log('🌐 LocaleDropdown initialized with locale:', detectedLocale);
+    };
 
-        // Force English as default if no specific locale is provided
-        const current = propCurrentLocale ?? getCurrentLocale();
+    initializeLocale();
 
-        // Override with English if we detect Spanish or other non-English defaults
-        const finalLocale = current === 'es' || current === 'es-ES' ? 'en-US' : current;
-        setCurrentLocale(finalLocale);
-      } catch (error) {
-        console.error('Failed to load locales:', error);
-      } finally {
-        setLoading(false);
+    // Listen for locale changes in localStorage (for cross-tab sync)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'contentful-locale' && e.newValue) {
+        setCurrentLocale(e.newValue);
+        console.log('🌐 LocaleDropdown synced with storage change:', e.newValue);
       }
     };
 
-    void loadLocales();
-  }, [propCurrentLocale]);
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Handle locale change
-  const handleLocaleChange = (locale: string) => {
-    console.log('Switching locale to:', locale);
+  const handleLocaleChange = async (locale: string) => {
+    console.log('🌐 Starting locale change to:', locale);
 
     // Update localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('contentful-locale', locale);
+      console.log('✅ Updated localStorage with locale:', locale);
     }
 
-    // Update URL parameter
+    // Route to localized version of the page
     if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      
+      console.log('🔍 Current path:', currentPath);
+      console.log('🔍 Current locale:', currentLocale);
+      console.log('🎯 Target locale:', locale);
+      
+      // Update the current page URL with new locale
       const url = new URL(window.location.href);
       url.searchParams.set('locale', locale);
+      
+      console.log('🔄 Switching locale via parameter:', url.toString());
+      
+      // Use pushState to maintain navigation history
+      window.history.pushState({}, '', url.toString());
+      
+      // Reload the page to apply the new locale
+      window.location.reload();
+      
+      // DISABLED: Localized slug routing (causes 404s)
+      // try {
+      //   console.log('📡 Calling /api/localized-route...');
+      //   
+      //   // Try to find the localized version of the current page
+      //   const response = await fetch('/api/localized-route', {
+      //     method: 'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //       currentPath,
+      //       targetLocale: locale,
+      //       currentLocale: currentLocale
+      //     })
+      //   });
 
-      // Update the URL and reload to apply the new locale
-      window.location.href = url.toString();
+      //   console.log('📡 API Response status:', response.status);
+
+      //   if (response.ok) {
+      //     const data = await response.json();
+      //     console.log('📡 API Response data:', data);
+      //     
+      //     if (data.localizedPath) {
+      //       // Navigate to the localized version of the same content
+      //       const url = new URL(window.location.origin + data.localizedPath + currentSearch);
+      //       url.searchParams.set('locale', locale);
+      //       
+      //       console.log('🚀 Routing to localized content:', url.toString());
+      //       window.location.href = url.toString();
+      //       return;
+      //     } else {
+      //       console.log('⚠️ No localized path found, using fallback');
+      //     }
+      //   } else {
+      //     const errorText = await response.text();
+      //     console.error('❌ API Error:', response.status, errorText);
+      //   }
+      // } catch (error) {
+      //   console.error('❌ Failed to find localized route:', error);
+      // }
+
+      // // Fallback: Just add locale parameter to current URL
+      // const url = new URL(window.location.href);
+      // url.searchParams.set('locale', locale);
+      // 
+      // console.log('🔄 Fallback: Routing with locale parameter:', url.toString());
+      // window.location.href = url.toString();
     }
 
     // Update local state (though page will reload)
@@ -76,14 +139,16 @@ export function LocaleDropdown({
   // const currentLocaleInfo = locales.find(locale => locale.code === currentLocale) ?? locales[0];
 
   // Debug logging
-  console.log('LocaleDropdown render check:', { loading, localesCount: locales.length, locales });
+  console.log('LocaleDropdown render check:', { 
+    localesCount: locales?.length ?? 0, 
+    locales,
+    localesType: typeof locales,
+    localesIsArray: Array.isArray(locales)
+  });
 
-  if (loading) {
-    return null;
-  }
-
-  if (locales.length <= 1) {
-    console.log('LocaleDropdown hidden: only', locales.length, 'locale(s) available');
+  // Don't render if locales are not loaded yet or if there's only one locale
+  if (!locales || locales.length <= 1) {
+    console.log('LocaleDropdown hidden: locales not loaded or only', locales?.length ?? 0, 'locale(s) available');
     return null;
   }
 
@@ -110,21 +175,31 @@ export function LocaleDropdown({
         {locales.map((locale) => (
           <DropdownMenuItem
             key={locale.code}
-            onClick={(e) => {
-              console.log('Locale dropdown item clicked:', locale.code);
-              e.stopPropagation();
-              handleLocaleChange(locale.code);
-            }}
-            onMouseEnter={(e) => e.stopPropagation()}
-            onMouseLeave={(e) => e.stopPropagation()}
-            className={`cursor-pointer text-white/90 hover:text-white hover:bg-white/10 focus:bg-white/10 focus:text-white ${
-              currentLocale === locale.code ? 'bg-white/20 text-white' : ''
-            }`}
+            asChild
           >
-            <div className="flex items-center justify-between w-full">
-              <span>{locale.name}</span>
-              {currentLocale === locale.code && <div className="h-2 w-2 rounded-full bg-white" />}
-            </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                console.log('🔥 Locale button clicked:', locale.code);
+                e.preventDefault();
+                e.stopPropagation();
+                void handleLocaleChange(locale.code);
+              }}
+              onMouseDown={(e) => {
+                console.log('🔥 Locale button mouse down:', locale.code);
+                e.preventDefault();
+                e.stopPropagation();
+                void handleLocaleChange(locale.code);
+              }}
+              className={`w-full cursor-pointer text-white/90 hover:text-white hover:bg-white/10 focus:bg-white/10 focus:text-white px-2 py-1.5 text-left ${
+                currentLocale === locale.code ? 'bg-white/20 text-white' : ''
+              }`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <span>{locale.name}</span>
+                {currentLocale === locale.code && <div className="h-2 w-2 rounded-full bg-white" />}
+              </div>
+            </button>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

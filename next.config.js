@@ -165,6 +165,24 @@ const nextConfig = {
     ];
   },
 
+  // Dynamic redirects based on routing cache
+  async redirects() {
+    try {
+      // Import the redirect service (dynamic import to avoid build-time issues)
+      const { routeRedirectsService } = await import('./src/lib/route-redirects.js');
+      
+      // Initialize and get redirects
+      const redirects = routeRedirectsService.getNextJsRedirects();
+      
+      console.log(`🔀 Loaded ${redirects.length} dynamic redirects`);
+      
+      return redirects;
+    } catch (error) {
+      console.warn('⚠️ Failed to load dynamic redirects:', error);
+      return [];
+    }
+  },
+
   // Environment variable configuration
   env: {
     NEXT_PUBLIC_CONTENTFUL_SPACE_ID: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
