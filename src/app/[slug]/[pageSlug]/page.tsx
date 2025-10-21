@@ -388,13 +388,6 @@ function renderContentByType(
           </div>
         )}
 
-        {contentType === 'Service' && (
-          <div>
-            <p>{(contentItem as Service).cardTitle}</p>
-            {/* Add more Service-specific rendering here */}
-          </div>
-        )}
-
         {contentType === 'Solution' && (
           <div>
             <h2>{(contentItem as Solution).heading}</h2>
@@ -455,39 +448,40 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     // Instead of guessing by slug, find the actual item in the PageList and determine its type
     console.log(`Looking for item with slug "${pageSlug}" in PageList "${pageList.title}"`);
     console.log(`PageList contains ${pageList.pagesCollection?.items?.length || 0} items`);
-    
+
     // Find the specific item in this PageList by slug
     const targetItem = pageList.pagesCollection?.items?.find((item) => {
       if (!item || typeof item !== 'object') return false;
-      
+
       // Check if item has a slug property that matches
       const itemSlug = (item as { slug?: string }).slug;
       if (typeof itemSlug !== 'string') return false;
-      
+
       // Check for exact match or if the item slug ends with the pageSlug
       // But ensure it's a proper path segment match, not just a substring match
-      const hasMatchingSlug = itemSlug === pageSlug || 
+      const hasMatchingSlug =
+        itemSlug === pageSlug ||
         (itemSlug.endsWith(`/${pageSlug}`) && itemSlug.split('/').pop() === pageSlug);
-      
+
       if (hasMatchingSlug) {
         const typename = (item as { __typename?: string }).__typename ?? 'Unknown';
         console.log(`Found matching item: ${pageSlug} -> ${itemSlug} (${typename})`);
         return true;
       }
-      
+
       return false;
     });
-    
+
     if (!targetItem) {
       console.log(`No item with slug "${pageSlug}" found in PageList "${pageList.title}"`);
       notFound();
     }
-    
+
     // Determine the content type from the item's __typename
     const itemTypename = (targetItem as { __typename?: string }).__typename;
     const actualSlug = (targetItem as { slug?: string }).slug ?? pageSlug;
     console.log(`Item typename: ${itemTypename}, actual slug: ${actualSlug}`);
-    
+
     // Fetch the full content based on the typename
     if (itemTypename === 'Page') {
       contentItem = await getPageBySlug(actualSlug, preview);

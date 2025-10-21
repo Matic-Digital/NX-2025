@@ -16,6 +16,7 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   heading
+  tags
   ctaCollection(limit: 2) {
       items {
         sys { id }

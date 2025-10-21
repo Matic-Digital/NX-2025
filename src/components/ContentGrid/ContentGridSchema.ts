@@ -7,10 +7,10 @@ import { CtaGridSchema } from '@/components/CtaGrid/CtaGridSchema';
 import { EventSchema } from '@/components/Event/EventSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
+import { PageListSchema } from '@/components/PageList/PageListSchema';
 import { PostSchema } from '@/components/Post/PostSchema';
 import { ProductSchema } from '@/components/Product/ProductSchema';
 import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';
-import { ServiceSchema } from '@/components/Service/ServiceSchema';
 import { SliderSchema } from '@/components/Slider/SliderSchema';
 import { SolutionSchema } from '@/components/Solution/SolutionSchema';
 import { VideoSchema } from '@/components/Video/VideoSchema';
@@ -39,7 +39,7 @@ const ContentGridItemUnion = z.union([
   OfficeLocationSchema,
   PostSchema,
   ProductSchema,
-  ServiceSchema,
+  z.lazy(() => PageListSchema),
   SliderSchema,
   SolutionSchema,
   VideoSchema

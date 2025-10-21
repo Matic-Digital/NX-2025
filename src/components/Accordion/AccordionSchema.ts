@@ -2,7 +2,12 @@ import { z } from 'zod';
 
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
-export const AccordionVariantEnum = z.enum(['ContentLeft', 'ContentTop', 'ContentRight']);
+export const AccordionVariantEnum = z.enum([
+  'ContentTop',
+  'ContentRigh',
+  'ContentBottom',
+  'ContentLeft'
+]);
 export type AccordionVariant = z.infer<typeof AccordionVariantEnum>;
 
 export const AccordionItemSchema = z.object({

@@ -80,6 +80,7 @@ export const contentRenderers = {
       {...item}
       parentPageListSlug={context.parentPageListSlug}
       currentPath={context.currentPath}
+      index={context.index}
     />
   ),
 

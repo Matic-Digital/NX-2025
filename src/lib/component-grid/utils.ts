@@ -105,8 +105,17 @@ export const collectionAnalyzers = {
   allItemsAreServices: (items: ContentGridItemUnion[]): boolean =>
     items.length > 0 && items.every(contentTypeDetectors.isService),
 
-  hasServiceCards: (items: ContentGridItemUnion[]): boolean =>
-    items.some(contentTypeDetectors.isService),
+  hasServiceCards: (items: ContentGridItemUnion[]): boolean => {
+    const hasDirectServices = items.some(contentTypeDetectors.isService);
+    const hasPrimaryHoverSlideUp = items.some(item => 
+      contentTypeDetectors.isContentGridItem(item) && 
+      item.variant === 'PrimaryHoverSlideUp'
+    );
+    
+    const result = hasDirectServices || hasPrimaryHoverSlideUp;
+    
+    return result;
+  },
 
   hasImages: (items: ContentGridItemUnion[]): boolean => items.some(contentTypeDetectors.isImage),
 

@@ -58,9 +58,9 @@ export const AccordionItem = ({
             className={accordionStyles.getWrapperClasses(item.variant)}
           >
             {item.image?.sys?.id && (
-              <div 
+              <div
                 className={accordionStyles.getImageClasses(item.variant)}
-                {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
+                {...(inspectorProps ? (inspectorProps({ fieldId: 'image' }) ?? {}) : {})}
               >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
@@ -88,26 +88,26 @@ export const AccordionItem = ({
 
               <div>
                 {item.overline && (
-                  <p 
+                  <p
                     className={accordionStyles.getOverlineClasses()}
-                    {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
+                    {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                   >
                     {item.overline}
                   </p>
                 )}
 
-                <h3 
+                <h3
                   className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}
-                  {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
+                  {...(inspectorProps ? (inspectorProps({ fieldId: 'title' }) ?? {}) : {})}
                 >
                   {item.title}
                 </h3>
               </div>
               <div className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}>
                 {item.description && (
-                  <p 
+                  <p
                     className={accordionStyles.getDescriptionTextClasses()}
-                    {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
+                    {...(inspectorProps ? (inspectorProps({ fieldId: 'description' }) ?? {}) : {})}
                   >
                     {item.description}
                   </p>
@@ -146,12 +146,16 @@ export const AccordionItem = ({
             direction="col"
             gap={0}
             cols={1}
-            className={accordionStyles.getWrapperClasses(item.variant, isHovered, shouldShowExpanded)}
+            className={accordionStyles.getWrapperClasses(
+              item.variant,
+              isHovered,
+              shouldShowExpanded
+            )}
           >
             {item.image?.sys?.id && shouldShowExpanded && (
-              <div 
+              <div
                 className={accordionStyles.getImageClasses(item.variant)}
-                {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
+                {...(inspectorProps ? (inspectorProps({ fieldId: 'image' }) ?? {}) : {})}
               >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
@@ -171,28 +175,46 @@ export const AccordionItem = ({
               >
                 <div>
                   {item.overline && (
-                    <p 
-                      className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded, item.variant)}
-                      {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
+                    <p
+                      className={accordionStyles.getOverlineClasses(
+                        isHovered,
+                        shouldShowExpanded,
+                        item.variant
+                      )}
+                      {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                     >
                       {item.overline}
                     </p>
                   )}
 
-                  <h3 
-                    className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded, item.variant)}
-                    {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
+                  <h3
+                    className={accordionStyles.getTitleClasses(
+                      isHovered,
+                      shouldShowExpanded,
+                      item.variant
+                    )}
+                    {...(inspectorProps ? (inspectorProps({ fieldId: 'title' }) ?? {}) : {})}
                   >
                     {item.title}
                   </h3>
                 </div>
                 <div
-                  className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded, item.variant)}
+                  className={accordionStyles.getDescriptionClasses(
+                    isHovered,
+                    shouldShowExpanded,
+                    item.variant
+                  )}
                 >
                   {item.description && (
-                    <p 
-                      className={accordionStyles.getDescriptionTextClasses(isHovered, shouldShowExpanded, item.variant)}
-                      {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
+                    <p
+                      className={accordionStyles.getDescriptionTextClasses(
+                        isHovered,
+                        shouldShowExpanded,
+                        item.variant
+                      )}
+                      {...(inspectorProps
+                        ? (inspectorProps({ fieldId: 'description' }) ?? {})
+                        : {})}
                     >
                       {item.description}
                     </p>
@@ -210,9 +232,9 @@ export const AccordionItem = ({
                 </div>
               </Box>
               {item.cta && (
-                <div 
+                <div
                   className={accordionStyles.getCtaWrapperClasses(item.variant)}
-                  {...(inspectorProps ? inspectorProps({ fieldId: 'cta' }) ?? {} : {})}
+                  {...(inspectorProps ? (inspectorProps({ fieldId: 'cta' }) ?? {}) : {})}
                 >
                   <Button variant="white" asChild>
                     <Link href={item.cta.internalLink?.slug ?? ''}>{item.cta.text}</Link>
@@ -227,11 +249,13 @@ export const AccordionItem = ({
   };
 
   switch (item.variant) {
-    case 'ContentLeft':
-      return <HorizontalAccordionItem />;
     case 'ContentTop':
       return <VerticalAccordionItem />;
     case 'ContentRight':
+      return <HorizontalAccordionItem />;
+    case 'ContentBottom':
+      return <HorizontalAccordionItem />;
+    case 'ContentLeft':
       return <HorizontalAccordionItem />;
     default:
       return <HorizontalAccordionItem />;
