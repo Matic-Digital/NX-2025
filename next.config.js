@@ -168,15 +168,24 @@ const nextConfig = {
   // Dynamic redirects based on routing cache
   async redirects() {
     try {
-      // Import the redirect service (dynamic import to avoid build-time issues)
-      const { routeRedirectsService } = await import('./src/lib/route-redirects.js');
+      // Import fs to read the redirects JSON file directly
+      const fs = await import('fs');
+      const path = await import('path');
       
-      // Initialize and get redirects
-      const redirects = routeRedirectsService.getNextJsRedirects();
+      // Read the generated redirects file
+      const redirectsPath = path.join(process.cwd(), 'src/lib/route-redirects.json');
       
-      console.log(`🔀 Loaded ${redirects.length} dynamic redirects`);
-      
-      return redirects;
+      if (fs.existsSync(redirectsPath)) {
+        const redirectsData = fs.readFileSync(redirectsPath, 'utf8');
+        const redirects = JSON.parse(redirectsData);
+        
+        console.log(`🔀 Loaded ${redirects.length} dynamic redirects`);
+        
+        return redirects;
+      } else {
+        console.warn('⚠️ Redirects file not found, run sitemap:routing first');
+        return [];
+      }
     } catch (error) {
       console.warn('⚠️ Failed to load dynamic redirects:', error);
       return [];

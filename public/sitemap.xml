@@ -103,12 +103,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nx-2025.vercel.app/nx-earth-truss</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://nx-2025.vercel.app/foundations-product</loc>
     <lastmod>2025-10-21</lastmod>
     <changefreq>monthly</changefreq>
@@ -565,6 +559,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://nx-2025.vercel.app/products/foundations/nx-earth-truss</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://nx-2025.vercel.app/solutions/energy-and-ai</loc>
     <lastmod>2025-10-21</lastmod>
     <changefreq>weekly</changefreq>
@@ -679,7 +679,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nx-2025.vercel.app/products/products/trackers</loc>
+    <loc>https://nx-2025.vercel.app/products/trackers</loc>
     <lastmod>2025-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -709,7 +709,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nx-2025.vercel.app/services/services/design</loc>
+    <loc>https://nx-2025.vercel.app/services/design</loc>
     <lastmod>2025-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -727,19 +727,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nx-2025.vercel.app/services/design</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://nx-2025.vercel.app/products</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://nx-2025.vercel.app/products/trackers</loc>
     <lastmod>2025-10-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

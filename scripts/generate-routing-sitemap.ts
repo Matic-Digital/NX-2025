@@ -408,9 +408,20 @@ function generateRoutingCache(
     // Add PageList itself if it has a slug
     if (pageList.slug && pageList.slug.trim()) {
       const parentPath = buildRoutingPath(pageList.sys.id, pageLists);
-      const fullPath = parentPath.length > 0 
+      let fullPath = parentPath.length > 0 
         ? `/${[...parentPath.map(p => p.slug), pageList.slug].join('/')}`
         : `/${pageList.slug}`;
+
+      // Clean up duplicate segments in the path
+      const pathSegments = fullPath.split('/').filter(Boolean);
+      const uniqueSegments = [];
+      for (let i = 0; i < pathSegments.length; i++) {
+        // Only add segment if it's not the same as the previous one
+        if (i === 0 || pathSegments[i] !== pathSegments[i - 1]) {
+          uniqueSegments.push(pathSegments[i]);
+        }
+      }
+      fullPath = `/${uniqueSegments.join('/')}`;
 
       routes[fullPath] = {
         path: fullPath,
@@ -451,6 +462,17 @@ function generateRoutingCache(
               fullPath = `/${item.slug}`;
             }
           }
+          
+          // Additional check: if the generated path has duplicate segments, clean it up
+          const pathSegments = fullPath.split('/').filter(Boolean);
+          const uniqueSegments = [];
+          for (let i = 0; i < pathSegments.length; i++) {
+            // Only add segment if it's not the same as the previous one
+            if (i === 0 || pathSegments[i] !== pathSegments[i - 1]) {
+              uniqueSegments.push(pathSegments[i]);
+            }
+          }
+          fullPath = `/${uniqueSegments.join('/')}`;
 
           // Determine priority and changefreq based on content type
           let priority = 0.6;

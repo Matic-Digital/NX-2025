@@ -305,6 +305,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-earth-truss",
+    "destination": "/products/foundations/nx-earth-truss",
+    "permanent": false
+  },
+  {
     "source": "/nx-frame",
     "destination": "/products/module-mounting/nx-frame",
     "permanent": false
@@ -391,7 +396,7 @@
   },
   {
     "source": "/trackers",
-    "destination": "/products/products/trackers",
+    "destination": "/products/trackers",
     "permanent": false
   },
   {
