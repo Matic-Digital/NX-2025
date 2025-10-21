@@ -476,7 +476,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           <AirImage
             link="https://air-prod.imgix.net/1cd01021-40e4-4f15-add7-a864a7866f51.jpg?w=4000&h=3078&fm=webp&fit=crop&auto=auto"
             altText={heading}
-            className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
+            className="absolute block md:hidden md:group-hover:block inset-0 z-10 h-full w-full object-cover"
           />
           <div className="z-20">
             <h3 className="text-headline-sm text-white">{heading}</h3>

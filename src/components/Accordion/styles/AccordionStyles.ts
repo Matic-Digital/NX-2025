@@ -93,7 +93,13 @@ export const accordionStyles = {
   /**
    * Get CSS classes for image element
    */
-  getImageElementClasses: (isHovered: boolean, isActive: boolean) => {
+  getImageElementClasses: (isHovered: boolean, isActive: boolean, variant?: string) => {
+    // For ContentTop, use auto height to fit image naturally
+    if (variant === 'ContentTop') {
+      return 'h-auto w-full object-cover transition-all duration-500 ease-in-out';
+    }
+    
+    // Default behavior for horizontal accordions
     return `h-full w-full object-cover transition-all duration-500 ease-in-out ${
       isHovered || isActive ? 'lg:h-full' : 'lg:h-60'
     }`;
@@ -102,7 +108,13 @@ export const accordionStyles = {
   /**
    * Get CSS classes for accordion item container
    */
-  getItemClasses: (isHovered: boolean, isActive: boolean) => {
+  getItemClasses: (isHovered: boolean, isActive: boolean, variant?: string) => {
+    // ContentTop variant doesn't need shadow effects, uses simple height
+    if (variant === 'ContentTop') {
+      return 'overflow-hidden border-none bg-subtle text-foreground transition-all duration-500 ease-out !rounded-none';
+    }
+    
+    // Default behavior for horizontal accordions
     return `overflow-hidden border-none bg-subtle text-foreground shadow-lg transition-all duration-500 ease-out !rounded-none lg:${
       isHovered || isActive ? 'shadow-lg' : 'shadow-none'
     }`;

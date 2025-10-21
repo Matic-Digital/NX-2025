@@ -46,27 +46,55 @@ export function Accordion({ sys }: AccordionProps) {
     return <EmptyState />;
   }
 
+  // Check if this is a ContentTop accordion
+  const isContentTopAccordion = accordionItems.length > 0 && accordionItems[0]?.variant === 'ContentTop';
+
   return (
-    <AccordionProvider>
+    <AccordionProvider key={sys.id}>
       <div>
-        <AccordionPrimitive type="single" collapsible>
-          <Box direction="col" gap={6}>
-            {accordionItems.map((item, index) => {
-              return (
-                <AccordionItem
-                  key={`accordion-${index}-item-${item.sys.id}`}
-                  item={item}
-                  index={index}
-                  isFirst={index === 0}
-                  itemId={`item-${index}`}
-                  isHovered={false}
-                  shouldShowExpanded={false}
-                  onHover={() => undefined}
-                />
-              );
-            })}
-          </Box>
-        </AccordionPrimitive>
+        {isContentTopAccordion ? (
+          // ContentTop accordion without flex layout
+          <div>
+            <AccordionPrimitive type="single" collapsible>
+              <Box direction="col" gap={6}>
+                {accordionItems.map((item, index) => {
+                  return (
+                    <AccordionItem
+                      key={`accordion-${sys.id}-${index}-item-${item.sys.id}`}
+                      item={item}
+                      index={index}
+                      isFirst={index === 0}
+                      itemId={`${sys.id}-item-${index}`}
+                      isHovered={false}
+                      shouldShowExpanded={false}
+                      onHover={() => undefined}
+                    />
+                  );
+                })}
+              </Box>
+            </AccordionPrimitive>
+          </div>
+        ) : (
+          // Regular accordion layout
+          <AccordionPrimitive type="single" collapsible>
+            <Box direction="col" gap={6}>
+              {accordionItems.map((item, index) => {
+                return (
+                  <AccordionItem
+                    key={`accordion-${sys.id}-${index}-item-${item.sys.id}`}
+                    item={item}
+                    index={index}
+                    isFirst={index === 0}
+                    itemId={`${sys.id}-item-${index}`}
+                    isHovered={false}
+                    shouldShowExpanded={false}
+                    onHover={() => undefined}
+                  />
+                );
+              })}
+            </Box>
+          </AccordionPrimitive>
+        )}
       </div>
     </AccordionProvider>
   );
