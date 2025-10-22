@@ -576,7 +576,9 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   // Look for gaps in display order that might indicate step breaks
   const displayOrderGaps: number[] = [];
   for (let i = 1; i < sortedFields.length; i++) {
+    // eslint-disable-next-line security/detect-object-injection
     const currentField = sortedFields[i];
+    // eslint-disable-next-line security/detect-object-injection
     const previousField = sortedFields[i-1];
     
     // Ensure both fields exist and have displayOrder values

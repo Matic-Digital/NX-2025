@@ -22,7 +22,6 @@ export const useTestimonialsData = (sysId: string) => {
         setError(null);
 
         const data = await getTestimonialsById(sysId);
-        console.log('⭐ data', data);
 
         if (data) {
           setTestimonials(data);

@@ -263,7 +263,6 @@ export async function getCollectionIdsFromContentGrid(
 
     return collectionIds;
   } catch (error) {
-    console.warn('Failed to fetch Collection IDs:', error);
     return [];
   }
 }

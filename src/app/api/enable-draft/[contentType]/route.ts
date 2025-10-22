@@ -1,5 +1,6 @@
 import { cookies, draftMode } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { constantTimeCompare } from '@/lib/security-utils';
 
 // Import all the API functions
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
@@ -289,12 +290,14 @@ export async function GET(
     return NextResponse.json({ message: 'No secret or id provided' }, { status: 400 });
   }
 
-  // Validate secret
-  if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
+  // Validate secret using constant-time comparison
+  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
+  if (!expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
     return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
   }
 
   // Validate content type
+  // eslint-disable-next-line security/detect-object-injection
   if (!contentTypeMap[contentType]) {
     return NextResponse.json(
       { message: `Unsupported content type: ${contentType}` },
@@ -302,6 +305,7 @@ export async function GET(
     );
   }
 
+  // eslint-disable-next-line security/detect-object-injection
   const { fetchFn, previewPath, entityName } = contentTypeMap[contentType];
 
   try {

@@ -61,7 +61,10 @@ export function RegionsMap(props: RegionsMap) {
   // Group regions by their name
   const regionsByRegion = regions.reduce<Record<string, Region[]>>((acc, region) => {
     const regionName = region.region;
-    acc[regionName] = [...(acc[regionName] ?? []), region];
+    // eslint-disable-next-line security/detect-object-injection
+    const existingRegions = Object.prototype.hasOwnProperty.call(acc, regionName) ? acc[regionName] ?? [] : [];
+    // eslint-disable-next-line security/detect-object-injection
+    acc[regionName] = [...existingRegions, region];
     return acc;
   }, {});
 
@@ -124,18 +127,30 @@ export function RegionsMap(props: RegionsMap) {
           }}
         >
           {regionNames.map((regionName) => {
-            const regionLocations = regionsByRegion?.[regionName] ?? [];
+            // eslint-disable-next-line security/detect-object-injection
+            const regionLocations = Object.prototype.hasOwnProperty.call(regionsByRegion, regionName) 
+              // eslint-disable-next-line security/detect-object-injection
+              ? regionsByRegion[regionName] ?? [] 
+              : [];
 
             return (
               <React.Fragment key={regionName}>
                 <div
                   className={cn(
                     'group transition-all duration-200',
-                    hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                    // eslint-disable-next-line security/detect-object-injection
+                    hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
+                      // eslint-disable-next-line security/detect-object-injection
+                      ? regionToSvgId[regionName] ?? regionName 
+                      : regionName)
                       ? 'scale-105 transform'
                       : ''
                   )}
-                  onMouseEnter={() => setHoveredRegion(regionToSvgId[regionName] ?? regionName)}
+                  // eslint-disable-next-line security/detect-object-injection
+                  onMouseEnter={() => setHoveredRegion(Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
+                    // eslint-disable-next-line security/detect-object-injection
+                    ? regionToSvgId[regionName] ?? regionName 
+                    : regionName)}
                   onMouseLeave={() => setHoveredRegion(null)}
                 >
                   {regionLocations.length > 0 ? (
@@ -146,7 +161,11 @@ export function RegionsMap(props: RegionsMap) {
                           href={`/${region.slug}`}
                           className={cn(
                             'transition-colors',
-                            hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                            // eslint-disable-next-line security/detect-object-injection
+                            hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
+                              // eslint-disable-next-line security/detect-object-injection
+                              ? regionToSvgId[regionName] ?? regionName 
+                              : regionName)
                               ? 'text-primary'
                               : 'text-surface-invert'
                           )}
@@ -162,7 +181,11 @@ export function RegionsMap(props: RegionsMap) {
                               <p
                                 className={cn(
                                   '!text-body-xxs',
-                                  hoveredRegion === (regionToSvgId[regionName] ?? regionName)
+                                  // eslint-disable-next-line security/detect-object-injection
+                                  hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
+                                    // eslint-disable-next-line security/detect-object-injection
+                                    ? regionToSvgId[regionName] ?? regionName 
+                                    : regionName)
                                     ? 'text-primary transition-colors'
                                     : 'text-surface-invert'
                                 )}

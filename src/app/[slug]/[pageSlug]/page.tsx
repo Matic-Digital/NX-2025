@@ -109,8 +109,7 @@ async function checkForPartialPathRedirect(
     }
 
     return null;
-  } catch (error) {
-    console.error('Error checking for partial path redirect:', error);
+  } catch (_error) {
     return null;
   }
 }
@@ -138,63 +137,50 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
 
   // Try to fetch SEO data for the content item using lightweight queries
   let contentSEO: unknown = null;
-  let contentType = '';
+  let _contentType = '';
 
   try {
-    console.log(`🔍 [Nested Metadata] Generating metadata for: ${pageListSlug}/${pageSlug}`);
     
     // First try PageList with the full nested slug (e.g., "products/trackers")
     const fullSlug = `${pageListSlug}/${pageSlug}`;
-    console.log(`🔍 [Nested Metadata] Trying PageList SEO for: ${fullSlug}`);
     contentSEO = await getContentSEOBySlug('pageList', fullSlug, false) as unknown;
     if (contentSEO) {
-      contentType = 'pageList';
-      console.log(`✅ [Nested Metadata] Found PageList SEO for: ${fullSlug}`);
+      _contentType = 'pageList';
     }
     
     // If not found as PageList, try different content types with just the pageSlug
     if (!contentSEO) {
-      console.log(`🔍 [Nested Metadata] Trying Page SEO for: ${pageSlug}`);
       contentSEO = await getContentSEOBySlug('page', pageSlug, false) as unknown;
       if (contentSEO) {
-        contentType = 'page';
-        console.log(`✅ [Nested Metadata] Found Page SEO for: ${pageSlug}`);
+        _contentType = 'page';
       }
     }
     
     if (!contentSEO) {
-      console.log(`🔍 [Nested Metadata] Trying Product SEO for: ${pageSlug}`);
       contentSEO = await getContentSEOBySlug('product', pageSlug, false) as unknown;
       if (contentSEO) {
-        contentType = 'product';
-        console.log(`✅ [Nested Metadata] Found Product SEO for: ${pageSlug}`);
+        _contentType = 'product';
       }
     }
     
     if (!contentSEO) {
-      console.log(`🔍 [Nested Metadata] Trying Service SEO for: ${pageSlug}`);
       contentSEO = await getContentSEOBySlug('service', pageSlug, false) as unknown;
       if (contentSEO) {
-        contentType = 'service';
-        console.log(`✅ [Nested Metadata] Found Service SEO for: ${pageSlug}`);
+        _contentType = 'service';
       }
     }
     
     if (!contentSEO) {
-      console.log(`🔍 [Nested Metadata] Trying Solution SEO for: ${pageSlug}`);
       contentSEO = await getContentSEOBySlug('solution', pageSlug, false) as unknown;
       if (contentSEO) {
-        contentType = 'solution';
-        console.log(`✅ [Nested Metadata] Found Solution SEO for: ${pageSlug}`);
+        _contentType = 'solution';
       }
     }
     
     if (!contentSEO) {
-      console.log(`🔍 [Nested Metadata] Trying Post SEO for: ${pageSlug}`);
       contentSEO = await getContentSEOBySlug('post', pageSlug, false) as unknown;
       if (contentSEO) {
-        contentType = 'post';
-        console.log(`✅ [Nested Metadata] Found Post SEO for: ${pageSlug}`);
+        _contentType = 'post';
       }
     }
 
@@ -205,9 +191,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
       };
     }
 
-    console.log(`🔍 Found ${contentType} SEO data for: ${pageSlug}`);
-  } catch (error) {
-    console.error(`Error generating metadata for: ${pageSlug} in PageList: ${pageListSlug}`, error);
+  } catch (_error) {
     return {
       title: 'Content Not Found',
       description: 'The requested content could not be found.'
@@ -295,7 +279,6 @@ function renderContentByType(
 
           // Type guard to check if component has __typename
           if (!('__typename' in component)) {
-            console.warn('Component missing __typename:', component);
             return null;
           }
 
@@ -309,7 +292,6 @@ function renderContentByType(
           }
 
           // Log a warning if we don't have a component for this type
-          console.warn(`No component found for type: ${typeName}`);
           return null;
         })}
       </>
@@ -324,7 +306,6 @@ function renderContentByType(
 
       // Type guard to check if component has __typename
       if (!('__typename' in component)) {
-        console.warn('Component missing __typename:', component);
         return null;
       }
 
@@ -337,8 +318,6 @@ function renderContentByType(
         return <ComponentType key={component.sys.id} {...(component as any)} />;
       }
 
-      // Log a warning if we don't have a component for this type
-      console.warn(`No component found for type: ${typeName}`);
       return null;
     });
   }
@@ -355,7 +334,6 @@ function renderContentByType(
 
           // Type guard to check if component has __typename
           if (!('__typename' in component)) {
-            console.warn('Component missing __typename:', component);
             return null;
           }
 
@@ -408,7 +386,6 @@ function renderContentByType(
 
               // Type guard to check if component has __typename
               if (!('__typename' in component)) {
-                console.warn('Component missing __typename:', component);
                 return null;
               }
 
@@ -484,18 +461,11 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   const preview = false; // Set to true if you want to enable preview mode
 
   // Check if this partial path should be redirected to full nested path
-  console.log(
-    `Checking if ${pageListSlug}/${pageSlug} should be redirected to full nested path...`
-  );
   const fullPath = await checkForPartialPathRedirect(pageListSlug, pageSlug);
   if (fullPath && fullPath !== `${pageListSlug}/${pageSlug}`) {
-    console.log(`Redirecting ${pageListSlug}/${pageSlug} to nested path: /${fullPath}`);
     redirect(`/${fullPath}`);
   }
 
-  console.log(
-    `[slug]/[pageSlug] route: Attempting to fetch page: ${pageSlug} in PageList: ${pageListSlug}`
-  );
   let contentItem: Page | Product | Service | Solution | Post | PageList | null = null;
   let pageList: PageList | null = null;
   let contentType: string | null = null;
@@ -505,13 +475,10 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     pageList = await getPageListBySlug(pageListSlug, preview);
 
     if (!pageList?.pagesCollection?.items.length) {
-      console.log(`PageList not found or empty: ${pageListSlug}`);
       notFound();
     }
 
     // Instead of guessing by slug, find the actual item in the PageList and determine its type
-    console.log(`Looking for item with slug "${pageSlug}" in PageList "${pageList.title}"`);
-    console.log(`PageList contains ${pageList.pagesCollection?.items?.length || 0} items`);
     
     // Find the specific item in this PageList by slug
     const targetItem = pageList.pagesCollection?.items?.find((item) => {
@@ -527,8 +494,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
         (itemSlug.endsWith(`/${pageSlug}`) && itemSlug.split('/').pop() === pageSlug);
       
       if (hasMatchingSlug) {
-        const typename = (item as { __typename?: string }).__typename ?? 'Unknown';
-        console.log(`Found matching item: ${pageSlug} -> ${itemSlug} (${typename})`);
+        const _typename = (item as { __typename?: string }).__typename ?? 'Unknown';
         return true;
       }
       
@@ -536,14 +502,12 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     });
     
     if (!targetItem) {
-      console.log(`No item with slug "${pageSlug}" found in PageList "${pageList.title}"`);
       notFound();
     }
     
     // Determine the content type from the item's __typename
     const itemTypename = (targetItem as { __typename?: string }).__typename;
     const actualSlug = (targetItem as { slug?: string }).slug ?? pageSlug;
-    console.log(`Item typename: ${itemTypename}, actual slug: ${actualSlug}`);
     
     // Fetch the full content based on the typename
     if (itemTypename === 'Page') {
@@ -565,7 +529,6 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       contentItem = await getPostBySlug(actualSlug, preview);
       contentType = 'Post';
     } else {
-      console.log(`Unknown content type: ${itemTypename}`);
       // Fallback to trying different content types using the actual slug
       // First try as a Page
       contentItem = await getPageBySlug(actualSlug, preview);
@@ -605,7 +568,6 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     }
 
     if (!contentItem) {
-      console.log(`Content item not found: ${pageSlug}`);
       notFound();
     }
 
@@ -615,15 +577,12 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     );
 
     if (!itemInList) {
-      console.log(`Content item ${pageSlug} does not belong to PageList ${pageListSlug}`);
       notFound();
     }
 
-    console.log(`Successfully found ${contentType}: ${pageSlug} in PageList: ${pageListSlug}`);
 
     // At this point, we know page and pageList are not null due to the checks above
-  } catch (error) {
-    console.error(`Error fetching page: ${pageSlug} in PageList: ${pageListSlug}`, error);
+  } catch (_error) {
     notFound();
   }
 

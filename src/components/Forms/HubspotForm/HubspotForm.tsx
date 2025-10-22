@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FieldRenderer, validateField } from './fields';
+import type { HubSpotFormField } from './fields/types';
 import { useForm } from '@tanstack/react-form';
 
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -80,7 +81,6 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
         const hubspotResponse = result.hubspotResponse as Record<string, unknown> | undefined;
         const redirectUrl = (hubspotResponse?.redirectUri as string) ?? (result.redirectUri as string) ?? '/thank-you';
         
-        console.log('Redirecting to:', redirectUrl);
         window.location.href = redirectUrl;
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to submit form');
@@ -153,14 +153,14 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     );
   }
 
-  const currentStepData = formData.steps[currentStep];
+  // eslint-disable-next-line security/detect-object-injection
+  const stepFields = formData.steps[currentStep];
   const isLastStep = currentStep === formData.steps.length - 1;
   const isFirstStep = currentStep === 0;
   const progress = ((currentStep + 1) / formData.steps.length) * 100;
 
   // Theme-aware text classes
   const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';
-
 
   // Get form title from Contentful or fallback to HubSpot form name
   const formTitle =
@@ -219,14 +219,14 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           >
             {/* Current Step Fields */}
             <div className="space-y-4">
-              {currentStepData?.stepName && (
-                <h3 className="text-lg font-semibold">{currentStepData.stepName}</h3>
+              {stepFields?.stepName && (
+                <h3 className="text-lg font-semibold">{stepFields.stepName}</h3>
               )}
 
-              {currentStepData?.fields
-                .filter((field) => !field.hidden)
-                .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-                .map((field) => (
+              {stepFields?.fields
+                .filter((field: HubSpotFormField) => !field.hidden)
+                .sort((a: HubSpotFormField, b: HubSpotFormField) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+                .map((field: HubSpotFormField) => (
                   <form.Field
                     key={field.name}
                     name={field.name}
@@ -265,8 +265,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 <form.Subscribe
                   selector={(state) => {
                     // Check if all required fields are filled and valid
-                    const requiredFields = currentStepData?.fields.filter(field => field.required && !field.hidden) ?? [];
-                    const allRequiredFieldsFilled = requiredFields.every(field => {
+                    const requiredFields = stepFields?.fields.filter((field: HubSpotFormField) => field.required && !field.hidden) ?? [];
+                    const allRequiredFieldsFilled = requiredFields.every((field: HubSpotFormField) => {
                       const value = (state.values as Record<string, unknown>)[field.name];
                       return value && (typeof value === 'string' ? value.trim() !== '' : true);
                     });
@@ -338,10 +338,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           <div className="space-y-6">
             {/* Form Fields */}
             <div className="space-y-4">
-              {currentStepData?.fields
-                .filter((field) => !field.hidden)
-                .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-                .map((field) => (
+              {stepFields?.fields
+                .filter((field: HubSpotFormField) => !field.hidden)
+                .sort((a: HubSpotFormField, b: HubSpotFormField) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+                .map((field: HubSpotFormField) => (
                   <form.Field
                     key={field.name}
                     name={field.name}
@@ -367,8 +367,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
             <form.Subscribe
               selector={(state) => {
                 // Check if all required fields are filled and valid
-                const requiredFields = currentStepData?.fields.filter(field => field.required && !field.hidden) ?? [];
-                const allRequiredFieldsFilled = requiredFields.every(field => {
+                const requiredFields = stepFields?.fields.filter((field: HubSpotFormField) => field.required && !field.hidden) ?? [];
+                const allRequiredFieldsFilled = requiredFields.every((field: HubSpotFormField) => {
                   const value = (state.values as Record<string, unknown>)[field.name];
                   return value && (typeof value === 'string' ? value.trim() !== '' : true);
                 });

@@ -188,8 +188,7 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
         canonical: canonicalUrl ?? `${baseUrl}/${fullPath}`
       }
     };
-  } catch (error) {
-    console.error(`Error generating metadata for: ${fullPath}`, error);
+  } catch (_error) {
     return {
       title: 'Error',
       description: 'An error occurred while loading this page.'
@@ -215,8 +214,6 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
   const staticRoute = staticRoutingService.getRouteBySegments(segments);
   
   if (staticRoute) {
-    console.log(`🚀 Static route found: ${staticRoute.path} → ${staticRoute.contentType} (${staticRoute.contentId})`);
-    
     try {
       // Fetch the content directly using the cached metadata
       let content: ContentItem | PageListType | null = null;
@@ -253,20 +250,18 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
           }
         }
 
-        console.log(`✅ Static route resolved successfully: ${staticRoute.title}`);
         return {
           content,
           type: staticRoute.contentType,
           parentPageLists
         };
       }
-    } catch (error) {
-      console.warn(`⚠️ Static route content fetch failed, falling back to dynamic resolution:`, error);
+    } catch (_error) {
+      return resolveNestedContent(segments);
     }
   }
 
   // Fallback to dynamic resolution if static cache fails or route not found
-  console.log(`🔄 Falling back to dynamic resolution for: ${segments.join('/')}`);
   return resolveNestedContent(segments);
 }
 
@@ -311,21 +306,12 @@ async function resolveNestedContent(segments: string[]): Promise<{
   // Traverse through parent PageLists to build and validate the nesting chain
   // Each PageList must be nested within the previous one in the URL path
   for (let i = 0; i < segments.length - 1; i++) {
+    // eslint-disable-next-line security/detect-object-injection
     const slug = segments[i]!;
     let pageList = await getPageListBySlug(slug, preview);
 
     // If direct slug lookup fails and we have a parent, search within the parent's items
     if (!pageList && currentPageList) {
-      console.log(`Direct PageList lookup failed for "${slug}", searching in parent PageList`);
-      console.log(
-        `Parent PageList "${currentPageList.title}" contains:`,
-        currentPageList.pagesCollection?.items?.map((item: any) => ({
-          slug: item?.slug,
-          title: item?.title,
-          typename: item?.__typename
-        }))
-      );
-
       const nestedItem = currentPageList.pagesCollection?.items?.find((item: any) => {
         const itemSlug = item?.slug;
         if (typeof itemSlug !== 'string') return false;
@@ -339,47 +325,23 @@ async function resolveNestedContent(segments: string[]): Promise<{
       if (nestedItem && nestedItem.__typename === 'PageList') {
         // Found the nested PageList, now fetch it using its actual slug
         const actualSlug = (nestedItem as any).slug;
-        console.log(`Found nested PageList in parent: ${slug} -> ${actualSlug}`);
         pageList = await getPageListBySlug(actualSlug as string, preview);
       }
     }
 
     if (!pageList) {
-      console.log(`PageList not found for slug: ${slug}`);
       return null;
     }
 
     // Critical nesting validation: If this is not the first PageList,
     // verify it's actually nested within the previous one in the hierarchy
     if (currentPageList) {
-      console.log(
-        `Checking if PageList "${pageList.title}" (${pageList.sys.id}) is nested in "${currentPageList.title}" (${currentPageList.sys.id})`
-      );
-      console.log(
-        `Current PageList has ${currentPageList.pagesCollection?.items?.length ?? 0} items in pagesCollection`
-      );
-
-      // Debug logging: Show all items in the current PageList to verify nesting structure
-      currentPageList.pagesCollection?.items?.forEach((item: unknown, index: number) => {
-        const typedItem = item as { sys?: { id?: string }; title?: string; __typename?: string };
-        console.log(
-          `Item ${index}: ID=${typedItem?.sys?.id}, Title=${typedItem?.title ?? 'No title'}, Type=${typedItem?.__typename ?? 'Unknown'}`
-        );
-      });
-
-      // Validate nesting: Check if the current PageList contains the next PageList in its pagesCollection
-      // This ensures URLs like /products/trackers are valid (trackers must be nested under products)
       const isNested = currentPageList.pagesCollection?.items?.some((item: unknown) => {
         const typedItem = item as { sys?: { id?: string } };
         return typedItem?.sys?.id === pageList.sys.id;
       });
 
-      console.log(`Is nested result: ${isNested}`);
-
-      // If nesting validation fails, return null to trigger 404
-      // This prevents access to invalid nested URLs
       if (!isNested) {
-        console.log(`PageList "${pageList.title}" is not nested in "${currentPageList.title}"`);
         return null;
       }
     }
@@ -394,39 +356,19 @@ async function resolveNestedContent(segments: string[]): Promise<{
 
   // First attempt: Try to find the final segment as a PageList
   const finalPageList = await getPageListBySlug(finalSlug, preview);
-  console.log(`Final PageList lookup for "${finalSlug}": ${finalPageList ? 'Found' : 'Not found'}`);
 
   // Case 1: Final segment is a PageList nested within the current parent PageList
   if (finalPageList && currentPageList) {
-    console.log(
-      `Checking if final PageList "${finalPageList.title}" (${finalPageList.sys.id}) is nested in "${currentPageList.title}" (${currentPageList.sys.id})`
-    );
-    console.log(
-      `Parent PageList has ${currentPageList.pagesCollection?.items?.length ?? 0} items in pagesCollection`
-    );
-
-    // Debug logging: Show all items in the parent PageList
-    currentPageList.pagesCollection?.items?.forEach((item: unknown, index: number) => {
-      const typedItem = item as { sys?: { id?: string }; title?: string; __typename?: string };
-      console.log(
-        `Parent item ${index}: ID=${typedItem?.sys?.id}, Title=${typedItem?.title ?? 'No title'}, Type=${typedItem?.__typename ?? 'Unknown'}`
-      );
-    });
-
-    // Final nesting validation: Ensure the final PageList is actually nested in its parent
     const isNested = currentPageList.pagesCollection?.items?.some((item: unknown) => {
       const typedItem = item as { sys?: { id?: string } };
       return typedItem?.sys?.id === finalPageList.sys.id;
     });
-
-    console.log(`Final PageList is nested result: ${isNested}`);
 
     if (isNested) {
       return { content: finalPageList, type: 'PageList', parentPageLists };
     }
   } else if (finalPageList && !currentPageList) {
     // Case 2: This is a standalone PageList (single segment URL like /products)
-    console.log(`Found standalone PageList: ${finalPageList.title}`);
     return { content: finalPageList, type: 'PageList', parentPageLists };
   }
 
@@ -449,28 +391,16 @@ async function resolveNestedContent(segments: string[]): Promise<{
 
     if (targetItem) {
       const actualSlug = (targetItem as any).slug ?? finalSlug;
-      console.log(
-        `Found item in PageList: ${finalSlug} -> ${actualSlug} (${targetItem.__typename})`
-      );
 
       // Fetch the content using the actual slug
       const contentItem = await tryFetchContentItem(actualSlug as string, preview);
       if (contentItem) {
-        console.log(`Successfully fetched content item with slug: ${actualSlug}`);
         return { content: contentItem.item, type: contentItem.type, parentPageLists };
       } else {
-        console.log(`Failed to fetch content item with slug: ${actualSlug}`);
+        return null;
       }
     } else {
-      console.log(`No matching item found in PageList for finalSlug: ${finalSlug}`);
-      console.log(
-        `PageList items:`,
-        currentPageList.pagesCollection?.items?.map((item: any) => ({
-          slug: item?.slug,
-          title: item?.title,
-          typename: item?.__typename
-        }))
-      );
+      return null;
     }
   }
 
@@ -478,7 +408,7 @@ async function resolveNestedContent(segments: string[]): Promise<{
   const contentItem = await tryFetchContentItem(finalSlug, preview);
   if (contentItem && currentPageList) {
     // Critical validation: Ensure the content item is actually contained within the parent PageList
-    const isInList = currentPageList.pagesCollection?.items?.some(
+    const isInList = (currentPageList as PageListType).pagesCollection?.items?.some(
       (item: any) => item?.sys?.id === contentItem.item.sys.id
     );
 
@@ -567,16 +497,6 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
         ? (contentItem.itemsCollection?.items ?? [])
         : (contentItem.pageContentCollection?.items ?? []);
 
-    console.log(`Rendering ${type} content: ${contentItem.title}`);
-    console.log(`Content items count: ${contentItems.length}`);
-    console.log(
-      'Content items:',
-      contentItems.map((item: any) => ({
-        id: item?.sys?.id,
-        type: item?.__typename
-      }))
-    );
-
     return (
       <>
         <h1 className="sr-only">{contentItem.title}</h1>
@@ -600,39 +520,15 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
 const renderPageListContentByType = (component: unknown, componentIndex: number) => {
   const typedComponent = component as { __typename?: string; sys?: { id?: string } };
   if (!typedComponent?.__typename) {
-    console.warn(`Component at index ${componentIndex} has no __typename:`, component);
     return null;
-  }
-
-  console.log(
-    `Rendering component: ${typedComponent.__typename} with ID: ${typedComponent.sys?.id}`
-  );
-  console.log('Full component data:', JSON.stringify(component, null, 2));
-  console.log('Available component types:', Object.keys(componentMap));
-  console.log('RichContent component:', RichContent);
-
-  // Check if this is a RichContent item (has richText or content field)
-  const hasRichText = 'richText' in (component as any) || 'content' in (component as any);
-  console.log('Has richText/content field:', hasRichText);
-  if (hasRichText) {
-    console.log('This appears to be RichContent, checking fields:', {
-      richText: (component as any).richText,
-      content: (component as any).content,
-      tableOfContents: (component as any).tableOfContents
-    });
   }
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
-    console.log(`Found ComponentType for ${typedComponent.__typename}:`, ComponentType.name);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 
-  console.warn(
-    `No component found for type: ${typedComponent.__typename}. Available types:`,
-    Object.keys(componentMap)
-  );
   return null;
 };
 
@@ -647,20 +543,13 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
   }
 
   try {
-    console.log(`Attempting to resolve nested content for: ${segments.join('/')}`);
-
     const result = await resolveContentWithStaticCache(segments);
 
     if (!result) {
-      console.log(`No content found for: ${segments.join('/')}`);
       notFound();
     }
 
     const { content, type, parentPageLists } = result;
-
-    console.log(
-      `Successfully resolved ${type}: ${content.title} with ${parentPageLists.length} parent PageLists`
-    );
 
     // Get layout from the deepest PageList or content item
     let pageLayout: PageLayoutType | undefined;
@@ -689,8 +578,7 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
         <div key={0}>{renderContentByType({ type, content }, 0)}</div>
       </PageLayout>
     );
-  } catch (error) {
-    console.error(`Error handling nested segments: ${segments.join('/')}`, error);
+  } catch (_error) {
     notFound();
   }
 }

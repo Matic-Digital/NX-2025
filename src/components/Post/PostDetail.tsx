@@ -39,7 +39,6 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
       try {
         // Get current locale from URL or localStorage
         const currentLocale = getCurrentLocale();
-        console.log(`🔍 PostDetail: Fetching full post data in locale: ${currentLocale}`);
         
         const fullData = await getPostById(post.sys.id, false, currentLocale);
         if (fullData) {

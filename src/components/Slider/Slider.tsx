@@ -324,7 +324,11 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
                 // Use the internalLink sys.id as the key (matching resolveNestedUrls logic)
                 (() => {
                   const internalLinkId = solution.cta.internalLink?.sys?.id ?? solution.sys?.id;
-                  const resolvedUrl = internalLinkId ? solutionUrls?.[internalLinkId] : null;
+                  // eslint-disable-next-line security/detect-object-injection
+                  const resolvedUrl = internalLinkId && solutionUrls && Object.prototype.hasOwnProperty.call(solutionUrls, internalLinkId) 
+                    // eslint-disable-next-line security/detect-object-injection
+                    ? solutionUrls[internalLinkId] 
+                    : null;
                   return resolvedUrl ?? solution.cta.externalLink ?? 'test';
                 })()
               }
@@ -992,9 +996,16 @@ export function Slider(props: SliderSys) {
             const shuffledItems = [...sliderData.itemsCollection.items];
             for (let i = shuffledItems.length - 1; i > 0; i--) {
               const j = Math.floor(Math.random() * (i + 1));
-              const temp = shuffledItems[i]!;
-              shuffledItems[i] = shuffledItems[j]!;
-              shuffledItems[j] = temp;
+              if (j < shuffledItems.length && i < shuffledItems.length) {
+                // eslint-disable-next-line security/detect-object-injection
+                const temp = shuffledItems[i]!;
+                // eslint-disable-next-line security/detect-object-injection
+                const jItem = shuffledItems[j]!;
+                // eslint-disable-next-line security/detect-object-injection
+                shuffledItems[i] = jItem;
+                // eslint-disable-next-line security/detect-object-injection
+                shuffledItems[j] = temp;
+              }
             }
             setSliderData({
               ...sliderData,

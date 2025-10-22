@@ -14,7 +14,6 @@ export function ContentfulLivePreviewInitializer() {
       try {
         // Check if already initialized to avoid duplicate initialization
         if (!ContentfulLivePreview.initialized) {
-          console.log('Initializing Contentful Live Preview SDK');
 
           // Use an async IIFE to avoid unbound method issues
           void (async () => {
@@ -25,13 +24,11 @@ export function ContentfulLivePreviewInitializer() {
                 enableLiveUpdates: true,
                 debugMode: true
               });
-              console.log('Contentful Live Preview SDK initialized successfully');
             } catch (error) {
               console.error('Failed to initialize Contentful Live Preview SDK:', error);
             }
           })();
         } else {
-          console.log('Contentful Live Preview SDK already initialized');
         }
       } catch (error) {
         console.error('Failed to initialize Contentful Live Preview SDK:', error);

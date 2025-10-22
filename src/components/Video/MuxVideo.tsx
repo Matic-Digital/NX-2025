@@ -19,7 +19,6 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
   useEffect(() => {
     // If we already have full video data, use it directly
     if (isFullVideo(props)) {
-      console.log('⭐ MuxVideoPlayer: Using full video data directly', props);
       setVideoData(props);
       setLoading(false);
       return;
@@ -28,10 +27,8 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
     // Otherwise, fetch the full video data
     const fetchVideoData = async () => {
       try {
-        console.log('⭐ MuxVideoPlayer: Fetching video data for ID:', props.sys.id);
         setLoading(true);
         const video = await getVideoById(props.sys.id);
-        console.log('⭐ MuxVideoPlayer: Fetched video data:', video);
         if (video) {
           setVideoData(video);
         }

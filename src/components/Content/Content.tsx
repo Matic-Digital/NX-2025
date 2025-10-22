@@ -449,13 +449,9 @@ export function Content(props: ContentProps) {
   if (content && 'item' in content && content.item) {
     const item = content.item;
     const variant = getVariant();
-    console.log('⭐ Content item:', item);
-    console.log('⭐ Content item __typename:', item.__typename);
-    console.log('⭐ Content variant:', variant);
 
     // Only render if variant is specified
     if (!variant) {
-      console.log('⭐ No variant specified for content type:', content.__typename);
       return (
         <article className="prose max-w-none">
           <h2 {...inspectorProps({ fieldId: 'title' })}>{content.title}</h2>

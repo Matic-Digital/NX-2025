@@ -129,8 +129,13 @@ export async function getContentWithFallback<T = ContentfulEntry>(
       
       // For each field in the English version, use it as fallback if localized is empty
       Object.keys(englishItem.fields ?? {}).forEach((fieldKey) => {
-        const localizedValue = mergedFields[fieldKey];
-        const englishValue = englishItem.fields?.[fieldKey];
+        // eslint-disable-next-line security/detect-object-injection
+        const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
+        // eslint-disable-next-line security/detect-object-injection
+        const englishValue = englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey) 
+          // eslint-disable-next-line security/detect-object-injection
+          ? englishItem.fields[fieldKey] 
+          : undefined;
 
         // Use English fallback if localized field is empty AND English value exists
         if (
@@ -140,7 +145,7 @@ export async function getContentWithFallback<T = ContentfulEntry>(
           (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
           englishValue !== undefined
         ) {
-          mergedFields[fieldKey] = englishValue;
+          Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
           _fallbackCount++;
         } else if (localizedValue !== null && localizedValue !== undefined) {
           _preservedCount++;
@@ -203,8 +208,13 @@ export async function getEntryWithFallback<T = ContentfulEntry>(
     const mergedFields = { ...localizedEntry.fields };
     
     Object.keys(englishEntry.fields ?? {}).forEach((fieldKey) => {
-      const localizedValue = mergedFields[fieldKey];
-      const englishValue = englishEntry.fields?.[fieldKey];
+      // eslint-disable-next-line security/detect-object-injection
+      const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
+      // eslint-disable-next-line security/detect-object-injection
+      const englishValue = englishEntry.fields && Object.prototype.hasOwnProperty.call(englishEntry.fields, fieldKey) 
+        // eslint-disable-next-line security/detect-object-injection
+        ? englishEntry.fields[fieldKey] 
+        : undefined;
 
       // Only use English fallback if localized field is empty AND English value exists
       if (
@@ -214,7 +224,7 @@ export async function getEntryWithFallback<T = ContentfulEntry>(
         (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
         englishValue !== undefined
       ) {
-        mergedFields[fieldKey] = englishValue;
+        Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
       }
     });
 
@@ -283,8 +293,13 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
       const mergedFields = { ...localizedItem.fields };
       
       Object.keys(englishItem.fields ?? {}).forEach((fieldKey) => {
-        const localizedValue = mergedFields[fieldKey];
-        const englishValue = englishItem.fields?.[fieldKey];
+        // eslint-disable-next-line security/detect-object-injection
+        const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
+        // eslint-disable-next-line security/detect-object-injection
+        const englishValue = englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey) 
+          // eslint-disable-next-line security/detect-object-injection
+          ? englishItem.fields[fieldKey] 
+          : undefined;
 
         if (
           (localizedValue === null ||
@@ -293,7 +308,7 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
           (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
           englishValue !== undefined
         ) {
-          mergedFields[fieldKey] = englishValue;
+          Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
         }
       });
 

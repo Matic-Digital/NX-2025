@@ -108,6 +108,8 @@ function hasEmptyFields(obj: Record<string, unknown>): boolean {
   if (!obj || typeof obj !== 'object') return false;
   
   for (const key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+    // eslint-disable-next-line security/detect-object-injection
     const value = obj[key];
     
     // Skip system fields and metadata
@@ -155,7 +157,8 @@ function _mergeWithFallback(localized: unknown, english: unknown): unknown {
   
   if (Array.isArray(localized) && Array.isArray(english)) {
     return localized.map((item, index) => 
-      _mergeWithFallback(item, english[index])
+      // eslint-disable-next-line security/detect-object-injection
+      _mergeWithFallback(item, index < english.length ? english[index] : null)
     );
   }
   
@@ -165,13 +168,17 @@ function _mergeWithFallback(localized: unknown, english: unknown): unknown {
   const merged = { ...localizedObj };
   
   for (const key in englishObj) {
+    if (!Object.prototype.hasOwnProperty.call(englishObj, key)) continue;
+    
     // Skip system fields and metadata
     if (key === 'sys' || key === '__typename' || key === 'contentfulMetadata') {
       continue;
     }
     
-    const localizedValue = merged[key];
-    const englishValue = englishObj[key];
+    // eslint-disable-next-line security/detect-object-injection
+    const localizedValue = Object.prototype.hasOwnProperty.call(merged, key) ? merged[key] : undefined;
+    // eslint-disable-next-line security/detect-object-injection
+    const englishValue = Object.prototype.hasOwnProperty.call(englishObj, key) ? englishObj[key] : undefined;
     
     // Use English fallback if localized field is empty AND English value exists
     if (
@@ -181,7 +188,7 @@ function _mergeWithFallback(localized: unknown, english: unknown): unknown {
       (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
       englishValue !== undefined
     ) {
-      merged[key] = englishValue;
+      Object.defineProperty(merged, key, { value: englishValue, enumerable: true, writable: true, configurable: true });
     } else if (localizedValue !== null && localizedValue !== undefined) {
       // Special handling for rich text content field
       if (key === 'content' && typeof localizedValue === 'object') {
@@ -195,7 +202,8 @@ function _mergeWithFallback(localized: unknown, english: unknown): unknown {
         localizedValue !== null &&
         englishValue !== null
       ) {
-        merged[key] = _mergeWithFallback(localizedValue, englishValue);
+        const mergedValue = _mergeWithFallback(localizedValue, englishValue);
+        Object.defineProperty(merged, key, { value: mergedValue, enumerable: true, writable: true, configurable: true });
       }
     }
   }
@@ -243,8 +251,10 @@ export function addLocaleToQuery(query: string, _locale = getCurrentLocale()): s
   }
   
   // Find the query/mutation declaration and add locale parameter
+  // eslint-disable-next-line security/detect-unsafe-regex
   const queryRegex = /(query|mutation)\s+(\w+)?\s*(\([^)]*\))?/;
-  const queryMatch = queryRegex.exec(query);
+  // eslint-disable-next-line security/detect-unsafe-regex, @typescript-eslint/prefer-regexp-exec
+  const queryMatch = query.match(queryRegex);
   if (queryMatch) {
     const [fullMatch, type, name, existingParams] = queryMatch;
     const params = existingParams 

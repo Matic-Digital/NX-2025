@@ -81,11 +81,8 @@ interface ContentPageProps {
 // Helper function to check if a slug should be redirected to nested path
 async function checkForNestedRedirect(slug: string): Promise<string | null> {
   try {
-    console.log(`Starting checkForNestedRedirect for: ${slug}`);
     const pageListsResponse = await getAllPageLists(false);
-    console.log(`getAllPageLists returned:`, pageListsResponse ? 'Success' : 'Failed');
     const pageLists = pageListsResponse.items;
-    console.log(`Found ${pageLists?.length || 0} PageLists`);
 
     // Type guard to check if an item has a slug property
     const hasSlug = (item: unknown): item is { slug: string; sys: { id: string } } => {
@@ -111,16 +108,11 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     };
 
     // Find the PageList that matches slug
-    console.log(`Looking for PageList with slug: ${slug}`);
     const targetPageList = pageLists.find((pageList) => pageList.slug === slug);
-    console.log(
-      `Direct PageList match:`,
-      targetPageList ? `Found: ${targetPageList.title}` : 'Not found'
-    );
     if (!targetPageList) {
-      console.log(`No direct PageList match, continuing to check for content items...`);
+      // No direct PageList match, continue to check for content items
     } else {
-      console.log(`Found direct PageList match, checking for parents...`);
+      // Found direct PageList match, check for parents
     }
 
     // Check if this PageList has parents, but also check for Page conflicts first
@@ -137,7 +129,6 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
         );
         
         if (foundPage) {
-          console.log(`Found Page conflict: "${slug}" exists as both PageList and Page`);
           hasPageConflict = true;
           break;
         }
@@ -145,7 +136,6 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       
       // If there's a conflict, don't auto-redirect - let user access via explicit nested URLs
       if (hasPageConflict) {
-        console.log(`Not auto-redirecting PageList "${slug}" due to Page conflict`);
         return null;
       }
       
@@ -176,9 +166,6 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     // If we found multiple matches, don't auto-redirect to avoid conflicts
     // Let the user access the content directly via the nested URL structure
     if (matchingPageLists.length > 1) {
-      console.log(`Multiple PageLists contain slug "${slug}":`, 
-        matchingPageLists.map(m => m.fullPath).join(', '));
-      console.log(`Not auto-redirecting to avoid conflicts. User should access via nested URL.`);
       return null;
     }
 
@@ -189,12 +176,10 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
 
     // Also check if slug is a product/content item that should be nested deeper
     // This handles cases like individual products within trackers
-    console.log(`Checking if ${slug} is a content item that needs nested redirect...`);
     const allContentTypes = ['Product', 'Service', 'Solution', 'Post', 'Page'];
 
     for (const contentType of allContentTypes) {
       try {
-        console.log(`Trying to fetch ${slug} as ${contentType}...`);
         let contentItem = null;
 
         // Try to fetch the content item by slug using the appropriate API
@@ -210,14 +195,8 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
           contentItem = await getPageBySlug(slug, false);
         }
 
-        console.log(
-          `${contentType} fetch result for ${slug}:`,
-          contentItem ? 'Found' : 'Not found'
-        );
 
         if (contentItem) {
-          console.log(`Found ${contentType}: ${contentItem.title} (${contentItem.sys.id})`);
-          console.log(`Searching through ${pageLists.length} PageLists to find container...`);
 
           // Find which PageLists contain this content item
           const containingPageLists: Array<{ pageList: typeof pageLists[0]; fullPath: string }> = [];
@@ -225,22 +204,16 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
           for (const pageList of pageLists) {
             if (!pageList.pagesCollection?.items?.length) continue;
 
-            console.log(
-              `Checking PageList: ${pageList.title} (${pageList.slug}) with ${pageList.pagesCollection.items.length} items`
-            );
 
             const isInPageList = pageList.pagesCollection.items.some((item) => {
               const match = item?.sys?.id === contentItem.sys.id;
               if (match) {
-                console.log(`Found match in PageList ${pageList.title}: ${item.sys.id}`);
               }
               return match;
             });
 
             if (isInPageList) {
-              console.log(`Content item ${slug} found in PageList: ${pageList.title}`);
               const parentPath = buildRoutingPath(pageList.sys.id);
-              console.log(`Parent path for ${pageList.title}:`, parentPath);
               const fullPath = [...parentPath, pageList.slug, contentItem.slug].join('/');
               containingPageLists.push({ pageList, fullPath });
             }
@@ -248,30 +221,23 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
 
           // If content item is in multiple PageLists, don't auto-redirect
           if (containingPageLists.length > 1) {
-            console.log(`${contentType} "${slug}" found in multiple PageLists:`, 
-              containingPageLists.map(c => c.fullPath).join(', '));
-            console.log(`Not auto-redirecting to avoid conflicts. User should access via nested URL.`);
             return null;
           }
 
           // If content item is in exactly one PageList, redirect to it
           if (containingPageLists.length === 1) {
             const fullPath = containingPageLists[0]!.fullPath;
-            console.log(`Redirecting ${slug} to: ${fullPath}`);
             return fullPath;
           }
 
-          console.log(`Content item ${slug} not found in any PageList`);
         }
-      } catch (error) {
+      } catch (_error) {
         // Continue to next content type if this one fails
-        console.log(`Failed to fetch ${contentType} with slug ${slug}:`, error);
         continue;
       }
     }
     return null;
-  } catch (error) {
-    console.error('Error checking for nested redirect:', error);
+  } catch (_error) {
     return null;
   }
 }
@@ -308,13 +274,12 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     }
 
     // Try to fetch SEO data for a Page first (lightweight query)
-    console.log(`🔍 [Metadata] Trying Page SEO for slug: "${slug}"`);
     const pageSEO = await getPageSEOBySlug(slug, false) as unknown;
 
     if (pageSEO) {
-      console.log(`✅ [Metadata] Found Page SEO for: "${slug}"`);
+      // Found Page SEO data
     } else {
-      console.log(`❌ [Metadata] No Page SEO found for: "${slug}"`);
+      // No Page SEO found
     }
 
     if (pageSEO) {
@@ -372,13 +337,12 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     }
 
     // Try to fetch SEO data for a PageList (lightweight query)
-    console.log(`🔍 [Metadata] Trying PageList SEO for slug: "${slug}"`);
     const pageListSEO = await getPageListSEOBySlug(slug, false) as unknown;
 
     if (pageListSEO) {
-      console.log(`✅ [Metadata] Found PageList SEO for: "${slug}"`);
+      // Found PageList SEO data
     } else {
-      console.log(`❌ [Metadata] No PageList SEO found for: "${slug}"`);
+      // No PageList SEO found
     }
 
     if (pageListSEO) {
@@ -440,8 +404,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
       title: 'Page Not Found',
       description: 'The requested page could not be found.'
     };
-  } catch (error) {
-    console.error(`Error generating metadata for slug: ${slug}`, error);
+  } catch (_error) {
     return {
       title: 'Error',
       description: 'An error occurred while loading this page.'
@@ -465,21 +428,16 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
   try {
     // First, check if this slug should be redirected to a nested path
-    console.log(`Checking if ${slug} should be redirected to nested path...`);
     const nestedPath = await checkForNestedRedirect(slug);
     if (nestedPath && nestedPath !== slug) {
-      console.log(`Redirecting ${slug} to nested path: /${nestedPath}`);
       redirect(`/${nestedPath}`);
     }
 
     // Try to fetch the content as a Page first
-    console.log(`Attempting to fetch page with slug: ${slug}`);
     let page;
     try {
       page = await getPageBySlug(slug, preview);
-      console.log(`Page query result:`, page ? 'Found page' : 'No page found');
     } catch (pageError) {
-      console.error(`Error fetching page with slug ${slug}:`, pageError);
       throw new Error(
         `Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`
       );
@@ -487,11 +445,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
     // If it's a Page, render it as a standalone page
     if (page) {
-      console.log(`Found Page with slug: ${slug}, rendering Page`);
       try {
         return await renderPage(page, slug);
       } catch (renderError) {
-        console.error(`Error rendering page with slug ${slug}:`, renderError);
         throw new Error(
           `Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`
         );
@@ -499,13 +455,10 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
     }
 
     // If it's not a Page, try to fetch it as a PageList
-    console.log(`No page found with slug: ${slug}, trying PageList`);
     let pageList;
     try {
       pageList = await getPageListBySlug(slug, preview);
-      console.log(`PageList query result:`, pageList ? 'Found pageList' : 'No pageList found');
     } catch (pageListError) {
-      console.error(`Error fetching pageList with slug ${slug}:`, pageListError);
       throw new Error(
         `Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`
       );
@@ -513,26 +466,22 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
     // If it's a PageList, render it
     if (pageList) {
-      console.log(`Found PageList with slug: ${slug}, rendering PageList`);
       try {
         return await renderPageList(pageList, slug);
       } catch (renderError) {
-        console.error(`Error rendering pageList with slug ${slug}:`, renderError);
         throw new Error(
           `Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`
         );
       }
     }
 
-    console.log(`No Page or PageList found with slug: ${slug}`);
     // If neither Page nor PageList is found, return a 404
     notFound();
-  } catch (error) {
-    console.error(`Error handling slug: ${slug}`, error);
+  } catch (_error) {
 
     // Instead of converting all errors to 404s, let's throw the actual error
     // to help with debugging the 500 error in production
-    throw error;
+    throw _error;
   }
 }
 
@@ -555,7 +504,6 @@ async function renderPage(page: Page, slug: string) {
 
         // Type guard to check if component has __typename
         if (!('__typename' in component)) {
-          console.warn('Component missing __typename:', component);
           return null;
         }
 
@@ -572,7 +520,6 @@ async function renderPage(page: Page, slug: string) {
         }
 
         // Log a warning if we don't have a component for this type
-        console.warn(`❌ No component found for type: ${typeName}`);
         return null;
       })}
     </PageLayout>
@@ -603,7 +550,6 @@ async function renderPageList(pageList: PageListType, slug: string) {
 
         // Type guard to check if component has __typename
         if (!('__typename' in component)) {
-          console.warn('Component missing __typename:', component);
           return null;
         }
 
@@ -620,7 +566,6 @@ async function renderPageList(pageList: PageListType, slug: string) {
         }
 
         // Log a warning if we don't have a component for this type
-        console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
 

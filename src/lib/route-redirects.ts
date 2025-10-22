@@ -11,7 +11,6 @@ try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
   generatedRedirects = require('./route-redirects.json');
 } catch {
-  console.warn('⚠️ Generated redirects file not found');
 }
 
 interface RedirectMapping {
@@ -42,7 +41,6 @@ class RouteRedirectsService {
     this.initialized = true;
 
     if (this.redirects.length > 0) {
-      console.log(`🔀 Loaded ${this.redirects.length} pre-generated redirects`);
     }
   }
 

@@ -24,7 +24,6 @@ interface ContentfulLocaleResponse {
  */
 export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
   try {
-    console.log('🌐 [Server] Fetching locales from Contentful Management API');
     
     const response = await fetch(
       `https://api.contentful.com/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/locales`,
@@ -58,7 +57,6 @@ export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
         return a.name.localeCompare(b.name);
       });
 
-    console.log(`🌐 [Server] Found ${locales.length} locales:`, locales.map(l => l.code));
     return locales;
 
   } catch (error) {
@@ -71,7 +69,6 @@ export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
       { code: 'es', name: 'Español', default: false },
     ];
     
-    console.log('🌐 [Server] Using fallback locales');
     return fallbackLocales;
   }
 });

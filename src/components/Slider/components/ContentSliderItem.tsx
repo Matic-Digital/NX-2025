@@ -9,7 +9,6 @@ interface ContentSliderItemProps {
 }
 
 export function ContentSliderItem({ item }: ContentSliderItemProps) {
-  console.log('ContentSliderItem', item);
   return (
     <Box direction="col">
       <AirImage link={item.image?.link} altText={item.image?.altText} mobileOrigin={item.image?.mobileOrigin} className="h-full w-full" />

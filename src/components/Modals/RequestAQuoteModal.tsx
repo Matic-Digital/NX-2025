@@ -30,7 +30,6 @@ export function RequestAQuoteModal({
   const hubspotFormId = formId ?? defaultFormId;
 
   const handleFormSubmit = (data: Record<string, unknown>) => {
-    console.log('Quote request submitted:', data);
     // You can add additional logic here like tracking, notifications, etc.
 
     // Close the modal after successful submission

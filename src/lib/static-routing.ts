@@ -51,14 +51,17 @@ class StaticRoutingService {
    */
   getRoute(path: string): RouteMetadata | null {
     if (!this.isAvailable()) {
-      console.warn('⚠️ Static routing cache not available');
       return null;
     }
 
     // Normalize path - ensure it starts with / and doesn't end with /
     const normalizedPath = path === '/' ? '/' : `/${path.replace(/^\/+|\/+$/g, '')}`;
     
-    const route = this.cache.routes[normalizedPath];
+    // eslint-disable-next-line security/detect-object-injection
+    const route = Object.prototype.hasOwnProperty.call(this.cache.routes, normalizedPath) 
+      // eslint-disable-next-line security/detect-object-injection
+      ? this.cache.routes[normalizedPath] 
+      : undefined;
     
     if (route) {
       return route;

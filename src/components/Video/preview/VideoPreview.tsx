@@ -17,9 +17,6 @@ import type { Video } from '@/components/Video/VideoSchema';
 export function VideoPreview(props: Partial<Video>) {
   // Contentful Live Preview integration
   const liveVideo = useContentfulLiveUpdates(props);
-  
-  console.log('⭐ VideoPreview: Received props:', props);
-  console.log('⭐ VideoPreview: Live video data:', liveVideo);
 
   return (
     <div className="min-h-screen bg-gray-50">

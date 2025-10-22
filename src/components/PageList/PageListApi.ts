@@ -122,17 +122,13 @@ export async function checkPageBelongsToPageList(
   preview = true
 ): Promise<PageList | null> {
   try {
-    console.log(`Checking if page with ID '${pageId}' belongs to any PageList`);
 
     // Fetch all PageLists
     const pageLists = await getAllPageLists(preview);
 
     if (!pageLists.items.length) {
-      console.log('No PageLists found in the system');
       return null;
     }
-
-    console.log(`Found ${pageLists.items.length} PageLists to check`);
 
     // Check each PageList to see if the page belongs to it
     for (const pageList of pageLists.items) {
@@ -141,7 +137,6 @@ export async function checkPageBelongsToPageList(
       );
 
       if (!pageList.pagesCollection?.items?.length) {
-        console.log(`PageList ${pageList.title ?? 'Untitled'} has no pages`);
         continue;
       }
 
@@ -153,7 +148,6 @@ export async function checkPageBelongsToPageList(
       const pageIds = pageList.pagesCollection.items
         .map((item) => item?.sys?.id)
         .filter((id): id is string => Boolean(id));
-      console.log(`Page IDs in PageList ${pageList.title ?? 'Untitled'}:`, pageIds);
 
       const pageInList = pageList.pagesCollection.items.some((item) => item?.sys?.id === pageId);
 
@@ -165,7 +159,6 @@ export async function checkPageBelongsToPageList(
       }
     }
 
-    console.log(`Page with ID '${pageId}' does not belong to any PageList`);
     return null;
   } catch (error) {
     if (error instanceof Error) {
@@ -230,7 +223,6 @@ export async function getPageListBySlug(
 ): Promise<PageListWithHeaderFooter | null> {
   try {
     // Log the request for debugging
-    console.log(`Fetching PageList with slug: ${slug}, preview: ${preview}`);
 
     // First, fetch the basic PageList data with references
     const response = await fetchGraphQL<PageListBySlugResponse>(
@@ -320,11 +312,8 @@ export async function getPageListBySlug(
 
     // Check if we have any results
     if (!response.data?.pageListCollection?.items?.length) {
-      console.log(`No PageList found with slug: ${slug}`);
       return null;
     }
-
-    console.log(`Successfully fetched PageList with slug: ${slug}`);
 
     const pageListData = response.data.pageListCollection.items[0]! as unknown as PageListWithRefs;
 
@@ -410,7 +399,6 @@ export async function getPageListBySlug(
         pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
-      console.warn('Failed to extract page list content:', error);
       pageContent = undefined;
     }
 
@@ -454,7 +442,6 @@ export async function getPageListById(
 ): Promise<PageListWithHeaderFooter | null> {
   try {
     // Log the request for debugging
-    console.log(`Fetching PageList with ID: ${id}, preview: ${preview}`);
 
     // First, fetch the basic PageList data with references
     const response = await fetchGraphQL<PageListWithRefs>(
@@ -471,11 +458,8 @@ export async function getPageListById(
 
     // Check if we have any results
     if (!response.data?.pageListCollection?.items?.length) {
-      console.log(`No PageList found with ID: ${id}`);
       return null;
     }
-
-    console.log(`Successfully fetched PageList with ID: ${id}`);
 
     const pageListData = response.data.pageListCollection.items[0]!;
 
@@ -561,7 +545,6 @@ export async function getPageListById(
         pageContent = pageListItem.pageContentCollection;
       }
     } catch (error) {
-      console.warn('Failed to extract page list content:', error);
       pageContent = undefined;
     }
 

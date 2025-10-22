@@ -53,10 +53,6 @@ export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuP
       const category = postTagCategories[0]; // Use first matching category
 
       // Debug logging to match Collection component
-      console.log('🔍 MegaMenu post filtering debug:');
-      console.log('- MegaMenu tags:', megaMenuTags);
-      console.log('- Post tag categories:', postTagCategories);
-      console.log('- Selected category:', category);
 
       const fetchFunction = category
         ? () => getRecentPostsForMegaMenuByCategory(category, 1)

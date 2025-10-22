@@ -65,20 +65,14 @@ export function ContentfulPreviewProvider({
               });
 
               // Log the space and token for debugging
-              console.log('Using space ID:', spaceId);
-              console.log('Preview token available:', !!previewToken);
 
-              console.log('ContentfulLivePreview: SDK initialized successfully');
             } catch (error) {
               console.error('ContentfulLivePreview: Failed to initialize SDK', error);
             }
           })();
 
           // Log the space and token for debugging
-          console.log('Using space ID:', spaceId);
-          console.log('Preview token available:', !!previewToken);
 
-          console.log('ContentfulLivePreview: SDK initialized successfully');
         } catch (error) {
           console.error('ContentfulLivePreview: Failed to initialize SDK', error);
         }

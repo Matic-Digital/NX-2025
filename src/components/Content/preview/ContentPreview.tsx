@@ -23,9 +23,6 @@ export function ContentPreview(props: Partial<ContentType>) {
   const liveContent = rawLiveContent as Partial<ContentType>;
 
   // Debug logging
-  console.log('ContentPreview - props:', props);
-  console.log('ContentPreview - contentData:', contentData);
-  console.log('ContentPreview - liveContent:', liveContent);
 
   return (
     <div className="min-h-screen bg-gray-50">

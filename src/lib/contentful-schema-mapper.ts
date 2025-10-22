@@ -576,7 +576,6 @@ export class ContentfulSchemaMapper {
           const { generateWebSiteSchemaFromSitemap } = await import('./sitemap-schema-integration');
           return await generateWebSiteSchemaFromSitemap(this.baseUrl);
         } catch (error) {
-          console.warn('Could not load sitemap data, using static navigation:', error);
         }
       }
       
@@ -603,18 +602,14 @@ export class ContentfulSchemaMapper {
       const { readSitemapUrls, generateNavigationFromSitemap } = await import('./sitemap-schema-integration');
       const sitemapUrls = await readSitemapUrls();
       
-      console.log(`📊 Sitemap URLs found: ${sitemapUrls.length}`);
       if (sitemapUrls.length > 5) {
-        console.log(`📋 Sample URLs:`, sitemapUrls.slice(0, 5).map(u => u.url));
       }
       
       if (sitemapUrls.length > 0) {
         const navigation = generateNavigationFromSitemap(sitemapUrls, this.baseUrl);
-        console.log(`🧭 Generated navigation items: ${navigation.length}`);
         return navigation;
       }
     } catch (error) {
-      console.warn('Could not read sitemap, using fallback navigation:', error);
     }
     
     // Fallback navigation based on actual sitemap structure I can see
@@ -654,7 +649,6 @@ export class ContentfulSchemaMapper {
         return generateHasPartFromSitemap(sitemapUrls);
       }
     } catch (error) {
-      console.warn('Could not read sitemap for sections, using fallback:', error);
     }
     
     // Fallback sections based on actual sitemap - removing duplicates and non-existent pages

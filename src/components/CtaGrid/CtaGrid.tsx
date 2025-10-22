@@ -57,7 +57,6 @@ export function CtaGrid(props: CtaGrid) {
         externalLink: cta.externalLink
       }));
       setProductUrls(urlMap);
-      console.log('✅ CtaGrid productUrls:', urlMap);
     };
 
     void fetchNestedUrls();

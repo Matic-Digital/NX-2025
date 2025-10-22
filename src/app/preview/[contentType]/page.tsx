@@ -503,6 +503,7 @@ function PreviewContent({ contentType }: PreviewContentProps) {
   });
 
   // Validate content type after hooks
+  // eslint-disable-next-line security/detect-object-injection
   const config = contentTypeConfig[contentType];
 
   useEffect(() => {

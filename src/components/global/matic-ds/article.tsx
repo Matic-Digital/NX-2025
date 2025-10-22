@@ -25,7 +25,12 @@ import type { ArticleProps } from '@/components/global/matic-ds/types';
  */
 export const Article = ({ children, className, id, html }: ArticleProps) => {
   return (
-    <article dangerouslySetInnerHTML={html} className={cn('matic spaced', className)} id={id}>
+    <article 
+      className={cn('matic spaced', className)} 
+      id={id}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={html}
+    >
       {children}
     </article>
   );

@@ -26,8 +26,6 @@ export function Testimonials({ sys }: TestimonialsProps) {
   // Data layer
   const { testimonials, loading, error } = useTestimonialsData(sys.id);
 
-  console.log('⭐testimonials', testimonials);
-
   // Loading state
   if (loading) {
     return <LoadingState />;

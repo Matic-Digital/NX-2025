@@ -105,7 +105,6 @@ export function ContactForm() {
       message: ''
     },
     onSubmit: async ({ value }) => {
-      console.log('Form submitted:', value);
       if (isSubmitting) return;
       setIsSubmitting(true);
       try {
@@ -113,7 +112,6 @@ export function ContactForm() {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         router.push('/contact/success');
       } catch (error) {
-        console.log('Error sending message:', error);
         toast({
           title: 'Error',
           description: 'Failed to send message. Please try again.',

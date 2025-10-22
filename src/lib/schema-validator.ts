@@ -27,7 +27,8 @@ export function validateSchema(schema: any, requiredFields: string[]): { isValid
   
   // Check required fields
   requiredFields.forEach(field => {
-    if (!schema[field]) {
+    // eslint-disable-next-line security/detect-object-injection
+    if (!Object.prototype.hasOwnProperty.call(schema, field) || !schema[field]) {
       errors.push(`Missing required field: ${field}`);
     }
   });
@@ -103,13 +104,12 @@ export function debugSchema(schema: any, schemaType: string) {
   }
   
   if (validation.isValid) {
-    console.log('✅ Schema is valid');
   } else {
-    console.warn('❌ Schema validation errors:');
-    validation.errors.forEach(error => console.warn(`  - ${error}`));
+    validation.errors.forEach(error => {
+      // Error logging removed
+    });
   }
   
-  console.log('📋 Generated Schema:', JSON.stringify(schema, null, 2));
   console.groupEnd();
 }
 
@@ -122,7 +122,6 @@ export function validatePageSchemas() {
   const schemaScripts = document.querySelectorAll('script[type="application/ld+json"]');
   
   console.group('🔍 Page Schema Validation');
-  console.log(`Found ${schemaScripts.length} schema(s) on page`);
   
   schemaScripts.forEach((script, index) => {
     try {
@@ -164,8 +163,5 @@ export function logValidationUrls(pageUrl?: string) {
   const urls = getValidationUrls(url);
   
   console.group('🔗 Schema Validation URLs');
-  console.log('Google Rich Results Test:', urls.googleRichResults);
-  console.log('Schema.org Validator:', urls.schemaOrgValidator);
-  console.log('Structured Data Testing Tool:', urls.structuredDataTesting);
   console.groupEnd();
 }

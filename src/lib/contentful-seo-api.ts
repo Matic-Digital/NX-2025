@@ -62,7 +62,6 @@ export async function getPageSEOBySlug(slug: string, preview = false): Promise<a
  */
 export async function getPageListSEOBySlug(slug: string, preview = false): Promise<any | null> {
   try {
-    console.log(`🔍 [SEO API] Fetching PageList SEO for slug: "${slug}"`);
     const response = await fetchGraphQL(
       `query GetPageListSEO($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
@@ -76,7 +75,6 @@ export async function getPageListSEOBySlug(slug: string, preview = false): Promi
     );
 
     const result = response.data?.pageListCollection?.items?.[0] ?? null;
-    console.log(`📋 [SEO API] PageList SEO result for "${slug}":`, result ? 'Found' : 'Not found');
     
     if (result) {
       console.log(`📋 [SEO API] PageList data:`, {
@@ -86,7 +84,6 @@ export async function getPageListSEOBySlug(slug: string, preview = false): Promi
         hasOpenGraphImage: !!(result as any).openGraphImage
       });
     } else {
-      console.log(`❌ [SEO API] No PageList found with slug "${slug}"`);
     }
     
     return result;

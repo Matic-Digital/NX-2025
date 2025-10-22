@@ -63,18 +63,11 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     const category = postTagCategories[0]; // Use first matching category
     
     // Debug logging to match Collection component
-    console.log('🔍 MegaMenu post filtering debug:');
-    console.log('- MegaMenu:', currentMegaMenu?.title);
-    console.log('- MegaMenu tags:', currentMegaMenu?.contentfulMetadata?.tags);
-    console.log('- Post tag categories:', postTagCategories);
-    console.log('- Selected category:', category);
     
     const fetchFunction = category 
       ? () => getRecentPostsForMegaMenuByCategory(category, limit)
       : () => getRecentPostsForMegaMenu(limit);
-    
-    console.log('- Using function:', category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu');
-    
+
     fetchFunction()
       .then((response) => setRecentPosts(response.items))
       .catch(console.error)

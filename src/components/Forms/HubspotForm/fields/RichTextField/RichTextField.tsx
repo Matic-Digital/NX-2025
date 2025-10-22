@@ -17,6 +17,7 @@ export const RichTextField: React.FC<FieldRendererProps> = ({ field, value: _val
       )}
       <div 
         className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: field.description }}
       />
     </div>

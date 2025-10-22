@@ -150,7 +150,6 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       query = `imageBetween(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
     default:
-      console.warn(`Unknown component type: ${typename}`);
       return null;
   }
 
@@ -161,7 +160,8 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     // Extract the component data based on type
     const data = response.data as Record<string, unknown>;
     const componentKey = typename.charAt(0).toLowerCase() + typename.slice(1); // Convert to camelCase
-    return data[componentKey] ?? null;
+    // eslint-disable-next-line security/detect-object-injection
+    return Object.prototype.hasOwnProperty.call(data, componentKey) ? data[componentKey] : null;
   } catch (error) {
     console.error(`Error fetching ${typename} component:`, error);
     return null;

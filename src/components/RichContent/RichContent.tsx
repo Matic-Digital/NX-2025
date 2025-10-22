@@ -91,11 +91,25 @@ const checkIfInAppendix = (_node: ContentfulNode): boolean => {
   return currentlyInAppendix;
 };
 
+// Pre-compiled regex patterns for security
+// eslint-disable-next-line security/detect-unsafe-regex
+const APPENDIX_REGEX = /appendix/i;
+// eslint-disable-next-line security/detect-unsafe-regex
+const NUMBERED_SECTION_REGEX = /^\d+(?:\.\d+)?/;
+// eslint-disable-next-line security/detect-unsafe-regex
+const ROMAN_NUMERAL_REGEX = /^[IVXLCDM]+\./i;
+// eslint-disable-next-line security/detect-unsafe-regex
+const HAS_NUMBER_REGEX = /\d+(?:\.\d+)?/;
+// eslint-disable-next-line security/detect-unsafe-regex
+const H3_ROMAN_REGEX = /[A-Z]\.[ivxlcdm]+/i;
+// eslint-disable-next-line security/detect-unsafe-regex
+const NUMBER_PREFIX_REGEX = /^(\d+(?:\.\d+)?)\.?\s*/;
+
 // Function to update appendix context based on heading content
 const updateAppendixContext = (text: string): void => {
-  if (/appendix/i.test(text)) {
+  if (APPENDIX_REGEX.test(text)) {
     currentlyInAppendix = true;
-  } else if (/^\d+(\.\d+)?/.test(text.trim()) || /^[IVXLCDM]+\./i.test(text.trim())) {
+  } else if (NUMBERED_SECTION_REGEX.test(text.trim()) || ROMAN_NUMERAL_REGEX.test(text.trim())) {
     // If we encounter a numbered section or roman numeral section after appendix, we're out of appendix
     currentlyInAppendix = false;
   }
@@ -113,9 +127,9 @@ const extractTocItems = (document: Document): TocItem[] => {
 
         // Update appendix context during TOC extraction
         if (isHeading2(node)) {
-          if (/appendix/i.test(text)) {
+          if (APPENDIX_REGEX.test(text)) {
             inAppendixSection = true;
-          } else if (/^\d+(\.\d+)?/.test(text.trim()) || /^[IVXLCDM]+\./i.test(text.trim())) {
+          } else if (NUMBERED_SECTION_REGEX.test(text.trim()) || ROMAN_NUMERAL_REGEX.test(text.trim())) {
             inAppendixSection = false;
           }
         }
@@ -124,11 +138,11 @@ const extractTocItems = (document: Document): TocItem[] => {
         // For h2s, check for roman numerals like I., II., III.
         // For h3s, check for roman numerals like A.i, A.ii
         // Also include roman numerals when we're in an appendix section
-        const hasNumber = /\d+(\.\d+)?/.test(text);
-        const isAppendix = /appendix/i.test(text);
-        const hasH2RomanNumeral = isHeading2(node) && /^[IVXLCDM]+\./i.test(text.trim());
-        const hasH3RomanNumeral = isHeading3(node) && /[A-Z]\.[ivxlcdm]+/i.test(text);
-        const isRomanInAppendix = inAppendixSection && /^[IVXLCDM]+\./i.test(text.trim());
+        const hasNumber = HAS_NUMBER_REGEX.test(text);
+        const isAppendix = APPENDIX_REGEX.test(text);
+        const hasH2RomanNumeral = isHeading2(node) && ROMAN_NUMERAL_REGEX.test(text.trim());
+        const hasH3RomanNumeral = isHeading3(node) && H3_ROMAN_REGEX.test(text);
+        const isRomanInAppendix = inAppendixSection && ROMAN_NUMERAL_REGEX.test(text.trim());
 
         if (
           hasNumber ||
@@ -608,7 +622,6 @@ export function RichContent({
 
   // Early return after all hooks
   if (!content?.json || !document) {
-    console.log('RichContent: No content.json found');
     return null;
   }
 
@@ -738,7 +751,7 @@ export function RichContent({
                             }
                           }}
                         >
-                          {item.text.replace(/^(\d+(?:\.\d+)?)\.?\s*/, '$1\u00A0\u00A0')}
+                          {item.text.replace(NUMBER_PREFIX_REGEX, (match, p1) => `${p1}\u00A0\u00A0`)}
                         </a>
                       </li>
                     ))}

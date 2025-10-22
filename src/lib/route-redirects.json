@@ -70,11 +70,6 @@
     "permanent": false
   },
   {
-    "source": "/digital",
-    "destination": "/products/digital",
-    "permanent": false
-  },
-  {
     "source": "/ebos",
     "destination": "/products/ebos",
     "permanent": false
@@ -365,6 +360,21 @@
     "permanent": false
   },
   {
+    "source": "/nx-navigator",
+    "destination": "/products/software/nx-navigator",
+    "permanent": false
+  },
+  {
+    "source": "/nx-one",
+    "destination": "/products/software/nx-one",
+    "permanent": false
+  },
+  {
+    "source": "/nx-pulse",
+    "destination": "/products/software/nx-pulse",
+    "permanent": false
+  },
+  {
     "source": "/ojjo-earth-truss-datasheet",
     "destination": "/post/data-sheet/ojjo-earth-truss-datasheet",
     "permanent": false
@@ -407,6 +417,11 @@
   {
     "source": "/severe-hail",
     "destination": "/solutions/mitigate-risk/severe-hail",
+    "permanent": false
+  },
+  {
+    "source": "/software",
+    "destination": "/products/software",
     "permanent": false
   },
   {

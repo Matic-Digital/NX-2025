@@ -58,12 +58,9 @@ export function ContentGrid(props: ContentGridProps) {
 
       let collectionIds: string[] = [];
       if (hasEmptyObjects && contentGrid.sys?.id) {
-        console.log('Detected empty objects, fetching Collection IDs...');
         try {
           collectionIds = await getCollectionIdsFromContentGrid(contentGrid.sys.id);
-          console.log('Found Collection IDs:', collectionIds);
         } catch (error) {
-          console.warn('Failed to fetch Collection IDs:', error);
         }
       }
 
@@ -80,11 +77,13 @@ export function ContentGrid(props: ContentGridProps) {
 
         // Check if item might be a Collection (completely empty object)
         if (item && typeof item === 'object' && Object.keys(item).length === 0) {
-          console.log('Detected empty object - likely a Collection');
-          if (collectionIds[collectionIndex]) {
+          // eslint-disable-next-line security/detect-object-injection
+          if (Object.prototype.hasOwnProperty.call(collectionIds, collectionIndex) && collectionIds[collectionIndex]) {
             // Create a minimal Collection object with just sys.id for lazy loading
+            // eslint-disable-next-line security/detect-object-injection
+            const collectionId = collectionIds[collectionIndex];
             processedItems.push({
-              sys: { id: collectionIds[collectionIndex] },
+              sys: { id: collectionId },
               __typename: 'Collection' as const
             } as ContentGridItemUnion);
             collectionIndex++;
@@ -125,7 +124,6 @@ export function ContentGrid(props: ContentGridProps) {
       .filter((id): id is string => Boolean(id)) ?? [];
   const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
   if (duplicateIds.length > 0) {
-    console.warn(`ContentGrid render ${renderKey} - Duplicate items found:`, duplicateIds);
   }
 
   // Check if content grid contains only services for mobile carousel
