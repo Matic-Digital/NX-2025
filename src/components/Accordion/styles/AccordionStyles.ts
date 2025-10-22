@@ -48,7 +48,7 @@ export const accordionStyles = {
     if (variant === 'ContentTop') {
       return 'relative z-20 space-y-4 opacity-100 transition-all duration-500 ease-out';
     }
-    
+
     // Default horizontal accordion behavior - hide/show based on state
     return `relative z-20 space-y-4 opacity-100 transition-all duration-500 ease-out ${
       isHovered || shouldShowExpanded ? 'lg:opacity-100' : 'lg:opacity-0'
@@ -58,9 +58,9 @@ export const accordionStyles = {
   /**
    * Get CSS classes for description text
    */
-  getDescriptionTextClasses: (isHovered?: boolean, shouldShowExpanded?: boolean, variant?: string) => {
+  getDescriptionTextClasses: (isHovered?: boolean, shouldShowExpanded?: boolean) => {
     const isActive = isHovered ?? shouldShowExpanded;
-    const textColor = (variant === 'ContentTop' && isActive) ? 'text-white' : 'text-black';
+    const textColor = isActive ? 'text-white' : 'text-black';
     return `text-body-xs ${textColor}`;
   },
 
@@ -99,9 +99,9 @@ export const accordionStyles = {
   /**
    * Get CSS classes for overline text
    */
-  getOverlineClasses: (isHovered?: boolean, shouldShowExpanded?: boolean, variant?: string) => {
+  getOverlineClasses: (isHovered?: boolean, shouldShowExpanded?: boolean) => {
     const isActive = isHovered ?? shouldShowExpanded;
-    const textColor = (variant === 'ContentTop' && isActive) ? 'text-white' : 'text-black';
+    const textColor = isActive ? 'text-white' : 'text-black';
     return `text-body-xs relative z-20 ${textColor}`;
   },
 
@@ -122,9 +122,9 @@ export const accordionStyles = {
   /**
    * Get CSS classes for title
    */
-  getTitleClasses: (isHovered: boolean, shouldShowExpanded: boolean, variant?: string) => {
+  getTitleClasses: (isHovered: boolean, shouldShowExpanded: boolean) => {
     const isActive = isHovered ?? shouldShowExpanded;
-    const textColor = (variant === 'ContentTop' && isActive) ? 'text-white' : 'text-black';
+    const textColor = isActive ? 'text-white' : 'text-black';
     return `text-headline-sm relative z-20 line-clamp-none max-w-[300px] ${textColor} ${
       isHovered || shouldShowExpanded ? 'lg:line-clamp-none' : 'lg:line-clamp-2'
     }`;
@@ -138,7 +138,7 @@ export const accordionStyles = {
     if (variant === 'ContentTop') {
       return `p-0 transition-all duration-500 ease-out hover:no-underline h-auto`;
     }
-    
+
     // Default horizontal accordion behavior
     return `h-auto p-0 transition-all duration-500 ease-out hover:no-underline ${
       isHovered || shouldShowExpanded ? 'lg:h-auto' : 'lg:h-60'
@@ -148,7 +148,11 @@ export const accordionStyles = {
   /**
    * Get CSS classes for the main Box wrapper based on variant
    */
-  getWrapperClasses: (variant: string | undefined, isHovered?: boolean, shouldShowExpanded?: boolean) => {
+  getWrapperClasses: (
+    variant: string | undefined,
+    isHovered?: boolean,
+    shouldShowExpanded?: boolean
+  ) => {
     const isActive = isHovered ?? shouldShowExpanded;
     return cn(
       'min-h-20 w-full',
@@ -156,5 +160,58 @@ export const accordionStyles = {
       variant === 'ContentTop' ? `flex-col ${isActive ? 'bg-primary' : 'bg-subtle'}` : '',
       variant === 'ContentRight' ? 'lg:flex-row' : ''
     );
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn grid container
+   */
+  getThreeColumnContainerClasses: () => {
+    return 'grid grid-cols-1 lg:grid-cols-3 gap-6';
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn grid item
+   */
+  getThreeColumnItemClasses: (isHovered: boolean, shouldShowExpanded: boolean) => {
+    return `bg-white rounded-lg overflow-hidden transition-all duration-300 ease-out cursor-pointer ${
+      isHovered || shouldShowExpanded 
+        ? 'shadow-xl border-b-4 border-orange-500 transform scale-105' 
+        : 'shadow-md hover:shadow-lg'
+    }`;
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn content
+   */
+  getThreeColumnContentClasses: () => {
+    return 'p-6 flex flex-col h-full';
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn image
+   */
+  getThreeColumnImageClasses: () => {
+    return 'w-full h-48 object-cover';
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn title
+   */
+  getThreeColumnTitleClasses: () => {
+    return 'text-headline-sm text-black mb-3 line-clamp-2';
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn description
+   */
+  getThreeColumnDescriptionClasses: () => {
+    return 'text-body-sm text-gray-600 flex-grow mb-4';
+  },
+
+  /**
+   * Get CSS classes for ThreeColumn CTA wrapper
+   */
+  getThreeColumnCtaWrapperClasses: () => {
+    return 'mt-auto';
   }
 };

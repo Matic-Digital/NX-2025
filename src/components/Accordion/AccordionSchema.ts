@@ -2,13 +2,16 @@ import { z } from 'zod';
 
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 
-export const AccordionVariantEnum = z.enum([
+export const AccordionVariantEnum = z.enum(['FullWidth', 'ThreeColumn']);
+export type AccordionVariant = z.infer<typeof AccordionVariantEnum>;
+
+export const AccordionItemVariantEnum = z.enum([
   'ContentTop',
-  'ContentRigh',
+  'ContentRight',
   'ContentBottom',
   'ContentLeft'
 ]);
-export type AccordionVariant = z.infer<typeof AccordionVariantEnum>;
+export type AccordionItemVariant = z.infer<typeof AccordionItemVariantEnum>;
 
 export const AccordionItemSchema = z.object({
   sys: z.object({
@@ -17,7 +20,7 @@ export const AccordionItemSchema = z.object({
   overline: z.string().optional(),
   title: z.string(),
   description: z.string(),
-  variant: z.string(),
+  variant: AccordionItemVariantEnum,
   tags: z.array(z.string()).optional(),
   image: z.object({
     sys: z.object({
@@ -53,6 +56,7 @@ export const AccordionSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
+  gridVariant: AccordionVariantEnum,
   itemsCollection: z.object({
     items: z.array(AccordionItemReferenceSchema)
   }),

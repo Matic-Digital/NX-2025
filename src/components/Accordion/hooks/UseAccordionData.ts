@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 
 import { getAccordionItemById, getAccordionsByIds } from '@/components/Accordion/AccordionApi';
 
-import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
+import type { 
+  AccordionItem as AccordionItemType,
+  Accordion as AccordionType 
+} from '@/components/Accordion/AccordionSchema';
 
 /**
  * Custom hook for fetching accordion data
@@ -12,6 +15,7 @@ import type { AccordionItem as AccordionItemType } from '@/components/Accordion/
  */
 export const useAccordionData = (sysId: string) => {
   const [accordionItems, setAccordionItems] = useState<AccordionItemType[]>([]);
+  const [accordionData, setAccordionData] = useState<AccordionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,6 +30,7 @@ export const useAccordionData = (sysId: string) => {
 
         if (data.length > 0 && data[0]) {
           const accordion = data[0];
+          setAccordionData(accordion);
 
           // Step 2: Fetch full data for each accordion item
           const itemIds = accordion.itemsCollection.items.map((item) => item.sys.id);
@@ -49,5 +54,5 @@ export const useAccordionData = (sysId: string) => {
     void fetchAccordionData();
   }, [sysId]);
 
-  return { accordionItems, loading, error };
+  return { accordionItems, accordionData, loading, error };
 };

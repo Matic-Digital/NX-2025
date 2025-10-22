@@ -23,6 +23,7 @@ interface AccordionItemProps {
   shouldShowExpanded: boolean;
   onHover: (value: string) => void;
   inspectorProps?: (options: { fieldId: string }) => Record<string, unknown> | null;
+  renderAsCard?: boolean;
 }
 
 /**
@@ -35,7 +36,8 @@ export const AccordionItem = ({
   isHovered,
   shouldShowExpanded,
   onHover,
-  inspectorProps
+  inspectorProps,
+  renderAsCard = false
 }: AccordionItemProps) => {
   const itemValue = `item-${index}`;
 
@@ -89,7 +91,7 @@ export const AccordionItem = ({
               <div>
                 {item.overline && (
                   <p
-                    className={accordionStyles.getOverlineClasses()}
+                    className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded)}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                   >
                     {item.overline}
@@ -106,7 +108,10 @@ export const AccordionItem = ({
               <div className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}>
                 {item.description && (
                   <p
-                    className={accordionStyles.getDescriptionTextClasses()}
+                    className={accordionStyles.getDescriptionTextClasses(
+                      isHovered,
+                      shouldShowExpanded
+                    )}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'description' }) ?? {}) : {})}
                   >
                     {item.description}
@@ -127,6 +132,72 @@ export const AccordionItem = ({
           </Box>
         </AccordionTrigger>
       </AccordionItemPrimitive>
+    );
+  };
+
+  const ThreeColumnCardItem = () => {
+    return (
+      <div
+        className={accordionStyles.getThreeColumnItemClasses(isHovered, shouldShowExpanded)}
+        onMouseOver={() => onHover(itemValue)}
+        onMouseLeave={() => onHover('')}
+      >
+        {item.image?.sys?.id && (
+          <div {...(inspectorProps ? (inspectorProps({ fieldId: 'image' }) ?? {}) : {})}>
+            <AirImage
+              sys={{ id: item.image.sys.id }}
+              className={accordionStyles.getThreeColumnImageClasses()}
+            />
+          </div>
+        )}
+        <div className={accordionStyles.getThreeColumnContentClasses()}>
+          {item.overline && (
+            <p
+              className="text-body-xs text-gray-500 mb-2"
+              {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
+            >
+              {item.overline}
+            </p>
+          )}
+
+          <h3
+            className={accordionStyles.getThreeColumnTitleClasses()}
+            {...(inspectorProps ? (inspectorProps({ fieldId: 'title' }) ?? {}) : {})}
+          >
+            {item.title}
+          </h3>
+
+          {item.description && (
+            <p
+              className={accordionStyles.getThreeColumnDescriptionClasses()}
+              {...(inspectorProps ? (inspectorProps({ fieldId: 'description' }) ?? {}) : {})}
+            >
+              {item.description}
+            </p>
+          )}
+
+          {item.tags && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {item.tags.map((tag) => (
+                <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {item.cta && (
+            <div
+              className={accordionStyles.getThreeColumnCtaWrapperClasses()}
+              {...(inspectorProps ? (inspectorProps({ fieldId: 'cta' }) ?? {}) : {})}
+            >
+              <Button variant="primary" asChild>
+                <Link href={item.cta.internalLink?.slug ?? ''}>{item.cta.text}</Link>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
     );
   };
 
@@ -176,11 +247,7 @@ export const AccordionItem = ({
                 <div>
                   {item.overline && (
                     <p
-                      className={accordionStyles.getOverlineClasses(
-                        isHovered,
-                        shouldShowExpanded,
-                        item.variant
-                      )}
+                      className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded)}
                       {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                     >
                       {item.overline}
@@ -188,11 +255,7 @@ export const AccordionItem = ({
                   )}
 
                   <h3
-                    className={accordionStyles.getTitleClasses(
-                      isHovered,
-                      shouldShowExpanded,
-                      item.variant
-                    )}
+                    className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'title' }) ?? {}) : {})}
                   >
                     {item.title}
@@ -209,8 +272,7 @@ export const AccordionItem = ({
                     <p
                       className={accordionStyles.getDescriptionTextClasses(
                         isHovered,
-                        shouldShowExpanded,
-                        item.variant
+                        shouldShowExpanded
                       )}
                       {...(inspectorProps
                         ? (inspectorProps({ fieldId: 'description' }) ?? {})
@@ -247,6 +309,11 @@ export const AccordionItem = ({
       </AccordionItemPrimitive>
     );
   };
+
+  // If renderAsCard is true, render as a card for ThreeColumn layout
+  if (renderAsCard) {
+    return <ThreeColumnCardItem />;
+  }
 
   switch (item.variant) {
     case 'ContentTop':

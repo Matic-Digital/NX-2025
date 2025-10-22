@@ -28,6 +28,7 @@ export const ACCORDION_ITEM_GRAPHQL_FIELDS = `
 export const ACCORDION_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
+  gridVariant
   itemsCollection {
     items {
       ... on AccordionItem {

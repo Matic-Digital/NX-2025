@@ -1,8 +1,11 @@
-import { IMAGE_GRAPHQL_FIELDS } from '../Image/ImageApi';
-
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENT_GRAPHQL_FIELDS } from '@/components/Content/ContentApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 
 import type { Service, ServiceResponse } from '@/components/Service/ServiceSchema';
 
@@ -25,63 +28,16 @@ export const SERVICE_GRAPHQL_FIELDS = `
     items { 
       __typename
       ... on BannerHero {
-        sys {
-          id
-        }
-        title
-        description
-        image {
-          ${IMAGE_GRAPHQL_FIELDS}
-        }
+        ${BANNERHERO_GRAPHQL_FIELDS}
       }
-        ... on Content {
-        sys {
-          id
-        }
-        title
-        description
+      ... on Content {
+        ${CONTENT_GRAPHQL_FIELDS}
       }
       ... on ContentGrid {
-        sys {
-          id
-        }
-        title
-        variant
-        itemsCollection {
-          items {
-            __typename
-            ... on BannerHero {
-              sys {
-                id
-              }
-              title
-              description
-              image {
-                ${IMAGE_GRAPHQL_FIELDS}
-              }
-            }
-            ... on ContentGridItem {
-              sys {
-                id
-              }
-              title
-              description
-              image {
-                ${IMAGE_GRAPHQL_FIELDS}
-              }
-            }
-          }
-        }
+        ${CONTENTGRID_GRAPHQL_FIELDS}
       }
       ... on CtaBanner {
-        sys {
-          id
-        }
-        title
-        description
-        image {
-          ${IMAGE_GRAPHQL_FIELDS}
-        }
+        ${CTABANNER_GRAPHQL_FIELDS}
       }
     }
   }
