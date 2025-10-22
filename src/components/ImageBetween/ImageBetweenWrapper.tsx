@@ -66,7 +66,7 @@ export function ImageBetweenWrapper({
               direction="col"
               gap={8}
               className={cn(
-                'mb-72 mt-24 lg:mb-56 lg:mt-24 xl:mb-72 xl:mt-24 w-full max-w-full lg:max-w-[71.3rem] mx-auto'
+                'mb-80 pb-24 mt-24 lg:mb-64 lg:pb-32 lg:mt-24 xl:mb-80 xl:pb-40 xl:mt-24 w-full max-w-full lg:max-w-[71.3rem] mx-auto'
               )}
             >
               {/* Top Content */}
@@ -104,7 +104,7 @@ export function ImageBetweenWrapper({
           lightSectionClassName
         )}>
           {variant === 'article' ? (
-            <div className="mt-40 lg:mt-52 xl:mt-56">
+            <div className="mt-48 pt-24 lg:mt-60 lg:pt-32 xl:mt-64 xl:pt-40">
               <Box direction="col" gap={8}>
                 {/* Bottom Content */}
                 {contentBottom && (
