@@ -3,6 +3,19 @@ import { draftMode } from 'next/headers';
 
 import { getPostBySlug, getAllPostsMinimal } from '@/components/Post/PostApi';
 import { PostDetail } from '@/components/Post/PostDetail';
+import { getPostSEOBySlug } from '@/lib/contentful-seo-api';
+import {
+  extractOpenGraphImage,
+  extractSEODescription,
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing,
+  type ContentfulPageSEO
+} from '@/lib/metadata-utils';
+import { generateSchema } from '@/lib/schema-generator';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 // Enable dynamic routing for localized slugs that might not be pre-generated
 export const dynamic = 'force-dynamic';
@@ -48,32 +61,74 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params, searchParams }: PostPageProps) {
   const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
-  const post = await getPostBySlug(resolvedParams.slug, false, resolvedSearchParams.locale);
+  const _resolvedSearchParams = await searchParams;
+  const postSEO = await getPostSEOBySlug(resolvedParams.slug, false) as ContentfulPageSEO & { title?: string; excerpt?: string } | null;
   
-  if (!post) {
+  if (!postSEO) {
     return {
       title: 'Post Not Found',
     };
   }
 
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const postUrl = `${baseUrl}/post/${resolvedParams.category}/${resolvedParams.slug}`;
+
+  // Extract SEO data using utility functions
+  const postData = postSEO as ContentfulPageSEO & { title?: string; excerpt?: string };
+  const title = extractSEOTitle(postSEO, postData.title ?? 'Nextracker Blog Post');
+  const description = extractSEODescription(postSEO, postData.excerpt ?? 'Nextracker Blog Post');
+  const ogTitle = extractOpenGraphTitle(postSEO, title);
+  const ogDescription = extractOpenGraphDescription(postSEO, description);
+  const canonicalUrl = extractCanonicalUrl(postSEO);
+  const shouldIndex = extractIndexing(postSEO, true);
+
+  // Handle OG image from Post SEO data
+  const openGraphImage = extractOpenGraphImage(postSEO, baseUrl, title);
+
+  const ogImages = openGraphImage
+    ? [
+        {
+          url: openGraphImage.url,
+          width: openGraphImage.width,
+          height: openGraphImage.height,
+          alt: openGraphImage.title ?? ogTitle
+        }
+      ]
+    : [];
+
   return {
-    title: post.seoTitle ?? post.title,
-    description: post.seoDescription ?? post.excerpt,
-    keywords: post.seoFocusKeyword,
+    title,
+    description,
+    keywords: (postSEO as Record<string, unknown>).seoFocusKeyword as string, // Keep existing field if it exists
+    robots: {
+      index: shouldIndex,
+      follow: shouldIndex,
+      googleBot: {
+        index: shouldIndex,
+        follow: shouldIndex
+      }
+    },
     openGraph: {
-      title: post.seoTitle ?? post.title,
-      description: post.seoDescription ?? post.excerpt,
-      images: post.openGraphImage?.link ? [post.openGraphImage.link] : undefined,
+      title: ogTitle,
+      description: ogDescription,
+      images: ogImages,
       type: 'article',
-      publishedTime: post.datePublished,
+      publishedTime: (postSEO as Record<string, unknown>).datePublished as string,
+      siteName: 'Nextracker',
+      url: postUrl
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.seoTitle ?? post.title,
-      description: post.seoDescription ?? post.excerpt,
-      images: post.openGraphImage?.link ? [post.openGraphImage.link] : undefined,
+      title: ogTitle,
+      description: ogDescription,
+      images: openGraphImage ? [openGraphImage.url] : []
     },
+    alternates: {
+      canonical: canonicalUrl ?? postUrl
+    }
   };
 }
 
@@ -100,5 +155,14 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
     // For now, we'll just continue to show the post
   }
 
-  return <PostDetail post={post} />;
+  // Generate schema for the post
+  const postPath = `/post/${resolvedParams.category}/${resolvedParams.slug}`;
+  const postSchema = generateSchema('post', post, postPath);
+
+  return (
+    <>
+      <JsonLdSchema schema={postSchema} id="post-schema" />
+      <PostDetail post={post} />
+    </>
+  );
 }

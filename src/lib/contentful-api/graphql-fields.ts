@@ -23,6 +23,19 @@ export const IMAGE_FIELDS = `
   title
 `;
 
+// SEO-only fields for metadata generation (to avoid query complexity)
+export const SEO_FIELDS = `
+  seoTitle
+  seoDescription
+  openGraphTitle
+  openGraphDescription
+  openGraphImage {
+    ${IMAGE_FIELDS}
+  }
+  canonicalUrl
+  indexing
+`;
+
 export const INTERNAL_LINK_FIELDS = `
   ... on Page {
     sys { id }
@@ -91,6 +104,14 @@ const fragments = {
     title
     slug
     description
+  `,
+
+  PAGE_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    description
+    ${SEO_FIELDS}
   `,
 
   HEADER_GRAPHQL_FIELDS: () => `
@@ -228,10 +249,24 @@ const fragments = {
     slug
   `,
 
+  PRODUCT_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    ${SEO_FIELDS}
+  `,
+
   SERVICE_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title
     slug
+  `,
+
+  SERVICE_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    ${SEO_FIELDS}
   `,
 
   SOLUTION_BASIC_FIELDS: () => `
@@ -240,16 +275,37 @@ const fragments = {
     slug
   `,
 
+  SOLUTION_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    ${SEO_FIELDS}
+  `,
+
   POST_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title
     slug
   `,
 
+  POST_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    ${SEO_FIELDS}
+  `,
+
   PAGELIST_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title
     slug
+  `,
+
+  PAGELIST_SEO_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    ${SEO_FIELDS}
   `,
 
   PAGE_LAYOUT_GRAPHQL_FIELDS: () => `
@@ -340,21 +396,27 @@ const fragments = {
 
 // Export getters to ensure proper initialization order
 export const getPAGE_BASIC_FIELDS = () => fragments.PAGE_BASIC_FIELDS();
+export const getPAGE_SEO_FIELDS = () => fragments.PAGE_SEO_FIELDS();
 export const getPAGE_LAYOUT_GRAPHQL_FIELDS = () => fragments.PAGE_LAYOUT_GRAPHQL_FIELDS();
 export const getPAGE_WITH_REFS_FIELDS = () => fragments.PAGE_WITH_REFS_FIELDS();
 
+export const getHEADER_GRAPHQL_FIELDS = () => fragments.HEADER_GRAPHQL_FIELDS();
+export const getFOOTER_GRAPHQL_FIELDS = () => fragments.FOOTER_GRAPHQL_FIELDS();
+
 export const getPAGELIST_BASIC_FIELDS = () => fragments.PAGELIST_BASIC_FIELDS();
+export const getPAGELIST_SEO_FIELDS = () => fragments.PAGELIST_SEO_FIELDS();
 export const getPAGELIST_MINIMAL_FIELDS = () => fragments.PAGELIST_MINIMAL_FIELDS();
 export const getPAGELIST_WITH_REFS_FIELDS = () => fragments.PAGELIST_WITH_REFS_FIELDS();
 
-export const getHEADER_GRAPHQL_FIELDS = () => fragments.HEADER_GRAPHQL_FIELDS();
-export const getFOOTER_GRAPHQL_FIELDS = () => fragments.FOOTER_GRAPHQL_FIELDS();
-export const getEXTERNAL_PAGE_FIELDS = () => fragments.EXTERNAL_PAGE_FIELDS();
-export const getSOCIAL_BASIC_FIELDS = () => fragments.SOCIAL_BASIC_FIELDS();
 export const getPRODUCT_BASIC_FIELDS = () => fragments.PRODUCT_BASIC_FIELDS();
+export const getPRODUCT_SEO_FIELDS = () => fragments.PRODUCT_SEO_FIELDS();
 export const getSERVICE_BASIC_FIELDS = () => fragments.SERVICE_BASIC_FIELDS();
+export const getSERVICE_SEO_FIELDS = () => fragments.SERVICE_SEO_FIELDS();
 export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
+export const getSOLUTION_SEO_FIELDS = () => fragments.SOLUTION_SEO_FIELDS();
 export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();
+export const getPOST_SEO_FIELDS = () => fragments.POST_SEO_FIELDS();
+export const getEXTERNAL_PAGE_FIELDS = () => fragments.EXTERNAL_PAGE_FIELDS();
 export const getTESTIMONIALS_BASIC_FIELDS = () => fragments.TESTIMONIALS_BASIC_FIELDS();
 export const getCOLLECTION_BASIC_FIELDS = () => fragments.COLLECTION_BASIC_FIELDS();
 export const getMENU_BASIC_FIELDS = () => fragments.MENU_BASIC_FIELDS();

@@ -21,11 +21,22 @@
 import { notFound, redirect } from 'next/navigation';
 
 import { getAllPageLists, getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
+import { getPageSEOBySlug, getPageListSEOBySlug } from '@/lib/contentful-seo-api';
+import { getProductBySlug } from '@/components/Product/ProductApi';
+import { getServiceBySlug } from '@/components/Service/ServiceApi';
+import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
+import { getPostBySlug } from '@/components/Post/PostApi';
 import {
   extractOpenGraphImage,
   extractSEODescription,
-  extractSEOTitle
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing
 } from '@/lib/metadata-utils';
+import { contentfulSchemaMapper } from '@/lib/contentful-schema-mapper';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Content } from '@/components/Content/Content';
@@ -188,19 +199,14 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
 
         // Try to fetch the content item by slug using the appropriate API
         if (contentType === 'Product') {
-          const { getProductBySlug } = await import('@/components/Product/ProductApi');
           contentItem = await getProductBySlug(slug, false);
         } else if (contentType === 'Service') {
-          const { getServiceBySlug } = await import('@/components/Service/ServiceApi');
           contentItem = await getServiceBySlug(slug, false);
         } else if (contentType === 'Solution') {
-          const { getSolutionBySlug } = await import('@/components/Solution/SolutionApi');
           contentItem = await getSolutionBySlug(slug, false);
         } else if (contentType === 'Post') {
-          const { getPostBySlug } = await import('@/components/Post/PostApi');
           contentItem = await getPostBySlug(slug, false);
         } else if (contentType === 'Page') {
-          const { getPageBySlug } = await import('@/components/Page/PageApi');
           contentItem = await getPageBySlug(slug, false);
         }
 
@@ -290,7 +296,9 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
   try {
     // First, check if this slug should be redirected to a nested path
@@ -299,16 +307,27 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
       redirect(`/${nestedPath}`);
     }
 
-    // Try to fetch as a Page first
-    const page = await getPageBySlug(slug, false);
+    // Try to fetch SEO data for a Page first (lightweight query)
+    console.log(`🔍 [Metadata] Trying Page SEO for slug: "${slug}"`);
+    const pageSEO = await getPageSEOBySlug(slug, false) as unknown;
 
-    if (page) {
-      // Extract SEO data from Page component using utility functions
-      const title = extractSEOTitle(page, 'Nextracker');
-      const description = extractSEODescription(page, 'Nextracker Website');
+    if (pageSEO) {
+      console.log(`✅ [Metadata] Found Page SEO for: "${slug}"`);
+    } else {
+      console.log(`❌ [Metadata] No Page SEO found for: "${slug}"`);
+    }
 
-      // Handle OG image from Page component
-      const openGraphImage = extractOpenGraphImage(page, baseUrl, title);
+    if (pageSEO) {
+      // Extract SEO data from Page SEO data using utility functions
+      const title = extractSEOTitle(pageSEO, 'Nextracker');
+      const description = extractSEODescription(pageSEO, 'Nextracker Website');
+      const ogTitle = extractOpenGraphTitle(pageSEO, title);
+      const ogDescription = extractOpenGraphDescription(pageSEO, description);
+      const canonicalUrl = extractCanonicalUrl(pageSEO);
+      const shouldIndex = extractIndexing(pageSEO, true);
+
+      // Handle OG image from Page SEO data
+      const openGraphImage = extractOpenGraphImage(pageSEO, baseUrl, title);
 
       const ogImages = openGraphImage
         ? [
@@ -316,7 +335,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
               url: openGraphImage.url,
               width: openGraphImage.width,
               height: openGraphImage.height,
-              alt: openGraphImage.title ?? title
+              alt: openGraphImage.title ?? ogTitle
             }
           ]
         : [];
@@ -324,9 +343,17 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
       return {
         title,
         description,
+        robots: {
+          index: shouldIndex,
+          follow: shouldIndex,
+          googleBot: {
+            index: shouldIndex,
+            follow: shouldIndex
+          }
+        },
         openGraph: {
-          title,
-          description,
+          title: ogTitle,
+          description: ogDescription,
           images: ogImages,
           siteName: 'Nextracker',
           type: 'website',
@@ -334,26 +361,37 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
         },
         twitter: {
           card: 'summary_large_image',
-          title,
-          description,
+          title: ogTitle,
+          description: ogDescription,
           images: openGraphImage ? [openGraphImage.url] : []
         },
         alternates: {
-          canonical: `${baseUrl}/${slug}`
+          canonical: canonicalUrl ?? `${baseUrl}/${slug}`
         }
       };
     }
 
-    // Try to fetch as a PageList
-    const pageList = await getPageListBySlug(slug, false);
+    // Try to fetch SEO data for a PageList (lightweight query)
+    console.log(`🔍 [Metadata] Trying PageList SEO for slug: "${slug}"`);
+    const pageListSEO = await getPageListSEOBySlug(slug, false) as unknown;
 
-    if (pageList) {
-      // Extract SEO data from PageList component using utility functions
-      const title = extractSEOTitle(pageList, 'Nextracker');
-      const description = extractSEODescription(pageList, 'Nextracker Website');
+    if (pageListSEO) {
+      console.log(`✅ [Metadata] Found PageList SEO for: "${slug}"`);
+    } else {
+      console.log(`❌ [Metadata] No PageList SEO found for: "${slug}"`);
+    }
 
-      // Handle OG image from PageList component
-      const openGraphImage = extractOpenGraphImage(pageList, baseUrl, title);
+    if (pageListSEO) {
+      // Extract SEO data from PageList SEO data using utility functions
+      const title = extractSEOTitle(pageListSEO, 'Nextracker');
+      const description = extractSEODescription(pageListSEO, 'Nextracker Website');
+      const ogTitle = extractOpenGraphTitle(pageListSEO, title);
+      const ogDescription = extractOpenGraphDescription(pageListSEO, description);
+      const canonicalUrl = extractCanonicalUrl(pageListSEO);
+      const shouldIndex = extractIndexing(pageListSEO, true);
+
+      // Handle OG image from PageList SEO data
+      const openGraphImage = extractOpenGraphImage(pageListSEO, baseUrl, title);
 
       const ogImages = openGraphImage
         ? [
@@ -361,7 +399,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
               url: openGraphImage.url,
               width: openGraphImage.width,
               height: openGraphImage.height,
-              alt: openGraphImage.title ?? title
+              alt: openGraphImage.title ?? ogTitle
             }
           ]
         : [];
@@ -369,9 +407,17 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
       return {
         title,
         description,
+        robots: {
+          index: shouldIndex,
+          follow: shouldIndex,
+          googleBot: {
+            index: shouldIndex,
+            follow: shouldIndex
+          }
+        },
         openGraph: {
-          title,
-          description,
+          title: ogTitle,
+          description: ogDescription,
           images: ogImages,
           siteName: 'Nextracker',
           type: 'website',
@@ -379,12 +425,12 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
         },
         twitter: {
           card: 'summary_large_image',
-          title,
-          description,
+          title: ogTitle,
+          description: ogDescription,
           images: openGraphImage ? [openGraphImage.url] : []
         },
         alternates: {
-          canonical: `${baseUrl}/${slug}`
+          canonical: canonicalUrl ?? `${baseUrl}/${slug}`
         }
       };
     }
@@ -441,9 +487,9 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 
     // If it's a Page, render it as a standalone page
     if (page) {
-      console.log(`Found page with slug: ${slug}, rendering standalone page`);
+      console.log(`Found Page with slug: ${slug}, rendering Page`);
       try {
-        return renderPage(page);
+        return await renderPage(page, slug);
       } catch (renderError) {
         console.error(`Error rendering page with slug ${slug}:`, renderError);
         throw new Error(
@@ -469,7 +515,7 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
     if (pageList) {
       console.log(`Found PageList with slug: ${slug}, rendering PageList`);
       try {
-        return renderPageList(pageList);
+        return await renderPageList(pageList, slug);
       } catch (renderError) {
         console.error(`Error rendering pageList with slug ${slug}:`, renderError);
         throw new Error(
@@ -491,12 +537,17 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
 }
 
 // Helper function to render a Page
-function renderPage(page: Page) {
+async function renderPage(page: Page, slug: string) {
   const pageLayout = page.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
+  
+  // Generate connected schema (includes organization connections)
+  const pageSchema = contentfulSchemaMapper.mapContentToSchema(page, `/${slug}`, 'page');
+  
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
+      <JsonLdSchema schema={pageSchema} id="page-schema" />
       <h1 className="sr-only">{page.title}</h1>
       {/* Render the page content components */}
       {page.pageContentCollection?.items.map((component) => {
@@ -529,18 +580,22 @@ function renderPage(page: Page) {
 }
 
 // Helper function to render a PageList
-function renderPageList(pageList: PageListType) {
+async function renderPageList(pageList: PageListType, slug: string) {
   const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
-  const pageFooter = pageLayout?.footer as FooterType | undefined;
+  const pageFooter = pageList.pageLayout as PageLayoutType | undefined;
 
   // Extract page content items if available and type them properly
   const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
     Boolean
   ) as PageListContent[];
 
+  // Generate connected schema (includes organization connections)
+  const pageListSchema = contentfulSchemaMapper.mapContentToSchema(pageList, `/${slug}`, 'pagelist');
+
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
+      <JsonLdSchema schema={pageListSchema} id="pagelist-schema" />
       <h1 className="sr-only">{pageList.title}</h1>
       {/* Render components from pageContentCollection directly */}
       {pageContentItems.map((component) => {

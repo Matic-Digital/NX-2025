@@ -5,6 +5,19 @@ import { getEventBySlug, getAllEventsMinimal } from '@/components/Event/EventApi
 import { EventDetail } from '@/components/Event/EventDetail';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
+import { getEventSEOBySlug } from '@/lib/contentful-seo-api';
+import {
+  extractOpenGraphImage,
+  extractSEODescription,
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing,
+  type ContentfulPageSEO
+} from '@/lib/metadata-utils';
+import { generateSchema } from '@/lib/schema-generator';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
@@ -32,27 +45,74 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: EventPageProps) {
   const resolvedParams = await params;
-  const event = await getEventBySlug(resolvedParams.slug ?? '');
+  const eventSEO = await getEventSEOBySlug(resolvedParams.slug ?? '', false) as Record<string, unknown>;
   
-  if (!event) {
+  if (!eventSEO) {
     return {
       title: 'Event Not Found',
     };
   }
 
+  // Construct the base URL for absolute image URLs
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const eventUrl = `${baseUrl}/events/${resolvedParams.slug}`;
+
+  // Create default description with event date
+  const eventData = eventSEO as ContentfulPageSEO & { title?: string; dateTime?: string };
+  const defaultDescription = `Join us for ${eventData?.title ?? ''} on ${eventData?.dateTime ? new Date(eventData.dateTime).toLocaleDateString() : ''}`;
+
+  // Extract SEO data using utility functions
+  const title = extractSEOTitle(eventSEO, eventData?.title ?? 'Nextracker Event');
+  const description = extractSEODescription(eventSEO, defaultDescription);
+  const ogTitle = extractOpenGraphTitle(eventSEO, title);
+  const ogDescription = extractOpenGraphDescription(eventSEO, description);
+  const canonicalUrl = extractCanonicalUrl(eventSEO);
+  const shouldIndex = extractIndexing(eventSEO, true);
+
+  // Handle OG image from Event SEO data
+  const openGraphImage = extractOpenGraphImage(eventSEO, baseUrl, title);
+
+  const ogImages = openGraphImage
+    ? [
+        {
+          url: openGraphImage.url,
+          width: openGraphImage.width,
+          height: openGraphImage.height,
+          alt: openGraphImage.title ?? ogTitle
+        }
+      ]
+    : [];
+
   return {
-    title: event.title ?? '',
-    description: `Join us for ${event.title ?? ''} on ${new Date(event.dateTime ?? '').toLocaleDateString()}`,
+    title,
+    description,
+    robots: {
+      index: shouldIndex,
+      follow: shouldIndex,
+      googleBot: {
+        index: shouldIndex,
+        follow: shouldIndex
+      }
+    },
     openGraph: {
-      title: event.title ?? '',
-      description: `Join us for ${event.title ?? ''} on ${new Date(event.dateTime ?? '').toLocaleDateString()}`,
+      title: ogTitle,
+      description: ogDescription,
+      images: ogImages,
       type: 'article',
+      siteName: 'Nextracker',
+      url: eventUrl
     },
     twitter: {
       card: 'summary_large_image',
-      title: event.title ?? '',
-      description: `Join us for ${event.title ?? ''} on ${new Date(event.dateTime ?? '').toLocaleDateString()}`,
+      title: ogTitle,
+      description: ogDescription,
+      images: openGraphImage ? [openGraphImage.url] : []
     },
+    alternates: {
+      canonical: canonicalUrl ?? eventUrl
+    }
   };
 }
 
@@ -83,5 +143,14 @@ export default async function EventPage({ params }: EventPageProps) {
     }
   }
 
-  return <EventDetail event={event} header={header} footer={footer} />;
+  // Generate schema for the event
+  const eventPath = `/events/${resolvedParams.slug}`;
+  const eventSchema = generateSchema('event', event, eventPath);
+
+  return (
+    <>
+      <JsonLdSchema schema={eventSchema} id="event-schema" />
+      <EventDetail event={event} header={header} footer={footer} />
+    </>
+  );
 }

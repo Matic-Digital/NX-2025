@@ -17,6 +17,10 @@ export interface ContentfulPageSEO {
   seoDescription?: string;
   description?: string;
   openGraphImage?: ContentfulImage;
+  openGraphTitle?: string;
+  openGraphDescription?: string;
+  canonicalUrl?: string;
+  indexing?: boolean;
 }
 
 export interface OpenGraphImageResult {
@@ -46,7 +50,11 @@ export function hasContentfulSEOFields(obj: unknown): obj is ContentfulPageSEO {
       'seoTitle' in obj ||
       'seoDescription' in obj ||
       'description' in obj ||
-      'openGraphImage' in obj)
+      'openGraphImage' in obj ||
+      'openGraphTitle' in obj ||
+      'openGraphDescription' in obj ||
+      'canonicalUrl' in obj ||
+      'indexing' in obj)
   );
 }
 
@@ -140,4 +148,74 @@ export function extractSEODescription(page: unknown, fallback: string): string {
   }
 
   return fallback;
+}
+
+/**
+ * Safely extracts Open Graph title from Contentful page object
+ */
+export function extractOpenGraphTitle(page: unknown, fallback: string): string {
+  if (!hasContentfulSEOFields(page)) return fallback;
+
+  if (page.openGraphTitle && typeof page.openGraphTitle === 'string') {
+    return page.openGraphTitle;
+  }
+
+  // Fall back to SEO title, then regular title
+  if (page.seoTitle && typeof page.seoTitle === 'string') {
+    return page.seoTitle;
+  }
+
+  if (page.title && typeof page.title === 'string') {
+    return page.title;
+  }
+
+  return fallback;
+}
+
+/**
+ * Safely extracts Open Graph description from Contentful page object
+ */
+export function extractOpenGraphDescription(page: unknown, fallback: string): string {
+  if (!hasContentfulSEOFields(page)) return fallback;
+
+  if (page.openGraphDescription && typeof page.openGraphDescription === 'string') {
+    return page.openGraphDescription;
+  }
+
+  // Fall back to SEO description, then regular description
+  if (page.seoDescription && typeof page.seoDescription === 'string') {
+    return page.seoDescription;
+  }
+
+  if (page.description && typeof page.description === 'string') {
+    return page.description;
+  }
+
+  return fallback;
+}
+
+/**
+ * Safely extracts canonical URL from Contentful page object
+ */
+export function extractCanonicalUrl(page: unknown): string | undefined {
+  if (!hasContentfulSEOFields(page)) return undefined;
+
+  if (page.canonicalUrl && typeof page.canonicalUrl === 'string') {
+    return page.canonicalUrl;
+  }
+
+  return undefined;
+}
+
+/**
+ * Safely extracts indexing preference from Contentful page object
+ */
+export function extractIndexing(page: unknown, defaultValue = true): boolean {
+  if (!hasContentfulSEOFields(page)) return defaultValue;
+
+  if (typeof page.indexing === 'boolean') {
+    return page.indexing;
+  }
+
+  return defaultValue;
 }

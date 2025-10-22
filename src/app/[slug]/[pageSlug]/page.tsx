@@ -18,8 +18,15 @@ import { notFound, redirect } from 'next/navigation';
 import {
   extractOpenGraphImage,
   extractSEODescription,
-  extractSEOTitle
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing
 } from '@/lib/metadata-utils';
+import { getContentSEOBySlug } from '@/lib/contentful-seo-api';
+import { contentfulSchemaMapper, type ContentfulContent } from '@/lib/contentful-schema-mapper';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Content } from '@/components/Content/Content';
@@ -129,46 +136,76 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
     redirect(`/${fullPath}`);
   }
 
-  // Try to fetch the content item as different content types
-  let contentItem: Page | Product | Service | Solution | Post | null = null;
-  let pageList: PageList | null = null;
+  // Try to fetch SEO data for the content item using lightweight queries
+  let contentSEO: unknown = null;
+  let contentType = '';
 
   try {
-    // First, fetch the PageList
-    pageList = await getPageListBySlug(pageListSlug, false);
+    console.log(`🔍 [Nested Metadata] Generating metadata for: ${pageListSlug}/${pageSlug}`);
+    
+    // First try PageList with the full nested slug (e.g., "products/trackers")
+    const fullSlug = `${pageListSlug}/${pageSlug}`;
+    console.log(`🔍 [Nested Metadata] Trying PageList SEO for: ${fullSlug}`);
+    contentSEO = await getContentSEOBySlug('pageList', fullSlug, false) as unknown;
+    if (contentSEO) {
+      contentType = 'pageList';
+      console.log(`✅ [Nested Metadata] Found PageList SEO for: ${fullSlug}`);
+    }
+    
+    // If not found as PageList, try different content types with just the pageSlug
+    if (!contentSEO) {
+      console.log(`🔍 [Nested Metadata] Trying Page SEO for: ${pageSlug}`);
+      contentSEO = await getContentSEOBySlug('page', pageSlug, false) as unknown;
+      if (contentSEO) {
+        contentType = 'page';
+        console.log(`✅ [Nested Metadata] Found Page SEO for: ${pageSlug}`);
+      }
+    }
+    
+    if (!contentSEO) {
+      console.log(`🔍 [Nested Metadata] Trying Product SEO for: ${pageSlug}`);
+      contentSEO = await getContentSEOBySlug('product', pageSlug, false) as unknown;
+      if (contentSEO) {
+        contentType = 'product';
+        console.log(`✅ [Nested Metadata] Found Product SEO for: ${pageSlug}`);
+      }
+    }
+    
+    if (!contentSEO) {
+      console.log(`🔍 [Nested Metadata] Trying Service SEO for: ${pageSlug}`);
+      contentSEO = await getContentSEOBySlug('service', pageSlug, false) as unknown;
+      if (contentSEO) {
+        contentType = 'service';
+        console.log(`✅ [Nested Metadata] Found Service SEO for: ${pageSlug}`);
+      }
+    }
+    
+    if (!contentSEO) {
+      console.log(`🔍 [Nested Metadata] Trying Solution SEO for: ${pageSlug}`);
+      contentSEO = await getContentSEOBySlug('solution', pageSlug, false) as unknown;
+      if (contentSEO) {
+        contentType = 'solution';
+        console.log(`✅ [Nested Metadata] Found Solution SEO for: ${pageSlug}`);
+      }
+    }
+    
+    if (!contentSEO) {
+      console.log(`🔍 [Nested Metadata] Trying Post SEO for: ${pageSlug}`);
+      contentSEO = await getContentSEOBySlug('post', pageSlug, false) as unknown;
+      if (contentSEO) {
+        contentType = 'post';
+        console.log(`✅ [Nested Metadata] Found Post SEO for: ${pageSlug}`);
+      }
+    }
 
-    if (!pageList?.pagesCollection?.items.length) {
+    if (!contentSEO) {
       return {
         title: 'Content Not Found',
         description: 'The requested content could not be found.'
       };
     }
 
-    // Try to fetch the content item as different content types
-    contentItem ??= await getPageBySlug(pageSlug, false);
-    contentItem ??= await getProductBySlug(pageSlug, false);
-    contentItem ??= await getServiceBySlug(pageSlug, false);
-    contentItem ??= await getSolutionBySlug(pageSlug, false);
-    contentItem ??= await getPostBySlug(pageSlug, false);
-
-    if (!contentItem) {
-      return {
-        title: 'Content Not Found',
-        description: 'The requested content could not be found.'
-      };
-    }
-
-    // Check if the content item is in the PageList
-    const itemInList = pageList.pagesCollection.items.some(
-      (item) => item?.sys?.id === contentItem!.sys.id
-    );
-
-    if (!itemInList) {
-      return {
-        title: 'Content Not Found',
-        description: 'The requested content could not be found.'
-      };
-    }
+    console.log(`🔍 Found ${contentType} SEO data for: ${pageSlug}`);
   } catch (error) {
     console.error(`Error generating metadata for: ${pageSlug} in PageList: ${pageListSlug}`, error);
     return {
@@ -178,14 +215,21 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const fullUrl = `${baseUrl}/${pageListSlug}/${pageSlug}`;
 
-  // Extract SEO data from content item using utility functions
-  const title = extractSEOTitle(contentItem, 'Nextracker');
-  const description = extractSEODescription(contentItem, 'Nextracker Content');
+  // Extract SEO data using all utility functions
+  const title = extractSEOTitle(contentSEO, 'Nextracker');
+  const description = extractSEODescription(contentSEO, 'Nextracker Content');
+  const ogTitle = extractOpenGraphTitle(contentSEO, title);
+  const ogDescription = extractOpenGraphDescription(contentSEO, description);
+  const canonicalUrl = extractCanonicalUrl(contentSEO);
+  const shouldIndex = extractIndexing(contentSEO, true);
 
-  // Handle OG image from content item
-  const openGraphImage = extractOpenGraphImage(contentItem, baseUrl, title);
+  // Handle OG image from content SEO data
+  const openGraphImage = extractOpenGraphImage(contentSEO, baseUrl, title);
 
   const ogImages = openGraphImage
     ? [
@@ -193,7 +237,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
           url: openGraphImage.url,
           width: openGraphImage.width,
           height: openGraphImage.height,
-          alt: openGraphImage.title ?? title
+          alt: openGraphImage.title ?? ogTitle
         }
       ]
     : [];
@@ -201,17 +245,30 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   return {
     title,
     description,
+    robots: {
+      index: shouldIndex,
+      follow: shouldIndex,
+      googleBot: {
+        index: shouldIndex,
+        follow: shouldIndex
+      }
+    },
     openGraph: {
-      title,
-      description,
+      title: ogTitle,
+      description: ogDescription,
       images: ogImages,
-      type: 'website'
+      siteName: 'Nextracker',
+      type: 'website',
+      url: fullUrl
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
-      images: ogImages.length > 0 ? [ogImages[0]!.url] : []
+      title: ogTitle,
+      description: ogDescription,
+      images: openGraphImage ? [openGraphImage.url] : []
+    },
+    alternates: {
+      canonical: canonicalUrl ?? fullUrl
     }
   };
 }
@@ -580,8 +637,14 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
+  // Generate connected schema (includes organization connections)
+  const contentPath = `/${pageListSlug}/${pageSlug}`;
+  const schemaType = contentType?.toLowerCase() as 'page' | 'pageList' | 'post' | 'product' | 'service' | 'solution' | 'event';
+  const contentSchema = contentfulSchemaMapper.mapContentToSchema(contentItem as ContentfulContent, contentPath, schemaType || 'page');
+
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
+      <JsonLdSchema schema={contentSchema} id={`${schemaType || 'content'}-schema`} />
       <h1 className="sr-only">{contentItem.title}</h1>
 
       {/* Render content based on content type */}

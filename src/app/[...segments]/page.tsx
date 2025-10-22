@@ -28,7 +28,11 @@ import { notFound } from 'next/navigation';
 import {
   extractOpenGraphImage,
   extractSEODescription,
-  extractSEOTitle
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing
 } from '@/lib/metadata-utils';
 import { staticRoutingService } from '@/lib/static-routing';
 
@@ -115,7 +119,9 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
   const fullPath = segments.join('/');
 
   try {
@@ -133,9 +139,13 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
 
     const { content } = result;
 
-    // Extract SEO data
+    // Extract SEO data using all utility functions
     const title = extractSEOTitle(content, 'Nextracker');
     const description = extractSEODescription(content, 'Nextracker Content');
+    const ogTitle = extractOpenGraphTitle(content, title);
+    const ogDescription = extractOpenGraphDescription(content, description);
+    const canonicalUrl = extractCanonicalUrl(content);
+    const shouldIndex = extractIndexing(content, true);
     const openGraphImage = extractOpenGraphImage(content, baseUrl, title);
 
     const ogImages = openGraphImage
@@ -144,7 +154,7 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
             url: openGraphImage.url,
             width: openGraphImage.width,
             height: openGraphImage.height,
-            alt: openGraphImage.title ?? title
+            alt: openGraphImage.title ?? ogTitle
           }
         ]
       : [];
@@ -152,9 +162,17 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
     return {
       title,
       description,
+      robots: {
+        index: shouldIndex,
+        follow: shouldIndex,
+        googleBot: {
+          index: shouldIndex,
+          follow: shouldIndex
+        }
+      },
       openGraph: {
-        title,
-        description,
+        title: ogTitle,
+        description: ogDescription,
         images: ogImages ?? [],
         siteName: 'Nextracker',
         type: 'website',
@@ -162,12 +180,12 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
       },
       twitter: {
         card: 'summary_large_image',
-        title,
-        description,
+        title: ogTitle,
+        description: ogDescription,
         images: openGraphImage ? [openGraphImage.url] : []
       },
       alternates: {
-        canonical: `${baseUrl}/${fullPath}`
+        canonical: canonicalUrl ?? `${baseUrl}/${fullPath}`
       }
     };
   } catch (error) {
