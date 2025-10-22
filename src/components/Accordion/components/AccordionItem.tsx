@@ -89,7 +89,7 @@ export const AccordionItem = ({
               <div>
                 {item.overline && (
                   <p
-                    className={accordionStyles.getOverlineClasses()}
+                    className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded)}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                   >
                     {item.overline}
@@ -106,7 +106,10 @@ export const AccordionItem = ({
               <div className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}>
                 {item.description && (
                   <p
-                    className={accordionStyles.getDescriptionTextClasses()}
+                    className={accordionStyles.getDescriptionTextClasses(
+                      isHovered,
+                      shouldShowExpanded
+                    )}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'description' }) ?? {}) : {})}
                   >
                     {item.description}
@@ -176,11 +179,7 @@ export const AccordionItem = ({
                 <div>
                   {item.overline && (
                     <p
-                      className={accordionStyles.getOverlineClasses(
-                        isHovered,
-                        shouldShowExpanded,
-                        item.variant
-                      )}
+                      className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded)}
                       {...(inspectorProps ? (inspectorProps({ fieldId: 'overline' }) ?? {}) : {})}
                     >
                       {item.overline}
@@ -188,11 +187,7 @@ export const AccordionItem = ({
                   )}
 
                   <h3
-                    className={accordionStyles.getTitleClasses(
-                      isHovered,
-                      shouldShowExpanded,
-                      item.variant
-                    )}
+                    className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}
                     {...(inspectorProps ? (inspectorProps({ fieldId: 'title' }) ?? {}) : {})}
                   >
                     {item.title}
@@ -210,7 +205,6 @@ export const AccordionItem = ({
                       className={accordionStyles.getDescriptionTextClasses(
                         isHovered,
                         shouldShowExpanded,
-                        item.variant
                       )}
                       {...(inspectorProps
                         ? (inspectorProps({ fieldId: 'description' }) ?? {})
