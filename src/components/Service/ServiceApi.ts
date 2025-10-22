@@ -2,6 +2,10 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
+import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENT_GRAPHQL_FIELDS } from '@/components/Content/ContentApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 
 import type { Service, ServiceResponse } from '@/components/Service/ServiceSchema';
 
@@ -10,6 +14,33 @@ export const SERVICE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
+  description
+  pageLayout {
+    ${SYS_FIELDS}
+    header {
+      ${SYS_FIELDS}
+    }
+    footer {
+      ${SYS_FIELDS}
+    }
+  }
+  itemsCollection {
+    items { 
+      __typename
+      ... on BannerHero {
+        ${BANNERHERO_GRAPHQL_FIELDS}
+      }
+      ... on Content {
+        ${CONTENT_GRAPHQL_FIELDS}
+      }
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
+      }
+      ... on CtaBanner {
+        ${CTABANNER_GRAPHQL_FIELDS}
+      }
+    }
+  }
 `;
 
 export async function getAllServices(preview = false): Promise<ServiceResponse> {

@@ -19,6 +19,9 @@ import type { Service } from '@/components/Service/ServiceSchema';
 interface ServiceCardProps extends Partial<Service> {
   serviceId?: string;
   cardId?: string;
+  cardTitle?: string;
+  cardTags?: string[];
+  cardButtonText?: string;
   isFirst?: boolean;
 }
 
@@ -34,7 +37,7 @@ export function ServiceCard(props: ServiceCardProps) {
 
     async function fetchServiceData() {
       if (!serviceId) return;
-      
+
       try {
         setLoading(true);
         const data = await getServiceById(serviceId, false);

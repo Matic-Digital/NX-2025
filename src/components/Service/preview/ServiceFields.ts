@@ -24,45 +24,5 @@ export const serviceFields: FieldConfig<Partial<Service>>[] = [
       }
       return 'Not set';
     }
-  },
-  {
-    name: 'cardImage',
-    label: 'Card Image',
-    required: false,
-    description:
-      'Image that appears on service cards in grid layouts. Should be visually representative of the service.',
-    color: 'purple',
-    getValue: (data) =>
-      data.cardImage ? `Image configured (${data.cardImage.title ?? 'Untitled'})` : 'Not set'
-  },
-  {
-    name: 'cardTitle',
-    label: 'Card Title',
-    required: false,
-    description:
-      'Alternative title for use in card layouts. If not set, the main title will be used.',
-    color: 'orange',
-    getValue: (data) => (data.cardTitle ? `"${data.cardTitle}"` : 'Not set (will use main title)')
-  },
-  {
-    name: 'cardTags',
-    label: 'Card Tags',
-    required: false,
-    description:
-      'Tags or categories that appear on service cards. Used for categorization and filtering.',
-    color: 'indigo',
-    getValue: (data) =>
-      data.cardTags && data.cardTags.length > 0
-        ? `${data.cardTags.length} tag(s): ${data.cardTags.join(', ')}`
-        : 'Not set'
-  },
-  {
-    name: 'cardButtonText',
-    label: 'Card Button Text',
-    required: true,
-    description:
-      'Text for the call-to-action button on service cards. Typically something like "Learn More" or "View Details".',
-    color: 'pink',
-    getValue: (data) => (data.cardButtonText ? `"${data.cardButtonText}"` : 'Not set')
   }
 ];

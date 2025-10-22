@@ -13,6 +13,7 @@ export const ContentGridItemSchema = z.object({
   variant: z.string().optional(),
   heading: z.string(),
   subHeading: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   ctaCollection: z
     .object({
       items: z.array(ButtonSchema)

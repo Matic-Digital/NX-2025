@@ -15,18 +15,20 @@ import { SvgIcon } from '@/components/ui/svg-icon';
 import { Box } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-
 import {
   getContentGridItemById,
   getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
 import { AirImage } from '@/components/Image/AirImage';
+import { ServiceCard } from '@/components/Service/ServiceCard';
 
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
+import type { Service } from '@/components/Service/ServiceSchema';
 
 interface ContentGridItemProps extends ContentGridItemType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
+  index?: number; // Index for determining if this is the first item
 }
 
 export function ContentGridItem(props: ContentGridItemProps) {
@@ -408,6 +410,28 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
+  const PrimaryHoverSlideUp = () => {
+    // Extract slug from linkHref more reliably
+    const extractedSlug = linkHref.startsWith('/') ? linkHref.slice(1) : linkHref;
+
+    // Map ContentGridItem props to Service props
+    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean } = {
+      sys: contentData.sys,
+      cardTitle: contentData.heading,
+      cardTags: contentData.tags,
+      cardButtonText: contentData.ctaCollection?.items?.[0]?.text ?? 'Learn More',
+      cardImage: contentData.image,
+      slug: extractedSlug,
+      title: contentData.title,
+      // Add cardId for active state management
+      cardId: contentData.sys?.id,
+      // Set first card as active by default
+      isFirst: props.index === 0
+    };
+
+    return <ServiceCard {...serviceProps} />;
+  };
+
   const ExpandingHoverCardItem = () => {
     // Get index from ContentGrid context - for now using a placeholder
     const index = 0; // This will need to be passed from ContentGrid
@@ -495,6 +519,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
       </Box>
     );
   };
+
   const LinkItem = () => {
     return (
       <Link href={getHref()} className="group flex flex-col">
@@ -550,6 +575,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
       return <BackgroundGradientHoverItem />;
     case 'BackgroundGradientHoverWithLink':
       return <BackgroundGradientHoverItemWithLinkItem />;
+    case 'PrimaryHoverSlideUp':
+      return <PrimaryHoverSlideUp />;
     case 'ExpandingHoverCard':
       return <ExpandingHoverCardItem />;
     case 'StackGradientHover':

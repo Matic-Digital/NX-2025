@@ -169,7 +169,7 @@ export function ImageBetween(props: ImageBetween) {
                 'mb-24 lg:mb-56 xl:mb-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
               imageBetween.asset && imageBetween.asset.__typename === 'ContentGrid' && 'mb-0',
-              isBannerHero && isPostSlider ? 'mb-0 pb-16' : 'mb-0 pb-0',
+              isBannerHero && isPostSlider && 'mb-0 pb-16',
               isBannerHero && isImageSlider && 'mb-14 pb-14'
             )}
           >

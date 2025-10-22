@@ -488,12 +488,12 @@ function renderContentByType(item: unknown, _index: number): React.ReactNode {
     const contentItem = content as {
       title?: string;
       pageContentCollection?: { items?: unknown[] };
-      itemsCollection?: { items?: unknown[] }; // Products and Solutions use itemsCollection
+      itemsCollection?: { items?: unknown[] }; // Products, Solutions, and Services use itemsCollection
     };
 
     // Use the appropriate collection based on content type
     const contentItems =
-      type === 'Product' || type === 'Solution'
+      type === 'Product' || type === 'Solution' || type === 'Service'
         ? (contentItem.itemsCollection?.items ?? [])
         : (contentItem.pageContentCollection?.items ?? []);
 

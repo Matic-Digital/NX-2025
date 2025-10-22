@@ -15,18 +15,17 @@
 
 import { notFound, redirect } from 'next/navigation';
 
-import {
-  extractOpenGraphImage,
-  extractSEODescription,
-  extractSEOTitle,
-  extractOpenGraphTitle,
-  extractOpenGraphDescription,
-  extractCanonicalUrl,
-  extractIndexing
-} from '@/lib/metadata-utils';
+import { contentfulSchemaMapper } from '@/lib/contentful-schema-mapper';
 import { getContentSEOBySlug } from '@/lib/contentful-seo-api';
-import { contentfulSchemaMapper, type ContentfulContent } from '@/lib/contentful-schema-mapper';
-import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
+import {
+  extractCanonicalUrl,
+  extractIndexing,
+  extractOpenGraphDescription,
+  extractOpenGraphImage,
+  extractOpenGraphTitle,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Content } from '@/components/Content/Content';
@@ -39,6 +38,7 @@ import { getAllPageLists, getPageListBySlug } from '@/components/PageList/PageLi
 import { getPostBySlug } from '@/components/Post/PostApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
 import { RichContent } from '@/components/RichContent/RichContent';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
 import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 
@@ -51,6 +51,7 @@ import type { Post } from '@/components/Post/PostSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 import type { Service } from '@/components/Service/ServiceSchema';
 import type { Solution } from '@/components/Solution/SolutionSchema';
+import type { ContentfulContent } from '@/lib/contentful-schema-mapper';
 import type { Metadata } from 'next';
 
 // Define the component mapping for content items (same as standalone Product page)
@@ -140,45 +141,44 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   let _contentType = '';
 
   try {
-    
     // First try PageList with the full nested slug (e.g., "products/trackers")
     const fullSlug = `${pageListSlug}/${pageSlug}`;
-    contentSEO = await getContentSEOBySlug('pageList', fullSlug, false) as unknown;
+    contentSEO = (await getContentSEOBySlug('pageList', fullSlug, false)) as unknown;
     if (contentSEO) {
       _contentType = 'pageList';
     }
-    
+
     // If not found as PageList, try different content types with just the pageSlug
     if (!contentSEO) {
-      contentSEO = await getContentSEOBySlug('page', pageSlug, false) as unknown;
+      contentSEO = (await getContentSEOBySlug('page', pageSlug, false)) as unknown;
       if (contentSEO) {
         _contentType = 'page';
       }
     }
-    
+
     if (!contentSEO) {
-      contentSEO = await getContentSEOBySlug('product', pageSlug, false) as unknown;
+      contentSEO = (await getContentSEOBySlug('product', pageSlug, false)) as unknown;
       if (contentSEO) {
         _contentType = 'product';
       }
     }
-    
+
     if (!contentSEO) {
-      contentSEO = await getContentSEOBySlug('service', pageSlug, false) as unknown;
+      contentSEO = (await getContentSEOBySlug('service', pageSlug, false)) as unknown;
       if (contentSEO) {
         _contentType = 'service';
       }
     }
-    
+
     if (!contentSEO) {
-      contentSEO = await getContentSEOBySlug('solution', pageSlug, false) as unknown;
+      contentSEO = (await getContentSEOBySlug('solution', pageSlug, false)) as unknown;
       if (contentSEO) {
         _contentType = 'solution';
       }
     }
-    
+
     if (!contentSEO) {
-      contentSEO = await getContentSEOBySlug('post', pageSlug, false) as unknown;
+      contentSEO = (await getContentSEOBySlug('post', pageSlug, false)) as unknown;
       if (contentSEO) {
         _contentType = 'post';
       }
@@ -190,7 +190,6 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
         description: 'The requested content could not be found.'
       };
     }
-
   } catch (_error) {
     return {
       title: 'Content Not Found',
@@ -199,9 +198,9 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
   const fullUrl = `${baseUrl}/${pageListSlug}/${pageSlug}`;
 
   // Extract SEO data using all utility functions
@@ -422,13 +421,6 @@ function renderContentByType(
           </div>
         )}
 
-        {contentType === 'Service' && (
-          <div>
-            <p>{(contentItem as Service).title}</p>
-            {/* Add more Service-specific rendering here */}
-          </div>
-        )}
-
         {contentType === 'Solution' && (
           <div>
             <h2>{(contentItem as Solution).heading}</h2>
@@ -479,36 +471,37 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     }
 
     // Instead of guessing by slug, find the actual item in the PageList and determine its type
-    
+
     // Find the specific item in this PageList by slug
     const targetItem = pageList.pagesCollection?.items?.find((item) => {
       if (!item || typeof item !== 'object') return false;
-      
+
       // Check if item has a slug property that matches
       const itemSlug = (item as { slug?: string }).slug;
       if (typeof itemSlug !== 'string') return false;
-      
+
       // Check for exact match or if the item slug ends with the pageSlug
       // But ensure it's a proper path segment match, not just a substring match
-      const hasMatchingSlug = itemSlug === pageSlug || 
+      const hasMatchingSlug =
+        itemSlug === pageSlug ||
         (itemSlug.endsWith(`/${pageSlug}`) && itemSlug.split('/').pop() === pageSlug);
-      
+
       if (hasMatchingSlug) {
         const _typename = (item as { __typename?: string }).__typename ?? 'Unknown';
         return true;
       }
-      
+
       return false;
     });
-    
+
     if (!targetItem) {
       notFound();
     }
-    
+
     // Determine the content type from the item's __typename
     const itemTypename = (targetItem as { __typename?: string }).__typename;
     const actualSlug = (targetItem as { slug?: string }).slug ?? pageSlug;
-    
+
     // Fetch the full content based on the typename
     if (itemTypename === 'Page') {
       contentItem = await getPageBySlug(actualSlug, preview);
@@ -580,7 +573,6 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       notFound();
     }
 
-
     // At this point, we know page and pageList are not null due to the checks above
   } catch (_error) {
     notFound();
@@ -598,8 +590,19 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
 
   // Generate connected schema (includes organization connections)
   const contentPath = `/${pageListSlug}/${pageSlug}`;
-  const schemaType = contentType?.toLowerCase() as 'page' | 'pageList' | 'post' | 'product' | 'service' | 'solution' | 'event';
-  const contentSchema = contentfulSchemaMapper.mapContentToSchema(contentItem as ContentfulContent, contentPath, schemaType || 'page');
+  const schemaType = contentType?.toLowerCase() as
+    | 'page'
+    | 'pageList'
+    | 'post'
+    | 'product'
+    | 'service'
+    | 'solution'
+    | 'event';
+  const contentSchema = contentfulSchemaMapper.mapContentToSchema(
+    contentItem as ContentfulContent,
+    contentPath,
+    schemaType || 'page'
+  );
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>

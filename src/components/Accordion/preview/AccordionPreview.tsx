@@ -36,6 +36,9 @@ export function AccordionPreview(props: Partial<AccordionType>) {
   const liveAccordion = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveAccordion?.sys?.id });
 
+  console.log('⭐ liveAccordion', liveAccordion);
+  console.log('⭐ inspectorProps', inspectorProps);
+
   // Business logic layer - use stable reference to avoid hook order changes
   // Use the initial items from props to ensure consistent hook calls
   const stableItems = liveAccordion?.itemsCollection?.items ?? props.itemsCollection?.items ?? [];
