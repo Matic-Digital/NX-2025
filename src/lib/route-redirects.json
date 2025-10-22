@@ -15,6 +15,16 @@
     "permanent": false
   },
   {
+    "source": "/americas",
+    "destination": "/company/americas",
+    "permanent": false
+  },
+  {
+    "source": "/australian-pacific",
+    "destination": "/company/australian-pacific",
+    "permanent": false
+  },
+  {
     "source": "/behind-the-meter-energy",
     "destination": "/solutions/energy-and-ai/behind-the-meter-energy",
     "permanent": false
@@ -85,6 +95,11 @@
     "permanent": false
   },
   {
+    "source": "/europe",
+    "destination": "/company/europe",
+    "permanent": false
+  },
+  {
     "source": "/foundations",
     "destination": "/products/foundations",
     "permanent": false
@@ -120,6 +135,11 @@
     "permanent": false
   },
   {
+    "source": "/latin-america",
+    "destination": "/company/latin-america",
+    "permanent": false
+  },
+  {
     "source": "/legal-disclaimer",
     "destination": "/legal/legal-disclaimer",
     "permanent": false
@@ -132,6 +152,11 @@
   {
     "source": "/maximize-energy",
     "destination": "/solutions/maximize-energy",
+    "permanent": false
+  },
+  {
+    "source": "/middle-east-africa-and-india",
+    "destination": "/company/middle-east-africa-and-india",
     "permanent": false
   },
   {
@@ -320,6 +345,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-combiner",
+    "destination": "/products/ebos/nx-combiner",
+    "permanent": false
+  },
+  {
     "source": "/nx-earth-truss",
     "destination": "/products/foundations/nx-earth-truss",
     "permanent": false
@@ -365,6 +395,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-ncu-3-0",
+    "destination": "/products/controls/nx-ncu-3-0",
+    "permanent": false
+  },
+  {
     "source": "/nx-one",
     "destination": "/products/software/nx-one",
     "permanent": false
@@ -372,6 +407,21 @@
   {
     "source": "/nx-pulse",
     "destination": "/products/software/nx-pulse",
+    "permanent": false
+  },
+  {
+    "source": "/nx-spc-3-0",
+    "destination": "/products/controls/nx-spc-3-0",
+    "permanent": false
+  },
+  {
+    "source": "/nx-string-harnesses",
+    "destination": "/products/ebos/nx-string-harnesses",
+    "permanent": false
+  },
+  {
+    "source": "/nx-trunk-bus",
+    "destination": "/products/ebos/nx-trunk-bus",
     "permanent": false
   },
   {
@@ -447,6 +497,16 @@
   {
     "source": "/trackers",
     "destination": "/products/trackers",
+    "permanent": false
+  },
+  {
+    "source": "/traditional-piles",
+    "destination": "/products/foundations/traditional-piles",
+    "permanent": false
+  },
+  {
+    "source": "/truecapture",
+    "destination": "/products/controls/truecapture",
     "permanent": false
   },
   {

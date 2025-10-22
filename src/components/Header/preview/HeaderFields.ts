@@ -19,17 +19,6 @@ export const headerFields: FieldConfig<Partial<Header>>[] = [
     getValue: (data) => (data.logo?.url ? `URL: ${data.logo.url}` : 'Not set')
   },
   {
-    name: 'navLinksCollection',
-    label: 'Navigation Links',
-    required: false,
-    description: 'Collection of navigation links (Pages or PageLists).',
-    color: 'purple',
-    getValue: (data) =>
-      data.navLinksCollection?.items
-        ? `${data.navLinksCollection.items.length} nav link(s) configured`
-        : 'Not set'
-  },
-  {
     name: 'menu',
     label: 'Menu',
     required: false,

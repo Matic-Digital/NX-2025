@@ -60,16 +60,6 @@
       "priority": 0.8,
       "changefreq": "weekly"
     },
-    "/americas": {
-      "path": "/americas",
-      "contentType": "Page",
-      "contentId": "7utGKQIsIklaMjVxz7k1ST",
-      "title": "Americas",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/showcase": {
       "path": "/showcase",
       "contentType": "Page",
@@ -92,8 +82,8 @@
     },
     "/company": {
       "path": "/company",
-      "contentType": "Page",
-      "contentId": "75ekGcm9uTUeJH7D5LonF7",
+      "contentType": "PageList",
+      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
       "title": "Company",
       "parentPageLists": [],
       "isNested": false,
@@ -105,26 +95,6 @@
       "contentType": "Page",
       "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
       "title": "Asia-Pacific",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/middle-east-africa-and-india": {
-      "path": "/middle-east-africa-and-india",
-      "contentType": "Page",
-      "contentId": "oYRNylrRbGWZw1ekL9893",
-      "title": "Middle East, Africa, and India",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/europe": {
-      "path": "/europe",
-      "contentType": "Page",
-      "contentId": "2DtYaKAqtl0pvXZ6r0mGbG",
-      "title": "Europe",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.8,
@@ -340,6 +310,16 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
+    "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
+      "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
+      "contentType": "Post",
+      "contentId": "post-17503",
+      "title": "TrueCapture™ Outperforms Modeled Energy Yield Projections in ICF Engineering Report",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
     "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees": {
       "path": "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
       "contentType": "Post",
@@ -425,16 +405,6 @@
       "contentType": "Post",
       "contentId": "post-18059",
       "title": "NX Horizon XTR™: Reducing costs and complexity for solar projects on challenging terrain",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
-    "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
-      "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
-      "contentType": "Post",
-      "contentId": "post-17503",
-      "title": "TrueCapture™ Outperforms Modeled Energy Yield Projections in ICF Engineering Report",
       "parentPageLists": [],
       "isNested": true,
       "priority": 0.6,
@@ -940,6 +910,360 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
+    "/company/americas": {
+      "path": "/company/americas",
+      "contentType": "Page",
+      "contentId": "7utGKQIsIklaMjVxz7k1ST",
+      "title": "Americas",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/europe": {
+      "path": "/company/europe",
+      "contentType": "Page",
+      "contentId": "2DtYaKAqtl0pvXZ6r0mGbG",
+      "title": "Europe",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/latin-america": {
+      "path": "/company/latin-america",
+      "contentType": "Page",
+      "contentId": "1H6Wg0pXOWCcPt8SmNI93K",
+      "title": "Latin America",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/australian-pacific": {
+      "path": "/company/australian-pacific",
+      "contentType": "Page",
+      "contentId": "7aHJKA0m6coEFTGARf4ARF",
+      "title": "Australian Pacific",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/middle-east-africa-and-india": {
+      "path": "/company/middle-east-africa-and-india",
+      "contentType": "Page",
+      "contentId": "oYRNylrRbGWZw1ekL9893",
+      "title": "Middle East, Africa, and India",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/products/ebos": {
+      "path": "/products/ebos",
+      "contentType": "PageList",
+      "contentId": "2nZMa6ZFTD4M3mXig0SiNt",
+      "title": "eBOS",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/ebos/nx-trunk-bus": {
+      "path": "/products/ebos/nx-trunk-bus",
+      "contentType": "Product",
+      "contentId": "3cu2FZ5qtkggLVUDPsKawx",
+      "title": "NX Trunk Bus",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-combiner": {
+      "path": "/products/ebos/nx-combiner",
+      "contentType": "Product",
+      "contentId": "3428uOH0oo5HMMCbDp3Hk0",
+      "title": "NX Combiner",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-string-harnesses": {
+      "path": "/products/ebos/nx-string-harnesses",
+      "contentType": "Product",
+      "contentId": "7zZVu4UAJmILn7nqtIqEF0",
+      "title": "NX String Harnesses",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations": {
+      "path": "/products/foundations",
+      "contentType": "PageList",
+      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
+      "title": "Foundations",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/foundations/nx-anchor": {
+      "path": "/products/foundations/nx-anchor",
+      "contentType": "Product",
+      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
+      "title": "NX Anchor",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/nx-earth-truss": {
+      "path": "/products/foundations/nx-earth-truss",
+      "contentType": "Product",
+      "contentId": "1a0d7tauTWefbQRZMeQfAt",
+      "title": "NX Earth Truss",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/traditional-piles": {
+      "path": "/products/foundations/traditional-piles",
+      "contentType": "Product",
+      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
+      "title": "Traditional Piles",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls": {
+      "path": "/products/controls",
+      "contentType": "PageList",
+      "contentId": "5Y0xG9Yrt9BMykmkT6syFE",
+      "title": "Controls",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/controls/truecapture": {
+      "path": "/products/controls/truecapture",
+      "contentType": "Product",
+      "contentId": "1xeZxPdBlDxpdg6M3hXLx2",
+      "title": "TrueCapture",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-spc-3-0": {
+      "path": "/products/controls/nx-spc-3-0",
+      "contentType": "Product",
+      "contentId": "2RNGo2s5wihk1UGpmZ2i17",
+      "title": "NX SPC 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-ncu-3-0": {
+      "path": "/products/controls/nx-ncu-3-0",
+      "contentType": "Product",
+      "contentId": "4l6SWWrvJpRb7xYP05uS13",
+      "title": "NX NCU 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/module-mounting": {
+      "path": "/products/module-mounting",
+      "contentType": "PageList",
+      "contentId": "2KFnQf1yR0nTFRH4vhgwL3",
+      "title": "Module Mounting",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/module-mounting/nx-frame": {
+      "path": "/products/module-mounting/nx-frame",
+      "contentType": "Product",
+      "contentId": "4iIEMhihbmbr6g3Gv7Qmw8",
+      "title": "NX Frame",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2KFnQf1yR0nTFRH4vhgwL3",
+          "slug": "module-mounting",
+          "title": "Module Mounting"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
     "/products/software": {
       "path": "/products/software",
       "contentType": "PageList",
@@ -1065,64 +1389,6 @@
       "contentId": "5U25yOzw7QYeCAaPxTukdz",
       "title": "NX Horizon Hall Pro",
       "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations": {
-      "path": "/products/foundations",
-      "contentType": "PageList",
-      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
-      "title": "Foundations",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/foundations/nx-anchor": {
-      "path": "/products/foundations/nx-anchor",
-      "contentType": "Product",
-      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
-      "title": "NX Anchor",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations/nx-earth-truss": {
-      "path": "/products/foundations/nx-earth-truss",
-      "contentType": "Product",
-      "contentId": "1a0d7tauTWefbQRZMeQfAt",
-      "title": "NX Earth Truss",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
       "isNested": true,
       "priority": 0.7,
       "changefreq": "monthly"
@@ -1338,75 +1604,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/products/module-mounting": {
-      "path": "/products/module-mounting",
-      "contentType": "PageList",
-      "contentId": "2KFnQf1yR0nTFRH4vhgwL3",
-      "title": "Module Mounting",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/module-mounting/nx-frame": {
-      "path": "/products/module-mounting/nx-frame",
-      "contentType": "Product",
-      "contentId": "4iIEMhihbmbr6g3Gv7Qmw8",
-      "title": "NX Frame",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2KFnQf1yR0nTFRH4vhgwL3",
-          "slug": "module-mounting",
-          "title": "Module Mounting"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/ebos": {
-      "path": "/products/ebos",
-      "contentType": "PageList",
-      "contentId": "2nZMa6ZFTD4M3mXig0SiNt",
-      "title": "eBOS",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/controls": {
-      "path": "/products/controls",
-      "contentType": "PageList",
-      "contentId": "5Y0xG9Yrt9BMykmkT6syFE",
-      "title": "Controls",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/what-we-do": {
       "path": "/what-we-do",
       "contentType": "PageList",
@@ -1576,6 +1773,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-22T18:32:08.337Z",
+  "generatedAt": "2025-10-22T22:44:17.353Z",
   "version": "1.0.0"
 }

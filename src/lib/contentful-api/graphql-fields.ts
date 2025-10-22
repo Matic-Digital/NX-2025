@@ -120,23 +120,6 @@ const fragments = {
     logo { 
       ${ASSET_FIELDS} 
     } 
-    navLinksCollection {
-      items {
-        ... on Page {
-          ${fragments.PAGE_BASIC_FIELDS()}
-        }
-        ... on PageList {
-          ${fragments.PAGELIST_BASIC_FIELDS()}
-          pagesCollection {
-            items {
-              ... on Page {
-                ${fragments.PAGE_BASIC_FIELDS()}
-              }
-            }
-          }
-        }
-      }
-    }
     menu {
       ${SYS_FIELDS}
     }

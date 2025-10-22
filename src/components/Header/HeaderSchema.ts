@@ -1,10 +1,6 @@
 import { z } from 'zod';
 
 import { AssetSchema } from '@/components/Asset/AssetSchema';
-import { PageSchema } from '@/components/Page/PageSchema';
-import { PageListSchema } from '@/components/PageList/PageListSchema';
-
-const NavLinksUnion = z.union([PageSchema, PageListSchema]);
 
 export const HeaderSchema = z.object({
   sys: z.object({
@@ -12,11 +8,6 @@ export const HeaderSchema = z.object({
   }),
   name: z.string(),
   logo: AssetSchema,
-  navLinksCollection: z
-    .object({
-      items: z.array(NavLinksUnion)
-    })
-    .optional(),
   menu: z
     .object({
       sys: z.object({
