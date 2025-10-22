@@ -4,24 +4,27 @@ import { Label } from '@/components/ui/label';
 
 import type { FieldRendererProps } from '../types';
 
-export const TextAreaField: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
+export const TextAreaField: React.FC<FieldRendererProps> = ({ field, value, onChange, error, theme = 'dark' }) => {
   const getCleanLabel = (label: string) => {
     return label.replace(/\s*-\s*\d+$/, '').trim();
   };
 
+  const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';
+  const placeholderClass = theme === 'light' ? 'placeholder:text-black' : 'placeholder:text-text-on-invert';
+
   return (
-    <div className="space-y-2">
-      <Label htmlFor={field.name} className="text-sm font-medium">
+    <div className="flex flex-col space-y-[0.5rem]">
+      <Label htmlFor={field.name} className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}>
         {getCleanLabel(field.label)}
-        {field.required && <span className="text-red-500 ml-1">*</span>}
+        {field.required && <span className={`${textClass} ml-1`}>*</span>}
       </Label>
       <textarea
         id={field.name}
         value={String(value ?? '')}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={field.placeholder ?? ''}
+        placeholder={field.placeholder ?? `Enter ${getCleanLabel(field.label).toLowerCase()}`}
         rows={4}
-        className={`w-full p-2 border rounded-md ${error ? 'border-red-500' : 'border-gray-300'}`}
+        className={`w-full p-[1rem] border border-[#d4d4d4] rounded-[0.125rem] ${textClass} ${placeholderClass} ${error ? 'border-red-500' : ''}`}
       />
       {field.description && <p className="text-xs text-gray-600">{field.description}</p>}
       {error && (

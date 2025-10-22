@@ -33,7 +33,7 @@ export const serviceFields: FieldConfig<Partial<Service>>[] = [
       'Image that appears on service cards in grid layouts. Should be visually representative of the service.',
     color: 'purple',
     getValue: (data) =>
-      data.cardImage ? `Image configured (${data.cardImage.title || 'Untitled'})` : 'Not set'
+      data.cardImage ? `Image configured (${data.cardImage.title ?? 'Untitled'})` : 'Not set'
   },
   {
     name: 'cardTitle',

@@ -36,7 +36,7 @@ export function EventPreview(props: Partial<EventType>) {
               {(() => {
                 // Check if we have all required fields for a valid Event
                 const hasRequiredFields =
-                  liveEvent?.sys && liveEvent?.title && liveEvent?.dateTime && liveEvent?.link;
+                  liveEvent?.sys && liveEvent?.title && liveEvent?.dateTime && liveEvent?.slug;
 
                 if (hasRequiredFields) {
                   return (
@@ -53,7 +53,7 @@ export function EventPreview(props: Partial<EventType>) {
                     <ul className="mt-2 text-sm">
                       {!liveEvent?.title && <li>• Title is required</li>}
                       {!liveEvent?.dateTime && <li>• Date & Time is required</li>}
-                      {!liveEvent?.link && <li>• Link is required</li>}
+                      {!liveEvent?.slug && <li>• Slug is required</li>}
                     </ul>
                   </div>
                 );

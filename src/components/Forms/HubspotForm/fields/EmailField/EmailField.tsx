@@ -1,30 +1,38 @@
 import React from 'react';
-
-import { cn } from '@/lib/utils';
-
 import { Input } from '@/components/ui/input';
-
-import { Box } from '@/components/global/matic-ds';
-
+import { Label } from '@/components/ui/label';
 import type { FieldRendererProps } from '../types';
 
-export const EmailField: React.FC<FieldRendererProps> = ({ field, value, onChange, error }) => {
+export const EmailField: React.FC<FieldRendererProps> = ({ field, value, onChange, error, theme = 'dark' }) => {
+  const getCleanLabel = (label: string) => {
+    return label.replace(/\s*-\s*\d+$/, '').trim();
+  };
+
+  const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';
+  const placeholderClass = theme === 'light' ? 'placeholder:text-black' : 'placeholder:text-text-on-invert';
+
   return (
-    <Box direction="col" gap={2} className="space-y-4">
+    <div className="flex flex-col space-y-[0.5rem]">
+      <Label htmlFor={field.name} className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}>
+        {getCleanLabel(field.label)}
+        {field.required && <span className={`${textClass} ml-1`}>*</span>}
+      </Label>
       <Input
         id={field.name}
         type="email"
         value={String(value ?? '')}
         onChange={(e) => onChange(e.target.value)}
         placeholder={field.placeholder ?? 'Enter your email'}
-        className={cn('bg-white text-text-input', error && 'border-red-500')}
+        className={`${textClass} ${placeholderClass} ${error ? 'border-red-500' : ''}`}
       />
-      {field.description && <p className="text-xs text-gray-600">{field.description}</p>}
+      {field.description && (
+        <p className="text-xs text-gray-600">{field.description}</p>
+      )}
       {error && (
         <p className="text-xs text-red-500">
           {Array.isArray(error) ? error.join(', ') : String(error)}
         </p>
       )}
-    </Box>
+    </div>
   );
 };

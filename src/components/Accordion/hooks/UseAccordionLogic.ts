@@ -10,15 +10,17 @@ import type { AccordionItem as AccordionItemType } from '@/components/Accordion/
  */
 export const useAccordionLogic = (_accordionItems: AccordionItemType[]) => {
   // UI state management
-  const [openItem, setOpenItem] = useState('item-0'); // First item is always open
+  const [openItem, setOpenItem] = useState('item-0'); // First item is open by default
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   // Event handlers
   const handleHover = (value: string) => {
     setHoveredItem(value);
+    setOpenItem(value); // Set the hovered item as the new open item
   };
 
   const handleMouseLeave = () => {
+    // Don't close the item when mouse leaves - keep the last opened item open
     setHoveredItem(null);
   };
 
@@ -26,7 +28,9 @@ export const useAccordionLogic = (_accordionItems: AccordionItemType[]) => {
   const getItemDisplayState = (index: number, itemValue: string) => {
     const isHovered = hoveredItem === itemValue;
     const isFirstItem = index === 0;
-    const shouldShowExpanded = isHovered;
+    const isOpenItem = openItem === itemValue;
+    // Show expanded if currently hovered OR if this is the open item (and no other item is being hovered)
+    const shouldShowExpanded = isHovered || (isOpenItem && hoveredItem === null);
 
     return {
       isHovered,

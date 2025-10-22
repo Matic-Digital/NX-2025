@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 
 // Import all the API functions
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getAgendaItemById } from '@/components/AgendaItem/AgendaItemApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
@@ -59,6 +60,11 @@ const contentTypeMap = {
     previewPath: '/preview/accordion-item',
     entityName: 'AccordionItem'
   },
+  'agenda-item': {
+    fetchFn: getAgendaItemById,
+    previewPath: '/preview/agenda-item',
+    entityName: 'AgendaItem'
+  },
   'banner-hero': {
     fetchFn: getBannerHero,
     previewPath: '/preview/banner-hero',
@@ -108,6 +114,11 @@ const contentTypeMap = {
     fetchFn: getEventById,
     previewPath: '/preview/event',
     entityName: 'Event'
+  },
+  'event-detail': {
+    fetchFn: getEventById,
+    previewPath: '/preview/event-detail',
+    entityName: 'Event Detail'
   },
   footer: {
     fetchFn: getFooterById,
@@ -303,8 +314,8 @@ export async function GET(
       'sys' in content &&
       content.sys &&
       typeof content.sys === 'object' &&
-      'id' in content.sys
-        ? content.sys.id
+      'id' in (content.sys as Record<string, unknown>)
+        ? (content.sys as Record<string, unknown>).id as string
         : 'unknown';
     console.log(`⭐ enable-draft-${contentType}`, contentId, id);
 

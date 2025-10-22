@@ -29,6 +29,7 @@ interface ContentGridProps extends ContentGridType {
   parentPageListSlug?: string; // Optional parent PageList slug for nested routing
   currentPath?: string; // Full current path for deeply nested structures
   forceTabletSingleColumn?: boolean; // Force single column layout on tablet
+  isInsideImageBetween?: boolean; // Indicates if ContentGrid is inside ImageBetween component
 }
 
 export function ContentGrid(props: ContentGridProps) {
@@ -229,19 +230,64 @@ export function ContentGrid(props: ContentGridProps) {
                 analysis.allItemsAreExpandingHoverCards && 'justify-between'
               )}
             >
-              {/* section heading */}
-              {contentGrid.heading && (
-                <SectionHeading
-                  componentType={contentGrid.componentType}
-                  sectionHeadingId={contentGrid.heading?.sys.id}
-                  isDarkMode={shouldUseDarkMode}
-                  hasSolutionItems={
-                    analysis.allItemsAreSolutions || analysis.allItemsAreExpandingHoverCards
-                  }
-                />
-              )}
+              {/* section heading and items for HoverCardCustom */}
+              {gridVariant === 'HoverCardCustom' ? (
+                <div className="flex flex-col md:flex-row w-full justify-between gap-8">
+                  {/* section heading */}
+                  {contentGrid.heading && (
+                    <div>
+                      <SectionHeading
+                        componentType={contentGrid.componentType}
+                        sectionHeadingId={contentGrid.heading?.sys.id}
+                        isDarkMode={shouldUseDarkMode}
+                        hasSolutionItems={
+                          analysis.allItemsAreSolutions || analysis.allItemsAreExpandingHoverCards
+                        }
+                      />
+                    </div>
+                  )}
+                  
+                  {/* hover cards container */}
+                  <div className="xl:flex-none">
+                    <Box 
+                      cols={gridConfig.cols} 
+                      gap={4} 
+                      wrap={true} 
+                      className={cn(
+                        props.isInsideImageBetween && "pb-72 lg:pb-64 xl:pb-80"
+                      )}
+                    >
+                      {validItems.filter(Boolean).map((item, index) => (
+                        <ContentItemRenderer
+                          key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
+                          item={item}
+                          index={index}
+                          validItems={validItems}
+                          parentPageListSlug={props.parentPageListSlug}
+                          currentPath={props.currentPath}
+                          variant="hoverCardCustom"
+                        />
+                      ))}
+                    </Box>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* section heading */}
+                  {contentGrid.heading && (
+                    <div>
+                      <SectionHeading
+                        componentType={contentGrid.componentType}
+                        sectionHeadingId={contentGrid.heading?.sys.id}
+                        isDarkMode={shouldUseDarkMode}
+                        hasSolutionItems={
+                          analysis.allItemsAreSolutions || analysis.allItemsAreExpandingHoverCards
+                        }
+                      />
+                    </div>
+                  )}
 
-              {/* items */}
+                  {/* items */}
               {(() => {
                 const gridContent = isServiceOnlyGrid ? (
                   // Service carousel for service-only content grids on mobile
@@ -576,21 +622,7 @@ export function ContentGrid(props: ContentGridProps) {
                       />
                     ))}
                   </Box>
-                ) : gridVariant === 'HoverCardCustom' ? (
-                  <Box cols={gridConfig.cols} gap={gridConfig.gap} wrap={true}>
-                    {validItems.filter(Boolean).map((item, index) => (
-                      <ContentItemRenderer
-                        key={`${contentGrid.sys?.id}-${index}-${item.sys?.id ?? index}`}
-                        item={item}
-                        index={index}
-                        validItems={validItems}
-                        parentPageListSlug={props.parentPageListSlug}
-                        currentPath={props.currentPath}
-                        variant="hoverCardCustom"
-                      />
-                    ))}
-                  </Box>
-                ) : (
+                ) : gridVariant === 'HoverCardCustom' ? null : (
                   <Box
                     cols={
                       props.forceTabletSingleColumn
@@ -630,6 +662,8 @@ export function ContentGrid(props: ContentGridProps) {
                   gridContent
                 );
               })()}
+                </>
+              )}
             </Box>
           </Container>
         </Section>

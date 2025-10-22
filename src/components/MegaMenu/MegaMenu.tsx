@@ -29,9 +29,12 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   const [loading, setLoading] = useState(false);
   const [postsLoading, setPostsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { setOverflowMenuOpen, openMegaMenu, setMegaMenuContent, clearCloseTimeout } = useMegaMenuContext();
+  const { setOverflowMenuOpen, openMegaMenu, setMegaMenuContent, clearCloseTimeout, activeMegaMenuId } = useMegaMenuContext();
 
   const menuId = megaMenuId ?? megaMenu?.sys?.id ?? 'unknown';
+  
+  // Determine if this mega menu should show active state (hovered OR currently open)
+  const isActive = isHovered || activeMegaMenuId === menuId;
 
   useEffect(() => {
     if (!megaMenu && megaMenuId) {
@@ -166,18 +169,18 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className={`flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:transition-transform after:duration-200 after:ease-out after:origin-left ${isHovered ? 'after:scale-x-100' : 'after:scale-x-0'}`}>
+        <div className={`flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:transition-transform after:duration-200 after:ease-out after:origin-left ${isActive ? 'after:scale-x-100' : 'after:scale-x-0'}`}>
           <Text 
             className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
             style={{
-              textShadow: isHovered 
+              textShadow: isActive 
                 ? '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)'
                 : 'none'
             }}
           >
             {displayTitle}
           </Text>
-          <ChevronDown className="size-3 xl:size-4 text-white ml-2" />
+          <ChevronDown className={`size-3 xl:size-4 text-white ml-2 transition-transform duration-200 ${isActive ? 'rotate-180' : 'rotate-0'}`} />
         </div>
       </div>
     </div>

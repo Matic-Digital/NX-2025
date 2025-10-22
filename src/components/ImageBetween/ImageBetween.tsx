@@ -150,7 +150,7 @@ export function ImageBetween(props: ImageBetween) {
               }
               width={imageBetween.backgroundMedia.width}
               height={imageBetween.backgroundMedia.height}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full"
             />
           )}
         </div>
@@ -181,6 +181,7 @@ export function ImageBetween(props: ImageBetween) {
                     <ContentGrid
                       {...(contentTopData as ContentGridType)}
                       componentType={imageBetween.__typename}
+                      isInsideImageBetween={true}
                     />
                   </div>
                 )}
@@ -210,14 +211,18 @@ export function ImageBetween(props: ImageBetween) {
 
         {/* Central Image */}
         {imageBetween.asset && (
-          <div className="relative flex items-center justify-center">
+          <div className={cn(
+            "relative flex items-center justify-center",
+            imageBetween.asset.__typename === 'Image' && "-mt-12 -mb-8 lg:-mt-28 lg:-mb-16 xl:-mt-48 xl:-mb-24"
+          )}>
             {/* Render asset based on type */}
             {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
               <Container className="absolute z-20">
                 <AirImage
                   link={(imageBetween.asset as Image).link}
                   altText={(imageBetween.asset as Image).altText ?? imageBetween.asset.title ?? ''}
-                  className="w-full object-contain"
+                  mobileOrigin={(imageBetween.asset as Image).mobileOrigin}
+                  className="w-full"
                   {...inspectorProps({ fieldId: 'asset' })}
                 />
               </Container>
@@ -240,13 +245,17 @@ export function ImageBetween(props: ImageBetween) {
               imageBetween.asset.__typename === 'ContentGrid' &&
               assetContentGrid && (
                 <Container
-                  className="z-20 -mt-[18rem] -mb-[20rem] !px-0 lg:absolute"
+                  className={cn(
+                    "z-20 !px-0 lg:absolute",
+                    contentTopData ? "-mt-[6rem] -mb-[20rem]" : "-mt-[18rem] -mb-[20rem]"
+                  )}
                   {...inspectorProps({ fieldId: 'asset' })}
                 >
                   <ContentGrid
                     {...assetContentGrid}
                     componentType={imageBetween.__typename}
                     forceTabletSingleColumn={true}
+                    isInsideImageBetween={true}
                   />
                 </Container>
               )}
@@ -267,7 +276,7 @@ export function ImageBetween(props: ImageBetween) {
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (
-                <ContentGrid {...contentBottomData} componentType={imageBetween.__typename} />
+                <ContentGrid {...contentBottomData} componentType={imageBetween.__typename} isInsideImageBetween={true} />
               )}
             </Box>
           </div>

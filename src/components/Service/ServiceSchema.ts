@@ -1,17 +1,19 @@
 import { z } from 'zod';
 
-import { ImageSchema } from '@/components/Image/ImageSchema';
-
 export const ServiceSchema = z.object({
   sys: z.object({
     id: z.string()
   }),
   title: z.string(),
   slug: z.string(),
-  cardImage: ImageSchema.optional(),
+  cardImage: z.object({
+    title: z.string().optional(),
+    link: z.string().optional(),
+    altText: z.string().optional()
+  }).optional(),
   cardTitle: z.string().optional(),
   cardTags: z.array(z.string()).optional(),
-  cardButtonText: z.string(),
+  cardButtonText: z.string().optional(),
   __typename: z.string().optional()
 });
 

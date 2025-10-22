@@ -7,7 +7,6 @@ import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGrid
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
@@ -25,7 +24,10 @@ export const PRODUCT_GRAPHQL_FIELDS = `
     ${ASSET_FIELDS}
   }
   image {
-    ${IMAGE_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
+    title
+    link
+    altText
   }
   pageLayout {
     ${SYS_FIELDS}

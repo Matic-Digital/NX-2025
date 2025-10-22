@@ -74,6 +74,11 @@ interface HubSpotV3FormData {
     lawfulBasisForProcessing?: string;
     privacyPolicyText?: string;
     checkboxText?: string;
+    communicationConsentText?: string | null;
+    consentToProcessText?: string | null;
+    consentToProcessCheckboxLabel?: string;
+    consentToProcessFooterText?: string | null;
+    privacyText?: string;
     communicationsCheckboxes?: Array<{
       subscriptionTypeId: number;
       label: string;
@@ -95,19 +100,192 @@ interface FormStep {
   hasConditionalLogic: boolean;
 }
 
+function createLegalConsentFields(legalConsentOptions: HubSpotV3FormData['legalConsentOptions'], maxDisplayOrder = 1000): HubSpotV3FormField[] {
+  const legalFields: HubSpotV3FormField[] = [];
+  
+  if (!legalConsentOptions) return legalFields;
+  
+  // Start legal consent fields after the highest regular field display order
+  let currentDisplayOrder = maxDisplayOrder + 1;
+  
+  // Add communication checkboxes FIRST (these typically come first in HubSpot forms)
+  if (legalConsentOptions.communicationsCheckboxes && legalConsentOptions.communicationsCheckboxes.length > 0) {
+    legalConsentOptions.communicationsCheckboxes.forEach((checkbox) => {
+      legalFields.push({
+        fieldType: 'single_checkbox',
+        objectTypeId: '0-1', // Contact object
+        name: `legal_consent_communication_${checkbox.subscriptionTypeId}`,
+        label: checkbox.label,
+        required: checkbox.required,
+        hidden: false,
+        displayOrder: currentDisplayOrder++,
+      });
+    });
+  }
+  
+  // Add consent to process checkbox (this comes after communication consent)
+  if (legalConsentOptions.consentToProcessCheckboxLabel) {
+    // Strip HTML tags from the label for clean display
+    const cleanLabel = legalConsentOptions.consentToProcessCheckboxLabel
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .trim(); // Remove extra whitespace
+    
+    legalFields.push({
+      fieldType: 'single_checkbox',
+      objectTypeId: '0-1', // Contact object
+      name: 'legal_consent_to_process',
+      label: cleanLabel,
+      description: legalConsentOptions.consentToProcessFooterText ?? undefined,
+      required: true,
+      hidden: false,
+      displayOrder: currentDisplayOrder++,
+    });
+  }
+  
+  // Add main privacy policy checkbox if it exists (this typically comes last)
+  if (legalConsentOptions.checkboxText) {
+    legalFields.push({
+      fieldType: 'single_checkbox',
+      objectTypeId: '0-1', // Contact object
+      name: 'legal_consent_privacy',
+      label: legalConsentOptions.checkboxText,
+      description: legalConsentOptions.privacyPolicyText,
+      required: true,
+      hidden: false,
+      displayOrder: currentDisplayOrder++,
+    });
+  }
+  
+  // Add privacy text as an informational field (the text after checkboxes)
+  if (legalConsentOptions.privacyText) {
+    legalFields.push({
+      fieldType: 'rich_text', // Use rich_text to display HTML content
+      objectTypeId: '0-1',
+      name: 'legal_consent_privacy_text',
+      label: '', // No label for informational text
+      description: legalConsentOptions.privacyText,
+      required: false,
+      hidden: false,
+      displayOrder: 10000, // Put at very end after all checkboxes
+    });
+  }
+  
+  // Add communication consent text if it exists
+  if (legalConsentOptions.communicationConsentText) {
+    legalFields.push({
+      fieldType: 'rich_text',
+      objectTypeId: '0-1',
+      name: 'legal_consent_communication_text',
+      label: '',
+      description: legalConsentOptions.communicationConsentText,
+      required: false,
+      hidden: false,
+      displayOrder: 10001, // After privacy text
+    });
+  }
+  
+  // Add consent to process text if it exists
+  if (legalConsentOptions.consentToProcessText) {
+    legalFields.push({
+      fieldType: 'rich_text',
+      objectTypeId: '0-1',
+      name: 'legal_consent_process_text',
+      label: '',
+      description: legalConsentOptions.consentToProcessText,
+      required: false,
+      hidden: false,
+      displayOrder: 10002, // After communication text
+    });
+  }
+  
+  // Check if there are any other consent-related fields we might be missing
+  // Sometimes HubSpot has additional consent fields in different structures
+  if (legalConsentOptions.type === 'LEGITIMATE_INTEREST_WITH_CHECKBOX' || 
+      legalConsentOptions.type === 'LEGITIMATE_INTEREST_NO_CHECKBOX' ||
+      legalConsentOptions.type === 'CONSENT_WITH_CHECKBOX') {
+    console.log('Detected consent type:', legalConsentOptions.type);
+    
+    // Add a general processing consent checkbox if we don't already have one
+    if (!legalConsentOptions.checkboxText && legalConsentOptions.lawfulBasisForProcessing) {
+      console.log('Adding processing consent checkbox based on lawful basis');
+      legalFields.push({
+        fieldType: 'single_checkbox',
+        objectTypeId: '0-1',
+        name: 'legal_consent_processing',
+        label: `I consent to processing of my personal data for ${legalConsentOptions.lawfulBasisForProcessing}`,
+        required: true,
+        hidden: false,
+        displayOrder: 9998, // Before other checkboxes
+      });
+    }
+  }
+  
+  
+  return legalFields;
+}
+
+function addLegalConsentToFinalStep(steps: FormStep[], legalConsentOptions: HubSpotV3FormData['legalConsentOptions']): FormStep[] {
+  if (steps.length === 0) return steps;
+  
+  const finalStep = steps[steps.length - 1];
+  if (!finalStep) return steps;
+  
+  // Calculate max display order from existing fields in the final step
+  const maxDisplayOrder = Math.max(
+    ...finalStep.fields.map(field => field.displayOrder || 0),
+    0
+  );
+  
+  const legalConsentFields = createLegalConsentFields(legalConsentOptions, maxDisplayOrder);
+  if (legalConsentFields.length === 0) return steps;
+  
+  // Add legal consent fields to the last step
+  finalStep.fields = [...finalStep.fields, ...legalConsentFields];
+  console.log(`Added ${legalConsentFields.length} legal consent fields to final step`);
+  
+  return steps;
+}
+
 function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   const steps: FormStep[] = [];
   
   console.log('=== FORM STEP ANALYSIS DEBUG ===');
   console.log('Form name:', formData.name);
+  console.log('Legal consent options:', formData.legalConsentOptions);
   console.log('Form ID:', formData.id);
   console.log('Total field groups:', formData.fieldGroups.length);
+  console.log('Display options:', formData.displayOptions);
+  console.log('Configuration:', formData.configuration);
   console.log('Field groups:', formData.fieldGroups.map(g => ({
     groupType: g.groupType,
     richTextType: g.richTextType,
     fieldsCount: g.fields.length,
-    richText: g.richText ? g.richText.substring(0, 100) + '...' : null
+    richText: g.richText ? g.richText.substring(0, 200) + '...' : null
   })));
+  
+  // Check for rich text content in field groups that might contain additional text
+  formData.fieldGroups.forEach((group, index) => {
+    if (group.richText?.trim()) {
+      console.log(`Rich text content in group ${index + 1}:`, group.richText);
+    }
+  });
+  
+  // Debug field types and options
+  console.log('=== FIELD TYPE DEBUG ===');
+  formData.fieldGroups.forEach((group, groupIndex) => {
+    group.fields.forEach((field, fieldIndex) => {
+      console.log(`Field ${groupIndex}-${fieldIndex}:`, {
+        name: field.name,
+        label: field.label,
+        fieldType: field.fieldType,
+        hasOptions: !!field.options,
+        optionsCount: field.options?.length ?? 0,
+        options: field.options?.map(opt => ({ label: opt.label, value: opt.value })) ?? []
+      });
+    });
+  });
+  console.log('=== END FIELD TYPE DEBUG ===');
+  
   
   // Check if this is actually a multi-step form
   const hasMultipleGroups = formData.fieldGroups.length > 1;
@@ -199,14 +377,46 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   const firstGroup = formData.fieldGroups[0];
   if (formData.fieldGroups.length === 1 && firstGroup && firstGroup.groupType === 'default_group') {
     console.log('DETECTED: Single-step form (only default_group)');
+    
+    // Calculate max display order from regular form fields
+    const maxDisplayOrder = Math.max(
+      ...formFields.map(field => field.displayOrder || 0),
+      0
+    );
+    
+    const legalConsentFields = createLegalConsentFields(formData.legalConsentOptions, maxDisplayOrder);
+    
+    // Add rich text content from field groups as informational fields
+    const richTextFields: HubSpotV3FormField[] = [];
+    formData.fieldGroups.forEach((group, index) => {
+      if (group.richText?.trim()) {
+        richTextFields.push({
+          fieldType: 'rich_text',
+          objectTypeId: '0-1',
+          name: `form_rich_text_${index}`,
+          label: '',
+          description: group.richText,
+          required: false,
+          hidden: false,
+          displayOrder: maxDisplayOrder + 500 + index, // Put rich text content before legal consent
+        });
+      }
+    });
+    
+    const allFields = [...formFields, ...richTextFields, ...legalConsentFields];
+    
+    console.log('Legal consent fields added:', legalConsentFields.length);
+    console.log('Rich text fields added:', richTextFields.length);
+    console.log('Total fields including all content:', allFields.length);
     console.log('=== END FORM STEP ANALYSIS DEBUG ===');
+    
     steps.push({
       stepNumber: 1,
       stepName: 'Single Step Form',
-      fields: formFields,
+      fields: allFields,
       fieldGroups: formData.fieldGroups,
       isPageBreak: false,
-      hasConditionalLogic: formFields.some(field => 
+      hasConditionalLogic: allFields.some(field => 
         field.dependentFieldFilters && field.dependentFieldFilters.length > 0
       )
     });
@@ -277,7 +487,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       });
     }
     
-    return steps;
+    return addLegalConsentToFinalStep(steps, formData.legalConsentOptions);
   }
   
   // Strategy 2: Look for step indicators in rich text content
@@ -354,7 +564,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       });
     }
     
-    return steps;
+    return addLegalConsentToFinalStep(steps, formData.legalConsentOptions);
   }
   
   // Strategy 3: Analyze field display order for natural breaks
@@ -429,7 +639,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       });
     }
     
-    return steps;
+    return addLegalConsentToFinalStep(steps, formData.legalConsentOptions);
   }
   
   // Strategy 4: Check for conditional logic that creates natural step progression
@@ -496,7 +706,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       stepNumber++;
     });
     
-    return steps;
+    return addLegalConsentToFinalStep(steps, formData.legalConsentOptions);
   }
   
   // Fallback: Single step form
@@ -505,13 +715,45 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   console.log('=== END FORM STEP ANALYSIS DEBUG ===');
   
   const fallbackFields = formData.fieldGroups.flatMap(group => group.fields);
+  
+  // Calculate max display order from regular form fields
+  const maxDisplayOrder = Math.max(
+    ...fallbackFields.map(field => field.displayOrder || 0),
+    0
+  );
+  
+  const legalConsentFields = createLegalConsentFields(formData.legalConsentOptions, maxDisplayOrder);
+  
+  // Add rich text content from field groups as informational fields
+  const richTextFields: HubSpotV3FormField[] = [];
+  formData.fieldGroups.forEach((group, index) => {
+    if (group.richText?.trim()) {
+      richTextFields.push({
+        fieldType: 'rich_text',
+        objectTypeId: '0-1',
+        name: `form_rich_text_${index}`,
+        label: '',
+        description: group.richText,
+        required: false,
+        hidden: false,
+        displayOrder: maxDisplayOrder + 500 + index, // Put rich text content before legal consent
+      });
+    }
+  });
+  
+  const allFields = [...fallbackFields, ...richTextFields, ...legalConsentFields];
+  
+  console.log('Legal consent fields added:', legalConsentFields.length);
+  console.log('Rich text fields added:', richTextFields.length);
+  console.log('Total fields including all content:', allFields.length);
+  
   steps.push({
     stepNumber: 1,
     stepName: 'Single Step Form',
-    fields: fallbackFields,
+    fields: allFields,
     fieldGroups: formData.fieldGroups,
     isPageBreak: false,
-    hasConditionalLogic: fallbackFields.some(field => 
+    hasConditionalLogic: allFields.some(field => 
       field.dependentFieldFilters && field.dependentFieldFilters.length > 0
     )
   });
@@ -565,7 +807,8 @@ export async function GET(
       formData,
       steps,
       metadata: {
-        totalFields: formData.fieldGroups.reduce((total, group) => total + group.fields.length, 0),
+        totalFields: formData.fieldGroups.reduce((total, group) => total + group.fields.length, 0) + 
+                    createLegalConsentFields(formData.legalConsentOptions).length,
         totalFieldGroups: formData.fieldGroups.length,
         totalSteps: steps.length,
         hasConditionalLogic: formData.fieldGroups.some(group => 

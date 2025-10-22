@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
 import { ImageSchema } from '@/components/Image/ImageSchema';
-import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
+import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { TestimonialItemSchema } from '@/components/Testimonials/TestimonialsSchema';
+
+// Post template options as defined in the content model
+const PostTemplateSchema = z.enum([
+  'Default',
+  'Gated Content'
+]);
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([
@@ -31,8 +39,7 @@ export const PostSchema = z.object({
   }),
   title: z.string(),
   slug: z.string(),
-  pageLayout: PageLayoutSchema.optional(),
-  template: z.string(),
+  template: PostTemplateSchema,
   excerpt: z.string().optional(),
   datePublished: z.string().optional(),
   bannerBackground: ImageSchema.optional(),
@@ -48,6 +55,9 @@ export const PostSchema = z.object({
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoFocusKeyword: z.string().optional(),
+  pageLayout: PageLayoutSchema.optional(),
+  gatedContentForm: HubspotFormSchema.optional(),
+  testimonial: TestimonialItemSchema.optional(),
   __typename: z.string().optional()
 });
 
@@ -65,6 +75,7 @@ export const PostSliderItemSchema = z.object({
 });
 
 export type Post = z.infer<typeof PostSchema>;
+export type PostTemplate = z.infer<typeof PostTemplateSchema>;
 export type PostCategory = z.infer<typeof PostCategorySchema>;
 export type PostSliderItem = z.infer<typeof PostSliderItemSchema>;
 

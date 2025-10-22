@@ -2,7 +2,6 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Service, ServiceResponse } from '@/components/Service/ServiceSchema';
 
@@ -11,12 +10,6 @@ export const SERVICE_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
   slug
-  cardImage {
-    ${IMAGE_GRAPHQL_FIELDS}
-  }
-  cardTitle
-  cardTags
-  cardButtonText
 `;
 
 export async function getAllServices(preview = false): Promise<ServiceResponse> {

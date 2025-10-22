@@ -1,5 +1,7 @@
 // Next.js metadata types
 import { getAllPageLists, getAllPages, getPageBySlug } from '@/lib/contentful-api';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
+import { contentfulSchemaMapper } from '@/lib/contentful-schema-mapper';
 
 import { Container } from '@/components/global/matic-ds';
 
@@ -10,6 +12,13 @@ import { getAllFooters } from '@/components/Footer/FooterApi';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RegionStats } from '@/components/RegionStats/RegionStats';
+
+// renderContentByType will be defined locally
+import { 
+  extractOpenGraphImage, 
+  extractSEOTitle, 
+  extractSEODescription 
+} from '@/lib/metadata-utils';
 
 import type { FooterResponse, Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
@@ -37,12 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-  // Import utility functions for safe metadata extraction
-  const { extractOpenGraphImage, extractSEOTitle, extractSEODescription } = await import(
-    '@/lib/metadata-utils'
-  );
+  // Use imported utility functions for safe metadata extraction
 
   // Safely extract the openGraphImage with proper typing
   const openGraphImage = extractOpenGraphImage(homePage, baseUrl, homePage?.title ?? 'Nextracker');
@@ -128,8 +136,13 @@ async function renderContentfulHomePage(page: Page) {
   const pageLayout = page.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
+  
+  // Generate hierarchical schema: Organization -> WebSite -> Navigation -> Pages
+  const homepageSchema = await contentfulSchemaMapper.generateHomepageSchema(page) as Record<string, unknown>;
+  
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
+      <JsonLdSchema schema={homepageSchema} id="homepage-hierarchy-schema" />
       <h1 className="sr-only">{page.title}</h1>
 
       {/* Render the page content components */}
@@ -150,6 +163,9 @@ async function renderContentfulHomePage(page: Page) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
           // Use type assertion to access sys.id safely
           const componentWithSys = component as { sys: { id: string } };
+          
+          // Type-cast the component to the expected props interface
+          // This assumes the Contentful data structure matches the component's expected props
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
@@ -167,6 +183,14 @@ async function renderContentfulHomePage(page: Page) {
  * Renders the default homepage with lists of pages and page lists
  */
 async function renderDefaultHomePage() {
+  // Generate hierarchical schema for default homepage
+  const defaultHomePageData = {
+    title: 'PlaceholderCorp Website 2025',
+    description: 'PlaceholderCorp Website 2025 - Solar tracking solutions and renewable energy technology',
+    sys: { id: 'homepage' }
+  };
+  const homepageSchema = await contentfulSchemaMapper.generateHomepageSchema(defaultHomePageData) as Record<string, unknown>;
+  
   // Use try-catch blocks to handle potential API errors
   let pages: PageResponse = { items: [], total: 0 };
   let pageLists: PageList[] = [];
@@ -195,8 +219,10 @@ async function renderDefaultHomePage() {
   }
 
   return (
-    <Container className="py-8">
-      <h1 className="text-headline-sm mb-8 font-bold">Nextracker Website 2025</h1>
+    <>
+      <JsonLdSchema schema={homepageSchema} id="default-homepage-hierarchy-schema" />
+      <Container className="py-8">
+        <h1 className="text-headline-sm mb-8 font-bold">Nextracker Website 2025</h1>
 
       {pages.items.length > 0 && (
         <div className="mb-8">
@@ -246,6 +272,7 @@ async function renderDefaultHomePage() {
           </div>
         </div>
       )}
-    </Container>
+      </Container>
+    </>
   );
 }

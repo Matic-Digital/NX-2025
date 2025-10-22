@@ -18,14 +18,16 @@ import {
 
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
+import type { LocaleOption } from '@/lib/server-locales';
 
 interface MenuProps {
   menu: MenuType;
   variant?: 'default' | 'overflow';
   megaMenuTags?: Array<{ id: string; name: string }>;
+  locales?: LocaleOption[];
 }
 
-export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
+export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuProps) {
   const { setMegaMenuContent, activeMegaMenuId, closeMegaMenu } = useMegaMenuContext();
   const [recentPosts, setRecentPosts] = React.useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = React.useState(false);
@@ -219,7 +221,7 @@ export function Menu({ menu, variant = 'default', megaMenuTags }: MenuProps) {
 
               {/* LocaleDropdown positioned at bottom of menu items column */}
               <div className="flex justify-end mt-4">
-                <LocaleDropdown />
+                <LocaleDropdown locales={locales} />
               </div>
             </div>
           </div>

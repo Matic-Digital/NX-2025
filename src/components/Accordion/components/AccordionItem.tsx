@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -8,6 +9,8 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+
+import { useAccordion } from '@/contexts/AccordionContext';
 
 import { Box } from '@/components/global/matic-ds';
 
@@ -19,6 +22,8 @@ import type { AccordionItem as AccordionItemType } from '@/components/Accordion/
 interface AccordionItemProps {
   item: AccordionItemType;
   index: number;
+  isFirst?: boolean;
+  itemId?: string;
   isHovered: boolean;
   shouldShowExpanded: boolean;
   onHover: (value: string) => void;
@@ -32,24 +37,62 @@ interface AccordionItemProps {
 export const AccordionItem = ({
   item,
   index,
-  isHovered,
-  shouldShowExpanded,
-  onHover,
+  isFirst = false,
+  itemId,
+  isHovered: _isHovered,
+  shouldShowExpanded: _shouldShowExpanded,
+  onHover: _onHover,
   inspectorProps
 }: AccordionItemProps) => {
-  const itemValue = `item-${index}`;
+  const itemValue = itemId ?? `item-${index}`;
+  const { activeItemId, setActiveItemId, lastHoveredItemId, setLastHoveredItemId } = useAccordion();
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Set first item as active on mount if no item is active
+  useEffect(() => {
+    if (isFirst && itemValue && activeItemId === null) {
+      setActiveItemId(itemValue);
+      // For ContentTop variant, also set as last hovered item to ensure single active state
+      if (item.variant === 'ContentTop') {
+        setLastHoveredItemId(itemValue);
+      }
+    }
+  }, [isFirst, itemValue, activeItemId, setActiveItemId, item.variant, setLastHoveredItemId]);
+
+  const isActive = activeItemId === itemValue;
+  
+  // For ContentTop variant, show hover styles ONLY if this is the last hovered item (ensures single active)
+  const shouldShowHoverStyles = item.variant === 'ContentTop' 
+    ? (lastHoveredItemId === itemValue)
+    : isHovered;
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (itemValue) {
+      setActiveItemId(itemValue);
+      // For ContentTop variant, always update the last hovered item (this ensures only one is active)
+      if (item.variant === 'ContentTop') {
+        setLastHoveredItemId(itemValue);
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    // Don't clear lastHoveredItemId on mouse leave - it persists until another item is hovered
+  };
 
   const HorizontalAccordionItem = () => {
     return (
       <AccordionItemPrimitive
         key={`accordion-${index}-item-${item.sys.id}`}
         value={itemValue}
-        className={accordionStyles.getItemClasses(isHovered, shouldShowExpanded)}
+        className={accordionStyles.getItemClasses(false, isActive, item.variant)}
       >
         <AccordionTrigger
           chevron={false}
-          onMouseOver={() => onHover(itemValue)}
-          className={accordionStyles.getTriggerClasses(isHovered, shouldShowExpanded)}
+          onMouseEnter={handleMouseEnter}
+          className={accordionStyles.getTriggerClasses(false, isActive)}
         >
           <Box
             direction="col"
@@ -64,7 +107,7 @@ export const AccordionItem = ({
               >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
-                  className={accordionStyles.getImageElementClasses(isHovered, shouldShowExpanded)}
+                  className={accordionStyles.getImageElementClasses(false, isActive)}
                 />
               </div>
             )}
@@ -79,8 +122,8 @@ export const AccordionItem = ({
                   alt="background gradient image"
                   fill
                   className={accordionStyles.getBackgroundImageClasses(
-                    isHovered,
-                    shouldShowExpanded,
+                    false,
+                    isActive,
                     item.variant
                   )}
                 />
@@ -89,7 +132,7 @@ export const AccordionItem = ({
               <div>
                 {item.overline && (
                   <p 
-                    className={accordionStyles.getOverlineClasses()}
+                    className={accordionStyles.getOverlineClasses(false, isActive)}
                     {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
                   >
                     {item.overline}
@@ -97,16 +140,16 @@ export const AccordionItem = ({
                 )}
 
                 <h3 
-                  className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded)}
+                  className={accordionStyles.getTitleClasses(false, isActive)}
                   {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
                 >
                   {item.title}
                 </h3>
               </div>
-              <div className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded)}>
+              <div className={accordionStyles.getDescriptionClasses(false, isActive)}>
                 {item.description && (
                   <p 
-                    className={accordionStyles.getDescriptionTextClasses()}
+                    className={accordionStyles.getDescriptionTextClasses(false, isActive)}
                     {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
                   >
                     {item.description}
@@ -135,27 +178,28 @@ export const AccordionItem = ({
       <AccordionItemPrimitive
         key={`accordion-${index}-item-${item.sys.id}`}
         value={itemValue}
-        className={accordionStyles.getItemClasses(isHovered, shouldShowExpanded)}
+        className={accordionStyles.getItemClasses(false, isActive, item.variant)}
       >
         <AccordionTrigger
           chevron={false}
-          onMouseOver={() => onHover(itemValue)}
-          className={accordionStyles.getTriggerClasses(isHovered, shouldShowExpanded, item.variant)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className={accordionStyles.getTriggerClasses(shouldShowHoverStyles, isActive, item.variant)}
         >
           <Box
             direction="col"
             gap={0}
             cols={1}
-            className={accordionStyles.getWrapperClasses(item.variant, isHovered, shouldShowExpanded)}
+            className={accordionStyles.getWrapperClasses(item.variant, shouldShowHoverStyles, isActive)}
           >
-            {item.image?.sys?.id && shouldShowExpanded && (
+            {item.image?.sys?.id && (
               <div 
-                className={accordionStyles.getImageClasses(item.variant)}
+                className={accordionStyles.getImageClasses(item.variant, false, isActive)}
                 {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
               >
                 <AirImage
                   sys={{ id: item.image.sys.id }}
-                  className={accordionStyles.getImageElementClasses(isHovered, shouldShowExpanded)}
+                  className={accordionStyles.getImageElementClasses(false, isActive)}
                 />
               </div>
             )}
@@ -172,7 +216,7 @@ export const AccordionItem = ({
                 <div>
                   {item.overline && (
                     <p 
-                      className={accordionStyles.getOverlineClasses(isHovered, shouldShowExpanded, item.variant)}
+                      className={accordionStyles.getOverlineClasses(shouldShowHoverStyles, isActive, item.variant)}
                       {...(inspectorProps ? inspectorProps({ fieldId: 'overline' }) ?? {} : {})}
                     >
                       {item.overline}
@@ -180,18 +224,18 @@ export const AccordionItem = ({
                   )}
 
                   <h3 
-                    className={accordionStyles.getTitleClasses(isHovered, shouldShowExpanded, item.variant)}
+                    className={accordionStyles.getTitleClasses(shouldShowHoverStyles, isActive, item.variant)}
                     {...(inspectorProps ? inspectorProps({ fieldId: 'title' }) ?? {} : {})}
                   >
                     {item.title}
                   </h3>
                 </div>
                 <div
-                  className={accordionStyles.getDescriptionClasses(isHovered, shouldShowExpanded, item.variant)}
+                  className={accordionStyles.getDescriptionClasses(shouldShowHoverStyles, isActive, item.variant)}
                 >
                   {item.description && (
                     <p 
-                      className={accordionStyles.getDescriptionTextClasses(isHovered, shouldShowExpanded, item.variant)}
+                      className={accordionStyles.getDescriptionTextClasses(shouldShowHoverStyles, isActive, item.variant)}
                       {...(inspectorProps ? inspectorProps({ fieldId: 'description' }) ?? {} : {})}
                     >
                       {item.description}
@@ -214,7 +258,7 @@ export const AccordionItem = ({
                   className={accordionStyles.getCtaWrapperClasses(item.variant)}
                   {...(inspectorProps ? inspectorProps({ fieldId: 'cta' }) ?? {} : {})}
                 >
-                  <Button variant="white" asChild>
+                  <Button variant={accordionStyles.getButtonVariant(shouldShowHoverStyles, isActive, item.variant)} asChild>
                     <Link href={item.cta.internalLink?.slug ?? ''}>{item.cta.text}</Link>
                   </Button>
                 </div>
@@ -222,6 +266,19 @@ export const AccordionItem = ({
             </Box>
           </Box>
         </AccordionTrigger>
+        
+        {/* Image only shows when item is active/hovered */}
+        {item.image?.sys?.id && shouldShowHoverStyles && (
+          <div 
+            className={accordionStyles.getImageClasses(item.variant, shouldShowHoverStyles, isActive)}
+            {...(inspectorProps ? inspectorProps({ fieldId: 'image' }) ?? {} : {})}
+          >
+            <AirImage
+              sys={{ id: item.image.sys.id }}
+              className={accordionStyles.getImageElementClasses(shouldShowHoverStyles, isActive, item.variant)}
+            />
+          </div>
+        )}
       </AccordionItemPrimitive>
     );
   };

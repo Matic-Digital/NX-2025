@@ -28,8 +28,13 @@ import { notFound } from 'next/navigation';
 import {
   extractOpenGraphImage,
   extractSEODescription,
-  extractSEOTitle
+  extractSEOTitle,
+  extractOpenGraphTitle,
+  extractOpenGraphDescription,
+  extractCanonicalUrl,
+  extractIndexing
 } from '@/lib/metadata-utils';
+import { staticRoutingService } from '@/lib/static-routing';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Content } from '@/components/Content/Content';
@@ -114,12 +119,14 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
     };
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nextracker.com';
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
   const fullPath = segments.join('/');
 
   try {
     // Try to resolve the content
-    const result = await resolveNestedContent(segments);
+    const result = await resolveContentWithStaticCache(segments);
 
     if (!result) {
       return {
@@ -132,9 +139,13 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
 
     const { content } = result;
 
-    // Extract SEO data
+    // Extract SEO data using all utility functions
     const title = extractSEOTitle(content, 'Nextracker');
     const description = extractSEODescription(content, 'Nextracker Content');
+    const ogTitle = extractOpenGraphTitle(content, title);
+    const ogDescription = extractOpenGraphDescription(content, description);
+    const canonicalUrl = extractCanonicalUrl(content);
+    const shouldIndex = extractIndexing(content, true);
     const openGraphImage = extractOpenGraphImage(content, baseUrl, title);
 
     const ogImages = openGraphImage
@@ -143,7 +154,7 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
             url: openGraphImage.url,
             width: openGraphImage.width,
             height: openGraphImage.height,
-            alt: openGraphImage.title ?? title
+            alt: openGraphImage.title ?? ogTitle
           }
         ]
       : [];
@@ -151,9 +162,17 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
     return {
       title,
       description,
+      robots: {
+        index: shouldIndex,
+        follow: shouldIndex,
+        googleBot: {
+          index: shouldIndex,
+          follow: shouldIndex
+        }
+      },
       openGraph: {
-        title,
-        description,
+        title: ogTitle,
+        description: ogDescription,
         images: ogImages ?? [],
         siteName: 'Nextracker',
         type: 'website',
@@ -161,12 +180,12 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
       },
       twitter: {
         card: 'summary_large_image',
-        title,
-        description,
+        title: ogTitle,
+        description: ogDescription,
         images: openGraphImage ? [openGraphImage.url] : []
       },
       alternates: {
-        canonical: `${baseUrl}/${fullPath}`
+        canonical: canonicalUrl ?? `${baseUrl}/${fullPath}`
       }
     };
   } catch (error) {
@@ -180,13 +199,80 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
 
 // Helper function to resolve nested content
 /**
- * Resolve nested content based on URL segments
+ * Fast route resolution using static sitemap cache first, then fallback to dynamic resolution
  *
- * This function implements the core PageList nesting logic:
- * 1. For single segments: Try to find as PageList or content item
- * 2. For multiple segments: Traverse the hierarchy to validate nesting
- * 3. Ensures each PageList in the path is properly nested in its parent
- * 4. Returns the final content item with its complete parent chain
+ * @param segments - Array of URL segments (e.g., ['products', 'trackers', 'nx-horizon'])
+ * @returns Object containing the resolved content, its type, and parent PageList chain
+ */
+async function resolveContentWithStaticCache(segments: string[]): Promise<{
+  content: ContentItem | PageListType;
+  type: 'Page' | 'Product' | 'Service' | 'Solution' | 'Post' | 'PageList';
+  parentPageLists: PageListType[];
+} | null> {
+  const preview = false;
+
+  // First, try static routing cache for fast lookup
+  const staticRoute = staticRoutingService.getRouteBySegments(segments);
+  
+  if (staticRoute) {
+    console.log(`🚀 Static route found: ${staticRoute.path} → ${staticRoute.contentType} (${staticRoute.contentId})`);
+    
+    try {
+      // Fetch the content directly using the cached metadata
+      let content: ContentItem | PageListType | null = null;
+      
+      switch (staticRoute.contentType) {
+        case 'Page':
+          content = await getPageBySlug(segments[segments.length - 1]!, preview);
+          break;
+        case 'Product':
+          content = await getProductBySlug(segments[segments.length - 1]!, preview);
+          break;
+        case 'Service':
+          content = await getServiceBySlug(segments[segments.length - 1]!, preview);
+          break;
+        case 'Solution':
+          content = await getSolutionBySlug(segments[segments.length - 1]!, preview);
+          break;
+        case 'Post':
+          content = await getPostBySlug(segments[segments.length - 1]!, preview);
+          break;
+        case 'PageList':
+          content = await getPageListBySlug(segments[segments.length - 1]!, preview);
+          break;
+      }
+
+      if (content) {
+        // Build parent PageLists from static cache metadata
+        const parentPageLists: PageListType[] = [];
+        
+        for (const parentInfo of staticRoute.parentPageLists) {
+          const parentPageList = await getPageListBySlug(parentInfo.slug, preview);
+          if (parentPageList) {
+            parentPageLists.push(parentPageList);
+          }
+        }
+
+        console.log(`✅ Static route resolved successfully: ${staticRoute.title}`);
+        return {
+          content,
+          type: staticRoute.contentType,
+          parentPageLists
+        };
+      }
+    } catch (error) {
+      console.warn(`⚠️ Static route content fetch failed, falling back to dynamic resolution:`, error);
+    }
+  }
+
+  // Fallback to dynamic resolution if static cache fails or route not found
+  console.log(`🔄 Falling back to dynamic resolution for: ${segments.join('/')}`);
+  return resolveNestedContent(segments);
+}
+
+/**
+ * Resolve nested content based on URL segments with comprehensive nesting validation
+ * (Original dynamic resolution function - now used as fallback)
  *
  * @param segments - Array of URL segments (e.g., ['products', 'trackers', 'nx-horizon'])
  * @returns Object containing the resolved content, its type, and parent PageList chain
@@ -563,7 +649,7 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
   try {
     console.log(`Attempting to resolve nested content for: ${segments.join('/')}`);
 
-    const result = await resolveNestedContent(segments);
+    const result = await resolveContentWithStaticCache(segments);
 
     if (!result) {
       console.log(`No content found for: ${segments.join('/')}`);

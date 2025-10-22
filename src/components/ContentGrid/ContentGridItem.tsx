@@ -476,17 +476,17 @@ export function ContentGridItem(props: ContentGridItemProps) {
           <AirImage
             link="https://air-prod.imgix.net/1cd01021-40e4-4f15-add7-a864a7866f51.jpg?w=4000&h=3078&fm=webp&fit=crop&auto=auto"
             altText={heading}
-            className="absolute hidden group-hover:block inset-0 z-10 h-full w-full object-cover"
+            className="absolute block md:hidden md:group-hover:block inset-0 z-10 h-full w-full object-cover"
           />
           <div className="z-20">
             <h3 className="text-headline-sm text-white">{heading}</h3>
-            <Box gap={4} className="items-end">
+            <Box direction={{ base: 'col', md: 'row' }} gap={4} className="md:items-end">
               <p className="text-body-xs text-white">{description}</p>
               {ctaCollection?.items?.[0] && (
                 <ModalCtaButton
                   cta={ctaCollection.items[0]}
                   variant="outlineWhite"
-                  className="hover:bg-background hover:text-foreground group-hover:bg-white group-hover:text-black transition-colors"
+                  className="hover:bg-white hover:text-black group-hover:bg-white group-hover:text-black transition-colors"
                 />
               )}
             </Box>
