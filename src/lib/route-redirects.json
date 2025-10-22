@@ -25,6 +25,11 @@
     "permanent": false
   },
   {
+    "source": "/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast",
+    "destination": "/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast",
+    "permanent": false
+  },
+  {
     "source": "/californias-clean-energy-transformation-cec-chair-hochschilds-legacy",
     "destination": "/post/shug-speaks/californias-clean-energy-transformation-cec-chair-hochschilds-legacy",
     "permanent": false
@@ -46,7 +51,7 @@
   },
   {
     "source": "/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
-    "destination": "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
+    "destination": "/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
     "permanent": false
   },
   {
@@ -110,6 +115,11 @@
     "permanent": false
   },
   {
+    "source": "/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
+    "destination": "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
+    "permanent": false
+  },
+  {
     "source": "/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry",
     "destination": "/post/shug-speaks/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry",
     "permanent": false
@@ -162,6 +172,11 @@
   {
     "source": "/nextracker-agrivoltaics-a-win-win-for-all",
     "destination": "/post/shug-speaks/nextracker-agrivoltaics-a-win-win-for-all",
+    "permanent": false
+  },
+  {
+    "source": "/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
+    "destination": "/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
     "permanent": false
   },
   {

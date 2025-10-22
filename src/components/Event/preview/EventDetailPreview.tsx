@@ -78,24 +78,7 @@ export function EventDetailPreview(props: Partial<EventType>) {
     // Render the full EventDetail component without any wrapper constraints
     return (
       <div className="min-h-screen">
-        {/* Preview Header - Fixed at top */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-purple-600 text-white px-4 py-2 shadow-lg">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium">🔴 Live Preview</span>
-              <span className="text-xs bg-purple-500 px-2 py-1 rounded">Event Detail</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs">Template:</span>
-              <span className="bg-white text-purple-600 text-xs font-medium px-2 py-1 rounded">
-                {liveEvent.template}
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Add top padding to account for fixed header */}
-        <div className="pt-12">
+        <div>
           {isLoadingLayout ? (
             <div className="flex items-center justify-center min-h-screen">
               <div className="text-lg">Loading layout...</div>

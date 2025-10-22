@@ -8,6 +8,7 @@ import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
 import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
+import { PROFILE_SIMPLE_GRAPHQL_FIELDS } from '@/components/Profile/ProfileApi';
 
 import type { Post, PostResponse } from '@/components/Post/PostSchema';
 
@@ -77,6 +78,9 @@ export const POST_GRAPHQL_FIELDS = `
             link
             altText
           }
+          ... on Profile {
+            ${PROFILE_SIMPLE_GRAPHQL_FIELDS}
+          }
         }
         block {
           sys {
@@ -87,6 +91,9 @@ export const POST_GRAPHQL_FIELDS = `
             title
             link
             altText
+          }
+          ... on Profile {
+            ${PROFILE_SIMPLE_GRAPHQL_FIELDS}
           }
         }
       }

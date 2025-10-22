@@ -217,7 +217,31 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited</loc>
+    <loc>http://localhost:3000/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/case-study/nx-zero-emissions-case-study</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited</loc>
     <lastmod>2025-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

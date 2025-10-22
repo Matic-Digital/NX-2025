@@ -276,8 +276,13 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
   const id = searchParams.get('id');
+  const locale = searchParams.get('locale');
+  const slug = searchParams.get('slug');
   const resolvedParams = await params;
   const contentType = resolvedParams.contentType as ContentType;
+
+  // Clean up locale if it contains error text
+  const cleanLocale = locale && !locale.includes('NOT_FOUND') ? locale : null;
 
   // Validate required parameters
   if (!secret || !id) {
@@ -301,9 +306,29 @@ export async function GET(
 
   try {
     console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
+    console.log(`⭐ enable-draft-${contentType}: Locale parameter: ${locale}`);
+    console.log(`⭐ enable-draft-${contentType}: Clean locale: ${cleanLocale}`);
 
     // Fetch the content using the appropriate API function
-    const content = await fetchFn(id, true);
+    // For Post, try to auto-detect locale or use default
+    let content;
+    if (contentType === 'post') {
+      // Post API supports locale parameter - try with detected locale first
+      if (cleanLocale) {
+        content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, cleanLocale);
+      } else {
+        // Auto-detect: try default locale first, then fallback to any locale
+        try {
+          content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, 'en-US');
+        } catch {
+          // If en-US fails, try without locale (will use current locale detection in PostApi)
+          content = await fetchFn(id, true);
+        }
+      }
+    } else {
+      // Standard call for other content types
+      content = await fetchFn(id, true);
+    }
 
     console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
 
@@ -344,7 +369,12 @@ export async function GET(
     }
 
     // Redirect to the appropriate preview page
-    return NextResponse.redirect(new URL(`${previewPath}?id=${id}`, request.url));
+    // Build query parameters including locale and slug if provided
+    const queryParams = new URLSearchParams({ id });
+    if (cleanLocale) queryParams.set('locale', cleanLocale);
+    if (slug) queryParams.set('slug', slug);
+    
+    return NextResponse.redirect(new URL(`${previewPath}?${queryParams.toString()}`, request.url));
   } catch (error) {
     console.error(`⭐ Error enabling draft for ${contentType}:`, error);
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });

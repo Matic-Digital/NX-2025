@@ -360,8 +360,48 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited": {
-      "path": "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
+    "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees": {
+      "path": "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
+      "contentType": "Post",
+      "contentId": "post-17709",
+      "title": "Introducing Nextracker’s Half the Sun Class of 2024 Awardees",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast": {
+      "path": "/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast",
+      "contentType": "Post",
+      "contentId": "post-17835",
+      "title": "California Dreamin': Dr. Torsten Brammer speaks with Howard Wenger in The Solar Journey podcast",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil": {
+      "path": "/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
+      "contentType": "Post",
+      "contentId": "post-17390",
+      "title": "Nextracker alcança o marco de 10 GW no mercado de geração de energia solar centralizada no Brasil",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nx-zero-emissions-case-study": {
+      "path": "/post/case-study/nx-zero-emissions-case-study",
+      "contentType": "Post",
+      "contentId": "post-17962",
+      "title": "NX Zero Emissions Case Study",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited": {
+      "path": "/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
       "contentType": "Post",
       "contentId": "post-17062",
       "title": "DD India - Nextracker selected for repeat order by Sterling and Wilson Renewable Energy Limited",
@@ -1514,6 +1554,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-22T02:31:01.321Z",
+  "generatedAt": "2025-10-22T04:17:23.826Z",
   "version": "1.0.0"
 }

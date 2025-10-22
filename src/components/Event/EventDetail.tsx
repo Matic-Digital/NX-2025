@@ -92,7 +92,7 @@ function NewsPosts() {
 export function EventDetail({ event: initialEvent, header = null, footer = null }: EventDetailWithLayoutProps) {
   // Contentful Live Preview integration
   const event = useContentfulLiveUpdates(initialEvent);
-  const _inspectorProps = useContentfulInspectorMode({ entryId: event?.sys?.id });
+  const inspectorProps = useContentfulInspectorMode({ entryId: event?.sys?.id });
   
   const _formattedDateTime = formatDateRange(event.dateTime, event.endDateTime ?? undefined, true);
   
@@ -173,7 +173,12 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {/* Content */}
             <Container className='flex-grow flex flex-col pb-[3rem] relative z-20'>
               <div className='flex-grow flex flex-col justify-end'>
-                  <h1 className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'>{event.title ?? ''}</h1>
+                  <h1 
+                    className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'
+                    {...inspectorProps({ fieldId: 'title' })}
+                  >
+                    {event.title ?? ''}
+                  </h1>
                   <h2 className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'>Nextracker Agenda</h2>
               </div>
             </Container>
@@ -260,7 +265,12 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             } : undefined}
             contentTop={
               <Container className='h-[28.64rem] flex flex-col justify-center'>
-                <h1 className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg text-left'>{event.title ?? ''}</h1>
+                <h1 
+                  className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg text-left'
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {event.title ?? ''}
+                </h1>
               </Container>
             }
             asset={
@@ -345,7 +355,10 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             )}
 
             {/* In the News Section */}
-            <div className="mt-[6rem]">
+            <div 
+              className="mt-[6rem]"
+              {...inspectorProps({ fieldId: 'content' })}
+            >
               <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
               <NewsPosts />
             </div>
@@ -391,7 +404,12 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {/* Content */}
             <Container className='flex-grow flex flex-col pb-[3rem] relative z-20'>
               <div className='flex-grow flex flex-col justify-end'>
-                  <h1 className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'>{event.title ?? ''}</h1>
+                  <h1 
+                    className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'
+                    {...inspectorProps({ fieldId: 'title' })}
+                  >
+                    {event.title ?? ''}
+                  </h1>
               </div>
             </Container>
           </div>
@@ -474,7 +492,10 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
              </div>
            )}
 
-           <div className="mt-12">
+           <div 
+             className="mt-12"
+             {...inspectorProps({ fieldId: 'content' })}
+           >
              <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
              <NewsPosts />
            </div>
@@ -510,7 +531,12 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             } : undefined}
             contentTop={
               <Container className='h-[40.75rem] flex flex-col justify-center'>
-                <h1 className='text-display-md'>{event.title ?? ''}</h1>
+                <h1 
+                  className='text-display-md'
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {event.title ?? ''}
+                </h1>
               </Container>
             }
             asset={
@@ -596,7 +622,10 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
 
             {/* Referenced Posts Section */}
             {event.referencedPostsCollection?.items && event.referencedPostsCollection.items.length > 0 && (
-              <div className="mt-[6rem]">
+              <div 
+                className="mt-[6rem]"
+                {...inspectorProps({ fieldId: 'referencedPostsCollection' })}
+              >
                 <div className="space-y-6">
                   {event.referencedPostsCollection.items.map((post, index) => (
                     <div key={post.sys.id} className={`flex flex-col md:flex-row gap-6 md:h-[34.125rem] ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>

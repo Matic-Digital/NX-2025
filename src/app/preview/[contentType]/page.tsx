@@ -55,6 +55,7 @@ import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
 import { EventDetail } from '@/components/Event/EventDetail';
 import { getEventById } from '@/components/Event/EventApi';
 import { EventDetailPreview } from '@/components/Event/preview';
+import { EventPreview } from '@/components/Event/preview/EventPreview';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { FooterPreview } from '@/components/Footer/preview/FooterPreview';
@@ -228,7 +229,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   event: {
     fetchFn: getEventById,
     component: EventDetail,
-    previewComponent: EventDetailPreview,
+    previewComponent: EventPreview,
     entityName: 'Event',
     containerClass: 'min-h-screen bg-white'
   },

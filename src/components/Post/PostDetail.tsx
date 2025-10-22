@@ -147,7 +147,10 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
                   }}
                 >
                   <Article className="w-full max-w-full overflow-hidden">
-                    <RichTextRenderer content={displayPost.content} />
+                    <RichTextRenderer 
+                      content={displayPost.content} 
+                      inspectorProps={inspectorProps}
+                    />
                   </Article>
                 </div>
               </div>
@@ -211,7 +214,10 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
           <Container className="h-full">
             <Box direction="col" className="h-full">
               {displayPost.categories && displayPost.categories.length > 0 && displayPost.categories[0] && (
-                <div className={`flex items-center gap-2 mb-4 ${displayPost.bannerBackground ? 'text-white' : 'text-gray-600'}`}>
+                <div 
+                  className={`flex items-center gap-2 mb-4 ${displayPost.bannerBackground ? 'text-white' : 'text-gray-600'}`}
+                  {...inspectorProps({ fieldId: 'categories' })}
+                >
                   <Link 
                     href={getBreadcrumbInfo(displayPost.categories[0]).parentRoute}
                     className={`hover:underline transition-colors ${displayPost.bannerBackground ? 'hover:text-gray-200' : 'hover:text-gray-800'}`}
@@ -227,7 +233,12 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
                   </Link>
                 </div>
               )}
-              <h1 className={`text-display-sm md:text-display-md leading-none ${displayPost.bannerBackground ? 'text-white' : ''}`}>{displayPost.title}</h1>
+              <h1 
+                className={`text-display-sm md:text-display-md leading-none ${displayPost.bannerBackground ? 'text-white' : ''}`}
+                {...inspectorProps({ fieldId: 'title' })}
+              >
+                {displayPost.title}
+              </h1>
             </Box>
           </Container>
         }
@@ -239,7 +250,11 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
                 altText={displayPost.mainImage.altText ?? displayPost.title}
                 className="w-full flex-1 object-cover"
               />
-              <Box direction="row" className="gap-[0.75rem] mb-8">
+              <Box 
+                direction="row" 
+                className="gap-[0.75rem] mb-8"
+                {...inspectorProps({ fieldId: 'categories' })}
+              >
                 {displayPost.categories.map((category, index) => (
                   <Text className="uppercase px-[0.75rem] py-[0.5rem] bg-subtle w-fit" key={index}>{category}</Text>
                 ))}
@@ -263,7 +278,10 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
                   overflow: 'hidden'
                 }}
               >
-                <RichTextRenderer content={displayPost.content} />
+                <RichTextRenderer 
+                  content={displayPost.content} 
+                  inspectorProps={inspectorProps}
+                />
               </div>
             </Article>
           </Container>
@@ -273,7 +291,10 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         <Container>
           <Box direction="col" gap={8} className="mb-12">
             <h2 className="text-headline-lg">Related Resources</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              {...inspectorProps({ fieldId: 'categories' })}
+            >
               {relatedPosts.map((relatedPost) => (
                 <PostCard key={relatedPost.sys.id} sys={{ id: relatedPost.sys.id }} />
               ))}
