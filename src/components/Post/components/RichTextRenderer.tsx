@@ -2,8 +2,8 @@
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
-
 import { richTextStyles } from '@/components/Post/styles/RichTextStyles';
+import { Profile } from '@/components/Profile/Profile';
 
 interface RichTextRendererProps {
   content: {
@@ -15,9 +15,10 @@ interface RichTextRendererProps {
       };
     };
   };
+  inspectorProps?: any; // Contentful inspector props function
 }
 
-export function RichTextRenderer({ content }: RichTextRendererProps) {
+export function RichTextRenderer({ content, inspectorProps }: RichTextRendererProps) {
   // Return null if no content or json is provided
   if (!content?.json) {
     return null;
@@ -67,49 +68,121 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
         <>{children}</>
       ),
       [BLOCKS.HEADING_2]: (node: unknown, children: React.ReactNode) => (
-        <h2 className={richTextStyles.getHeadingClasses(2)}>{children}</h2>
+        <h2 
+          className={richTextStyles.getHeadingClasses(2)}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </h2>
       ),
       [BLOCKS.HEADING_3]: (node: unknown, children: React.ReactNode) => (
-        <h3 className={richTextStyles.getHeadingClasses(3)}>{children}</h3>
+        <h3 
+          className={richTextStyles.getHeadingClasses(3)}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </h3>
       ),
       [BLOCKS.HEADING_4]: (node: unknown, children: React.ReactNode) => (
-        <h4 className={richTextStyles.getHeadingClasses(4)}>{children}</h4>
+        <h4 
+          className={richTextStyles.getHeadingClasses(4)}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </h4>
       ),
       [BLOCKS.HEADING_5]: (node: unknown, children: React.ReactNode) => (
-        <h5 className={richTextStyles.getHeadingClasses(5)}>{children}</h5>
+        <h5 
+          className={richTextStyles.getHeadingClasses(5)}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </h5>
       ),
       [BLOCKS.HEADING_6]: (node: unknown, children: React.ReactNode) => (
-        <h6 className={richTextStyles.getHeadingClasses(6)}>{children}</h6>
+        <h6 
+          className={richTextStyles.getHeadingClasses(6)}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </h6>
       ),
       [BLOCKS.PARAGRAPH]: (node: unknown, children: React.ReactNode) => (
-        <p className={richTextStyles.getParagraphClasses()}>{children}</p>
+        <p 
+          className={richTextStyles.getParagraphClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </p>
       ),
       [BLOCKS.QUOTE]: (node: unknown, children: React.ReactNode) => (
-        <blockquote className={richTextStyles.getBlockquoteClasses()}>{children}</blockquote>
+        <blockquote 
+          className={richTextStyles.getBlockquoteClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </blockquote>
       ),
       [BLOCKS.UL_LIST]: (node: unknown, children: React.ReactNode) => (
-        <ul className={richTextStyles.getUnorderedListClasses()}>{children}</ul>
+        <ul 
+          className={richTextStyles.getUnorderedListClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </ul>
       ),
       [BLOCKS.OL_LIST]: (node: unknown, children: React.ReactNode) => (
-        <ol className={richTextStyles.getOrderedListClasses()}>{children}</ol>
+        <ol 
+          className={richTextStyles.getOrderedListClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </ol>
       ),
       [BLOCKS.LIST_ITEM]: (node: unknown, children: React.ReactNode) => (
-        <li className={richTextStyles.getListItemClasses()}>{children}</li>
+        <li 
+          className={richTextStyles.getListItemClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </li>
       ),
       [BLOCKS.HR]: () => (
-        <hr className={richTextStyles.getHorizontalRuleClasses()} />
+        <hr 
+          className={richTextStyles.getHorizontalRuleClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        />
       ),
       [BLOCKS.TABLE]: (node: unknown, children: React.ReactNode) => (
-        <table className={richTextStyles.getTableClasses()}>{children}</table>
+        <table 
+          className={richTextStyles.getTableClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </table>
       ),
       [BLOCKS.TABLE_ROW]: (node: unknown, children: React.ReactNode) => (
-        <tr>{children}</tr>
+        <tr 
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </tr>
       ),
       [BLOCKS.TABLE_HEADER_CELL]: (node: unknown, children: React.ReactNode) => (
-        <th className={richTextStyles.getTableHeaderClasses()}>{children}</th>
+        <th 
+          className={richTextStyles.getTableHeaderClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </th>
       ),
       [BLOCKS.TABLE_CELL]: (node: unknown, children: React.ReactNode) => (
-        <td className={richTextStyles.getTableCellClasses()}>{children}</td>
+        <td 
+          className={richTextStyles.getTableCellClasses()}
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+        >
+          {children}
+        </td>
       ),
       [BLOCKS.EMBEDDED_ASSET]: (node: any) => {
         const asset = node.data?.target;
@@ -122,7 +195,10 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
         if (!url) return null;
 
         return (
-          <div className={richTextStyles.getEmbeddedAssetClasses()}>
+          <div 
+            className={richTextStyles.getEmbeddedAssetClasses()}
+            {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+          >
             <img
               src={url.startsWith('//') ? `https:${url}` : url}
               alt={title ?? ''}
@@ -161,7 +237,10 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
             }
 
             return (
-              <div className="my-8 w-full max-w-full">
+              <div 
+                className="my-8 w-full max-w-full"
+                {...(inspectorProps ? inspectorProps({ fieldId: `embedded-${entryId}` }) : {})}
+              >
                 <img
                   src={imageLink}
                   alt={altText ?? title ?? ''}
@@ -176,6 +255,20 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
               </div>
             );
           }
+          case 'profile': {
+            return (
+              <div 
+                className="my-6 w-full"
+                {...(inspectorProps ? inspectorProps({ fieldId: `embedded-${entryId}` }) : {})}
+              >
+                <Profile 
+                  sys={{ id: entryId }}
+                  variant="card"
+                  className="mx-auto max-w-md"
+                />
+              </div>
+            );
+          }
           default:
             return null;
         }
@@ -186,18 +279,53 @@ export function RichTextRenderer({ content }: RichTextRendererProps) {
           className={richTextStyles.getLinkClasses()}
           target="_blank"
           rel="noopener noreferrer"
+          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
           {children}
         </a>
       ),
-      [INLINES.ENTRY_HYPERLINK]: (node: any, children: React.ReactNode) => (
-        <a
-          href={`#${node.data.target.sys.id}`}
-          className={richTextStyles.getLinkClasses()}
-        >
-          {children}
-        </a>
-      ),
+      [INLINES.ENTRY_HYPERLINK]: (node: any, children: React.ReactNode) => {
+        const entryId = node.data?.target?.sys?.id;
+        
+        if (!entryId) {
+          return <span>{children}</span>;
+        }
+
+        // Get the entry from our linked entries map
+        const entry = linkedEntries.get(entryId);
+        
+        if (!entry) {
+          return <span>{children}</span>;
+        }
+
+        const contentType = entry.__typename?.toLowerCase();
+
+        // Handle Profile entries as inline components
+        if (contentType === 'profile') {
+          return (
+            <span 
+              className="inline-block"
+              {...(inspectorProps ? inspectorProps({ fieldId: `inline-${entryId}` }) : {})}
+            >
+              <Profile 
+                sys={{ id: entryId }}
+                variant="compact"
+              />
+            </span>
+          );
+        }
+
+        // Default behavior for other entry types
+        return (
+          <a
+            href={`#${entryId}`}
+            className={richTextStyles.getLinkClasses()}
+            {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
+          >
+            {children}
+          </a>
+        );
+      },
     },
   };
 

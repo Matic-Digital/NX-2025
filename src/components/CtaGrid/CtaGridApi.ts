@@ -52,7 +52,6 @@ export const getCtaGridById = async (
     const response = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (!response?.data) {
-      console.log('❌ No response.data found');
       return { item: null };
     }
 

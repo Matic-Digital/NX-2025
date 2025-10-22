@@ -7,6 +7,7 @@ import type { Image, ImageResponse } from '@/components/Image/ImageSchema';
 export const IMAGE_SIMPLE_GRAPHQL_FIELDS = `
   link
   altText
+  mobileOrigin
 `;
 
 // Image fields for Image content type (not Contentful Asset)
@@ -15,6 +16,7 @@ export const IMAGE_GRAPHQL_FIELDS = `
   title
   link
   altText
+  mobileOrigin
 `;
 
 /**

@@ -220,7 +220,6 @@ export async function getPageBySlug(
         pageContent = pageItem.pageContentCollection ?? null;
       }
     } catch (error) {
-      console.warn('Failed to extract page content:', error);
       pageContent = null;
     }
 
@@ -342,7 +341,6 @@ export async function getPageById(
         pageContent = pageItem.pageContentCollection ?? null;
       }
     } catch (error) {
-      console.warn('Failed to extract page content:', error);
       pageContent = null;
     }
 

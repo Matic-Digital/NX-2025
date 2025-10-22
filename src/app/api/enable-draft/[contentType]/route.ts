@@ -1,8 +1,10 @@
 import { cookies, draftMode } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { constantTimeCompare } from '@/lib/security-utils';
 
 // Import all the API functions
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
+import { getAgendaItemById } from '@/components/AgendaItem/AgendaItemApi';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
@@ -59,6 +61,11 @@ const contentTypeMap = {
     previewPath: '/preview/accordion-item',
     entityName: 'AccordionItem'
   },
+  'agenda-item': {
+    fetchFn: getAgendaItemById,
+    previewPath: '/preview/agenda-item',
+    entityName: 'AgendaItem'
+  },
   'banner-hero': {
     fetchFn: getBannerHero,
     previewPath: '/preview/banner-hero',
@@ -108,6 +115,11 @@ const contentTypeMap = {
     fetchFn: getEventById,
     previewPath: '/preview/event',
     entityName: 'Event'
+  },
+  'event-detail': {
+    fetchFn: getEventById,
+    previewPath: '/preview/event-detail',
+    entityName: 'Event Detail'
   },
   footer: {
     fetchFn: getFooterById,
@@ -265,20 +277,27 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get('secret');
   const id = searchParams.get('id');
+  const locale = searchParams.get('locale');
+  const slug = searchParams.get('slug');
   const resolvedParams = await params;
   const contentType = resolvedParams.contentType as ContentType;
+
+  // Clean up locale if it contains error text
+  const cleanLocale = locale && !locale.includes('NOT_FOUND') ? locale : null;
 
   // Validate required parameters
   if (!secret || !id) {
     return NextResponse.json({ message: 'No secret or id provided' }, { status: 400 });
   }
 
-  // Validate secret
-  if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
+  // Validate secret using constant-time comparison
+  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
+  if (!expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
     return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
   }
 
   // Validate content type
+  // eslint-disable-next-line security/detect-object-injection
   if (!contentTypeMap[contentType]) {
     return NextResponse.json(
       { message: `Unsupported content type: ${contentType}` },
@@ -286,13 +305,34 @@ export async function GET(
     );
   }
 
+  // eslint-disable-next-line security/detect-object-injection
   const { fetchFn, previewPath, entityName } = contentTypeMap[contentType];
 
   try {
     console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
+    console.log(`⭐ enable-draft-${contentType}: Locale parameter: ${locale}`);
+    console.log(`⭐ enable-draft-${contentType}: Clean locale: ${cleanLocale}`);
 
     // Fetch the content using the appropriate API function
-    const content = await fetchFn(id, true);
+    // For Post, try to auto-detect locale or use default
+    let content;
+    if (contentType === 'post') {
+      // Post API supports locale parameter - try with detected locale first
+      if (cleanLocale) {
+        content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, cleanLocale);
+      } else {
+        // Auto-detect: try default locale first, then fallback to any locale
+        try {
+          content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, 'en-US');
+        } catch {
+          // If en-US fails, try without locale (will use current locale detection in PostApi)
+          content = await fetchFn(id, true);
+        }
+      }
+    } else {
+      // Standard call for other content types
+      content = await fetchFn(id, true);
+    }
 
     console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
 
@@ -303,8 +343,8 @@ export async function GET(
       'sys' in content &&
       content.sys &&
       typeof content.sys === 'object' &&
-      'id' in content.sys
-        ? content.sys.id
+      'id' in (content.sys as Record<string, unknown>)
+        ? (content.sys as Record<string, unknown>).id as string
         : 'unknown';
     console.log(`⭐ enable-draft-${contentType}`, contentId, id);
 
@@ -333,7 +373,12 @@ export async function GET(
     }
 
     // Redirect to the appropriate preview page
-    return NextResponse.redirect(new URL(`${previewPath}?id=${id}`, request.url));
+    // Build query parameters including locale and slug if provided
+    const queryParams = new URLSearchParams({ id });
+    if (cleanLocale) queryParams.set('locale', cleanLocale);
+    if (slug) queryParams.set('slug', slug);
+    
+    return NextResponse.redirect(new URL(`${previewPath}?${queryParams.toString()}`, request.url));
   } catch (error) {
     console.error(`⭐ Error enabling draft for ${contentType}:`, error);
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });

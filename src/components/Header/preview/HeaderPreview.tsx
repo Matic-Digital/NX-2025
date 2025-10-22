@@ -26,12 +26,6 @@ export function HeaderPreview(props: Partial<HeaderType>) {
         <div className="max-w-6xl mx-auto">
           {/* Live Component Preview */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
-            <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Live Preview</span>
-              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                Header
-              </span>
-            </div>
             <div className="overflow-hidden">
               {(() => {
                 // Check if we have all required fields for a valid Header

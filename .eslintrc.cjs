@@ -4,7 +4,7 @@ const config = {
   parserOptions: {
     project: true
   },
-  plugins: ['@typescript-eslint', '@eslint-react'],
+  plugins: ['@typescript-eslint', '@eslint-react', 'security', 'react'],
   extends: [
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended-type-checked',
@@ -35,7 +35,14 @@ const config = {
           attributes: false
         }
       }
-    ]
+    ],
+    // Security rules - set to warn in main config, error in security config
+    'security/detect-object-injection': 'warn',
+    'security/detect-non-literal-regexp': 'warn', 
+    'security/detect-unsafe-regex': 'warn',
+    'react/no-danger': 'warn',
+    // Console rules
+    'no-console': 'warn'
   },
   overrides: [
     // https://eslint-react.xyz/docs/installation

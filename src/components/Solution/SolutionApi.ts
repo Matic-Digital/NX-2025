@@ -8,7 +8,6 @@ import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Solution } from '@/components/Solution/SolutionSchema';
 
@@ -22,7 +21,10 @@ export const SOLUTION_GRAPHQL_FIELDS = `
   cardTitle
   description
   backgroundImage {
-    ${IMAGE_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
+    title
+    link
+    altText
   }
   cta {
     ${BUTTON_GRAPHQL_FIELDS}
@@ -79,7 +81,6 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       query = `ctaBanner(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
     default:
-      console.warn(`Unknown component type: ${typename}`);
       return null;
   }
 
@@ -92,7 +93,8 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     const data = response.data as Record<string, unknown>;
     const componentKey = typename.charAt(0).toLowerCase() + typename.slice(1); // Convert to camelCase
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return data[componentKey] ?? null;
+    // eslint-disable-next-line security/detect-object-injection
+    return Object.prototype.hasOwnProperty.call(data, componentKey) ? data[componentKey] : null;
   } catch (error) {
     console.error(`Error fetching ${typename} component:`, error);
     return null;

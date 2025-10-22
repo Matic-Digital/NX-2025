@@ -50,7 +50,6 @@ export const ProductCard = (props: ProductSys) => {
           setProductUrl(`/${parentPageList.slug}/${productData.slug}`);
         } else {
           // Fallback to the old format if no parent PageList found
-          console.warn(`No parent PageList found for Product: ${productData.slug}`);
           setProductUrl(`/products/${productData.slug}`);
         }
       } catch (error) {

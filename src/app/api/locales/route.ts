@@ -54,7 +54,7 @@ export async function GET() {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/vnd.contentful.management.v1+json',
         },
-        cache: 'force-cache',
+        cache: 'no-cache',
       }
     );
 
@@ -104,3 +104,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+// Disable caching for this API route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;

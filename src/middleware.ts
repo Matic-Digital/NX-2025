@@ -71,7 +71,6 @@ export async function middleware(request: NextRequest) {
   // We're looking for paths like /resources/templates, which have more than one segment
   const segments = path.split('/').filter(Boolean);
   if (segments.length > 1) {
-    console.log(`Middleware: Skipping path with multiple segments: ${path}`);
     return NextResponse.next();
   }
 

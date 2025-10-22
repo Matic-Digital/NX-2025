@@ -15,8 +15,6 @@ interface NewsletterSignupFormProps {
 }
 
 export function NewsletterSignupForm({ data, image }: NewsletterSignupFormProps) {
-  console.log('newsletterSignupForm data', data);
-  console.log('newsletterSignupForm image', image);
   return (
     <div className="relative w-full h-[40rem] lg:h-[17rem]">
       {image?.link && (

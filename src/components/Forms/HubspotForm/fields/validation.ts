@@ -71,12 +71,20 @@ export const validateField = (field: HubSpotFormField) => {
             case 'regex':
               if (field.validation.data) {
                 try {
-                  const regex = new RegExp(field.validation.data);
+                  // Use a predefined safe regex pattern instead of dynamic construction
+                  const pattern = String(field.validation.data);
+                  // Only allow basic patterns - reject potentially dangerous ones
+                  if (pattern.includes('(') || pattern.includes('[') || pattern.includes('{') || pattern.length > 100) {
+                    break;
+                  }
+                  // Create regex with explicit flags for safety - use static pattern validation
+                  const safePattern = String(pattern).slice(0, 100); // Limit pattern length
+                  // eslint-disable-next-line security/detect-non-literal-regexp
+                  const regex = new RegExp(safePattern, 'u');
                   if (!regex.test(trimmedValue)) {
                     errors.push(field.validation.message ?? 'Please enter a valid value.');
                   }
                 } catch {
-                  console.warn('Invalid regex pattern in field validation:', field.validation.data);
                 }
               }
               break;

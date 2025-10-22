@@ -1,4 +1,5 @@
 import { draftMode } from 'next/headers';
+import { constantTimeCompare } from '@/lib/security-utils';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -25,8 +26,9 @@ export async function GET(request: NextRequest) {
   const pageListId = searchParams.get('pageListId');
   const imageBetweenId = searchParams.get('imageBetweenId');
 
-  // Check the secret and validate it
-  if (secret !== process.env.CONTENTFUL_PREVIEW_SECRET) {
+  // Check the secret and validate it using constant-time comparison
+  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
+  if (!expectedSecret || !constantTimeCompare(secret ?? '', expectedSecret)) {
     return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
   }
 

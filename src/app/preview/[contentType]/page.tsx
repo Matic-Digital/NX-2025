@@ -23,6 +23,16 @@ import { getAccordionById, getAccordionItemById } from '@/components/Accordion/A
 import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
 import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
 import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
+// Skeleton imports
+import { AccordionSkeleton } from '@/components/Accordion/components/AccordionSkeleton';
+import { BannerHeroSkeleton } from '@/components/BannerHero/components/BannerHeroSkeleton';
+import { ContactCardSkeleton } from '@/components/ContactCard/components/ContactCardSkeleton';
+import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
+import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
+import { EventSkeleton } from '@/components/Event/components/EventSkeleton';
+import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
+import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
@@ -52,8 +62,9 @@ import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPrevie
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
-import { Event } from '@/components/Event/Event';
+import { EventDetail } from '@/components/Event/EventDetail';
 import { getEventById } from '@/components/Event/EventApi';
+import { EventDetailPreview } from '@/components/Event/preview';
 import { EventPreview } from '@/components/Event/preview/EventPreview';
 import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
@@ -142,6 +153,7 @@ interface ContentTypeConfig {
   fetchFn: (id: string, preview: boolean) => Promise<unknown>;
   component: React.ComponentType<any>;
   previewComponent?: React.ComponentType<any>; // Optional dedicated preview component
+  skeletonComponent?: React.ComponentType<any>; // Skeleton for instant loading
   entityName: string;
   containerClass: string;
   usePageLayout?: boolean;
@@ -152,6 +164,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getAccordionById,
     component: Accordion,
     previewComponent: AccordionPreview,
+    skeletonComponent: AccordionSkeleton,
     entityName: 'Accordion',
     containerClass: 'min-h-screen bg-gray-50'
   },
@@ -166,6 +179,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getBannerHero,
     component: BannerHero,
     previewComponent: BannerHeroPreview,
+    skeletonComponent: BannerHeroSkeleton,
     entityName: 'BannerHero',
     containerClass: 'min-h-screen' // Full height for hero sections
   },
@@ -187,6 +201,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getContactCardById,
     component: ContactCard,
     previewComponent: ContactCardPreview,
+    skeletonComponent: ContactCardSkeleton,
     entityName: 'ContactCard',
     containerClass: 'min-h-screen bg-gray-50'
   },
@@ -194,6 +209,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getContentById,
     component: Content,
     previewComponent: ContentPreview,
+    skeletonComponent: ContentSkeleton,
     entityName: 'Content',
     containerClass: 'min-h-screen bg-white'
   },
@@ -215,6 +231,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getCtaBannerById,
     component: CtaBanner,
     previewComponent: CtaBannerPreview,
+    skeletonComponent: CtaBannerSkeleton,
     entityName: 'CtaBanner',
     containerClass: 'min-h-screen bg-gray-50'
   },
@@ -227,9 +244,17 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   event: {
     fetchFn: getEventById,
-    component: Event,
+    component: EventDetail,
     previewComponent: EventPreview,
+    skeletonComponent: EventSkeleton,
     entityName: 'Event',
+    containerClass: 'min-h-screen bg-white'
+  },
+  'event-detail': {
+    fetchFn: getEventById,
+    component: EventDetail,
+    previewComponent: EventDetailPreview,
+    entityName: 'Event Detail',
     containerClass: 'min-h-screen bg-white'
   },
   footer: {
@@ -243,6 +268,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getHeaderById,
     component: Header,
     previewComponent: HeaderPreview,
+    skeletonComponent: HeaderSkeleton,
     entityName: 'Header',
     containerClass: 'bg-white shadow-sm'
   },
@@ -320,6 +346,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getPostById,
     component: PostCard,
     previewComponent: PostPreview,
+    skeletonComponent: PostCardSkeleton,
     entityName: 'Post',
     containerClass: 'min-h-screen bg-white'
   },
@@ -363,6 +390,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
     fetchFn: getSectionHeadingById,
     component: SectionHeading,
     previewComponent: SectionHeadingPreview,
+    skeletonComponent: SectionHeadingSkeleton,
     entityName: 'SectionHeading',
     containerClass: 'min-h-screen bg-gray-50'
   },
@@ -475,6 +503,7 @@ function PreviewContent({ contentType }: PreviewContentProps) {
   });
 
   // Validate content type after hooks
+  // eslint-disable-next-line security/detect-object-injection
   const config = contentTypeConfig[contentType];
 
   useEffect(() => {
@@ -521,20 +550,31 @@ function PreviewContent({ contentType }: PreviewContentProps) {
   const {
     component: Component,
     previewComponent: PreviewComponent,
+    skeletonComponent: SkeletonComponent,
     entityName,
-    usePageLayout
+    usePageLayout,
+    containerClass
   } = config;
 
   // Use PreviewComponent if available, otherwise fall back to regular Component
   const ComponentToRender = PreviewComponent ?? Component;
 
+  // Show skeleton immediately while loading for instant feedback
+  if (isLoading && SkeletonComponent) {
+    return (
+      <div className={containerClass}>
+        <div className="transition-opacity duration-300">
+          <SkeletonComponent />
+        </div>
+      </div>
+    );
+  }
+
+  // For components without skeletons, show minimal loading or nothing
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="text-gray-600">Loading {entityName} preview...</p>
-        </div>
+      <div className={containerClass}>
+        {/* No spinner - just wait for content to load */}
       </div>
     );
   }
@@ -573,16 +613,18 @@ function PreviewContent({ contentType }: PreviewContentProps) {
     const pageFooter = pageLayout?.footer as any;
 
     return (
-      <PageLayout header={pageHeader} footer={pageFooter}>
-        <div {...inspectorProps}>
-          <ComponentToRender {...(liveContent as any)} />
-        </div>
-      </PageLayout>
+      <div className="animate-in fade-in duration-500">
+        <PageLayout header={pageHeader} footer={pageFooter}>
+          <div {...inspectorProps}>
+            <ComponentToRender {...(liveContent as any)} />
+          </div>
+        </PageLayout>
+      </div>
     );
   }
 
   return (
-    <div {...inspectorProps}>
+    <div className="animate-in fade-in duration-500" {...inspectorProps}>
       <ComponentToRender {...(liveContent as any)} />
     </div>
   );
@@ -590,11 +632,8 @@ function PreviewContent({ contentType }: PreviewContentProps) {
 
 function LoadingFallback() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"></div>
-        <p className="text-gray-600">Loading preview...</p>
-      </div>
+    <div className="min-h-screen">
+      {/* No spinner - just empty space while routing */}
     </div>
   );
 }

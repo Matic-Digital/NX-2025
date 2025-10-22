@@ -28,8 +28,6 @@ export function SolutionCard(props: SolutionCardProps) {
   const [loading, setLoading] = useState(!!solutionId);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('SolutionCard', { props: props, fetchedData: fetchedData });
-
   // Fetch data if solutionId is provided
   useEffect(() => {
     if (!solutionId) return;
@@ -58,7 +56,6 @@ export function SolutionCard(props: SolutionCardProps) {
   const solutionData = useContentfulLiveUpdates(fetchedData ?? (restProps as Solution));
   const inspectorProps = useContentfulInspectorMode({ entryId: solutionData?.sys?.id });
   const { title, description, variant, slug } = solutionData;
-  console.log('SolutionCard', { title, description, variant, slug });
 
   if (loading) {
     return (

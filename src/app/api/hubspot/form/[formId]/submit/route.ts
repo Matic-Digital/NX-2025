@@ -199,11 +199,14 @@ export async function POST(
     };
 
     console.log('HubSpot submission successful:', result);
+    console.log('HubSpot redirect URI:', result.redirectUri);
+    console.log('HubSpot inline message:', result.inlineMessage);
 
     return NextResponse.json({
       success: true,
       submissionId: result.inlineMessage ?? result.redirectUri ?? 'submitted',
       message: 'Form submitted successfully',
+      redirectUri: result.redirectUri ?? null, // Extract redirect URL if available
       hubspotResponse: result as unknown,
     });
 

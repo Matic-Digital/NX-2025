@@ -41,8 +41,6 @@ export function TestimonialsPreview(props: Partial<TestimonialsType>) {
                   liveTestimonials?.itemsCollection?.items &&
                   liveTestimonials.itemsCollection.items.length > 0;
 
-                console.log('⭐ hasItems', hasItems);
-
                 if (hasRequiredFields) {
                   return (
                     <div className="p-8">

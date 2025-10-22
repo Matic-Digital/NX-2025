@@ -9,10 +9,9 @@ interface ContentSliderItemProps {
 }
 
 export function ContentSliderItem({ item }: ContentSliderItemProps) {
-  console.log('ContentSliderItem', item);
   return (
     <Box direction="col">
-      <AirImage link={item.image?.link} altText={item.image?.altText} className="h-full w-full" />
+      <AirImage link={item.image?.link} altText={item.image?.altText} mobileOrigin={item.image?.mobileOrigin} className="h-full w-full" />
       <Box direction="col" gap={2}>
         <h3 className="text-text-body text-headline-sm">{item.title}</h3>
         <p className="text-text-subtle text-body-xs">{item.description}</p>

@@ -30,17 +30,11 @@ import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
  * - Copyright notice and legal links
  */
 export function Footer(props: FooterType) {
-  console.log('Footer props:', props);
-  console.log('Footer menusCollection:', props.menusCollection);
-  console.log('Footer menus items:', props.menusCollection?.items);
 
   // Detailed menu logging
   if (props.menusCollection?.items) {
     props.menusCollection.items.forEach((menu, index) => {
-      console.log(`Menu ${index}:`, menu);
-      console.log(`Menu ${index} title:`, menu?.title);
-      console.log(`Menu ${index} itemsCollection:`, menu?.itemsCollection);
-      console.log(`Menu ${index} items:`, menu?.itemsCollection?.items);
+      // Menu processing logic removed
     });
   }
   // Use our custom hook to ensure theme changes are properly applied

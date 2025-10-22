@@ -4,11 +4,13 @@
 
 export const DEFAULT_METADATA = {
   title: 'Nextracker',
-  description: 'A Next.js template with Contentful CMS and Mux video integration',
+  description: 'Nextracker Website 2025',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://nextracker.com',
+    url: process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
     siteName: 'Nextracker'
   }
 };

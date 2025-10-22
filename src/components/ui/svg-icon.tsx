@@ -92,7 +92,8 @@ export function SvgIcon({ src, alt, className, width, height }: SvgIconProps) {
     <div
       className={cn('inline-flex', className)}
       style={{ width: width ?? 24, height: height ?? 24 }}
-      dangerouslySetInnerHTML={{ __html: svgContent }}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: svgContent }}
       role="img"
       aria-label={alt ?? 'Icon'}
     />

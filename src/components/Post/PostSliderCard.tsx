@@ -17,6 +17,7 @@ import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
+import { getPostLinkProps, shouldOpenExternally } from '@/components/Post/PostLinkUtils';
 
 import type { Post, PostSliderItem } from '@/components/Post/PostSchema';
 
@@ -100,10 +101,15 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
 
   // ImageBetween variant - styled exactly like PostCard but with slider width
   if (context === 'ImageBetween') {
+    const linkProps = getPostLinkProps(post);
+    const isExternal = shouldOpenExternally(post);
+
     return (
       <Link
-        href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
-        {...inspectorProps({ fieldId: 'slug' })}
+        href={linkProps.href}
+        target={linkProps.target}
+        rel={linkProps.rel}
+        {...inspectorProps({ fieldId: isExternal ? 'externalLink' : 'slug' })}
         className="group flex h-[35rem] mt-26 flex-col"
       >
         <Box direction="col" gap={0} className="h-full flex-col">
@@ -195,7 +201,9 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
           )}
 
           <Link
-            href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
+            href={getPostLinkProps(post).href}
+            target={getPostLinkProps(post).target}
+            rel={getPostLinkProps(post).rel}
             className=""
           >
             <Button
