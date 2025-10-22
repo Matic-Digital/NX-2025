@@ -28,6 +28,7 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   title
   slug
   datePublished
+  externalLink
   mainImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
@@ -104,6 +105,7 @@ export const POST_GRAPHQL_FIELDS = `
   seoTitle
   seoDescription
   seoFocusKeyword
+  externalLink
   pageLayout {
     sys {
       id

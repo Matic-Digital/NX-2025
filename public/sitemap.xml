@@ -217,6 +217,36 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>http://localhost:3000/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/data-sheet/nx-anchor-datasheet</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/data-sheet/nx-horizon-hail-pro</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/data-sheet/ojjo-earth-truss-datasheet</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain</loc>
+    <lastmod>2025-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>http://localhost:3000/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report</loc>
     <lastmod>2025-10-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -260,12 +290,6 @@
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/post/case-study/mitigate-risk-case-study-slider-title-here</loc>
     <lastmod>2025-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -391,25 +415,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/post/case-study/maximize-energy-case-study-title-here</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/post/case-study/accelerate-deployment-case-study-title-here</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone</loc>
-    <lastmod>2025-10-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/post/case-study/case-study-title-here</loc>
     <lastmod>2025-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

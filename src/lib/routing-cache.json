@@ -360,6 +360,56 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
+    "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited": {
+      "path": "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
+      "contentType": "Post",
+      "contentId": "post-17062",
+      "title": "DD India - Nextracker selected for repeat order by Sterling and Wilson Renewable Energy Limited",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-anchor-datasheet": {
+      "path": "/post/data-sheet/nx-anchor-datasheet",
+      "contentType": "Post",
+      "contentId": "post-17686",
+      "title": "NX Anchor Foundation System",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-horizon-hail-pro": {
+      "path": "/post/data-sheet/nx-horizon-hail-pro",
+      "contentType": "Post",
+      "contentId": "post-17597",
+      "title": "NX Horizon Hail Pro Data Sheet",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/ojjo-earth-truss-datasheet": {
+      "path": "/post/data-sheet/ojjo-earth-truss-datasheet",
+      "contentType": "Post",
+      "contentId": "post-17685",
+      "title": "Ojjo Earth Truss Foundations System",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain": {
+      "path": "/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain",
+      "contentType": "Post",
+      "contentId": "post-18059",
+      "title": "NX Horizon XTR™: Reducing costs and complexity for solar projects on challenging terrain",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
     "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
       "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
       "contentType": "Post",
@@ -435,16 +485,6 @@
       "contentType": "Post",
       "contentId": "post-18057",
       "title": "NX Anchor: Overcoming cold climate through innovation and collaboration",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
-    "/post/case-study/mitigate-risk-case-study-slider-title-here": {
-      "path": "/post/case-study/mitigate-risk-case-study-slider-title-here",
-      "contentType": "Post",
-      "contentId": "4JQASVlgMUbL4tAsdTQF29",
-      "title": "Mitigate Risk Case Study Slider Title Here",
       "parentPageLists": [],
       "isNested": true,
       "priority": 0.6,
@@ -650,41 +690,11 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
-    "/post/case-study/maximize-energy-case-study-title-here": {
-      "path": "/post/case-study/maximize-energy-case-study-title-here",
-      "contentType": "Post",
-      "contentId": "6I57qtCjbS1Oxa1NTQ8EFv",
-      "title": "Maximize Energy Case Study Title Here",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
-    "/post/case-study/accelerate-deployment-case-study-title-here": {
-      "path": "/post/case-study/accelerate-deployment-case-study-title-here",
-      "contentType": "Post",
-      "contentId": "RCVxJYj7BkzRaI7ZLJaei",
-      "title": "Accelerate Deployment Case Study Title Here",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
     "/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone": {
       "path": "/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone",
       "contentType": "Post",
       "contentId": "post-17571",
       "title": "Nextracker celebrates its first 100 GW milestone",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
-    "/post/case-study/case-study-title-here": {
-      "path": "/post/case-study/case-study-title-here",
-      "contentType": "Post",
-      "contentId": "7EyCAJfBT6RHv14MIqCZ7j",
-      "title": "Case Study Title Here",
       "parentPageLists": [],
       "isNested": true,
       "priority": 0.6,
@@ -1504,6 +1514,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-22T01:31:55.401Z",
+  "generatedAt": "2025-10-22T02:31:01.321Z",
   "version": "1.0.0"
 }

@@ -55,6 +55,7 @@ export const PostSchema = z.object({
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoFocusKeyword: z.string().optional(),
+  externalLink: z.string().optional(),
   pageLayout: PageLayoutSchema.optional(),
   gatedContentForm: HubspotFormSchema.optional(),
   testimonial: TestimonialItemSchema.optional(),

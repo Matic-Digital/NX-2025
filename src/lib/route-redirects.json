@@ -30,11 +30,6 @@
     "permanent": false
   },
   {
-    "source": "/case-study-title-here",
-    "destination": "/post/case-study/case-study-title-here",
-    "permanent": false
-  },
-  {
     "source": "/challenging-terrain",
     "destination": "/solutions/accelerate-deployment/challenging-terrain",
     "permanent": false
@@ -47,6 +42,11 @@
   {
     "source": "/cookie-policy",
     "destination": "/legal/cookie-policy",
+    "permanent": false
+  },
+  {
+    "source": "/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
+    "destination": "/post/blog/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
     "permanent": false
   },
   {
@@ -300,6 +300,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-anchor-datasheet",
+    "destination": "/post/data-sheet/nx-anchor-datasheet",
+    "permanent": false
+  },
+  {
     "source": "/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration",
     "destination": "/post/case-study/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration",
     "permanent": false
@@ -320,6 +325,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-horizon-hail-pro",
+    "destination": "/post/data-sheet/nx-horizon-hail-pro",
+    "permanent": false
+  },
+  {
     "source": "/nx-horizon-hall-pro",
     "destination": "/products/trackers/nx-horizon-hall-pro",
     "permanent": false
@@ -332,6 +342,16 @@
   {
     "source": "/nx-horizon-xtr",
     "destination": "/products/trackers/nx-horizon-xtr",
+    "permanent": false
+  },
+  {
+    "source": "/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain",
+    "destination": "/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain",
+    "permanent": false
+  },
+  {
+    "source": "/ojjo-earth-truss-datasheet",
+    "destination": "/post/data-sheet/ojjo-earth-truss-datasheet",
     "permanent": false
   },
   {

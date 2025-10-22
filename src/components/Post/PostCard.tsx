@@ -16,6 +16,7 @@ import { Box } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
+import { getPostLinkProps, shouldOpenExternally } from '@/components/Post/PostLinkUtils';
 
 import type { Post } from '@/components/Post/PostSchema';
 
@@ -66,10 +67,15 @@ export function PostCard({ sys, variant }: PostCardProps) {
     );
   }
 
+  const linkProps = getPostLinkProps(post);
+  const isExternal = shouldOpenExternally(post);
+
   return (
     <Link
-      href={`/post/${post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized'}/${post.slug}`}
-      {...inspectorProps({ fieldId: 'slug' })}
+      href={linkProps.href}
+      target={linkProps.target}
+      rel={linkProps.rel}
+      {...inspectorProps({ fieldId: isExternal ? 'externalLink' : 'slug' })}
       className="group flex h-full flex-col"
     >
       <Box
