@@ -328,7 +328,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   
   // If only one default group, it's definitely a single-step form
   const firstGroup = formData.fieldGroups[0];
-  if (formData.fieldGroups.length === 1 && firstGroup && firstGroup.groupType === 'default_group') {
+  if (formData.fieldGroups.length === 1 && firstGroup?.groupType === 'default_group') {
     
     // Calculate max display order from regular form fields
     const maxDisplayOrder = Math.max(

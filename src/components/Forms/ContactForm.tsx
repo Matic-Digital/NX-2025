@@ -128,7 +128,7 @@ export function ContactForm() {
    */
   function FormField({ label, name, placeholder, component = 'input' }: FormFieldProps) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Label htmlFor={name}>{label}</Label>
         <form.Field
           name={name}
