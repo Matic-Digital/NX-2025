@@ -11,7 +11,7 @@ import { getCurrentLocale } from '@/lib/contentful-locale';
 
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
 
-import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
 import { PageLayout } from '@/components/PageLayout/PageLayout';

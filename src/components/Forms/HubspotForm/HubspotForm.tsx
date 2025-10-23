@@ -12,11 +12,11 @@ import { Progress } from '@/components/ui/progress';
 
 import { Box } from '@/components/global/matic-ds';
 
-import { getFormIdFromHubspotForm } from '@/components/forms/HubspotForm/HubspotFormSchema';
+import { getFormIdFromHubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 import type { HubSpotFormData } from './fields';
 import type { HubSpotFormField } from './fields/types';
-import type { HubspotForm as HubspotFormType } from '@/components/forms/HubspotForm/HubspotFormSchema';
+import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 interface HubspotFormProps {
   hubspotForm?: HubspotFormType;

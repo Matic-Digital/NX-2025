@@ -4,7 +4,7 @@ import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { getCurrentLocale } from '@/lib/contentful-locale';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/forms/HubspotForm/HubspotFormApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PROFILE_SIMPLE_GRAPHQL_FIELDS } from '@/components/Profile/ProfileApi';
 import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';

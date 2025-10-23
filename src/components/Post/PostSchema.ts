@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { HubspotFormSchema } from '@/components/forms/HubspotForm/HubspotFormSchema';
+import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';

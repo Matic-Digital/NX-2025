@@ -3,7 +3,7 @@ import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { CONTENTGRIDITEM_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/forms/HubspotForm/HubspotFormApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PRODUCT_GRAPHQL_FIELDS } from '@/components/Product/ProductApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '@/components/SectionHeading/SectionHeadingApi';
