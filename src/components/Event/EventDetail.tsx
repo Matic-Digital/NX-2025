@@ -324,10 +324,16 @@ export function EventDetail({
                   <time
                     className="text-4xl font-normal leading-[120%]"
                     dateTime={event.dateTime ?? ''}
+                    {...inspectorProps({ fieldId: 'dateTime' })}
                   >
                     {formattedDate}
                   </time>
-                  <div className="text-2xl font-normal leading-[120%]">{formattedTimeRange}</div>
+                  <div 
+                    className="text-2xl font-normal leading-[120%]"
+                    {...inspectorProps({ fieldId: 'endDateTime' })}
+                  >
+                    {formattedTimeRange}
+                  </div>
                 </div>
               </div>
 
@@ -346,9 +352,17 @@ export function EventDetail({
                     </div>
                   )}
                   <div className="flex flex-col gap-[0.5rem]">
-                    <div className="text-4xl font-normal leading-[120%]">{event.address ?? ''}</div>
+                    <div 
+                      className="text-4xl font-normal leading-[120%]"
+                      {...inspectorProps({ fieldId: 'address' })}
+                    >
+                      {event.address ?? ''}
+                    </div>
                     {event.addressSubline && (
-                      <div className="text-2xl font-normal leading-[120%]">
+                      <div 
+                        className="text-2xl font-normal leading-[120%]"
+                        {...inspectorProps({ fieldId: 'addressSubline' })}
+                      >
                         {event.addressSubline ?? ''}
                       </div>
                     )}
@@ -361,7 +375,10 @@ export function EventDetail({
             {event.agendaItemsCollection?.items && event.agendaItemsCollection.items.length > 0 && (
               <div className="mb-[7.5rem]">
                 {event.agendaHeadline && (
-                  <h2 className="text-[3rem] font-normal tracking-[-0.04rem] leading-[120%]">
+                  <h2 
+                    className="text-[3rem] font-normal tracking-[-0.04rem] leading-[120%]"
+                    {...inspectorProps({ fieldId: 'agendaHeadline' })}
+                  >
                     {event.agendaHeadline ?? ''}
                   </h2>
                 )}
@@ -372,7 +389,10 @@ export function EventDetail({
                 />
 
                 {event.agendaFooter && (
-                  <p className="text-[1.25rem] font-normal leading-[120%]">
+                  <p 
+                    className="text-[1.25rem] font-normal leading-[120%]"
+                    {...inspectorProps({ fieldId: 'agendaFooter' })}
+                  >
                     {event.agendaFooter ?? ''}
                   </p>
                 )}
@@ -419,7 +439,12 @@ export function EventDetail({
                   />
                   {/* Main Image Caption directly under the image */}
                   {event.mainImageCaption && (
-                    <p className=" text-gray-600 mt-4 px-4">{event.mainImageCaption}</p>
+                    <p 
+                      className=" text-gray-600 mt-4 px-4"
+                      {...inspectorProps({ fieldId: 'mainImageCaption' })}
+                    >
+                      {event.mainImageCaption}
+                    </p>
                   )}
                 </div>
               )
@@ -434,14 +459,22 @@ export function EventDetail({
               <div className="flex-1">
                 {/* Section Heading Title */}
                 {event.sectionHeadingTitle && (
-                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">
+                  <h2 
+                    className="text-[3rem] font-normal leading-[120%] mb-4"
+                    {...inspectorProps({ fieldId: 'sectionHeadingTitle' })}
+                  >
                     {event.sectionHeadingTitle}
                   </h2>
                 )}
 
                 {/* Section Heading Description */}
                 {event.sectionHeadingDescription && (
-                  <p className="text-lg text-gray-600">{event.sectionHeadingDescription}</p>
+                  <p 
+                    className="text-lg text-gray-600"
+                    {...inspectorProps({ fieldId: 'sectionHeadingDescription' })}
+                  >
+                    {event.sectionHeadingDescription}
+                  </p>
                 )}
               </div>
 
@@ -475,7 +508,10 @@ export function EventDetail({
 
             {/* Landing 1 Asset */}
             {event.landing1Asset && (
-              <div className="flex justify-center mt-8">
+              <div 
+                className="flex justify-center mt-8"
+                {...inspectorProps({ fieldId: 'landing1Asset' })}
+              >
                 {event.landing1Asset.__typename === 'Image' ? (
                   <AirImage
                     link={(event.landing1Asset as ImageType).link ?? ''}
@@ -519,7 +555,7 @@ export function EventDetail({
 
             {/* Form CTA */}
             {event.formCta && (
-              <div className="mt-[6rem]">
+              <div className="mt-[6rem] mb-[6rem]">
                 <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}
@@ -577,7 +613,12 @@ export function EventDetail({
 
               <div className="flex flex-wrap items-end gap-[2rem] justify-between">
                 {event.mainImageCaption && (
-                  <p className="mt-4 text-gray-600 max-w-[68rem]">{event.mainImageCaption}</p>
+                  <p 
+                    className="mt-4 text-gray-600 max-w-[68rem]"
+                    {...inspectorProps({ fieldId: 'mainImageCaption' })}
+                  >
+                    {event.mainImageCaption}
+                  </p>
                 )}
 
                 {event.sectionHeadingButton && (
@@ -612,14 +653,20 @@ export function EventDetail({
               <div className="flex flex-col md:flex-row gap-8 mt-8">
                 {/* Rich Content Section */}
                 {event.sectionRichContent && (
-                  <div className="flex-1">
+                  <div 
+                    className="flex-1"
+                    {...inspectorProps({ fieldId: 'sectionRichContent' })}
+                  >
                     <RichTextRenderer content={event.sectionRichContent} />
                   </div>
                 )}
 
                 {/* Landing Asset Section */}
                 {event.landing1Asset && (
-                  <div className="flex-1">
+                  <div 
+                    className="flex-1"
+                    {...inspectorProps({ fieldId: 'landing1Asset' })}
+                  >
                     {event.landing1Asset.__typename === 'Image' ? (
                       <AirImage
                         link={(event.landing1Asset as ImageType).link ?? ''}
@@ -652,7 +699,7 @@ export function EventDetail({
 
             {/* Form CTA */}
             {event.formCta && (
-              <div className="mt-[4rem]">
+              <div className="mt-[6rem] mb-[6rem]">
                 <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}
@@ -694,7 +741,12 @@ export function EventDetail({
                   />
                   {/* Main Image Caption directly under the image */}
                   {event.mainImageCaption && (
-                    <p className=" text-gray-600 mt-4 px-4">{event.mainImageCaption}</p>
+                    <p 
+                      className=" text-gray-600 mt-4 px-4"
+                      {...inspectorProps({ fieldId: 'mainImageCaption' })}
+                    >
+                      {event.mainImageCaption}
+                    </p>
                   )}
                 </div>
               )
@@ -709,14 +761,22 @@ export function EventDetail({
               <div className="flex-1">
                 {/* Section Heading Title */}
                 {event.sectionHeadingTitle && (
-                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">
+                  <h2 
+                    className="text-[3rem] font-normal leading-[120%] mb-4"
+                    {...inspectorProps({ fieldId: 'sectionHeadingTitle' })}
+                  >
                     {event.sectionHeadingTitle}
                   </h2>
                 )}
 
                 {/* Section Heading Description */}
                 {event.sectionHeadingDescription && (
-                  <p className="text-lg text-gray-600">{event.sectionHeadingDescription}</p>
+                  <p 
+                    className="text-lg text-gray-600"
+                    {...inspectorProps({ fieldId: 'sectionHeadingDescription' })}
+                  >
+                    {event.sectionHeadingDescription}
+                  </p>
                 )}
               </div>
 
@@ -750,7 +810,10 @@ export function EventDetail({
 
             {/* Landing 1 Asset */}
             {event.landing1Asset && (
-              <div className="flex justify-center mt-8">
+              <div 
+                className="flex justify-center mt-8"
+                {...inspectorProps({ fieldId: 'landing1Asset' })}
+              >
                 {event.landing1Asset.__typename === 'Image' ? (
                   <AirImage
                     link={(event.landing1Asset as ImageType).link ?? ''}
@@ -867,7 +930,7 @@ export function EventDetail({
 
             {/* Form CTA */}
             {event.formCta && (
-              <div className="mt-[6rem]">
+              <div className="mt-[6rem] mb-[6rem]">
                 <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}

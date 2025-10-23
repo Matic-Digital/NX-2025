@@ -27,21 +27,14 @@ export function VideoPreview(props: Partial<Video>) {
           <LivePreview
             componentName="Video"
             data={liveVideo}
-            requiredFields={['sys', 'title', 'playbackId']}
+            requiredFields={['sys', 'playbackId']}
           >
             <div className="p-8">
               <div className="max-w-4xl mx-auto">
                 <h3 className="text-lg font-semibold mb-4 text-gray-600">Preview (video)</h3>
 
-                {/* Video Preview - Ensure we have all required fields */}
-                <MuxVideoPlayer
-                  sys={liveVideo.sys!}
-                  title={liveVideo.title!}
-                  id={liveVideo.id ?? liveVideo.sys!.id}
-                  playbackId={liveVideo.playbackId!}
-                  posterImage={liveVideo.posterImage}
-                  __typename={liveVideo.__typename}
-                />
+                {/* Video Preview */}
+                <MuxVideoPlayer {...(liveVideo as Video)} />
               </div>
             </div>
           </LivePreview>

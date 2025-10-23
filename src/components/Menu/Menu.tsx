@@ -156,8 +156,7 @@ export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuP
                       );
 
                   if (
-                    targetItem &&
-                    targetItem.__typename === 'MenuItem' &&
+                    targetItem?.__typename === 'MenuItem' &&
                     targetItem.associatedImage
                   ) {
                     return (

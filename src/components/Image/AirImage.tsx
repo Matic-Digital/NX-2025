@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { getImageById } from '@/components/Image/ImageApi';
+import { ImageSkeleton } from '@/components/Image/ImageSkeleton';
 import { shouldPreloadImage as _shouldPreloadImage } from '@/components/Image/utils/imageOptimization';
 
 import type { AirImage as AirImageType } from '@/components/Image/ImageSchema';
@@ -153,6 +154,7 @@ const generateSizes = (priority?: boolean): string => {
 export const AirImage: React.FC<AirImageType> = (props) => {
   const [fullImageData, setFullImageData] = useState<AirImageType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Use full image data if available, otherwise fall back to props
   const imageData = fullImageData ?? props;
@@ -199,13 +201,16 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
   if (!link) {
     if (isLoading) {
-      // Show loading placeholder
+      // Show skeleton loader matching design system with exact dimensions
+      const skeletonWidth = width ?? 1208;
+      const skeletonHeight = height ?? 800;
       return (
-        <div
-          className={`${className} flex animate-pulse items-center justify-center bg-gray-200`}
-          style={{ width: width ?? 1208, height: height ?? 800 }}
-        >
-          <span className="text-gray-500">Loading...</span>
+        <div className="relative" style={{ width: skeletonWidth, height: skeletonHeight }}>
+          <ImageSkeleton
+            width={skeletonWidth}
+            height={skeletonHeight}
+            className={className}
+          />
         </div>
       );
     }
@@ -231,6 +236,43 @@ export const AirImage: React.FC<AirImageType> = (props) => {
   // Combine alignment classes with existing className
   const combinedClassName = className ? `${className} ${alignmentClasses}` : alignmentClasses;
 
+  // Show skeleton while image is loading (unless it's priority/above fold)
+  if (!imageLoaded && !priority) {
+    // Check if className contains responsive sizing classes that should override fixed dimensions
+    const hasResponsiveClasses = combinedClassName.includes('w-full') || combinedClassName.includes('h-full');
+    
+    return (
+      <div 
+        className="relative" 
+        style={hasResponsiveClasses ? undefined : { width: intrinsicWidth, height: intrinsicHeight }}
+      >
+        {/* Skeleton that matches exact image layout */}
+        <ImageSkeleton
+          width={hasResponsiveClasses ? undefined : intrinsicWidth}
+          height={hasResponsiveClasses ? undefined : intrinsicHeight}
+          className={combinedClassName}
+          aspectRatio={hasResponsiveClasses ? 'auto' : undefined}
+        />
+        {/* Hidden image that loads in background */}
+        <Image
+          src={optimizedSrc}
+          alt={altText ?? ''}
+          className="absolute inset-0 opacity-0"
+          width={intrinsicWidth}
+          height={intrinsicHeight}
+          priority={priority}
+          loading={priority ? 'eager' : 'lazy'}
+          sizes={responsiveSizes}
+          quality={75}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          unoptimized={false}
+          onLoad={() => setImageLoaded(true)}
+        />
+      </div>
+    );
+  }
+
   // Use optimized images for better LCP performance
   // Note: Next.js Image component automatically generates srcset, so we don't need to pass it manually
   return (
@@ -247,6 +289,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
       placeholder="blur"
       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
       unoptimized={false} // Enable Next.js optimization for all images
+      onLoad={() => setImageLoaded(true)}
     />
   );
 };

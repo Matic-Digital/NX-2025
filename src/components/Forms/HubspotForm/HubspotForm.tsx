@@ -189,10 +189,15 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     'Submit';
 
   if (formData.metadata.isMultiStep) {
+    // Multi-step forms always use light theme
+    const multiStepTheme = 'light';
+    const multiStepTextClass = 'text-black';
+    const cardThemeClass = 'bg-white text-black';
+    
     return (
-      <Card className={className}>
+      <Card className={`${className} ${cardThemeClass}`}>
         <CardHeader>
-          <CardTitle className="text-text-on-invert text-headline-md">{formTitle}</CardTitle>
+          <CardTitle className={`${multiStepTextClass} text-headline-md`}>{formTitle}</CardTitle>
           {formData.metadata.isMultiStep && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm text-gray-600">
@@ -206,7 +211,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           )}
         </CardHeader>
 
-        <CardContent>
+        <CardContent className={cardThemeClass}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -218,7 +223,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
             {/* Current Step Fields */}
             <div className="space-y-4">
               {stepFields?.stepName && (
-                <h3 className="text-lg font-semibold">{stepFields.stepName}</h3>
+                <h3 className={`text-lg font-semibold ${multiStepTextClass}`}>{stepFields.stepName}</h3>
               )}
 
               {stepFields?.fields
@@ -242,7 +247,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                         value={fieldApi.state.value as string | number | boolean | null | undefined}
                         onChange={fieldApi.handleChange}
                         error={fieldApi.state.meta.errors?.[0]}
-                        theme={theme}
+                        theme={multiStepTheme}
                       />
                     )}
                   </form.Field>

@@ -69,8 +69,7 @@ export function ImageBetween(props: ImageBetween) {
   useEffect(() => {
     const fetchAssetContentGrid = async () => {
       if (
-        imageBetween.asset &&
-        imageBetween.asset.__typename === 'ContentGrid' &&
+        imageBetween.asset?.__typename === 'ContentGrid' &&
         imageBetween.asset.sys?.id
       ) {
         try {
@@ -91,8 +90,7 @@ export function ImageBetween(props: ImageBetween) {
   useEffect(() => {
     const fetchSliderData = async () => {
       if (
-        imageBetween.asset &&
-        imageBetween.asset.__typename === 'Slider' &&
+        imageBetween.asset?.__typename === 'Slider' &&
         imageBetween.asset.sys?.id
       ) {
         try {
@@ -115,8 +113,7 @@ export function ImageBetween(props: ImageBetween) {
   useEffect(() => {
     const fetchContentBottom = async () => {
       if (
-        imageBetween.contentBottom &&
-        imageBetween.contentBottom.__typename === 'ContentGrid' &&
+        imageBetween.contentBottom?.__typename === 'ContentGrid' &&
         imageBetween.contentBottom.sys?.id
       ) {
         try {
@@ -160,11 +157,23 @@ export function ImageBetween(props: ImageBetween) {
             gap={8}
             className={cn(
               'mb-0 pb-8',
-              imageBetween.asset &&
-                imageBetween.asset.__typename === 'Image' &&
+              // Image assets get large bottom margin
+              imageBetween.asset?.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
-              imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
-              imageBetween.asset && imageBetween.asset.__typename === 'ContentGrid' && 'mb-0',
+              // Non-image assets default to large margin, but with specific overrides
+              imageBetween.asset && 
+                imageBetween.asset.__typename !== 'Image' && 
+                imageBetween.asset.__typename !== 'ContentGrid' &&
+                imageBetween.asset.__typename !== 'Slider' &&
+                'mb-72',
+              // ContentGrid assets get no margin
+              imageBetween.asset?.__typename === 'ContentGrid' && 'mb-0',
+              // Slider assets get different margins based on contentTop
+              imageBetween.asset?.__typename === 'Slider' && 
+                (imageBetween.contentTop?.__typename !== 'ContentGrid') && 'mb-72',
+              imageBetween.asset?.__typename === 'Slider' && 
+                imageBetween.contentTop?.__typename === 'ContentGrid' && 'mb-8',
+              // Banner hero specific overrides
               isBannerHero && isPostSlider && 'mb-0 pb-16',
               isBannerHero && isImageSlider && 'mb-14 pb-14'
             )}
@@ -215,7 +224,7 @@ export function ImageBetween(props: ImageBetween) {
             )}
           >
             {/* Render asset based on type */}
-            {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
+            {imageBetween.asset?.__typename === 'Image' && (
               <Container className="absolute z-20">
                 <AirImage
                   link={(imageBetween.asset as Image).link}
@@ -226,7 +235,7 @@ export function ImageBetween(props: ImageBetween) {
                 />
               </Container>
             )}
-            {imageBetween.asset && imageBetween.asset.__typename === 'Slider' && (
+            {imageBetween.asset?.__typename === 'Slider' && (
               <Container
                 className={cn(
                   'absolute z-20',
@@ -240,8 +249,7 @@ export function ImageBetween(props: ImageBetween) {
                 />
               </Container>
             )}
-            {imageBetween.asset &&
-              imageBetween.asset.__typename === 'ContentGrid' &&
+            {imageBetween.asset?.__typename === 'ContentGrid' &&
               assetContentGrid && (
                 <Container
                   className={cn(
@@ -266,8 +274,7 @@ export function ImageBetween(props: ImageBetween) {
           <div
             className={cn(
               'mt-0',
-              imageBetween.asset &&
-                imageBetween.asset.__typename === 'Image' &&
+              imageBetween.asset?.__typename === 'Image' &&
                 'mt-28 lg:mt-56 xl:mt-96',
               imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mt-72'
             )}
