@@ -547,6 +547,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>http://localhost:3000/products/module-mounting</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/products/module-mounting/nx-frame</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>http://localhost:3000/products/controls</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
@@ -664,18 +676,6 @@
     <loc>http://localhost:3000/company/middle-east-africa-and-india</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/module-mounting</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/module-mounting/nx-frame</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
