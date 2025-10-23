@@ -1,0 +1,1757 @@
+{
+  "routes": {
+    "/": {
+      "path": "/",
+      "contentType": "Page",
+      "contentId": "homepage",
+      "title": "Homepage",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 1,
+      "changefreq": "daily"
+    },
+    "/resources": {
+      "path": "/resources",
+      "contentType": "Page",
+      "contentId": "5DSiOYcY583zexePdQWMCx",
+      "title": "Resources",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/thank-you": {
+      "path": "/thank-you",
+      "contentType": "Page",
+      "contentId": "3sijpLvT97rCZYGHQHeNU2",
+      "title": "Thank You",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/search": {
+      "path": "/search",
+      "contentType": "Page",
+      "contentId": "4cgZUqGqpLeLsbesh8NRfu",
+      "title": "Search",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/newsroom": {
+      "path": "/newsroom",
+      "contentType": "Page",
+      "contentId": "7anXk0qLYQCMupVYkDWeAu",
+      "title": "Newsroom",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/careers": {
+      "path": "/careers",
+      "contentType": "Page",
+      "contentId": "2Kccqh0dLWvKlNpFKP9AFc",
+      "title": "Careers",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/showcase": {
+      "path": "/showcase",
+      "contentType": "Page",
+      "contentId": "4umDIlrC3OoeT0aI1PYu2c",
+      "title": "Showcase",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/contact": {
+      "path": "/contact",
+      "contentType": "Page",
+      "contentId": "w2KHQ5178xkIJMIKC2fEN",
+      "title": "Contact",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/company": {
+      "path": "/company",
+      "contentType": "PageList",
+      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
+      "title": "Company",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/asia-pacific": {
+      "path": "/asia-pacific",
+      "contentType": "Page",
+      "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
+      "title": "Asia-Pacific",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/about": {
+      "path": "/about",
+      "contentType": "Page",
+      "contentId": "4i1ZNsg2pJifeE22rVa8Qk",
+      "title": "About",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/traditional-piles": {
+      "path": "/traditional-piles",
+      "contentType": "Product",
+      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
+      "title": "Traditional Piles",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/foundations-product": {
+      "path": "/foundations-product",
+      "contentType": "Product",
+      "contentId": "21LiuyR5pRn51wRbOkZx27",
+      "title": "Foundations Product",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/controls-product": {
+      "path": "/controls-product",
+      "contentType": "Product",
+      "contentId": "5yjA0VlT6chXJIKVy8FQjZ",
+      "title": "Controls Product",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/digital-product": {
+      "path": "/digital-product",
+      "contentType": "Product",
+      "contentId": "7A63W21yZBBQ5eofmzIw4Q",
+      "title": "Digital Product",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/dual-land-use": {
+      "path": "/dual-land-use",
+      "contentType": "Solution",
+      "contentId": "nr5E2VQIfZ7lK4TlzgVvZ",
+      "title": "Dual Land-Use",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/ppa-partnerships": {
+      "path": "/ppa-partnerships",
+      "contentType": "Solution",
+      "contentId": "6o1VESwWVjTxNWjCAGOctH",
+      "title": "PPA Partnerships",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/decarbonization-lever": {
+      "path": "/decarbonization-lever",
+      "contentType": "Solution",
+      "contentId": "63w7jPufol1Oke2wORbfXz",
+      "title": "Decarbonization Lever",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/cold-climates": {
+      "path": "/cold-climates",
+      "contentType": "Solution",
+      "contentId": "Hg2nkCA2OWcMKLykuTtLv",
+      "title": "Cold Climates",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/speed-to-deploy": {
+      "path": "/speed-to-deploy",
+      "contentType": "Solution",
+      "contentId": "11nUAToRP7XfckKXSHMBHr",
+      "title": "Speed to Deploy",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/desert-climates": {
+      "path": "/desert-climates",
+      "contentType": "Solution",
+      "contentId": "2sBwhugH0i1pAbP14gdJ4I",
+      "title": "Desert Climates",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/ai-and-energy-transition": {
+      "path": "/ai-and-energy-transition",
+      "contentType": "Solution",
+      "contentId": "2FerdbjnrZJYq6TJyCr16K",
+      "title": "AI & Energy Transition",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/a-non-categorized-solution": {
+      "path": "/a-non-categorized-solution",
+      "contentType": "Solution",
+      "contentId": "5KLoRiHizbizG1US1KRTZW",
+      "title": "A Non-Categorized Solution",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/bankability": {
+      "path": "/bankability",
+      "contentType": "Solution",
+      "contentId": "4CoBxJR7d1PKCL9fIOhYXJ",
+      "title": "Bankability ",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/enable-dual-value": {
+      "path": "/enable-dual-value",
+      "contentType": "Solution",
+      "contentId": "73yin9LXWMnm1dcg45lMA",
+      "title": "Enable Dual Value",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/maximizing-uptime": {
+      "path": "/maximizing-uptime",
+      "contentType": "Solution",
+      "contentId": "4swp9Z2bT6VQFvAr0L2ie8",
+      "title": "Maximizing Uptime",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solving-for-complex-terrain": {
+      "path": "/solving-for-complex-terrain",
+      "contentType": "Solution",
+      "contentId": "6NwI80IWNgGokdPZhEFoFW",
+      "title": "Solving for Complex Terrain",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/optimizing-module-technology": {
+      "path": "/optimizing-module-technology",
+      "contentType": "Solution",
+      "contentId": "e8Wyp7j820Kyp7pnUQ9YJ",
+      "title": "Optimizing Module Technology",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/localized-supply-chain": {
+      "path": "/localized-supply-chain",
+      "contentType": "Solution",
+      "contentId": "6UpQnBTEiLSlWNqlbIrSpR",
+      "title": "Localized Supply Chain",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/land-use-and-permitting": {
+      "path": "/land-use-and-permitting",
+      "contentType": "Solution",
+      "contentId": "1DGOdjDaitGFG4DHh42a1Y",
+      "title": "Land Use and Permitting",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/diverse-soil-conditions": {
+      "path": "/diverse-soil-conditions",
+      "contentType": "Solution",
+      "contentId": "6GQuFt5EZQKWT01njT6KJo",
+      "title": "Diverse Soil Conditions",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
+      "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
+      "contentType": "Post",
+      "contentId": "post-17503",
+      "title": "TrueCapture™ Outperforms Modeled Energy Yield Projections in ICF Engineering Report",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees": {
+      "path": "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
+      "contentType": "Post",
+      "contentId": "post-17709",
+      "title": "Introducing Nextracker’s Half the Sun Class of 2024 Awardees",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast": {
+      "path": "/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast",
+      "contentType": "Post",
+      "contentId": "post-17835",
+      "title": "California Dreamin': Dr. Torsten Brammer speaks with Howard Wenger in The Solar Journey podcast",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil": {
+      "path": "/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil",
+      "contentType": "Post",
+      "contentId": "post-17390",
+      "title": "Nextracker alcança o marco de 10 GW no mercado de geração de energia solar centralizada no Brasil",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nx-zero-emissions-case-study": {
+      "path": "/post/case-study/nx-zero-emissions-case-study",
+      "contentType": "Post",
+      "contentId": "post-17962",
+      "title": "NX Zero Emissions Case Study",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited": {
+      "path": "/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited",
+      "contentType": "Post",
+      "contentId": "post-17062",
+      "title": "DD India - Nextracker selected for repeat order by Sterling and Wilson Renewable Energy Limited",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-anchor-datasheet": {
+      "path": "/post/data-sheet/nx-anchor-datasheet",
+      "contentType": "Post",
+      "contentId": "post-17686",
+      "title": "NX Anchor Foundation System",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-horizon-hail-pro": {
+      "path": "/post/data-sheet/nx-horizon-hail-pro",
+      "contentType": "Post",
+      "contentId": "post-17597",
+      "title": "NX Horizon Hail Pro Data Sheet",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/ojjo-earth-truss-datasheet": {
+      "path": "/post/data-sheet/ojjo-earth-truss-datasheet",
+      "contentType": "Post",
+      "contentId": "post-17685",
+      "title": "Ojjo Earth Truss Foundations System",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain": {
+      "path": "/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain",
+      "contentType": "Post",
+      "contentId": "post-18059",
+      "title": "NX Horizon XTR™: Reducing costs and complexity for solar projects on challenging terrain",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/foundations-case-study": {
+      "path": "/post/case-study/foundations-case-study",
+      "contentType": "Post",
+      "contentId": "post-17684",
+      "title": "NX Foundations Case Study",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-agripv": {
+      "path": "/post/data-sheet/nx-agripv",
+      "contentType": "Post",
+      "contentId": "post-17599",
+      "title": "NX AgriPV Data Sheet",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/blog/honoring-service-beyond-the-battlefield-from-defending-freedom-to-powering-a-clean-energy-future": {
+      "path": "/post/blog/honoring-service-beyond-the-battlefield-from-defending-freedom-to-powering-a-clean-energy-future",
+      "contentType": "Post",
+      "contentId": "post-17806",
+      "title": "Honoring Service Beyond the Battlefield: From Defending Freedom to Powering a Clean Energy Future",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-unimacts-dedicate-second-nevada-factory-to-serve-solar-power-demand": {
+      "path": "/post/press-release/nextracker-unimacts-dedicate-second-nevada-factory-to-serve-solar-power-demand",
+      "contentType": "Post",
+      "contentId": "post-17512",
+      "title": "Nextracker & Unimacts Dedicate Second Nevada Factory to Serve Solar Power Demand",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/busting-the-myth-renewables-can-power-the-data-center-surge": {
+      "path": "/post/shug-speaks/busting-the-myth-renewables-can-power-the-data-center-surge",
+      "contentType": "Post",
+      "contentId": "post-17568",
+      "title": "Busting the Myth: Renewables Can Power the Data Center Surge",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/blog/placeholder-post": {
+      "path": "/post/blog/placeholder-post",
+      "contentType": "Post",
+      "contentId": "RrtLBRcSFUYdVb5wpHMiI",
+      "title": "Placeholder Post",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/case-study/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration": {
+      "path": "/post/case-study/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration",
+      "contentType": "Post",
+      "contentId": "post-18057",
+      "title": "NX Anchor: Overcoming cold climate through innovation and collaboration",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-reports-q1-fy25-financial-results": {
+      "path": "/post/press-release/nextracker-reports-q1-fy25-financial-results",
+      "contentType": "Post",
+      "contentId": "post-17602",
+      "title": "Nextracker Reports Q1 FY25 Financial Results",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-unveils-nx-foundation-solutions-enabling-solar-anywhere": {
+      "path": "/post/press-release/nextracker-unveils-nx-foundation-solutions-enabling-solar-anywhere",
+      "contentType": "Post",
+      "contentId": "post-17698",
+      "title": "Nextracker Unveils NX Foundation Solutions Enabling Solar “Anywhere”",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-to-inaugurate-indias-rd-center-for-solar-excellence-in-hyderabad": {
+      "path": "/post/press-release/nextracker-to-inaugurate-indias-rd-center-for-solar-excellence-in-hyderabad",
+      "contentType": "Post",
+      "contentId": "post-17722",
+      "title": "Nextracker to Inaugurate India’s R&D Center for Solar Excellence in Hyderabad",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-releases-inaugural-sustainability-report": {
+      "path": "/post/press-release/nextracker-releases-inaugural-sustainability-report",
+      "contentType": "Post",
+      "contentId": "post-17786",
+      "title": "Nextracker Releases Inaugural Sustainability Report",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-reports-q2-fy25-financial-results": {
+      "path": "/post/press-release/nextracker-reports-q2-fy25-financial-results",
+      "contentType": "Post",
+      "contentId": "post-17803",
+      "title": "Nextracker Reports Q2 FY25 Financial Results",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-delivers-first-100-domestic-content-solar-trackers-to-u-s-market": {
+      "path": "/post/press-release/nextracker-delivers-first-100-domestic-content-solar-trackers-to-u-s-market",
+      "contentType": "Post",
+      "contentId": "post-17825",
+      "title": "Nextracker Delivers First 100% Domestic Content Solar Trackers to U.S. Market",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-and-university-of-california-berkeley-engineering-partner-to-establish-the-calnext-center-for-solar-energy-research": {
+      "path": "/post/press-release/nextracker-and-university-of-california-berkeley-engineering-partner-to-establish-the-calnext-center-for-solar-energy-research",
+      "contentType": "Post",
+      "contentId": "post-17866",
+      "title": "Nextracker and University of California Berkeley Engineering Partner to Establish the CAL-NEXT Center for Solar Energy Research",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextrackers-truecapture-software-optimizing-solar-energy-production-with-advanced-technology": {
+      "path": "/post/press-release/nextrackers-truecapture-software-optimizing-solar-energy-production-with-advanced-technology",
+      "contentType": "Post",
+      "contentId": "post-17905",
+      "title": "Nextracker’s TrueCapture Software: Optimizing Solar Energy Production with Advanced Technology",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/the-solar-industry-is-getting-smarter-about-storm-defense": {
+      "path": "/post/press-release/the-solar-industry-is-getting-smarter-about-storm-defense",
+      "contentType": "Post",
+      "contentId": "post-17955",
+      "title": "The Solar Industry Is Getting Smarter About Storm Defense",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-expands-board-of-directors": {
+      "path": "/post/press-release/nextracker-expands-board-of-directors",
+      "contentType": "Post",
+      "contentId": "post-18088",
+      "title": "Nextracker Expands Board of Directors",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-reports-q2-fy25-financial-results-2": {
+      "path": "/post/press-release/nextracker-reports-q2-fy25-financial-results-2",
+      "contentType": "Post",
+      "contentId": "post-18055",
+      "title": "Nextracker Reports Q4 and Fiscal Year 2025 Financial Results",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-achieves-10-gw-solar-tracker-milestone-in-india": {
+      "path": "/post/press-release/nextracker-achieves-10-gw-solar-tracker-milestone-in-india",
+      "contentType": "Post",
+      "contentId": "post-18064",
+      "title": "Nextracker Achieves 10 GW Solar Tracker Milestone in India",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-selected-for-landmark-european-solar-power-project": {
+      "path": "/post/press-release/nextracker-selected-for-landmark-european-solar-power-project",
+      "contentType": "Post",
+      "contentId": "post-18090",
+      "title": "Nextracker Selected for Landmark European Solar Power Project",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/in-the-news/sterling-wilson-renewable-energy-selects-nextracker-nx-horizon-solar-trackers-for-nearly-two-gigawatts-in-india": {
+      "path": "/post/in-the-news/sterling-wilson-renewable-energy-selects-nextracker-nx-horizon-solar-trackers-for-nearly-two-gigawatts-in-india",
+      "contentType": "Post",
+      "contentId": "post-17063",
+      "title": "Sterling & Wilson Renewable Energy Selects Nextracker NX Horizon™ Solar Trackers for Nearly Two Gigawatts in India",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-announces-completion-of-its-separation-from-flex": {
+      "path": "/post/press-release/nextracker-announces-completion-of-its-separation-from-flex",
+      "contentType": "Post",
+      "contentId": "post-16985",
+      "title": "Nextracker Announces Completion of Its Separation from Flex",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-extends-leadership-in-distributed-generation-dg-surpasses-5-gw-milestone-with-over-600-dg-projects-and-enters-into-new-strategic-agreements": {
+      "path": "/post/press-release/nextracker-extends-leadership-in-distributed-generation-dg-surpasses-5-gw-milestone-with-over-600-dg-projects-and-enters-into-new-strategic-agreements",
+      "contentType": "Post",
+      "contentId": "post-17036",
+      "title": "Nextracker Accelerates in Distributed Generation (DG) Solar with Two New Strategic Value-Added Reseller Partners and Over 600 DG Projects Delivered",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/in-the-news/the-economic-times-sterling-and-wilson-places-orders-with-nextracker-for-solar-trackers": {
+      "path": "/post/in-the-news/the-economic-times-sterling-and-wilson-places-orders-with-nextracker-for-solar-trackers",
+      "contentType": "Post",
+      "contentId": "post-17059",
+      "title": "The Economic Times, Sterling and Wilson places orders with Nextracker for solar trackers",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/acwa-power-and-larsen-toubro-select-nextrackers-all-terrain-solar-trackers-for-al-kahfah-solar-park": {
+      "path": "/post/press-release/acwa-power-and-larsen-toubro-select-nextrackers-all-terrain-solar-trackers-for-al-kahfah-solar-park",
+      "contentType": "Post",
+      "contentId": "post-17068",
+      "title": "ACWA Power and Larsen & Toubro Select Nextracker’s All-Terrain Solar Trackers for Al Kahfah Solar Park",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-achieves-significant-milestone-in-the-middle-east-with-a-new-1-gw-project-win": {
+      "path": "/post/shug-speaks/nextracker-achieves-significant-milestone-in-the-middle-east-with-a-new-1-gw-project-win",
+      "contentType": "Post",
+      "contentId": "post-17077",
+      "title": "Nextracker achieves significant milestone in the middle east with a new 1 GW project win",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/recent-visit-to-india": {
+      "path": "/post/shug-speaks/recent-visit-to-india",
+      "contentType": "Post",
+      "contentId": "post-17079",
+      "title": "Recent visit to India",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone": {
+      "path": "/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone",
+      "contentType": "Post",
+      "contentId": "post-17571",
+      "title": "Nextracker celebrates its first 100 GW milestone",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry": {
+      "path": "/post/shug-speaks/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry",
+      "contentType": "Post",
+      "contentId": "post-17081",
+      "title": "Jon Fortt of CNBC interviews Nextracker with a range of insightful questions spanning drivers in growth of the solar industry",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-appoints-two-new-members-to-board-of-directors": {
+      "path": "/post/press-release/nextracker-appoints-two-new-members-to-board-of-directors",
+      "contentType": "Post",
+      "contentId": "post-16984",
+      "title": "Nextracker Appoints Two New Members to Board of Directors",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-announces-two-major-new-strategic-value-added-reseller-agreements": {
+      "path": "/post/shug-speaks/nextracker-announces-two-major-new-strategic-value-added-reseller-agreements",
+      "contentType": "Post",
+      "contentId": "post-17080",
+      "title": "Nextracker announces two major new strategic Value-Added-Reseller Agreements",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/quarterly-earnings-video-series-q3-2023": {
+      "path": "/post/shug-speaks/quarterly-earnings-video-series-q3-2023",
+      "contentType": "Post",
+      "contentId": "post-17083",
+      "title": "Quarterly earnings video series - Q3, 2023",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-journey-from-a-startup-to-an-independent-public-company": {
+      "path": "/post/shug-speaks/nextracker-journey-from-a-startup-to-an-independent-public-company",
+      "contentType": "Post",
+      "contentId": "post-17084",
+      "title": "Nextracker Journey - from a startup to an independent public company",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-and-orrcon-steel-to-deliver-sovereign-capability-in-australia": {
+      "path": "/post/press-release/nextracker-and-orrcon-steel-to-deliver-sovereign-capability-in-australia",
+      "contentType": "Post",
+      "contentId": "post-17147",
+      "title": "Nextracker and Orrcon Steel to Deliver Sovereign Capability in Australia",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-announces-chuck-boynton-as-new-chief-financial-officer": {
+      "path": "/post/press-release/nextracker-announces-chuck-boynton-as-new-chief-financial-officer",
+      "contentType": "Post",
+      "contentId": "post-17247",
+      "title": "Nextracker Announces Chuck Boynton as New Chief Financial Officer",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/through-decades-of-technological-innovation-solar-has-achieved-excellent-efficiency-and-cost-reduction-where-solar-is-the-lowest-cost-way-to-generate-electricity-at-many-places-in-the-world": {
+      "path": "/post/shug-speaks/through-decades-of-technological-innovation-solar-has-achieved-excellent-efficiency-and-cost-reduction-where-solar-is-the-lowest-cost-way-to-generate-electricity-at-many-places-in-the-world",
+      "contentType": "Post",
+      "contentId": "post-17294",
+      "title": "Powering the Future: Solar's Surging Role in Meeting Growing Energy Demands",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/in-the-news/pv-magazine-acwa-power-lt-select-nextracker-for-1-17-gw-solar-plant-in-saudi-arabia": {
+      "path": "/post/in-the-news/pv-magazine-acwa-power-lt-select-nextracker-for-1-17-gw-solar-plant-in-saudi-arabia",
+      "contentType": "Post",
+      "contentId": "post-17296",
+      "title": "PV Magazine: ACWA Power, L&T select Nextracker for 1.17 GW solar plant in Saudi Arabia",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/in-the-news/renewables-now-nextracker-teams-up-with-orrcon-steel-for-australian-components": {
+      "path": "/post/in-the-news/renewables-now-nextracker-teams-up-with-orrcon-steel-for-australian-components",
+      "contentType": "Post",
+      "contentId": "post-17298",
+      "title": "Renewables Now: Nextracker teams up with Orrcon Steel for Australian components",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-launches-industrys-first-low-carbon-solar-tracker-solution": {
+      "path": "/post/press-release/nextracker-launches-industrys-first-low-carbon-solar-tracker-solution",
+      "contentType": "Post",
+      "contentId": "post-17346",
+      "title": "Nextracker Launches Industry’s First Low Carbon Solar Tracker Solution",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-and-jennmar-jm-steel-bolster-u-s-supply-chain-with-new-facility-expansion-to-triple-capacity-for-solar-energy-projects": {
+      "path": "/post/press-release/nextracker-and-jennmar-jm-steel-bolster-u-s-supply-chain-with-new-facility-expansion-to-triple-capacity-for-solar-energy-projects",
+      "contentType": "Post",
+      "contentId": "post-17353",
+      "title": "Nextracker and JENNMAR JM Steel Bolster U.S. Supply Chain with New Facility Expansion to Triple Capacity for Solar Energy Projects",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-reports-q4-and-fy24-financial-results": {
+      "path": "/post/press-release/nextracker-reports-q4-and-fy24-financial-results",
+      "contentType": "Post",
+      "contentId": "post-17371",
+      "title": "Nextracker Reports Fourth Quarter and Fiscal Year 2023 Financial Results",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-acquires-ojjo-to-expand-utility-scale-solar-tracker-foundations-business": {
+      "path": "/post/press-release/nextracker-acquires-ojjo-to-expand-utility-scale-solar-tracker-foundations-business",
+      "contentType": "Post",
+      "contentId": "post-17513",
+      "title": "Nextracker Acquires Ojjo to Expand Utility-Scale Solar Tracker Foundations Business",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/mammoth-north-solar-project-celebrates-upcoming-commercial-operations": {
+      "path": "/post/press-release/mammoth-north-solar-project-celebrates-upcoming-commercial-operations",
+      "contentType": "Post",
+      "contentId": "post-17563",
+      "title": "Mammoth North Solar Project Celebrates Upcoming Commercial Operations",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/400-mw-mammoth-north-solar-project": {
+      "path": "/post/shug-speaks/400-mw-mammoth-north-solar-project",
+      "contentType": "Post",
+      "contentId": "post-17565",
+      "title": "Mammoth North Solar Project: Powering Indiana with Renewables and Innovation",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-agrivoltaics-a-win-win-for-all": {
+      "path": "/post/shug-speaks/nextracker-agrivoltaics-a-win-win-for-all",
+      "contentType": "Post",
+      "contentId": "post-17566",
+      "title": "Nextracker Agrivoltaics - a win-win for all",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/californias-clean-energy-transformation-cec-chair-hochschilds-legacy": {
+      "path": "/post/shug-speaks/californias-clean-energy-transformation-cec-chair-hochschilds-legacy",
+      "contentType": "Post",
+      "contentId": "post-17567",
+      "title": "California's Clean Energy Transformation: CEC Chair Hochschild's Legacy",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-acquires-ojjo-inc": {
+      "path": "/post/shug-speaks/nextracker-acquires-ojjo-inc",
+      "contentType": "Post",
+      "contentId": "post-17569",
+      "title": "Nextracker acquires Ojjo, Inc.",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-goes-electric-with-forum-mobility-and-hight-logistics": {
+      "path": "/post/shug-speaks/nextracker-goes-electric-with-forum-mobility-and-hight-logistics",
+      "contentType": "Post",
+      "contentId": "post-17570",
+      "title": "Nextracker Goes Electric with Forum Mobility and Hight Logistics",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/shug-speaks/nextracker-launches-low-carbon-tracker-variant": {
+      "path": "/post/shug-speaks/nextracker-launches-low-carbon-tracker-variant",
+      "contentType": "Post",
+      "contentId": "post-17572",
+      "title": "Nextracker launches Low Carbon tracker variant",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/press-release/nextracker-expands-solar-technology-platform-with-ebos-portfolio": {
+      "path": "/post/press-release/nextracker-expands-solar-technology-platform-with-ebos-portfolio",
+      "contentType": "Post",
+      "contentId": "post-17978",
+      "title": "Nextracker Expands Solar Technology Platform with eBOS Portfolio",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/products/module-mounting": {
+      "path": "/products/module-mounting",
+      "contentType": "PageList",
+      "contentId": "2KFnQf1yR0nTFRH4vhgwL3",
+      "title": "Module Mounting",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/module-mounting/nx-frame": {
+      "path": "/products/module-mounting/nx-frame",
+      "contentType": "Product",
+      "contentId": "4iIEMhihbmbr6g3Gv7Qmw8",
+      "title": "NX Frame",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2KFnQf1yR0nTFRH4vhgwL3",
+          "slug": "module-mounting",
+          "title": "Module Mounting"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls": {
+      "path": "/products/controls",
+      "contentType": "PageList",
+      "contentId": "5Y0xG9Yrt9BMykmkT6syFE",
+      "title": "Controls",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/controls/truecapture": {
+      "path": "/products/controls/truecapture",
+      "contentType": "Product",
+      "contentId": "1xeZxPdBlDxpdg6M3hXLx2",
+      "title": "TrueCapture",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-spc-3-0": {
+      "path": "/products/controls/nx-spc-3-0",
+      "contentType": "Product",
+      "contentId": "2RNGo2s5wihk1UGpmZ2i17",
+      "title": "NX SPC 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-ncu-3-0": {
+      "path": "/products/controls/nx-ncu-3-0",
+      "contentType": "Product",
+      "contentId": "4l6SWWrvJpRb7xYP05uS13",
+      "title": "NX NCU 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software": {
+      "path": "/products/software",
+      "contentType": "PageList",
+      "contentId": "7qr1G5kGWgMz0P6h7bP3uh",
+      "title": "Software",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/software/nx-one": {
+      "path": "/products/software/nx-one",
+      "contentType": "Product",
+      "contentId": "1cHN2LeI2avRpFR62rpSU4",
+      "title": "NX One",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-pulse": {
+      "path": "/products/software/nx-pulse",
+      "contentType": "Product",
+      "contentId": "5r0LXjxsjAE9TtvniipiAm",
+      "title": "NX Pulse",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-navigator": {
+      "path": "/products/software/nx-navigator",
+      "contentType": "Product",
+      "contentId": "1EY8F4Gjy6TYpJLsc60C0v",
+      "title": "NX Navigator",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos": {
+      "path": "/products/ebos",
+      "contentType": "PageList",
+      "contentId": "2nZMa6ZFTD4M3mXig0SiNt",
+      "title": "eBOS",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/ebos/nx-trunk-bus": {
+      "path": "/products/ebos/nx-trunk-bus",
+      "contentType": "Product",
+      "contentId": "3cu2FZ5qtkggLVUDPsKawx",
+      "title": "Trunk Bus Solutions",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-combiner": {
+      "path": "/products/ebos/nx-combiner",
+      "contentType": "Product",
+      "contentId": "3428uOH0oo5HMMCbDp3Hk0",
+      "title": "Combiner System Solutions",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-string-harnesses": {
+      "path": "/products/ebos/nx-string-harnesses",
+      "contentType": "Product",
+      "contentId": "7zZVu4UAJmILn7nqtIqEF0",
+      "title": "Harnessing Solutions",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations": {
+      "path": "/products/foundations",
+      "contentType": "PageList",
+      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
+      "title": "Foundations",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/foundations/nx-anchor": {
+      "path": "/products/foundations/nx-anchor",
+      "contentType": "Product",
+      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
+      "title": "NX Anchor",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/nx-earth-truss": {
+      "path": "/products/foundations/nx-earth-truss",
+      "contentType": "Product",
+      "contentId": "1a0d7tauTWefbQRZMeQfAt",
+      "title": "NX Earth Truss",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/company/americas": {
+      "path": "/company/americas",
+      "contentType": "Page",
+      "contentId": "7utGKQIsIklaMjVxz7k1ST",
+      "title": "Americas",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/europe": {
+      "path": "/company/europe",
+      "contentType": "Page",
+      "contentId": "2DtYaKAqtl0pvXZ6r0mGbG",
+      "title": "Europe",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/latin-america": {
+      "path": "/company/latin-america",
+      "contentType": "Page",
+      "contentId": "1H6Wg0pXOWCcPt8SmNI93K",
+      "title": "Latin America",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/australian-pacific": {
+      "path": "/company/australian-pacific",
+      "contentType": "Page",
+      "contentId": "7aHJKA0m6coEFTGARf4ARF",
+      "title": "Australian Pacific",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/middle-east-africa-and-india": {
+      "path": "/company/middle-east-africa-and-india",
+      "contentType": "Page",
+      "contentId": "oYRNylrRbGWZw1ekL9893",
+      "title": "Middle East, Africa, and India",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/products/trackers": {
+      "path": "/products/trackers",
+      "contentType": "PageList",
+      "contentId": "4m1qhYPxnSKhmFUfXdHTU6",
+      "title": "Trackers",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/trackers/nx-horizon": {
+      "path": "/products/trackers/nx-horizon",
+      "contentType": "Product",
+      "contentId": "2BiA1smnYF1BgNAoiFDcwT",
+      "title": "NX Horizon",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-xtr": {
+      "path": "/products/trackers/nx-horizon-xtr",
+      "contentType": "Product",
+      "contentId": "3wyPjy8fu54APsGHHBOxc9",
+      "title": "NX Horizon XTR",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-low-carbon": {
+      "path": "/products/trackers/nx-horizon-low-carbon",
+      "contentType": "Product",
+      "contentId": "6C7yOf2KRBh292iC9XHet5",
+      "title": "NX Horizon Low Carbon",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-hall-pro": {
+      "path": "/products/trackers/nx-horizon-hall-pro",
+      "contentType": "Product",
+      "contentId": "5U25yOzw7QYeCAaPxTukdz",
+      "title": "NX Horizon Hall Pro",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/energy-and-ai": {
+      "path": "/solutions/energy-and-ai",
+      "contentType": "PageList",
+      "contentId": "1W1hboXGhFDcZZjPuNz4A6",
+      "title": "Energy & AI",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/energy-and-ai/behind-the-meter-energy": {
+      "path": "/solutions/energy-and-ai/behind-the-meter-energy",
+      "contentType": "Solution",
+      "contentId": "2NvRTOe2kKRqu3X9r7PzGu",
+      "title": "Behind the Meter Energy",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "1W1hboXGhFDcZZjPuNz4A6",
+          "slug": "energy-and-ai",
+          "title": "Energy & AI"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/mitigate-risk": {
+      "path": "/solutions/mitigate-risk",
+      "contentType": "PageList",
+      "contentId": "3Y1FxD3zmQaq6sMGVfCabP",
+      "title": "Mitigate Risk",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/mitigate-risk/high-winds": {
+      "path": "/solutions/mitigate-risk/high-winds",
+      "contentType": "Solution",
+      "contentId": "7n6kIFkQ5F5k7ZD2JNSJ9W",
+      "title": "High Winds",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "3Y1FxD3zmQaq6sMGVfCabP",
+          "slug": "mitigate-risk",
+          "title": "Mitigate Risk"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/mitigate-risk/severe-hail": {
+      "path": "/solutions/mitigate-risk/severe-hail",
+      "contentType": "Solution",
+      "contentId": "2h7nwxYtKGg6pM07Kmz91S",
+      "title": "Severe Hail",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "3Y1FxD3zmQaq6sMGVfCabP",
+          "slug": "mitigate-risk",
+          "title": "Mitigate Risk"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/maximize-energy": {
+      "path": "/solutions/maximize-energy",
+      "contentType": "PageList",
+      "contentId": "1QsL0T1nGia3Xb3QIgAHX9",
+      "title": "Maximize Energy",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/maximize-energy/harnessing-diffuse-light": {
+      "path": "/solutions/maximize-energy/harnessing-diffuse-light",
+      "contentType": "Solution",
+      "contentId": "4NSuwxjrZd77Q1jtfbllXu",
+      "title": "Harnessing Diffuse Light",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "1QsL0T1nGia3Xb3QIgAHX9",
+          "slug": "maximize-energy",
+          "title": "Maximize Energy"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment": {
+      "path": "/solutions/accelerate-deployment",
+      "contentType": "PageList",
+      "contentId": "6q56XSMwCVB2V71cliepN8",
+      "title": "Accelerate Deployment",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/accelerate-deployment/design-optimization": {
+      "path": "/solutions/accelerate-deployment/design-optimization",
+      "contentType": "Solution",
+      "contentId": "3ZmCBJyUJUajVxrGyN31JD",
+      "title": "Design Optimization",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment/efficient-installation": {
+      "path": "/solutions/accelerate-deployment/efficient-installation",
+      "contentType": "Solution",
+      "contentId": "6uZMSbUsq9hDU3wwC5vqiP",
+      "title": "Efficient Installation",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment/challenging-terrain": {
+      "path": "/solutions/accelerate-deployment/challenging-terrain",
+      "contentType": "Solution",
+      "contentId": "6l4ihujW4glaAjluioKS7u",
+      "title": "Challenging Terrain",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/what-we-do": {
+      "path": "/what-we-do",
+      "contentType": "PageList",
+      "contentId": "6hZgkzffUtjkdDmLTaxhtA",
+      "title": "What We Do",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/design": {
+      "path": "/what-we-do/design",
+      "contentType": "Page",
+      "contentId": "78Exftk8Eb61rI1aUs6NSP",
+      "title": "Design",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/deploy": {
+      "path": "/what-we-do/deploy",
+      "contentType": "Page",
+      "contentId": "6Zud8HVc7GcgXmXkwagUIG",
+      "title": "Deploy",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/operate": {
+      "path": "/what-we-do/operate",
+      "contentType": "Page",
+      "contentId": "Yy0cCKER82ItNejQHVupT",
+      "title": "Operate",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/services/design": {
+      "path": "/services/design",
+      "contentType": "PageList",
+      "contentId": "5PEdk3ERQ1FiocWOIRGesF",
+      "title": "Services - Design",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/services/design/placeholder-service": {
+      "path": "/services/design/placeholder-service",
+      "contentType": "Service",
+      "contentId": "135PuXvQxsYRxg5pbcstLq",
+      "title": "Placeholder Service",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "monthly"
+    },
+    "/services": {
+      "path": "/services",
+      "contentType": "PageList",
+      "contentId": "S9VRDgZynofG8njIodBio",
+      "title": "Services",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products": {
+      "path": "/products",
+      "contentType": "PageList",
+      "contentId": "68yU43vhRr4sJ4E5qpvWtm",
+      "title": "Products",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/legal": {
+      "path": "/legal",
+      "contentType": "PageList",
+      "contentId": "5pcLHNgNSUOaIiorRJNbUJ",
+      "title": "Legal",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/legal/global-data-protection-policy": {
+      "path": "/legal/global-data-protection-policy",
+      "contentType": "Page",
+      "contentId": "n21eyOxWnJnrXvdat1KkG",
+      "title": "Global Data Protection Policy ",
+      "parentPageLists": [
+        {
+          "id": "5pcLHNgNSUOaIiorRJNbUJ",
+          "slug": "legal",
+          "title": "Legal"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/legal/cookie-policy": {
+      "path": "/legal/cookie-policy",
+      "contentType": "Page",
+      "contentId": "2cL4aGA9RbSLprtHuB7waR",
+      "title": "Cookie Policy",
+      "parentPageLists": [
+        {
+          "id": "5pcLHNgNSUOaIiorRJNbUJ",
+          "slug": "legal",
+          "title": "Legal"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/legal/legal-disclaimer": {
+      "path": "/legal/legal-disclaimer",
+      "contentType": "Page",
+      "contentId": "48HCYETH5NDvlZOOrvRcbf",
+      "title": "Legal Disclaimer",
+      "parentPageLists": [
+        {
+          "id": "5pcLHNgNSUOaIiorRJNbUJ",
+          "slug": "legal",
+          "title": "Legal"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/solutions": {
+      "path": "/solutions",
+      "contentType": "PageList",
+      "contentId": "486yYZWU43HKT0m4mQGBAq",
+      "title": "Solutions",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/investors": {
+      "path": "/investors",
+      "contentType": "PageList",
+      "contentId": "6gwc4b7XzSikzQLVkCZ9uP",
+      "title": "Investors",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/useful-links": {
+      "path": "/useful-links",
+      "contentType": "PageList",
+      "contentId": "5UgQrsRf0PyenWMuwzM4rP",
+      "title": "Useful Links",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    }
+  },
+  "generatedAt": "2025-10-23T19:21:24.074Z",
+  "version": "1.0.0"
+}

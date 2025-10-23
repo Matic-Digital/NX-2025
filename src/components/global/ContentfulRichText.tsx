@@ -1,8 +1,9 @@
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
-import type { Document } from '@contentful/rich-text-types';
 import Link from 'next/link';
+
+import type { Document } from '@contentful/rich-text-types';
 
 interface ContentfulRichTextProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,9 +101,7 @@ export const ContentfulRichText = ({ content, className = '' }: ContentfulRichTe
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const reactContent = documentToReactComponents(content.json as Document, options);
     return <div className={className}>{reactContent}</div>;
-  } catch (error) {
-    console.error('Error rendering Contentful rich text:', error);
-
+  } catch {
     if (process.env.NODE_ENV !== 'production') {
       return (
         <div className="rounded border border-red-200 bg-red-50 p-4">

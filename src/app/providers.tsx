@@ -2,22 +2,19 @@
 
 // Types
 import { type ReactNode } from 'react';
-
+// Contentful Live Preview
+import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // State Management
 import { Provider as JotaiProvider } from 'jotai';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 // Theme
 import { ThemeProvider } from 'next-themes';
 import { Provider as WrapBalancerProvider } from 'react-wrap-balancer';
 
-// Contentful Live Preview
-import { ContentfulLivePreviewProvider } from '@contentful/live-preview/react';
-
 // Utils
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // import { DevTools } from 'jotai-devtools';
-import 'jotai-devtools/styles.css';
+// import 'jotai-devtools/styles.css';
 
 /**
  * Global providers wrapper component
@@ -35,7 +32,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
         {/* <DevTools theme="dark" /> */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           enableColorScheme
           storageKey="matic-ui-theme"

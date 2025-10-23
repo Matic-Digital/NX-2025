@@ -1,5 +1,6 @@
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+import type { NextRequest } from 'next/server';
 
 // Note: We can't import directly from @/lib/api in middleware
 // because middleware runs in a different environment
@@ -20,6 +21,23 @@ import { NextResponse } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
+  // Handle CORS for preview pages and API routes first
+  if (
+    request.nextUrl.pathname.includes('-preview') ||
+    request.nextUrl.pathname.startsWith('/api/preview')
+  ) {
+    const response = NextResponse.next();
+
+    // Remove restrictive headers and allow iframe embedding from Contentful
+    response.headers.delete('X-Frame-Options');
+    response.headers.set(
+      'Content-Security-Policy',
+      "frame-ancestors 'self' https://app.contentful.com;"
+    );
+
+    return response;
+  }
+
   // Only process GET requests to potential page routes
   if (request.method !== 'GET') {
     return NextResponse.next();
@@ -36,6 +54,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith('/page-preview') ||
     path.startsWith('/page-list-preview') ||
     path.startsWith('/banner-hero-preview') ||
+    path.startsWith('/section-heading-preview') ||
     path.startsWith('/header-preview') ||
     path.startsWith('/footer-preview') ||
     path === '/favicon.ico' ||
@@ -52,7 +71,6 @@ export async function middleware(request: NextRequest) {
   // We're looking for paths like /resources/templates, which have more than one segment
   const segments = path.split('/').filter(Boolean);
   if (segments.length > 1) {
-    console.log(`Middleware: Skipping path with multiple segments: ${path}`);
     return NextResponse.next();
   }
 
@@ -67,12 +85,6 @@ export async function middleware(request: NextRequest) {
   // In production environments, especially on Vercel's Edge Runtime,
   // API calls from middleware can be problematic with authentication.
   // Instead, we'll let the page component handle nested page resolution.
-  //
-  // Note: In development/local environments, the API call might work fine,
-  // which explains why this issue only happens in production.
-  console.log(
-    `Middleware: Skipping API check for ${slug} in Edge Runtime, letting page handle routing`
-  );
 
   // In a full production solution, you might implement a more robust approach like:
   // 1. Store page relationships in a more Edge-friendly storage solution

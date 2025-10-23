@@ -2,7 +2,9 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/* @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *));
+ */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Use globals.css for:
  * Base element styles
@@ -128,7 +130,7 @@
   --text-input: #737373;
   --text-input-hover: #525252;
   --text-input-focus: var(--black);
-  --text-primary: #8b5cf6;
+  --text-primary: #fe5000;
   --text-primary-hover: #6d28d9;
   --text-primary-link: #8b5cf6;
   --text-primary-link-hover: #7c3aed;
@@ -295,7 +297,7 @@
   --text-input: #737373;
   --text-input-hover: #525252;
   --text-input-focus: var(--black);
-  --text-primary: #ddd6fe;
+  --text-primary: #fe5000;
   --text-primary-hover: #7c3aed;
   --text-primary-link: #ddd6fe;
   --text-primary-link-hover: #7c3aed;
@@ -314,7 +316,7 @@
   --card-foreground: var(--text-body);
   --popover: var(--body);
   --popover-foreground: var(--text-body);
-  --primary: var(--primary);
+  --primary: #fe5000;
   --primary-foreground: var(--text-on-primary);
   --secondary: var(--secondary);
   --secondary-foreground: var(--white);
@@ -741,4 +743,27 @@
   .text-gradient-orange {
     @apply bg-linear-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent;
   }
+}
+
+/* Interactive SVG Map Styles */
+
+.regions-map .map-dots circle {
+  transition: fill 0.3s ease;
+}
+
+.regions-map:has(#northAmerica:hover) #northAmerica-dots circle,
+.regions-map:has(#europe:hover) #europe-dots circle,
+.regions-map:has(#latinAmerica:hover) #latinAmerica-dots circle,
+.regions-map:has(#australiaPacific:hover) #australiaPacific-dots circle,
+.regions-map:has(#middleEastIndiaAfrica:hover) #middleEastIndiaAfrica-dots circle {
+  fill: #f97316;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }

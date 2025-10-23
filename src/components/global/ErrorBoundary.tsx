@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect, type ReactNode } from 'react';
-// import { useRouter } from "next/navigation";
+import React, { useEffect } from 'react';
 
-import { Box } from '@/components/global/matic-ds';
+import { AlertCircle } from 'lucide-react';
+
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { AlertCircle } from 'lucide-react';
+
+import { Box } from '@/components/global/matic-ds';
+
+import type { ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -19,8 +22,7 @@ export function ErrorBoundary({ children, fallback }: Props) {
 
   useEffect(() => {
     // Add error event listener for uncaught client errors
-    const handleError = (event: ErrorEvent) => {
-      console.error('Client error:', event.error);
+    const handleError = (_event: ErrorEvent) => {
       // You could send this to your error reporting service
     };
 
@@ -42,9 +44,8 @@ class ErrorBoundaryInner extends React.Component<Props, { error: Error | null }>
     return { error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  componentDidCatch(_error: Error, _errorInfo: React.ErrorInfo) {
     // Log error to your error reporting service
-    console.error('Component error:', error, errorInfo);
   }
 
   private handleReset = () => {

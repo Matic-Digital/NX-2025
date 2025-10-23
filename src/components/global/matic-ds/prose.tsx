@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+
 import type { ArticleProps } from './types';
 
 /**
@@ -29,6 +30,7 @@ import type { ArticleProps } from './types';
 export const Prose = ({ children, className, id, html }: ArticleProps) => {
   return (
     <div
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={html}
       className={cn(
         'matic spaced',

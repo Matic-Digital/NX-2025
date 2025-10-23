@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
-import { Container, Box } from '@/components/global/matic-ds';
+import { Box, Container } from '@/components/global/matic-ds';
+
 /**
  * NotFound component
  * Displayed when a page or resource is not found (404 error)

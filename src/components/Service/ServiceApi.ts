@@ -1,0 +1,178 @@
+import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ContentfulError, NetworkError } from '@/lib/errors';
+
+import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENT_GRAPHQL_FIELDS } from '@/components/Content/ContentApi';
+import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+
+import type { Service, ServiceResponse } from '@/components/Service/ServiceSchema';
+
+// Service fields
+export const SERVICE_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  slug
+  description
+  pageLayout {
+    ${SYS_FIELDS}
+    header {
+      ${SYS_FIELDS}
+    }
+    footer {
+      ${SYS_FIELDS}
+    }
+  }
+  itemsCollection {
+    items { 
+      __typename
+      ... on BannerHero {
+        ${BANNERHERO_GRAPHQL_FIELDS}
+      }
+      ... on Content {
+        ${CONTENT_GRAPHQL_FIELDS}
+      }
+      ... on ContentGrid {
+        ${CONTENTGRID_GRAPHQL_FIELDS}
+      }
+      ... on CtaBanner {
+        ${CTABANNER_GRAPHQL_FIELDS}
+      }
+    }
+  }
+`;
+
+export async function getAllServices(preview = false): Promise<ServiceResponse> {
+  try {
+    const response = await fetchGraphQL<Service>(
+      `query GetAllServices($preview: Boolean!) {
+        serviceCollection(preview: $preview, order: sys_publishedAt_DESC) {
+          items {
+            ${SERVICE_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { serviceCollection?: { items?: Service[] } };
+
+    // Validate the data structure
+    if (!data.serviceCollection?.items?.length) {
+      throw new ContentfulError('Failed to fetch Services from Contentful');
+    }
+
+    return {
+      items: data.serviceCollection.items
+    };
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
+    }
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Services: ${_error.message}`);
+    }
+    throw new Error('Unknown error fetching Services');
+  }
+}
+
+/**
+ * Fetches a single Service by ID from Contentful
+ * @param id - The ID of the Service to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to Service or null if not found
+ */
+export async function getServiceById(id: string, preview = false): Promise<Service | null> {
+  try {
+    const response = await fetchGraphQL<Service>(
+      `query GetServiceById($id: String!, $preview: Boolean!) {
+        service(id: $id, preview: $preview) {
+          ${SERVICE_GRAPHQL_FIELDS}
+        }
+      }`,
+      { id, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { service?: Service };
+
+    // Return null if post not found
+    if (!data.service) {
+      return null;
+    }
+
+    return data.service;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
+    }
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Service: ${_error.message}`);
+    }
+    throw new Error('Unknown error fetching Service');
+  }
+}
+
+/**
+ * Fetches a single Service by slug from Contentful
+ * @param slug - The slug of the Service to fetch
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to Service or null if not found
+ */
+export async function getServiceBySlug(slug: string, preview = false): Promise<Service | null> {
+  try {
+    const response = await fetchGraphQL<Service>(
+      `query GetServiceBySlug($slug: String!, $preview: Boolean!) {
+        serviceCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
+          items {
+            ${SERVICE_GRAPHQL_FIELDS}
+          }
+        }
+      }`,
+      { slug, preview },
+      preview
+    );
+
+    // Check for valid response
+    if (!response?.data) {
+      throw new ContentfulError('Invalid response from Contentful');
+    }
+
+    // Access data using type assertion to help TypeScript understand the structure
+    const data = response.data as unknown as { serviceCollection?: { items?: Service[] } };
+
+    // Return null if post not found
+    if (!data.serviceCollection?.items?.length) {
+      return null;
+    }
+
+    const service = data.serviceCollection.items[0];
+    if (!service) {
+      return null;
+    }
+
+    return service;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
+    }
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Service by slug: ${_error.message}`);
+    }
+    throw new Error('Unknown error fetching Service by slug');
+  }
+}
