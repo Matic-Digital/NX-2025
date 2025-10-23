@@ -120,16 +120,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/ebos-product": {
-      "path": "/ebos-product",
-      "contentType": "Product",
-      "contentId": "8aZYChKueDSVa2xPevtFR",
-      "title": "eBOS Product",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
     "/controls-product": {
       "path": "/controls-product",
       "contentType": "Product",
@@ -1773,6 +1763,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-22T22:44:17.353Z",
+  "generatedAt": "2025-10-23T00:57:01.478Z",
   "version": "1.0.0"
 }

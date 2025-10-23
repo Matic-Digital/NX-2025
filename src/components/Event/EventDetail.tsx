@@ -17,6 +17,7 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
 import { getAllPostsMinimal } from '@/components/Post/PostApi';
+import { getPostsByCategories } from '@/components/Event/EventApi';
 import { useState, useEffect } from 'react';
 import type { Post } from '@/components/Post/PostSchema';
 import { PostCard } from '@/components/Post/PostCard';
@@ -53,7 +54,6 @@ function NewsPosts() {
         
         setNewsPosts(newsPosts);
       } catch (error) {
-        console.error('Error fetching news posts:', error);
         setNewsPosts([]);
       } finally {
         setLoading(false);
@@ -85,6 +85,111 @@ function NewsPosts() {
           sys={{ id: post.sys.id }}
         />
       ))}
+    </div>
+  );
+}
+
+// Event Post Categories Component
+interface EventPostCategoriesProps {
+  categories: string[];
+  maxPostsPerCategory: number;
+  title?: string;
+  description?: string;
+}
+
+function EventPostCategories({ categories, maxPostsPerCategory, title, description }: EventPostCategoriesProps) {
+  const [postsByCategory, setPostsByCategory] = useState<Record<string, Post[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPostsByCategories = async () => {
+      try {
+        setLoading(true);
+        const posts = await getPostsByCategories(categories, maxPostsPerCategory);
+        setPostsByCategory(posts);
+      } catch (error) {
+        // Error handled silently
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (categories.length > 0) {
+      void fetchPostsByCategories();
+    } else {
+      setLoading(false);
+    }
+  }, [categories, maxPostsPerCategory]);
+
+  if (loading) {
+    return (
+      <div>
+        {/* Section Header */}
+        {(title ?? description) && (
+          <div className="mb-12">
+            {title && (
+              <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>
+            )}
+            {description && (
+              <p className="text-lg text-gray-600">{description}</p>
+            )}
+          </div>
+        )}
+        
+        <div className="space-y-12">
+          {categories.map((category) => (
+            <div key={category}>
+              <h3 className="text-[2rem] font-normal leading-[120%] mb-6">{category}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {Array.from({ length: Math.min(maxPostsPerCategory, 3) }).map((_, i) => (
+                  <PostCardSkeleton key={i} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Filter out categories with no posts
+  const categoriesWithPosts = categories.filter(category => 
+    postsByCategory[category] && postsByCategory[category].length > 0
+  );
+
+  if (categoriesWithPosts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div>
+      {/* Section Header */}
+      {(title ?? description) && (
+        <div className="mb-12">
+          {title && (
+            <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>
+          )}
+          {description && (
+            <p className="text-lg text-gray-600">{description}</p>
+          )}
+        </div>
+      )}
+      
+      <div className="space-y-12">
+        {categoriesWithPosts.map((category) => (
+          <div key={category}>
+            <h3 className="text-[2rem] font-normal leading-[120%] mb-6">{category}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {postsByCategory[category]?.map((post) => (
+                <PostCard 
+                  key={post.sys.id} 
+                  sys={{ id: post.sys.id }}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -143,12 +248,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
   
   const formattedTimeRange = formatTimeRange(event.dateTime, event.endDateTime);
   
-  // Debug: Log the event data to see if endDateTime is present
-  console.log('Event data:', { 
-    dateTime: event.dateTime, 
-    endDateTime: event.endDateTime,
-    hasEndDateTime: !!event.endDateTime 
-  });
+  // Event data processing
 
   // Render based on template type
   switch (event.template as string) {
@@ -367,6 +467,18 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {event.slider && (
               <div className="mt-[6rem]">
                 <Slider {...event.slider} />
+              </div>
+            )}
+
+            {/* Event Post Categories */}
+            {event.postCategories && event.postCategories.length > 0 && (
+              <div className="mt-[6rem]">
+                <EventPostCategories 
+                  categories={event.postCategories}
+                  maxPostsPerCategory={event.maxPostsPerCategory ?? 3}
+                  title="Downloads"
+                  description="Please browse and download datasheets, case studies, and whitepapers of interest."
+                />
               </div>
             )}
 

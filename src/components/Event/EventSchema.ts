@@ -16,6 +16,18 @@ import { SliderSysSchema } from '@/components/Slider/SliderSchema';
 // Event template options as defined in the content model
 const EventTemplateSchema = z.enum(['Landing 1', 'Landing 2', 'Landing 3', 'Agenda']);
 
+// Post category options for events
+const EventPostCategorySchema = z.enum([
+  'Blogs',
+  'Case Studies', 
+  'Data Sheets',
+  'Featured',
+  'In The News',
+  'Press Releases',
+  'Video',
+  'Whitepaper'
+]);
+
 
 export const EventSchema = z.object({
   sys: z.object({
@@ -56,6 +68,8 @@ export const EventSchema = z.object({
     items: z.array(ContactCardSchema)
   }).optional(),
   slider: SliderSysSchema.optional(),
+  postCategories: z.array(EventPostCategorySchema).optional(),
+  maxPostsPerCategory: z.number().optional(),
   __typename: z.string().optional()
 });
 

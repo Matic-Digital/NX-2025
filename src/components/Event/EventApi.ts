@@ -13,6 +13,23 @@ import { CONTACT_CARD_GRAPHQL_FIELDS } from '@/components/ContactCard/ContactCar
 import { SLIDER_GRAPHQL_FIELDS_SIMPLE } from '@/components/Slider/SliderApi';
 
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
+import type { Post } from '@/components/Post/PostSchema';
+
+// Post fields for event post categories (includes gatedContentForm for Case Study filtering)
+const EVENT_POST_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  slug
+  datePublished
+  externalLink
+  mainImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  categories
+  gatedContentForm {
+    ${SYS_FIELDS}
+  }
+`;
 
 // Event fields for collections/listings
 export const EVENT_MINIMAL_FIELDS = `
@@ -99,6 +116,8 @@ export const EVENT_GRAPHQL_FIELDS = `
   slider {
     ${SLIDER_GRAPHQL_FIELDS_SIMPLE}
   }
+  postCategories
+  maxPostsPerCategory
 `;
 
 /**
@@ -232,5 +251,79 @@ export async function getEventById(id: string, preview = false): Promise<Event |
       throw new NetworkError(`Error fetching Event: ${error.message}`);
     }
     throw new Error('Unknown error fetching Event');
+  }
+}
+
+/**
+ * Maps Event category names (plural) to Post category names (singular)
+ */
+const eventCategoryToPostCategory: Record<string, string> = {
+  'Blogs': 'Blog',
+  'Case Studies': 'Case Study',
+  'Data Sheets': 'Data Sheet',
+  'Featured': 'Featured',
+  'In The News': 'In The News',
+  'Press Releases': 'Press Release',
+  'Video': 'Video',
+  'Whitepaper': 'Whitepaper'
+};
+
+/**
+ * Fetches posts by categories for event Landing 1 template
+ * @param categories - Array of event post categories to fetch
+ * @param maxPerCategory - Maximum posts per category (default 3)
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to posts grouped by category
+ */
+export async function getPostsByCategories(
+  categories: string[], 
+  maxPerCategory = 3, 
+  preview = false
+): Promise<Record<string, Post[]>> {
+  try {
+    const postsByCategory: Record<string, Post[]> = {};
+    
+    // Fetch posts for each category
+    for (const eventCategory of categories) {
+      // Map event category to post category
+      const postCategory = eventCategoryToPostCategory[eventCategory];
+      if (!postCategory) {
+        continue;
+      }
+      const response = await fetchGraphQL<{ postCollection: { items: unknown[] } }>(
+        `query GetPostsByCategory($category: String!, $limit: Int!, $preview: Boolean!) {
+          postCollection(
+            where: { categories_contains_some: [$category] }, 
+            limit: $limit, 
+            order: datePublished_DESC,
+            preview: $preview
+          ) {
+            items {
+              ${EVENT_POST_GRAPHQL_FIELDS}
+            }
+          }
+        }`,
+        { category: postCategory, limit: maxPerCategory, preview },
+        preview
+      );
+
+      if (response?.data?.postCollection?.items) {
+        let posts = response.data.postCollection.items as unknown as Post[];
+        
+        // Filter Case Studies to only show those with external link or gated content form
+        if (eventCategory === 'Case Studies') {
+          posts = posts.filter((post) => 
+            Boolean(post.externalLink) || Boolean(post.gatedContentForm?.sys?.id)
+          );
+        }
+        
+        // Store using the original event category name for display
+        postsByCategory[eventCategory] = posts;
+      }
+    }
+    
+    return postsByCategory;
+  } catch (error) {
+    return {};
   }
 }

@@ -22,7 +22,8 @@ const PostCategorySchema = z.enum([
   'Press Release',
   'Resources',
   'Shug Speaks',
-  'Video'
+  'Video',
+  'Whitepaper'
 ]);
 
 // Rich text content schema (simplified for the content field)
