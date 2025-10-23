@@ -678,58 +678,35 @@ function generateXmlSitemap(routingCache: RoutingCache): string {
  */
 async function generateRoutingSitemap(): Promise<void> {
   try {
-    console.log('🚀 Generating routing sitemap...');
-    console.log('Using environment:', CONTENTFUL_ENVIRONMENT);
-    console.log('Base URL:', BASE_URL);
-
     const [standalonePages, pageLists, contentItems] = await Promise.all([
       getStandalonePages(),
       getPageListsWithPages(),
       getStandaloneContentItems()
     ]);
 
-    console.log(`📄 Found ${standalonePages.length} standalone pages`);
-    console.log(`📋 Found ${pageLists.length} page lists`);
-    console.log(`🛍️ Found ${contentItems.products.length} standalone products`);
-    console.log(`💡 Found ${contentItems.solutions.length} standalone solutions`);
-    console.log(`🔧 Found ${contentItems.services.length} standalone services`);
-    console.log(`📝 Found ${contentItems.posts.length} standalone posts`);
-
     // Generate routing cache
     const routingCache = generateRoutingCache(standalonePages, pageLists, contentItems);
-
-    console.log(`\n🗺️ Generated ${Object.keys(routingCache.routes).length} routes:`);
-    Object.values(routingCache.routes).forEach((route) => {
-      const nestedIndicator = route.isNested ? ' (nested)' : '';
-      console.log(`  - ${route.path} → ${route.contentType}${nestedIndicator}`);
-    });
 
     // Write routing cache to src/lib for runtime access
     const routingCachePath = path.join(__dirname, '..', 'src', 'lib', 'routing-cache.json');
     fs.writeFileSync(routingCachePath, JSON.stringify(routingCache, null, 2));
-    console.log(`\n💾 Routing cache written to: ${routingCachePath}`);
 
     // Generate and write XML sitemap
     const xmlContent = generateXmlSitemap(routingCache);
     const xmlOutputPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
     fs.writeFileSync(xmlOutputPath, xmlContent, 'utf8');
-    console.log(`📄 Sitemap.xml written to: ${xmlOutputPath}`);
 
     // Write debug JSON for development
     const debugPath = path.join(__dirname, '..', 'routing-debug.json');
     fs.writeFileSync(debugPath, JSON.stringify(routingCache, null, 2));
-    console.log(`🐛 Debug JSON written to: ${debugPath}`);
 
     // Generate redirects based on the routing cache
     const redirects = generateRedirects(routingCache);
     const redirectsPath = path.join(__dirname, '..', 'src', 'lib', 'route-redirects.json');
     fs.writeFileSync(redirectsPath, JSON.stringify(redirects, null, 2));
-    console.log(`🔀 Route redirects written to: ${redirectsPath}`);
 
-    console.log(`\n✅ Routing sitemap generation complete!`);
-    console.log(`   - Total routes: ${Object.keys(routingCache.routes).length}`);
-    console.log(`   - Total redirects: ${redirects.length}`);
-    console.log(`   - Generated at: ${routingCache.generatedAt}`);
+    // Only show summary on completion
+    console.log(`✅ Generated ${Object.keys(routingCache.routes).length} routes and ${redirects.length} redirects`);
   } catch (error) {
     console.error(
       '❌ Error generating routing sitemap:',
