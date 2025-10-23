@@ -6,7 +6,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
 
 import type { Modal } from '@/components/Modals/Modal';
 

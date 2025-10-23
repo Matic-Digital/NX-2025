@@ -5,11 +5,11 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
-import { hubspotFormFields } from '@/components/Forms/HubspotForm/preview/HubspotFormFields';
+import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
+import { hubspotFormFields } from '@/components/forms/HubspotForm/preview/HubspotFormFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
-import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import type { HubspotForm as HubspotFormType } from '@/components/forms/HubspotForm/HubspotFormSchema';
 
 /**
  * This component is used in Contentful Live Preview to display HubspotForm components

@@ -5,7 +5,7 @@ import { AgendaItemSchema } from '@/components/AgendaItem/AgendaItemSchema';
 import { AssetSchema } from '@/components/Asset/AssetSchema';
 import { ButtonSchema } from '@/components/Button/ButtonSchema';
 import { ContactCardSchema } from '@/components/ContactCard/ContactCardSchema';
-import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { HubspotFormSchema } from '@/components/forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { OfficeLocationSchema } from '@/components/OfficeLocation/OfficeLocationSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';

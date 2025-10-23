@@ -5,7 +5,7 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 import { AGENDA_ITEM_GRAPHQL_FIELDS } from '@/components/AgendaItem/AgendaItemApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { CONTACT_CARD_GRAPHQL_FIELDS } from '@/components/ContactCard/ContactCardApi';
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/forms/HubspotForm/HubspotFormApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { LOCATION_GRAPHQL_FIELDS } from '@/components/OfficeLocation/OfficeLocationApi';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';

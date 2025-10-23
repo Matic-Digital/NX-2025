@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { ContentVariantEnum } from '@/components/Content/ContentVariant';
 import { ContentGridItemSchema } from '@/components/ContentGrid/ContentGridItemSchema';
-import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { HubspotFormSchema } from '@/components/forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { ProductSchema } from '@/components/Product/ProductSchema';
 import { SectionHeadingSchema } from '@/components/SectionHeading/SectionHeadingSchema';

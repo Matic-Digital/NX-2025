@@ -1,4 +1,4 @@
-import type { HubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import type { HubspotForm } from '@/components/forms/HubspotForm/HubspotFormSchema';
 import type { FieldConfig } from '@/components/Preview/FieldBreakdown';
 
 export const hubspotFormFields: FieldConfig<Partial<HubspotForm>>[] = [

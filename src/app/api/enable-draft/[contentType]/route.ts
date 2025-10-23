@@ -19,7 +19,7 @@ import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { getEventById } from '@/components/Event/EventApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
-import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { getHubspotFormById } from '@/components/forms/HubspotForm/HubspotFormApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getImageById } from '@/components/Image/ImageApi';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';

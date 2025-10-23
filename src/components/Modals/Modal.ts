@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { HubspotFormSchema } from '@/components/forms/HubspotForm/HubspotFormSchema';
 
 export const ModalSchema = z.object({
   sys: z

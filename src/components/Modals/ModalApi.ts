@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/forms/HubspotForm/HubspotFormApi';
 
 import type { Modal } from '@/components/Modals/Modal';
 

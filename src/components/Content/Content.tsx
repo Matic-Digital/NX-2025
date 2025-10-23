@@ -16,7 +16,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
@@ -29,7 +29,7 @@ import type {
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
-import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import type { HubspotForm as HubspotFormType } from '@/components/forms/HubspotForm/HubspotFormSchema';
 import type { Image } from '@/components/Image/ImageSchema';
 import type { Product } from '@/components/Product/ProductSchema';
 

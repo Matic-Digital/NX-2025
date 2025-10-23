@@ -1,9 +1,9 @@
 import { Box, Container } from '@/components/global/matic-ds';
 
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 
-import type { NewsletterSignup } from '@/components/Forms/NewsletterSignup/NewsletterSignupSchema';
+import type { NewsletterSignup } from '@/components/forms/NewsletterSignup/NewsletterSignupSchema';
 
 interface NewsletterSignupFormProps {
   data: NewsletterSignup;

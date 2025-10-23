@@ -2,7 +2,7 @@ import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 
-import type { HubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import type { HubspotForm } from '@/components/forms/HubspotForm/HubspotFormSchema';
 
 // ============================================================================
 // GRAPHQL FIELDS

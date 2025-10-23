@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import { FormMetadataDisplay } from '@/components/Forms/HubspotForm/FormMetadataDisplay';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { FormMetadataDisplay } from '@/components/forms/HubspotForm/FormMetadataDisplay';
+import { HubspotForm } from '@/components/forms/HubspotForm/HubspotForm';
 
-import type { HubSpotFormData } from '@/components/Forms/HubspotForm/fields/types';
+import type { HubSpotFormData } from '@/components/forms/HubspotForm/fields/types';
 
 export default function DynamicFormDemo() {
   const [formMetadata, setFormMetadata] = useState<HubSpotFormData | null>(null);
