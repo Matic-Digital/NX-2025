@@ -42,8 +42,7 @@ export function PageCard(props: PageCardProps) {
           if (data) {
             setPageData(data);
           }
-        } catch (error) {
-          console.error('Error fetching page data:', error);
+        } catch {
         } finally {
           setLoading(false);
         }

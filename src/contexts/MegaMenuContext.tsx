@@ -72,27 +72,30 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const closeMegaMenu = React.useCallback((menuId: string) => {
-    setOpenMegaMenus((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(menuId);
-      return newSet;
-    });
-    if (activeMegaMenuId === menuId) {
-      // Start closing animation
-      setIsAnimating(false);
-      // Wait for animation to complete before removing content
-      setTimeout(() => {
-        setActiveMegaMenuId(null);
-        setActiveMegaMenuContent(null);
-        setShouldRender(false);
-      }, 200); // Match animation duration
-    }
-  }, [activeMegaMenuId]);
+  const closeMegaMenu = React.useCallback(
+    (menuId: string) => {
+      setOpenMegaMenus((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(menuId);
+        return newSet;
+      });
+      if (activeMegaMenuId === menuId) {
+        // Start closing animation
+        setIsAnimating(false);
+        // Wait for animation to complete before removing content
+        setTimeout(() => {
+          setActiveMegaMenuId(null);
+          setActiveMegaMenuContent(null);
+          setShouldRender(false);
+        }, 200); // Match animation duration
+      }
+    },
+    [activeMegaMenuId]
+  );
 
   const setOverflowMenuOpenHandler = (isOpen: boolean) => {
     setIsOverflowMenuOpen(isOpen);
-    
+
     // Close all mega menus when overflow menu opens
     if (isOpen && activeMegaMenuId) {
       closeMegaMenu(activeMegaMenuId);
@@ -127,7 +130,7 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       const target = event.target as Element;
       const isClickingOnHeader = target.closest('header');
       const isClickingOnMegaMenu = target.closest('[data-mega-menu-portal]');
-      
+
       if (!isClickingOnHeader && !isClickingOnMegaMenu && activeMegaMenuId) {
         closeMegaMenu(activeMegaMenuId);
         setActiveMegaMenuContent(null);
@@ -140,12 +143,12 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
         const mouseEvent = event as MouseEvent;
         const target = mouseEvent.target as Element;
         const relatedTarget = mouseEvent.relatedTarget as Element | null;
-        
+
         // Check if we're leaving the mega menu portal or header area
         const isLeavingMegaMenu = target.closest('[data-mega-menu-portal]');
         const isEnteringHeader = relatedTarget?.closest('header');
         const isEnteringMegaMenu = relatedTarget?.closest('[data-mega-menu-portal]');
-        
+
         // Close if leaving mega menu and not entering header or another mega menu
         if (isLeavingMegaMenu && !isEnteringHeader && !isEnteringMegaMenu && activeMegaMenuId) {
           // Add a small delay to prevent accidental closes when moving between elements
@@ -159,13 +162,13 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
 
     if (typeof window !== 'undefined' && activeMegaMenuId) {
       document.addEventListener('mousedown', handleClickOutside);
-      
+
       // Add mouse leave listener to the mega menu portal
       const megaMenuPortal = document.querySelector('[data-mega-menu-portal]');
       if (megaMenuPortal) {
         megaMenuPortal.addEventListener('mouseleave', handleMouseLeave);
       }
-      
+
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
         if (megaMenuPortal) {
@@ -174,7 +177,6 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
       };
     }
   }, [activeMegaMenuId, closeMegaMenu, setActiveMegaMenuContent]);
-
 
   return (
     <MegaMenuContext.Provider
@@ -194,29 +196,28 @@ export function MegaMenuProvider({ children }: { children: ReactNode }) {
     >
       {children}
       {/* Single shared portal for all mega menus */}
-      {shouldRender && activeMegaMenuContent && typeof window !== 'undefined' && document.body &&
+      {shouldRender &&
+        activeMegaMenuContent &&
+        typeof window !== 'undefined' &&
+        document.body &&
         createPortal(
-          <div 
+          <div
             className={`fixed top-0 left-0 w-screen bg-black/[0.72] backdrop-blur-[30px] shadow-[0_4px_20px_0_rgba(0,0,0,0.16)] z-40 transition-all duration-200 ease-out ${
-              isAnimating 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 -translate-y-2'
+              isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
             }`}
             data-mega-menu-portal
           >
-            <div className={`pt-24 px-6 transition-all duration-200 ease-out delay-75 ${
-              isAnimating 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 -translate-y-1'
-            }`}>
-              <Container>
-                {activeMegaMenuContent}
-              </Container>
+            <div
+              className={`pt-24 px-6 transition-all duration-200 ease-out delay-75 ${
+                isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+              }`}
+            >
+              <Container>{activeMegaMenuContent}</Container>
             </div>
           </div>,
           document.body
-        )
-      }</MegaMenuContext.Provider>
+        )}
+    </MegaMenuContext.Provider>
   );
 }
 

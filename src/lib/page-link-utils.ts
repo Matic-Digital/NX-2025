@@ -52,8 +52,7 @@ export async function resolveNestedUrls<T>(
           // Fallback to flat slug on API failure
           urlMap[linkItem.internalLink.sys.id] = `/${linkItem.internalLink.slug}`;
         }
-      } catch (error) {
-        console.error(`Error finding nested path for item ${linkItem.internalLink.slug}:`, error);
+      } catch {
         // Fallback to flat slug on error
         urlMap[linkItem.internalLink.sys.id] = `/${linkItem.internalLink.slug}`;
       }

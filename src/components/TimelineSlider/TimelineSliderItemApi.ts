@@ -59,12 +59,12 @@ export async function getTimelineSliderItemsByIds(
     }
 
     return data.timelineSliderItemCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching TimelineSliderItems: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching TimelineSliderItems: ${_error.message}`);
     }
     throw new Error('Unknown error fetching TimelineSliderItems');
   }

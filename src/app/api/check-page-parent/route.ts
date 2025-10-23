@@ -1,7 +1,9 @@
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
 import { getAllPageLists } from '@/components/PageList/PageListApi';
+
 import type { PageList } from '@/components/PageList/PageListSchema';
+import type { NextRequest } from 'next/server';
 
 /**
  * Type guard to check if an item has a slug property
@@ -53,7 +55,6 @@ function buildRoutingPath(
 ): string[] {
   // Prevent infinite recursion with depth limit
   if (depth > 10) {
-    console.warn(`buildRoutingPath: Maximum depth reached for itemId: ${itemId}`);
     return [];
   }
 
@@ -112,8 +113,6 @@ function buildRoutingPath(
  * @returns JSON response with parentPath array and parentSlug string
  */
 export async function GET(request: NextRequest) {
-  console.log('API: Checking page parent with nested routing support');
-
   // Get the slug from the query parameters
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get('slug');
@@ -124,22 +123,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(`API: Checking routing path for item with slug '${slug}'`);
-
     // Get all page lists
     const pageListsResponse = await getAllPageLists(false);
     const pageLists = pageListsResponse.items;
 
     if (!pageLists.length) {
-      console.log('API: No page lists found in the system');
       return NextResponse.json({
         parentPath: [],
         parentSlug: null,
         fullPath: slug
       });
     }
-
-    console.log(`API: Found ${pageLists.length} page lists to search`);
 
     // First, check if the slug itself is a PageList
     let targetItemId: string | null = null;
@@ -155,35 +149,6 @@ export async function GET(request: NextRequest) {
     if (targetPageList) {
       targetItemId = targetPageList.sys.id;
       targetItem = targetPageList;
-      console.log(`API: Found PageList '${slug}' with ID '${targetItemId}'`);
-
-      // Debug: Show all PageLists and their pagesCollection to see nesting
-      console.log('API: All PageLists and their contents:');
-      pageLists.forEach((pl) => {
-        console.log(
-          `  - PageList "${pl.slug}" (${pl.title}) contains:`,
-          pl.pagesCollection?.items?.map((item) => {
-            const itemSlug = hasSlug(item)
-              ? item.slug
-              : ((item as { link?: string })?.link ?? 'no-slug');
-            const typename = item && '__typename' in item ? item.__typename : 'unknown';
-            return `${itemSlug} (${typename})`;
-          }) ?? 'no items'
-        );
-      });
-
-      // Special debug for products PageList
-      const productsPageList = pageLists.find((pl) => pl.slug === 'products');
-      if (productsPageList) {
-        console.log('API: Products PageList detailed contents:');
-        productsPageList.pagesCollection?.items?.forEach((item, index) => {
-          const itemSlug = hasSlug(item)
-            ? item.slug
-            : ((item as { link?: string })?.link ?? 'no-slug');
-          const typename = item && '__typename' in item ? item.__typename : 'unknown';
-          console.log(`  [${index}] ${itemSlug} (${typename}) - ID: ${item?.sys?.id}`);
-        });
-      }
     } else {
       // If not a PageList, search within PageLists' pagesCollection
       for (const pageList of pageLists) {
@@ -196,9 +161,6 @@ export async function GET(request: NextRequest) {
         if (foundItem && hasSlug(foundItem)) {
           targetItemId = foundItem.sys.id;
           targetItem = foundItem;
-          console.log(
-            `API: Found item '${slug}' with ID '${targetItemId}' in PageList '${pageList.title}'`
-          );
           break;
         }
       }
@@ -206,7 +168,6 @@ export async function GET(request: NextRequest) {
 
     // If item not found, return null
     if (!targetItemId || !targetItem) {
-      console.log(`API: No item found with slug '${slug}'`);
       return NextResponse.json({
         parentPath: [],
         parentSlug: null,
@@ -246,8 +207,7 @@ export async function GET(request: NextRequest) {
         parentPageList: null
       });
     }
-  } catch (error) {
-    console.error('Error checking page parent:', error);
+  } catch {
     return NextResponse.json({ error: 'Error checking page parent' }, { status: 500 });
   }
 }

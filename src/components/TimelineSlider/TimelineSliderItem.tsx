@@ -1,12 +1,15 @@
 'use client';
 
-import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
 
-import type { TimelineSliderItem as TimelineSliderItemType } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
+import type { TimelineSliderItem as TimelineSliderItemType } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 import type { Video as VideoType } from '@/components/Video/VideoSchema';
 
 export function TimelineSliderItem(props: TimelineSliderItemType) {
@@ -52,9 +55,7 @@ export function TimelineSliderItem(props: TimelineSliderItemType) {
           <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
             <span className="text-lg font-semibold text-white">{updatedItem.year}</span>
           </div>
-          <p className="text-lg leading-relaxed text-white lg:text-xl">
-            {updatedItem.description}
-          </p>
+          <p className="text-lg leading-relaxed text-white lg:text-xl">{updatedItem.description}</p>
         </div>
       </div>
     </div>

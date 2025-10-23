@@ -25,7 +25,10 @@ export function detectContentType(item: Record<string, unknown>): ContentType {
  * @param contentType - The content type
  * @returns The image source or null
  */
-export function getImageSourceForContentType(item: Record<string, unknown>, contentType: ContentType): unknown {
+export function getImageSourceForContentType(
+  item: Record<string, unknown>,
+  contentType: ContentType
+): unknown {
   switch (contentType) {
     case 'Page':
       return item?.openGraphImage;
@@ -50,7 +53,10 @@ export function getImageSourceForContentType(item: Record<string, unknown>, cont
  * @param contentType - The content type
  * @returns The URL path
  */
-export function getUrlForContentType(item: Record<string, unknown>, contentType: ContentType): string {
+export function getUrlForContentType(
+  item: Record<string, unknown>,
+  contentType: ContentType
+): string {
   switch (contentType) {
     case 'Page':
     case 'PageList':

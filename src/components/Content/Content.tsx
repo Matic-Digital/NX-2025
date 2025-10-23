@@ -99,9 +99,8 @@ export function Content(props: ContentProps) {
         setLoading(true);
         const data = await getContentById(contentId ?? '', false);
         setFetchedData(data.item);
-      } catch (err) {
-        console.error('Failed to fetch content:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load content');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load content');
       } finally {
         setLoading(false);
       }

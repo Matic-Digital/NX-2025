@@ -4,9 +4,8 @@
  * Test script for the static routing system
  * Generates a routing cache and tests the routing service
  */
-
-import { generateRoutingSitemap } from './generate-routing-sitemap.js';
 import { staticRoutingService } from '../src/lib/static-routing.js';
+import { generateRoutingSitemap } from './generate-routing-sitemap.js';
 
 async function testRouting() {
   console.log('🧪 Testing Static Routing System\n');
@@ -19,7 +18,7 @@ async function testRouting() {
 
     // Test the routing service
     console.log('2️⃣ Testing routing service...');
-    
+
     // Test basic functionality
     console.log('\n📊 Cache Statistics:');
     const stats = staticRoutingService.getStats();
@@ -30,9 +29,9 @@ async function testRouting() {
 
     // Test route lookups
     console.log('\n🔍 Testing route lookups:');
-    
+
     const testPaths = ['/', 'about', 'products', 'products/trackers'];
-    
+
     for (const testPath of testPaths) {
       const route = staticRoutingService.getRoute(testPath);
       if (route) {
@@ -44,14 +43,9 @@ async function testRouting() {
 
     // Test segment-based lookups
     console.log('\n🧩 Testing segment-based lookups:');
-    
-    const testSegments = [
-      [],
-      ['about'],
-      ['products'],
-      ['products', 'trackers']
-    ];
-    
+
+    const testSegments = [[], ['about'], ['products'], ['products', 'trackers']];
+
     for (const segments of testSegments) {
       const route = staticRoutingService.getRouteBySegments(segments);
       const segmentPath = segments.length === 0 ? '/' : segments.join('/');
@@ -66,7 +60,7 @@ async function testRouting() {
     console.log('\n📋 Testing content type filtering:');
     const pageListRoutes = staticRoutingService.getRoutesByContentType('PageList');
     console.log(`   - Found ${pageListRoutes.length} PageList routes`);
-    
+
     const productRoutes = staticRoutingService.getRoutesByContentType('Product');
     console.log(`   - Found ${productRoutes.length} Product routes`);
 
@@ -74,8 +68,8 @@ async function testRouting() {
     console.log('\n🔗 Testing nested routes:');
     const nestedRoutes = staticRoutingService.getNestedRoutes();
     console.log(`   - Found ${nestedRoutes.length} nested routes`);
-    nestedRoutes.slice(0, 3).forEach(route => {
-      const parentSlugs = route.parentPageLists.map(p => p.slug).join(' → ');
+    nestedRoutes.slice(0, 3).forEach((route) => {
+      const parentSlugs = route.parentPageLists.map((p) => p.slug).join(' → ');
       console.log(`   - ${route.path} (${parentSlugs})`);
     });
 
@@ -83,7 +77,7 @@ async function testRouting() {
     console.log('\n🔎 Testing search functionality:');
     const searchResults = staticRoutingService.searchRoutes('product');
     console.log(`   - Found ${searchResults.length} routes matching "product"`);
-    searchResults.slice(0, 3).forEach(route => {
+    searchResults.slice(0, 3).forEach((route) => {
       console.log(`   - ${route.path} (${route.title})`);
     });
 
@@ -93,7 +87,6 @@ async function testRouting() {
     console.log(`   - ${stats.totalRoutes} routes are available for fast lookup`);
     console.log(`   - Fallback to dynamic resolution is available for missing routes`);
     console.log(`   - Build process will generate fresh cache before deployment`);
-
   } catch (error) {
     console.error('❌ Test failed:', error);
     process.exit(1);

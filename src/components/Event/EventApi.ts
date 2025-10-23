@@ -1,18 +1,35 @@
 import { fetchGraphQL } from '@/lib/api';
-import { SYS_FIELDS, ASSET_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { AGENDA_ITEM_GRAPHQL_FIELDS } from '@/components/AgendaItem/AgendaItemApi';
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
-import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
-import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
-import { LOCATION_GRAPHQL_FIELDS } from '@/components/OfficeLocation/OfficeLocationApi';
 import { CONTACT_CARD_GRAPHQL_FIELDS } from '@/components/ContactCard/ContactCardApi';
+import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { LOCATION_GRAPHQL_FIELDS } from '@/components/OfficeLocation/OfficeLocationApi';
+import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';
 import { SLIDER_GRAPHQL_FIELDS_SIMPLE } from '@/components/Slider/SliderApi';
+import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
 
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
+import type { Post } from '@/components/Post/PostSchema';
+
+// Post fields for event post categories (includes gatedContentForm for Case Study filtering)
+const EVENT_POST_GRAPHQL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  slug
+  datePublished
+  externalLink
+  mainImage {
+    ${IMAGE_GRAPHQL_FIELDS}
+  }
+  categories
+  gatedContentForm {
+    ${SYS_FIELDS}
+  }
+`;
 
 // Event fields for collections/listings
 export const EVENT_MINIMAL_FIELDS = `
@@ -99,6 +116,8 @@ export const EVENT_GRAPHQL_FIELDS = `
   slider {
     ${SLIDER_GRAPHQL_FIELDS_SIMPLE}
   }
+  postCategories
+  maxPostsPerCategory
 `;
 
 /**
@@ -136,12 +155,12 @@ export async function getAllEventsMinimal(preview = false): Promise<EventRespons
     return {
       items: data.eventCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching events: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching events: ${_error.message}`);
     }
     throw new Error('Unknown error fetching events');
   }
@@ -180,12 +199,12 @@ export async function getEventBySlug(slug: string, preview = false): Promise<Eve
     }
 
     return data.eventCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching event by slug: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching event by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching event by slug');
   }
@@ -224,13 +243,99 @@ export async function getEventById(id: string, preview = false): Promise<Event |
       return null;
     }
     return data.eventCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Event: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Event: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Event');
+  }
+}
+
+/**
+ * Maps Event category names (plural) to Post category names (singular)
+ */
+const eventCategoryToPostCategory: Record<string, string> = {
+  Blogs: 'Blog',
+  'Case Studies': 'Case Study',
+  'Data Sheets': 'Data Sheet',
+  Featured: 'Featured',
+  'In The News': 'In The News',
+  'Press Releases': 'Press Release',
+  Video: 'Video',
+  Whitepaper: 'Whitepaper'
+};
+
+/**
+ * Fetches posts by categories for event Landing 1 template
+ * @param categories - Array of event post categories to fetch
+ * @param maxPerCategory - Maximum posts per category (default 3)
+ * @param preview - Whether to fetch draft content
+ * @returns Promise resolving to posts grouped by category
+ */
+export async function getPostsByCategories(
+  categories: string[],
+  maxPerCategory = 3,
+  preview = false
+): Promise<Record<string, Post[]>> {
+  try {
+    const postsByCategory: Record<string, Post[]> = {};
+
+    // Fetch posts for each category
+    for (const eventCategory of categories) {
+      // Map event category to post category using secure property access
+      const postCategory = Object.prototype.hasOwnProperty.call(
+        eventCategoryToPostCategory,
+        eventCategory
+      )
+        ? (Object.getOwnPropertyDescriptor(eventCategoryToPostCategory, eventCategory)?.value as
+            | string
+            | undefined)
+        : undefined;
+      if (!postCategory) {
+        continue;
+      }
+      const response = await fetchGraphQL<{ postCollection: { items: unknown[] } }>(
+        `query GetPostsByCategory($category: String!, $limit: Int!, $preview: Boolean!) {
+          postCollection(
+            where: { categories_contains_some: [$category] }, 
+            limit: $limit, 
+            order: datePublished_DESC,
+            preview: $preview
+          ) {
+            items {
+              ${EVENT_POST_GRAPHQL_FIELDS}
+            }
+          }
+        }`,
+        { category: postCategory, limit: maxPerCategory, preview },
+        preview
+      );
+
+      if (response?.data?.postCollection?.items) {
+        let posts = response.data.postCollection.items as unknown as Post[];
+
+        // Filter Case Studies to only show those with external link or gated content form
+        if (eventCategory === 'Case Studies') {
+          posts = posts.filter(
+            (post) => Boolean(post.externalLink) || Boolean(post.gatedContentForm?.sys?.id)
+          );
+        }
+
+        // Store using the original event category name for display with secure assignment
+        Object.defineProperty(postsByCategory, eventCategory, {
+          value: posts,
+          writable: true,
+          enumerable: true,
+          configurable: true
+        });
+      }
+    }
+
+    return postsByCategory;
+  } catch {
+    return {};
   }
 }

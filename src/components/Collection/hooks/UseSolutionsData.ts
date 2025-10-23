@@ -24,8 +24,7 @@ export function useSolutionsData({ collection, collectionData }: UseSolutionsDat
           setIsLoading(true);
           const solutionsResponse = await getAllSolutions();
           setSolutions(solutionsResponse ?? []);
-        } catch (error) {
-          console.error('Error fetching solutions:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

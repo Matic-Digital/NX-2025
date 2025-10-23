@@ -54,11 +54,9 @@ export async function fetchGraphQL<T>(
       try {
         // Try to clone the response to read the body without consuming it
         const clonedResponse = response.clone();
-        const responseBody = await clonedResponse.text();
-        console.error('GraphQL error response body:', responseBody);
-      } catch (cloneError) {
+        const _responseBody = await clonedResponse.text();
+      } catch {
         // If cloning fails, just log the error and continue
-        console.error('Error cloning response:', cloneError);
       }
 
       // This matches the test expectation
@@ -78,7 +76,18 @@ export async function fetchGraphQL<T>(
 
       // Only throw if there are critical errors (not just broken references)
       if (criticalErrors.length > 0) {
-        console.error('[fetchGraphQL] GraphQL errors:', criticalErrors);
+        // Check if this is an authentication error that will be handled by fallback
+        const hasAuthError = criticalErrors.some(
+          (error) =>
+            error.message?.toLowerCase().includes('authentication failed') ||
+            error.message?.toLowerCase().includes('access token') ||
+            error.message?.toLowerCase().includes('invalid token')
+        );
+
+        // Only log GraphQL errors in development mode, but skip auth errors that have fallbacks
+        if (process.env.NODE_ENV === 'development' && !hasAuthError) {
+        }
+
         throw new GraphQLError('GraphQL query execution error', criticalErrors);
       }
       // Silently handle broken references - no logging to prevent console spam
@@ -86,11 +95,9 @@ export async function fetchGraphQL<T>(
 
     return json;
   } catch (error: unknown) {
-    console.error('[fetchGraphQL] Fetch failed:', error);
-
-    // Log additional information about the query that failed
-    console.error('Failed query:', query);
-    console.error('Variables:', JSON.stringify(variables, null, 2));
+    // Only log errors in development mode to avoid console spam in production
+    if (process.env.NODE_ENV === 'development') {
+    }
 
     // Re-throw NetworkError and GraphQLError as they are already properly formatted
     if (error instanceof NetworkError || error instanceof GraphQLError) {

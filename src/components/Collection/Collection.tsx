@@ -42,14 +42,16 @@ interface CollectionProps {
  */
 export function Collection({ collectionData, sys, isSearchContext = false }: CollectionProps) {
   // Check if we're in preview mode by looking for draft mode cookies
-  const isPreviewMode = typeof window !== 'undefined' && 
-    (document.cookie.includes('__prerender_bypass') || document.cookie.includes('__next_preview_data'));
-  
+  const isPreviewMode =
+    typeof window !== 'undefined' &&
+    (document.cookie.includes('__prerender_bypass') ||
+      document.cookie.includes('__next_preview_data'));
+
   // Data layer
-  const { collection, isLoading, error } = useCollectionData({ 
-    collectionData, 
-    sys, 
-    preview: isPreviewMode 
+  const { collection, isLoading, error } = useCollectionData({
+    collectionData,
+    sys,
+    preview: isPreviewMode
   });
   const { posts, isLoading: postsLoading } = usePostsData({ collection, collectionData });
   const { pages, isLoading: pagesLoading } = usePagesData({ collection, collectionData });
@@ -170,7 +172,7 @@ export function Collection({ collectionData, sys, isSearchContext = false }: Col
           isEnabled={finalCollection?.searchBar ?? false}
           className="mb-4"
         />
-        
+
         {/* Filter buttons in middle */}
         <CollectionFilterButtons
           categories={postTagCategories}
@@ -178,7 +180,7 @@ export function Collection({ collectionData, sys, isSearchContext = false }: Col
           onFilterChange={handleFilterChange}
           isEnabled={finalCollection?.contentType?.includes('Post') ?? false}
         />
-        
+
         {/* Sort dropdown at bottom, right-aligned */}
         <div className="flex justify-end">
           <CollectionSortDropdown

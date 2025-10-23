@@ -2,9 +2,9 @@
 
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 
-import { SolutionCard } from '@/components/Solution/SolutionCard';
-import { solutionFields } from '@/components/Solution/preview/SolutionFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
+import { solutionFields } from '@/components/Solution/preview/SolutionFields';
+import { SolutionCard } from '@/components/Solution/SolutionCard';
 
 import type { Solution as SolutionType } from '@/components/Solution/SolutionSchema';
 

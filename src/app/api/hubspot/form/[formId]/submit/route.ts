@@ -27,7 +27,6 @@ async function submitToHubSpot(formId: string, submissionData: HubSpotSubmission
     throw new Error('HubSpot API key not configured');
   }
 
-  console.log(`Attempting HubSpot submission with Portal ID: ${portalId}, Form ID: ${formId}`);
 
   // Use the correct HubSpot Forms API endpoint with portal ID
   const response = await fetch(`https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formId}`, {
@@ -38,11 +37,9 @@ async function submitToHubSpot(formId: string, submissionData: HubSpotSubmission
     body: JSON.stringify(submissionData),
   });
 
-  console.log(`HubSpot API Response Status: ${response.status} ${response.statusText}`);
 
   // If the integration endpoint fails, try the legacy forms API with authentication
   if (!response.ok && response.status === 404) {
-    console.log('Integration API failed, trying legacy forms API with authentication...');
     
     // Convert to legacy format
     const legacyData = {
@@ -63,7 +60,6 @@ async function submitToHubSpot(formId: string, submissionData: HubSpotSubmission
       body: JSON.stringify(legacyData),
     });
 
-    console.log(`Legacy API Response Status: ${legacyResponse.status} ${legacyResponse.statusText}`);
     
     if (!legacyResponse.ok) {
       const errorText = await legacyResponse.text();
@@ -185,12 +181,6 @@ export async function POST(
       },
     };
 
-    console.log('Submitting to HubSpot:', {
-      formId,
-      fieldCount: hubspotFields.length,
-      fields: hubspotFields.map(f => ({ name: f.name, value: f.value })),
-      submissionData
-    });
 
     // Submit to HubSpot (using the portal ID from the embed code)
     const result = await submitToHubSpot(formId, submissionData, '1856748') as {
@@ -198,9 +188,6 @@ export async function POST(
       redirectUri?: string;
     };
 
-    console.log('HubSpot submission successful:', result);
-    console.log('HubSpot redirect URI:', result.redirectUri);
-    console.log('HubSpot inline message:', result.inlineMessage);
 
     return NextResponse.json({
       success: true,
@@ -211,7 +198,6 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('Error submitting form to HubSpot:', error);
     
     if (error instanceof Error) {
       return NextResponse.json(

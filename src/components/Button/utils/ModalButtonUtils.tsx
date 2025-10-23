@@ -1,4 +1,6 @@
-import { Mail, type LucideIcon } from 'lucide-react';
+import { Mail } from 'lucide-react';
+
+import type { LucideIcon } from 'lucide-react';
 
 /**
  * Icon mapping utilities for ModalCtaButton

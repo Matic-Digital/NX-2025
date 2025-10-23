@@ -3,11 +3,10 @@
 /**
  * Pa11y runner that reads URLs from JSON file and runs accessibility tests
  */
-
+import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);

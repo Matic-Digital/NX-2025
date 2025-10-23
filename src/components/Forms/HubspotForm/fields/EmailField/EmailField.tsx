@@ -1,21 +1,35 @@
 import React from 'react';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+
 import type { FieldRendererProps } from '../types';
 
-export const EmailField: React.FC<FieldRendererProps> = ({ field, value, onChange, error, theme = 'dark' }) => {
+export const EmailField: React.FC<FieldRendererProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  theme = 'dark'
+}) => {
   const getCleanLabel = (label: string) => {
     return label.replace(/\s*-\s*\d+$/, '').trim();
   };
 
-  const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';
-  const placeholderClass = theme === 'light' ? 'placeholder:text-black' : 'placeholder:text-text-on-invert';
+  const labelClass = theme === 'light' ? 'text-gray-900' : 'text-white';
+  const inputClass =
+    theme === 'light'
+      ? 'text-gray-900 bg-white border-gray-300 placeholder:text-gray-500'
+      : 'text-white bg-gray-800 border-gray-600 placeholder:text-gray-400';
 
   return (
     <div className="flex flex-col space-y-[0.5rem]">
-      <Label htmlFor={field.name} className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}>
+      <Label
+        htmlFor={field.name}
+        className={`${labelClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}
+      >
         {getCleanLabel(field.label)}
-        {field.required && <span className={`${textClass} ml-1`}>*</span>}
+        {field.required && <span className={`${labelClass} ml-1`}>*</span>}
       </Label>
       <Input
         id={field.name}
@@ -23,11 +37,9 @@ export const EmailField: React.FC<FieldRendererProps> = ({ field, value, onChang
         value={String(value ?? '')}
         onChange={(e) => onChange(e.target.value)}
         placeholder={field.placeholder ?? 'Enter your email'}
-        className={`${textClass} ${placeholderClass} ${error ? 'border-red-500' : ''}`}
+        className={`${inputClass} ${error ? 'border-red-500' : ''}`}
       />
-      {field.description && (
-        <p className="text-xs text-gray-600">{field.description}</p>
-      )}
+      {field.description && <p className="text-xs text-gray-600">{field.description}</p>}
       {error && (
         <p className="text-xs text-red-500">
           {Array.isArray(error) ? error.join(', ') : String(error)}

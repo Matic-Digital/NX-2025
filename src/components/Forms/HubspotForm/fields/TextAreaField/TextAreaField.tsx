@@ -4,17 +4,27 @@ import { Label } from '@/components/ui/label';
 
 import type { FieldRendererProps } from '../types';
 
-export const TextAreaField: React.FC<FieldRendererProps> = ({ field, value, onChange, error, theme = 'dark' }) => {
+export const TextAreaField: React.FC<FieldRendererProps> = ({
+  field,
+  value,
+  onChange,
+  error,
+  theme = 'dark'
+}) => {
   const getCleanLabel = (label: string) => {
     return label.replace(/\s*-\s*\d+$/, '').trim();
   };
 
   const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';
-  const placeholderClass = theme === 'light' ? 'placeholder:text-black' : 'placeholder:text-text-on-invert';
+  const placeholderClass =
+    theme === 'light' ? 'placeholder:text-black' : 'placeholder:text-text-on-invert';
 
   return (
     <div className="flex flex-col space-y-[0.5rem]">
-      <Label htmlFor={field.name} className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}>
+      <Label
+        htmlFor={field.name}
+        className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}
+      >
         {getCleanLabel(field.label)}
         {field.required && <span className={`${textClass} ml-1`}>*</span>}
       </Label>

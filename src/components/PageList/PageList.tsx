@@ -130,8 +130,7 @@ export function PageList(props: PageListProps) {
                         </div>
                       );
                   }
-                } catch (error) {
-                  console.error(`Error rendering content item ${index}:`, error, content);
+                } catch (_error) {
                   return (
                     <div key={key} className="mb-12">
                       <div className="rounded-lg border border-red-200 bg-red-50 p-4">
@@ -139,7 +138,7 @@ export function PageList(props: PageListProps) {
                           <strong>Render Error:</strong> {content.__typename}
                         </p>
                         <p className="mt-1 text-xs text-red-600">
-                          {error instanceof Error ? error.message : 'Unknown error'}
+                          {_error instanceof Error ? _error.message : 'Unknown error'}
                         </p>
                       </div>
                     </div>

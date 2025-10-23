@@ -57,13 +57,11 @@ export async function getTestimonials(preview = false): Promise<Testimonials[]> 
     return [];
   }
 
-  return data.testimonialsCollection.items.filter(Boolean).map((item, index) => {
+  return data.testimonialsCollection.items.filter(Boolean).map((item, _index) => {
     try {
       return TestimonialsSchema.parse(item);
-    } catch (error) {
-      console.error(`Zod validation error for item ${index}:`, error);
-      console.error(`Failed item ${index}:`, JSON.stringify(item, null, 2));
-      throw error;
+    } catch (_error) {
+      throw _error;
     }
   });
 }
@@ -100,12 +98,12 @@ export async function getTestimonialsById(
     }
 
     return data.testimonials;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Testimonials: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Testimonials: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Testimonials');
   }
@@ -147,12 +145,12 @@ export async function getTestimonialsByTitle(
     }
 
     return data.testimonialsCollection.items[0];
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Testimonials: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Testimonials: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Testimonials');
   }
@@ -190,12 +188,12 @@ export async function getTestimonialItemById(
     }
 
     return data.testimonialItem;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching TestimonialItem: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching TestimonialItem: ${_error.message}`);
     }
     throw new Error('Unknown error fetching TestimonialItem');
   }

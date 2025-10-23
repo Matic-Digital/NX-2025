@@ -56,12 +56,12 @@ export async function getModalById(id: string, preview = false): Promise<Modal |
     }
 
     return data.modal;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Modal: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Modal: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Modal');
   }
@@ -101,12 +101,12 @@ export async function getModalsByIds(modalIds: string[], preview = false): Promi
     }
 
     return data.modalCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`getModalsByIdsError: fetching Modals: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`getModalsByIdsError: fetching Modals: ${_error.message}`);
     }
     throw new Error('getModalsByIds: Unknown error fetching Modals');
   }

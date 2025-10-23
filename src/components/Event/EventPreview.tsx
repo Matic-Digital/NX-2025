@@ -1,6 +1,9 @@
 'use client';
 
-import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 import Image from 'next/image';
 
 import { formatDateRange } from '@/lib/utils';
@@ -28,7 +31,11 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
     );
   }
 
-  const formattedDateTime = formatDateRange(event.dateTime ?? '', event.endDateTime ?? undefined, true);
+  const formattedDateTime = formatDateRange(
+    event.dateTime ?? '',
+    event.endDateTime ?? undefined,
+    true
+  );
 
   return (
     <div className="max-w-4xl mx-auto p-8 space-y-8">
@@ -45,10 +52,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {/* Title */}
         <div>
           <label className="block text-sm font-medium mb-2">Title (Required)</label>
-          <h2 
-            className="text-2xl font-bold"
-            {...inspectorProps({ fieldId: 'title' })}
-          >
+          <h2 className="text-2xl font-bold" {...inspectorProps({ fieldId: 'title' })}>
             {event.title ?? ''}
           </h2>
         </div>
@@ -56,10 +60,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {/* Slug */}
         <div>
           <label className="block text-sm font-medium mb-2">Slug (Required)</label>
-          <p 
-            className="text-muted-foreground font-mono"
-            {...inspectorProps({ fieldId: 'slug' })}
-          >
+          <p className="text-muted-foreground font-mono" {...inspectorProps({ fieldId: 'slug' })}>
             /events/{event.slug ?? ''}
           </p>
         </div>
@@ -70,7 +71,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
           <div className="flex items-center gap-3">
             {event.dateIcon && (
               <div {...inspectorProps({ fieldId: 'dateIcon' })}>
-                <Image 
+                <Image
                   src={event.dateIcon.url ?? ''}
                   alt={event.dateIcon.description ?? 'Date icon'}
                   width={24}
@@ -79,7 +80,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
                 />
               </div>
             )}
-            <time 
+            <time
               className="text-lg"
               dateTime={event.dateTime ?? ''}
               {...inspectorProps({ fieldId: 'dateTime' })}
@@ -96,7 +97,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
             <div className="flex items-start gap-3">
               {event.addressIcon && (
                 <div {...inspectorProps({ fieldId: 'addressIcon' })}>
-                  <Image 
+                  <Image
                     src={event.addressIcon.url ?? ''}
                     alt={event.addressIcon.description ?? 'Address icon'}
                     width={24}
@@ -107,15 +108,12 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
               )}
               <div>
                 {event.address && (
-                  <div 
-                    className="text-lg"
-                    {...inspectorProps({ fieldId: 'address' })}
-                  >
+                  <div className="text-lg" {...inspectorProps({ fieldId: 'address' })}>
                     {event.address ?? ''}
                   </div>
                 )}
                 {event.addressSubline && (
-                  <div 
+                  <div
                     className="text-muted-foreground"
                     {...inspectorProps({ fieldId: 'addressSubline' })}
                   >
@@ -130,7 +128,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {/* Template */}
         <div>
           <label className="block text-sm font-medium mb-2">Template (Required)</label>
-          <p 
+          <p
             className="px-3 py-1 bg-primary/10 text-primary rounded-full inline-block text-sm"
             {...inspectorProps({ fieldId: 'template' })}
           >
@@ -144,7 +142,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
             {event.agendaHeadline && (
               <div>
                 <label className="block text-sm font-medium mb-2">Agenda Headline (Optional)</label>
-                <h3 
+                <h3
                   className="text-xl font-semibold"
                   {...inspectorProps({ fieldId: 'agendaHeadline' })}
                 >
@@ -158,7 +156,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
                 <label className="block text-sm font-medium mb-2">
                   Agenda Items (Optional) - {event.agendaItemsCollection.items.length} items
                 </label>
-                <div 
+                <div
                   className="border rounded-lg p-4"
                   {...inspectorProps({ fieldId: 'agendaItemsCollection' })}
                 >
@@ -170,7 +168,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
             {event.agendaFooter && (
               <div>
                 <label className="block text-sm font-medium mb-2">Agenda Footer (Optional)</label>
-                <p 
+                <p
                   className="text-muted-foreground"
                   {...inspectorProps({ fieldId: 'agendaFooter' })}
                 >
@@ -185,11 +183,8 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {event.mainImage && (
           <div>
             <label className="block text-sm font-medium mb-2">Main Image (Required)</label>
-            <div 
-              className="border rounded-lg p-4"
-              {...inspectorProps({ fieldId: 'mainImage' })}
-            >
-              <Image 
+            <div className="border rounded-lg p-4" {...inspectorProps({ fieldId: 'mainImage' })}>
+              <Image
                 src={event.mainImage.link ?? ''}
                 alt={event.mainImage.altText ?? event.mainImage.title ?? 'Main image'}
                 width={400}
@@ -197,7 +192,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
                 className="w-full max-w-md h-auto rounded"
               />
               {event.mainImageCaption && (
-                <p 
+                <p
                   className="text-sm text-muted-foreground mt-2"
                   {...inspectorProps({ fieldId: 'mainImageCaption' })}
                 >
@@ -212,11 +207,8 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {event.bannerImage && (
           <div>
             <label className="block text-sm font-medium mb-2">Banner Image (Optional)</label>
-            <div 
-              className="border rounded-lg p-4"
-              {...inspectorProps({ fieldId: 'bannerImage' })}
-            >
-              <Image 
+            <div className="border rounded-lg p-4" {...inspectorProps({ fieldId: 'bannerImage' })}>
+              <Image
                 src={event.bannerImage.link ?? ''}
                 alt={event.bannerImage.altText ?? event.bannerImage.title ?? 'Banner image'}
                 width={400}
@@ -231,10 +223,7 @@ export function EventPreview({ event: initialEvent }: EventPreviewProps) {
         {event.layout && (
           <div>
             <label className="block text-sm font-medium mb-2">Layout (Optional)</label>
-            <div 
-              className="border rounded-lg p-4"
-              {...inspectorProps({ fieldId: 'layout' })}
-            >
+            <div className="border rounded-lg p-4" {...inspectorProps({ fieldId: 'layout' })}>
               <p className="text-sm">
                 <span className="font-medium">Layout ID:</span> {event.layout?.sys?.id ?? ''}
               </p>

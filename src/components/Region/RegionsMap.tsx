@@ -27,14 +27,12 @@ export function RegionsMap(props: RegionsMap) {
         const response = await getRegionsMapById(props.sys.id);
 
         if (!response) {
-          console.error('No regions map data returned');
           setError('No region data found');
           return;
         }
 
         setContent(response);
-      } catch (err) {
-        console.error('Error fetching region data:', err);
+      } catch {
         setError('Failed to load region data');
       } finally {
         setLoading(false);
@@ -58,15 +56,16 @@ export function RegionsMap(props: RegionsMap) {
     'Middle East, India, & North Africa': 'middleEastIndiaAfrica'
   };
 
-  // Group regions by their name
-  const regionsByRegion = regions.reduce<Record<string, Region[]>>((acc, region) => {
+  // Group regions by their name using Map for security
+  const regionMap = new Map<string, Region[]>();
+  regions.forEach((region) => {
     const regionName = region.region;
-    // eslint-disable-next-line security/detect-object-injection
-    const existingRegions = Object.prototype.hasOwnProperty.call(acc, regionName) ? acc[regionName] ?? [] : [];
-    // eslint-disable-next-line security/detect-object-injection
-    acc[regionName] = [...existingRegions, region];
-    return acc;
-  }, {});
+    const existingRegions = regionMap.get(regionName) ?? [];
+    regionMap.set(regionName, [...existingRegions, region]);
+  });
+  
+  // Convert Map to object for compatibility
+  const regionsByRegion = Object.fromEntries(regionMap);
 
   // Get region names, sorted to match the desired order
   const regionNames = Object.keys(regionsByRegion).sort((a, b) => {
@@ -128,9 +127,12 @@ export function RegionsMap(props: RegionsMap) {
         >
           {regionNames.map((regionName) => {
             // eslint-disable-next-line security/detect-object-injection
-            const regionLocations = Object.prototype.hasOwnProperty.call(regionsByRegion, regionName) 
-              // eslint-disable-next-line security/detect-object-injection
-              ? regionsByRegion[regionName] ?? [] 
+            const regionLocations = Object.prototype.hasOwnProperty.call(
+              regionsByRegion,
+              regionName
+            )
+              ? // eslint-disable-next-line security/detect-object-injection
+                (regionsByRegion[regionName] ?? [])
               : [];
 
             return (
@@ -139,18 +141,23 @@ export function RegionsMap(props: RegionsMap) {
                   className={cn(
                     'group transition-all duration-200',
                     // eslint-disable-next-line security/detect-object-injection
-                    hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
-                      // eslint-disable-next-line security/detect-object-injection
-                      ? regionToSvgId[regionName] ?? regionName 
-                      : regionName)
+                    hoveredRegion ===
+                      (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
+                        ? // eslint-disable-next-line security/detect-object-injection
+                          (regionToSvgId[regionName] ?? regionName)
+                        : regionName)
                       ? 'scale-105 transform'
                       : ''
                   )}
                   // eslint-disable-next-line security/detect-object-injection
-                  onMouseEnter={() => setHoveredRegion(Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
-                    // eslint-disable-next-line security/detect-object-injection
-                    ? regionToSvgId[regionName] ?? regionName 
-                    : regionName)}
+                  onMouseEnter={() =>
+                    setHoveredRegion(
+                      Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
+                        ? // eslint-disable-next-line security/detect-object-injection
+                          (regionToSvgId[regionName] ?? regionName)
+                        : regionName
+                    )
+                  }
                   onMouseLeave={() => setHoveredRegion(null)}
                 >
                   {regionLocations.length > 0 ? (
@@ -162,10 +169,11 @@ export function RegionsMap(props: RegionsMap) {
                           className={cn(
                             'transition-colors',
                             // eslint-disable-next-line security/detect-object-injection
-                            hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
-                              // eslint-disable-next-line security/detect-object-injection
-                              ? regionToSvgId[regionName] ?? regionName 
-                              : regionName)
+                            hoveredRegion ===
+                              (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
+                                ? // eslint-disable-next-line security/detect-object-injection
+                                  (regionToSvgId[regionName] ?? regionName)
+                                : regionName)
                               ? 'text-primary'
                               : 'text-surface-invert'
                           )}
@@ -182,10 +190,11 @@ export function RegionsMap(props: RegionsMap) {
                                 className={cn(
                                   '!text-body-xxs',
                                   // eslint-disable-next-line security/detect-object-injection
-                                  hoveredRegion === (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName) 
-                                    // eslint-disable-next-line security/detect-object-injection
-                                    ? regionToSvgId[regionName] ?? regionName 
-                                    : regionName)
+                                  hoveredRegion ===
+                                    (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
+                                      ? // eslint-disable-next-line security/detect-object-injection
+                                        (regionToSvgId[regionName] ?? regionName)
+                                      : regionName)
                                     ? 'text-primary transition-colors'
                                     : 'text-surface-invert'
                                 )}

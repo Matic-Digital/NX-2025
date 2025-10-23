@@ -24,12 +24,11 @@ interface ContentfulLocaleResponse {
  */
 export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
   try {
-    
     const response = await fetch(
       `https://api.contentful.com/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/locales`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_CONTENTFUL_MANAGEMENT_TOKEN}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_CONTENTFUL_MANAGEMENT_TOKEN}`
         },
         // Cache for 1 hour since locales don't change frequently
         next: { revalidate: 3600 }
@@ -40,15 +39,15 @@ export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
       throw new Error(`Failed to fetch locales: ${response.statusText}`);
     }
 
-    const data = await response.json() as ContentfulLocaleResponse;
-    
+    const data = (await response.json()) as ContentfulLocaleResponse;
+
     // Filter and map locales to our format
     const locales: LocaleOption[] = data.items
       .filter((locale) => locale.sys.type === 'Locale')
       .map((locale) => ({
         code: locale.code,
         name: locale.name,
-        default: locale.default ?? false,
+        default: locale.default ?? false
       }))
       .sort((a, b) => {
         // Sort with default locale first, then alphabetically
@@ -58,17 +57,14 @@ export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
       });
 
     return locales;
-
-  } catch (error) {
-    console.error('🌐 [Server] Error fetching locales:', error);
-    
+  } catch {
     // Fallback to minimal locale set
     const fallbackLocales: LocaleOption[] = [
       { code: 'en-US', name: 'English (US)', default: true },
       { code: 'pt-BR', name: 'Português (Brasil)', default: false },
-      { code: 'es', name: 'Español', default: false },
+      { code: 'es', name: 'Español', default: false }
     ];
-    
+
     return fallbackLocales;
   }
 });

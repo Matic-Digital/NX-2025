@@ -12,6 +12,7 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box } from '@/components/global/matic-ds/box';
 
 import { AirImage } from '@/components/Image/AirImage';
+import { shouldPreloadImage, ImageContext as _ImageContext } from '@/components/Image/utils/imageOptimization';
 import { getServiceById } from '@/components/Service/ServiceApi';
 
 import type { Service } from '@/components/Service/ServiceSchema';
@@ -22,11 +23,16 @@ interface ServiceCardProps extends Partial<Service> {
   cardTitle?: string;
   cardTags?: string[];
   cardButtonText?: string;
-  isFirst?: boolean;
+  cardButtonLink?: string;
+  isActive?: boolean;
+  onHover?: () => void;
+  onLeave?: () => void;
+  index?: number; // For priority image optimization
+  isFirstCard?: boolean; // For LCP optimization
 }
 
 export function ServiceCard(props: ServiceCardProps) {
-  const { serviceId, cardId, isFirst = false, ...restProps } = props;
+  const { serviceId, cardId, index, isFirstCard, ...restProps } = props;
   const [fetchedData, setFetchedData] = useState<Service | null>(null);
   const [loading, setLoading] = useState(!!serviceId);
   const { activeCardId, setActiveCardId } = useServiceCard();
@@ -42,8 +48,7 @@ export function ServiceCard(props: ServiceCardProps) {
         setLoading(true);
         const data = await getServiceById(serviceId, false);
         setFetchedData(data);
-      } catch (error) {
-        console.error('Error fetching service data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -57,12 +62,19 @@ export function ServiceCard(props: ServiceCardProps) {
 
   // Set first card as active on mount if no card is active (desktop only)
   useEffect(() => {
-    if (isFirst && cardId && activeCardId === null && window.innerWidth >= 768) {
+    if (isFirstCard && cardId && activeCardId === null && window.innerWidth >= 768) {
       setActiveCardId(cardId);
     }
-  }, [isFirst, cardId, activeCardId, setActiveCardId]);
+  }, [isFirstCard, cardId, activeCardId, setActiveCardId]);
 
   const isActive = cardId ? activeCardId === cardId && window.innerWidth >= 768 : false;
+  
+  // Determine if this image should be prioritized for LCP optimization
+  const shouldPrioritize = shouldPreloadImage({
+    index,
+    isFirstInGrid: isFirstCard,
+    isAboveFold: isFirstCard ?? (typeof index === 'number' && index < 2)
+  });
 
   const handleMouseEnter = () => {
     // Only handle mouse enter on desktop
@@ -97,6 +109,9 @@ export function ServiceCard(props: ServiceCardProps) {
             <AirImage
               {...service.cardImage}
               className="absolute top-0 left-0 h-[14rem] w-full scale-100 transform object-cover opacity-100"
+              priority={shouldPrioritize}
+              width={400} // Optimized for mobile card size
+              height={224} // 14rem = 224px
             />
           </div>
         </div>
@@ -105,6 +120,9 @@ export function ServiceCard(props: ServiceCardProps) {
           className={`absolute inset-0 hidden transform object-cover transition-all duration-0 ease-in-out md:block md:group-hover:scale-100 md:group-hover:opacity-100 md:group-hover:duration-800 ${
             isActive ? 'md:scale-100 md:opacity-100' : 'md:scale-110 md:opacity-0'
           }`}
+          priority={shouldPrioritize}
+          width={600} // Optimized for desktop card size
+          height={400} // Maintain aspect ratio
         />
         <Box direction="col" className="relative z-10 h-full md:justify-end">
           <Box

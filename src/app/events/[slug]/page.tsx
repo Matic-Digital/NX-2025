@@ -1,26 +1,27 @@
-import { notFound } from 'next/navigation';
 import { draftMode } from 'next/headers';
+import { notFound } from 'next/navigation';
 
-import { getEventBySlug, getAllEventsMinimal } from '@/components/Event/EventApi';
+import { getEventSEOBySlug } from '@/lib/contentful-seo-api';
+import {
+  extractCanonicalUrl,
+  extractIndexing,
+  extractOpenGraphDescription,
+  extractOpenGraphImage,
+  extractOpenGraphTitle,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
+import { generateSchema } from '@/lib/schema-generator';
+
+import { getAllEventsMinimal, getEventBySlug } from '@/components/Event/EventApi';
 import { EventDetail } from '@/components/Event/EventDetail';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
-import { getEventSEOBySlug } from '@/lib/contentful-seo-api';
-import {
-  extractOpenGraphImage,
-  extractSEODescription,
-  extractSEOTitle,
-  extractOpenGraphTitle,
-  extractOpenGraphDescription,
-  extractCanonicalUrl,
-  extractIndexing,
-  type ContentfulPageSEO
-} from '@/lib/metadata-utils';
-import { generateSchema } from '@/lib/schema-generator';
 import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
+import type { ContentfulPageSEO } from '@/lib/metadata-utils';
 
 interface EventPageProps {
   params: Promise<{
@@ -31,32 +32,34 @@ interface EventPageProps {
 export async function generateStaticParams() {
   try {
     const eventsResponse = await getAllEventsMinimal();
-    
+
     return eventsResponse.items
       .filter((event) => event.slug && typeof event.slug === 'string')
       .map((event) => ({
-        slug: event.slug ?? '',
+        slug: event.slug ?? ''
       }));
-  } catch (error) {
-    console.error('Error generating static params for events:', error);
+  } catch {
     return [];
   }
 }
 
 export async function generateMetadata({ params }: EventPageProps) {
   const resolvedParams = await params;
-  const eventSEO = await getEventSEOBySlug(resolvedParams.slug ?? '', false) as Record<string, unknown>;
-  
+  const eventSEO = (await getEventSEOBySlug(resolvedParams.slug ?? '', false)) as Record<
+    string,
+    unknown
+  >;
+
   if (!eventSEO) {
     return {
-      title: 'Event Not Found',
+      title: 'Event Not Found'
     };
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
   const eventUrl = `${baseUrl}/events/${resolvedParams.slug}`;
 
   // Create default description with event date

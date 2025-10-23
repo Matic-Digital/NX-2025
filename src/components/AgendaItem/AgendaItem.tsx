@@ -13,20 +13,23 @@ export function AgendaItem({ agendaItem, className = '' }: AgendaItemProps) {
     const date = new Date(timeString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    
+
     // Format minutes as "00" if zero, otherwise show actual minutes
     const formattedMinutes = minutes === 0 ? '00' : minutes.toString().padStart(2, '0');
-    
+
     return `${hours}h${formattedMinutes}`;
   };
-  
+
   const formattedTime = formatAgendaTime(agendaItem.time);
 
   return (
     <div className={`${className}`}>
       <div className="flex">
         <div className="flex-grow px-[1rem] py-[0.88rem]">
-          <time className="text-[1rem] font-normal leading-[160%] tracking-[0.01rem]" dateTime={agendaItem.time}>
+          <time
+            className="text-[1rem] font-normal leading-[160%] tracking-[0.01rem]"
+            dateTime={agendaItem.time}
+          >
             {formattedTime}
           </time>
         </div>

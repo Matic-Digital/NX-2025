@@ -30,10 +30,9 @@ import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
  * - Copyright notice and legal links
  */
 export function Footer(props: FooterType) {
-
   // Detailed menu logging
   if (props.menusCollection?.items) {
-    props.menusCollection.items.forEach((menu, index) => {
+    props.menusCollection.items.forEach((_menu, _index) => {
       // Menu processing logic removed
     });
   }

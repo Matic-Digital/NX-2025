@@ -60,7 +60,9 @@ export const accordionStyles = {
    */
   getDescriptionTextClasses: (isHovered?: boolean, shouldShowExpanded?: boolean) => {
     const isActive = isHovered ?? shouldShowExpanded;
-    const textColor = isActive ? 'text-text-on-invert dark:text-text-body' : 'text-text-body dark:text-text-on-invert';
+    const textColor = isActive
+      ? 'text-text-on-invert dark:text-text-body'
+      : 'text-text-body dark:text-text-on-invert';
     return `text-body-xs ${textColor}`;
   },
 

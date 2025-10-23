@@ -27,8 +27,7 @@ export function useEventData(eventId?: string, initialData?: Event) {
         setError(null);
         const data = await getEventById(eventId ?? '');
         setFetchedData(data);
-      } catch (error) {
-        console.error('⭐ Failed to fetch event data:', error);
+      } catch {
         setError('Failed to load event data');
       } finally {
         setLoading(false);

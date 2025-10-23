@@ -8,9 +8,9 @@ export const DEFAULT_METADATA = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+    url: process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
     siteName: 'Nextracker'
   }
 };

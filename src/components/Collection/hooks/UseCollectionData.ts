@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 
 import { getCollectionById } from '@/components/Collection/CollectionApi';
+
 import type { Collection } from '@/components/Collection/CollectionSchema';
 
 interface UseCollectionDataProps {
@@ -12,7 +13,11 @@ interface UseCollectionDataProps {
   preview?: boolean;
 }
 
-export function useCollectionData({ collectionData, sys, preview = false }: UseCollectionDataProps) {
+export function useCollectionData({
+  collectionData,
+  sys,
+  preview = false
+}: UseCollectionDataProps) {
   const [collection, setCollection] = useState<Collection | null>(collectionData ?? null);
   const [isLoading, setIsLoading] = useState(!collectionData && !!sys?.id);
   const [error, setError] = useState<string | null>(null);
@@ -29,8 +34,7 @@ export function useCollectionData({ collectionData, sys, preview = false }: UseC
           setError(null);
           const fetchedCollection = await getCollectionById(sys.id, preview);
           setCollection(fetchedCollection);
-        } catch (err) {
-          console.error('Failed to fetch collection:', err);
+        } catch {
           setError('Failed to load collection');
         } finally {
           setIsLoading(false);
@@ -47,6 +51,6 @@ export function useCollectionData({ collectionData, sys, preview = false }: UseC
     collection: finalCollection,
     isLoading,
     error,
-    setCollection,
+    setCollection
   };
 }

@@ -85,12 +85,6 @@ export async function middleware(request: NextRequest) {
   // In production environments, especially on Vercel's Edge Runtime,
   // API calls from middleware can be problematic with authentication.
   // Instead, we'll let the page component handle nested page resolution.
-  //
-  // Note: In development/local environments, the API call might work fine,
-  // which explains why this issue only happens in production.
-  console.log(
-    `Middleware: Skipping API check for ${slug} in Edge Runtime, letting page handle routing`
-  );
 
   // In a full production solution, you might implement a more robust approach like:
   // 1. Store page relationships in a more Edge-friendly storage solution

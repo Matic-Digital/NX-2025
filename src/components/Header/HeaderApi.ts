@@ -34,15 +34,15 @@ export async function getAllHeaders(preview = false): Promise<HeaderResponse> {
       items: response.data.headerCollection.items,
       total: response.data.headerCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof GraphQLError) {
-      throw error;
+    if (_error instanceof GraphQLError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Headers: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Headers: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Headers');
   }
@@ -73,9 +73,9 @@ export async function getHeaderByName(name: string, preview = false): Promise<He
     }
 
     return response.data.headerCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Header by name: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Header by name: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Header by name');
   }
@@ -108,15 +108,15 @@ export const getHeaderById = cache(async (id: string, preview = false): Promise<
     // Handle the case where items might be empty
     const header = response.data.headerCollection?.items[0];
     return header ?? null;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof GraphQLError) {
-      throw error;
+    if (_error instanceof GraphQLError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Header by ID: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Header by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Header by ID');
   }

@@ -52,9 +52,8 @@ export function SectionHeading(props: SectionHeadingProps) {
         setLoading(true);
         const data = await getSectionHeadingById(sectionHeadingId ?? '', false);
         setFetchedData(data);
-      } catch (err) {
-        console.error('Failed to fetch section heading:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load section heading');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load section heading');
       } finally {
         setLoading(false);
       }
@@ -280,7 +279,10 @@ export function SectionHeading(props: SectionHeadingProps) {
       {...inspectorProps({ fieldId: 'heading' })}
     >
       {sectionHeading.icon && (
-        <div className="bg-black p-2 w-[6rem] aspect-square items-center flex justify-center" {...inspectorProps({ fieldId: 'icon' })}>
+        <div
+          className="bg-black p-2 w-[6rem] aspect-square items-center flex justify-center"
+          {...inspectorProps({ fieldId: 'icon' })}
+        >
           <SvgIcon
             src={sectionHeading.icon.url}
             alt={sectionHeading.title}

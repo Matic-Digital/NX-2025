@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as LocalizedRouteRequest;
     const { currentPath, targetLocale, currentLocale } = body;
 
-    console.log('Finding localized route:', { currentPath, targetLocale, currentLocale });
 
     // Initialize Contentful client
     const client = createClient({
@@ -40,17 +39,15 @@ export async function POST(request: NextRequest) {
       slug = currentPath.replace(/^\//, '') || 'home';
     }
 
-    console.log('Extracted slug from path:', { currentPath, slug });
 
     try {
       // Try to find the current content by slug in ANY locale first
       // This is important because the user might be on a localized page
       const allLocales = ['en-US', 'pt-BR', 'es']; // Add your available locales here
       let foundEntry = null;
-      let foundInLocale = null;
+      let _foundInLocale = null;
 
       for (const locale of allLocales) {
-        console.log(`Searching for slug "${slug}" in locale: ${locale}`);
         
         const entries = await client.getEntries({
           content_type: 'post',
@@ -61,8 +58,7 @@ export async function POST(request: NextRequest) {
 
         if (entries.items.length > 0 && entries.items[0]?.sys?.id) {
           foundEntry = entries.items[0];
-          foundInLocale = locale;
-          console.log(`Found entry in locale: ${locale}, ID: ${foundEntry.sys.id}`);
+          _foundInLocale = locale;
           break;
         }
       }
@@ -86,19 +82,8 @@ export async function POST(request: NextRequest) {
             localizedPath = `/${localizedSlug}`;
           }
           
-          console.log('Found localized route:', { 
-            originalSlug: slug, 
-            foundInLocale, 
-            targetLocale, 
-            localizedSlug, 
-            localizedPath 
-          });
           return NextResponse.json({ localizedPath });
-        } else {
-          console.log('Entry exists but no slug in target locale:', targetLocale);
         }
-      } else {
-        console.log('No entry found with slug:', slug);
       }
 
       // If not found as post, try other content types that might have slugs
@@ -117,7 +102,6 @@ export async function POST(request: NextRequest) {
             const entry = entries.items[0];
             
             if (!entry || !entry.sys?.id) {
-              console.log('Invalid entry found for', contentType);
               continue;
             }
             
@@ -129,26 +113,22 @@ export async function POST(request: NextRequest) {
               const localizedSlug = localizedEntry.fields.slug as string;
               const localizedPath = `/${localizedSlug}`;
               
-              console.log('Found localized route in', contentType, ':', localizedPath);
               return NextResponse.json({ localizedPath });
             }
           }
         } catch {
-          console.log(`No ${contentType} found for slug:`, slug);
+          // Content type not found
         }
       }
 
       // If no localized version found, return null
-      console.log('No localized version found for:', slug);
       return NextResponse.json({ localizedPath: null });
 
-    } catch (contentfulError) {
-      console.error('Contentful API error:', contentfulError);
+    } catch {
       return NextResponse.json({ localizedPath: null });
     }
 
-  } catch (error) {
-    console.error('Error finding localized route:', error);
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

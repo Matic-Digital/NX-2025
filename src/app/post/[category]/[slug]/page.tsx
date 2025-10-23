@@ -1,21 +1,23 @@
-import { notFound } from 'next/navigation';
 import { draftMode } from 'next/headers';
+import { notFound } from 'next/navigation';
 
-import { getPostBySlug, getAllPostsMinimal } from '@/components/Post/PostApi';
-import { PostDetail } from '@/components/Post/PostDetail';
 import { getPostSEOBySlug } from '@/lib/contentful-seo-api';
 import {
-  extractOpenGraphImage,
-  extractSEODescription,
-  extractSEOTitle,
-  extractOpenGraphTitle,
-  extractOpenGraphDescription,
   extractCanonicalUrl,
   extractIndexing,
-  type ContentfulPageSEO
+  extractOpenGraphDescription,
+  extractOpenGraphImage,
+  extractOpenGraphTitle,
+  extractSEODescription,
+  extractSEOTitle
 } from '@/lib/metadata-utils';
 import { generateSchema } from '@/lib/schema-generator';
+
+import { getAllPostsMinimal, getPostBySlug } from '@/components/Post/PostApi';
+import { PostDetail } from '@/components/Post/PostDetail';
 import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
+
+import type { ContentfulPageSEO } from '@/lib/metadata-utils';
 
 // Enable dynamic routing for localized slugs that might not be pre-generated
 export const dynamic = 'force-dynamic';
@@ -33,47 +35,48 @@ interface PostPageProps {
 export async function generateStaticParams() {
   const locales = ['en-US', 'pt-BR', 'es']; // Add your available locales
   const allParams: { category: string; slug: string }[] = [];
-  
+
   // Generate params for each locale
   for (const locale of locales) {
     try {
       // Fetch posts for this specific locale
       const postsResponse = await getAllPostsMinimal(false, locale);
-      
+
       const localeParams = postsResponse.items.map((post) => {
         // Get the first category as the primary category for the URL
-        const primaryCategory = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
-        
+        const primaryCategory =
+          post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
+
         return {
           category: primaryCategory,
-          slug: post.slug,
+          slug: post.slug
         };
       });
-      
+
       allParams.push(...localeParams);
-    } catch (error) {
-      console.error(`Error generating params for locale ${locale}:`, error);
-    }
+    } catch {}
   }
-  
+
   return allParams;
 }
 
 export async function generateMetadata({ params, searchParams }: PostPageProps) {
   const resolvedParams = await params;
   const _resolvedSearchParams = await searchParams;
-  const postSEO = await getPostSEOBySlug(resolvedParams.slug, false) as ContentfulPageSEO & { title?: string; excerpt?: string } | null;
-  
+  const postSEO = (await getPostSEOBySlug(resolvedParams.slug, false)) as
+    | (ContentfulPageSEO & { title?: string; excerpt?: string })
+    | null;
+
   if (!postSEO) {
     return {
-      title: 'Post Not Found',
+      title: 'Post Not Found'
     };
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
   const postUrl = `${baseUrl}/post/${resolvedParams.category}/${resolvedParams.slug}`;
 
   // Extract SEO data using utility functions
@@ -136,20 +139,16 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   const { isEnabled } = await draftMode();
-  
-  console.log(`🔍 PostPage: Loading post with slug "${resolvedParams.slug}" and locale "${resolvedSearchParams.locale ?? 'auto-detect'}"`);
-  
+
   const post = await getPostBySlug(resolvedParams.slug, isEnabled, resolvedSearchParams.locale);
 
   if (!post) {
-    console.log(`❌ Post not found for slug: ${resolvedParams.slug} in locale: ${resolvedSearchParams.locale ?? 'auto-detect'}`);
     notFound();
   }
-  
-  console.log(`✅ Post loaded successfully: ${post.title}`);
 
   // Verify the category matches (optional validation)
-  const primaryCategory = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
+  const primaryCategory =
+    post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
   if (primaryCategory !== resolvedParams.category) {
     // Optionally redirect to correct URL or just continue
     // For now, we'll just continue to show the post

@@ -1,7 +1,14 @@
 import React from 'react';
+
 import type { FieldRendererProps } from '../types';
 
-export const RichTextField: React.FC<FieldRendererProps> = ({ field, value: _value, onChange: _onChange, error: _error, theme = 'dark' }) => {
+export const RichTextField: React.FC<FieldRendererProps> = ({
+  field,
+  value: _value,
+  onChange: _onChange,
+  error: _error,
+  theme = 'dark'
+}) => {
   // Rich text fields are informational only (no input needed)
   // They display HTML content from the description
   if (!field.description) return null;
@@ -15,7 +22,7 @@ export const RichTextField: React.FC<FieldRendererProps> = ({ field, value: _val
           {field.label}
         </div>
       )}
-      <div 
+      <div
         className={`${textClass} text-[1rem] font-normal leading-[120%] tracking-[0.002rem]`}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: field.description }}

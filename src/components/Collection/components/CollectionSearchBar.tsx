@@ -23,8 +23,8 @@ export function CollectionSearchBar({
 
   return (
     <div className={`mb-6 ${className}`}>
-      <SearchBar 
-        searchQuery={searchQuery} 
+      <SearchBar
+        searchQuery={searchQuery}
         onSearchChange={onSearchChange}
         contentTypes={contentTypes}
       />

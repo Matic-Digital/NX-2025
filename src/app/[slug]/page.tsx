@@ -21,22 +21,17 @@
 import { notFound, redirect } from 'next/navigation';
 
 import { getAllPageLists, getPageBySlug, getPageListBySlug } from '@/lib/contentful-api';
-import { getPageSEOBySlug, getPageListSEOBySlug } from '@/lib/contentful-seo-api';
-import { getProductBySlug } from '@/components/Product/ProductApi';
-import { getServiceBySlug } from '@/components/Service/ServiceApi';
-import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
-import { getPostBySlug } from '@/components/Post/PostApi';
-import {
-  extractOpenGraphImage,
-  extractSEODescription,
-  extractSEOTitle,
-  extractOpenGraphTitle,
-  extractOpenGraphDescription,
-  extractCanonicalUrl,
-  extractIndexing
-} from '@/lib/metadata-utils';
 import { contentfulSchemaMapper } from '@/lib/contentful-schema-mapper';
-import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
+import { getPageListSEOBySlug, getPageSEOBySlug } from '@/lib/contentful-seo-api';
+import {
+  extractCanonicalUrl,
+  extractIndexing,
+  extractOpenGraphDescription,
+  extractOpenGraphImage,
+  extractOpenGraphTitle,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { Content } from '@/components/Content/Content';
@@ -45,9 +40,14 @@ import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { PageList } from '@/components/PageList/PageList';
+import { getPostBySlug } from '@/components/Post/PostApi';
+import { getProductBySlug } from '@/components/Product/ProductApi';
 import { RegionsMap } from '@/components/Region/RegionsMap';
 import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { RichContent } from '@/components/RichContent/RichContent';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
+import { getServiceBySlug } from '@/components/Service/ServiceApi';
+import { getSolutionBySlug } from '@/components/Solution/SolutionApi';
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
@@ -120,25 +120,25 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
       // Before redirecting a PageList, check if there are also Pages with the same slug
       // This prevents conflicts where both a PageList and Page have the same slug
       let hasPageConflict = false;
-      
+
       for (const pageList of pageLists) {
         if (!pageList.pagesCollection?.items?.length) continue;
-        
+
         const foundPage = pageList.pagesCollection.items.find(
           (item) => hasSlug(item) && (item.slug === slug || item.slug?.endsWith(`/${slug}`))
         );
-        
+
         if (foundPage) {
           hasPageConflict = true;
           break;
         }
       }
-      
+
       // If there's a conflict, don't auto-redirect - let user access via explicit nested URLs
       if (hasPageConflict) {
         return null;
       }
-      
+
       const parentPath = buildRoutingPath(targetPageList.sys.id);
       if (parentPath.length > 0) {
         const fullPath = [...parentPath, slug].join('/');
@@ -147,8 +147,8 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
     }
 
     // Check if slug is a content item within any PageList (including nested PageLists)
-    const matchingPageLists: Array<{ pageList: typeof pageLists[0]; fullPath: string }> = [];
-    
+    const matchingPageLists: Array<{ pageList: (typeof pageLists)[0]; fullPath: string }> = [];
+
     for (const pageList of pageLists) {
       if (!pageList.pagesCollection?.items?.length) continue;
 
@@ -195,15 +195,13 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
           contentItem = await getPageBySlug(slug, false);
         }
 
-
         if (contentItem) {
-
           // Find which PageLists contain this content item
-          const containingPageLists: Array<{ pageList: typeof pageLists[0]; fullPath: string }> = [];
+          const containingPageLists: Array<{ pageList: (typeof pageLists)[0]; fullPath: string }> =
+            [];
 
           for (const pageList of pageLists) {
             if (!pageList.pagesCollection?.items?.length) continue;
-
 
             const isInPageList = pageList.pagesCollection.items.some((item) => {
               const match = item?.sys?.id === contentItem.sys.id;
@@ -229,15 +227,14 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
             const fullPath = containingPageLists[0]!.fullPath;
             return fullPath;
           }
-
         }
-      } catch (_error) {
+      } catch {
         // Continue to next content type if this one fails
         continue;
       }
     }
     return null;
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
@@ -262,9 +259,9 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
 
   try {
     // First, check if this slug should be redirected to a nested path
@@ -274,7 +271,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     }
 
     // Try to fetch SEO data for a Page first (lightweight query)
-    const pageSEO = await getPageSEOBySlug(slug, false) as unknown;
+    const pageSEO = (await getPageSEOBySlug(slug, false)) as unknown;
 
     if (pageSEO) {
       // Found Page SEO data
@@ -337,7 +334,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
     }
 
     // Try to fetch SEO data for a PageList (lightweight query)
-    const pageListSEO = await getPageListSEOBySlug(slug, false) as unknown;
+    const pageListSEO = (await getPageListSEOBySlug(slug, false)) as unknown;
 
     if (pageListSEO) {
       // Found PageList SEO data
@@ -404,7 +401,7 @@ export async function generateMetadata({ params }: ContentPageProps): Promise<Me
       title: 'Page Not Found',
       description: 'The requested page could not be found.'
     };
-  } catch (_error) {
+  } catch {
     return {
       title: 'Error',
       description: 'An error occurred while loading this page.'
@@ -478,7 +475,6 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
     // If neither Page nor PageList is found, return a 404
     notFound();
   } catch (_error) {
-
     // Instead of converting all errors to 404s, let's throw the actual error
     // to help with debugging the 500 error in production
     throw _error;
@@ -490,10 +486,10 @@ async function renderPage(page: Page, slug: string) {
   const pageLayout = page.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
-  
+
   // Generate connected schema (includes organization connections)
   const pageSchema = contentfulSchemaMapper.mapContentToSchema(page, `/${slug}`, 'page');
-  
+
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <JsonLdSchema schema={pageSchema} id="page-schema" />
@@ -538,7 +534,11 @@ async function renderPageList(pageList: PageListType, slug: string) {
   ) as PageListContent[];
 
   // Generate connected schema (includes organization connections)
-  const pageListSchema = contentfulSchemaMapper.mapContentToSchema(pageList, `/${slug}`, 'pagelist');
+  const pageListSchema = contentfulSchemaMapper.mapContentToSchema(
+    pageList,
+    `/${slug}`,
+    'pagelist'
+  );
 
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>

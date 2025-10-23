@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { getImageById } from '@/components/Image/ImageApi';
+import { shouldPreloadImage as _shouldPreloadImage } from '@/components/Image/utils/imageOptimization';
 
 import type { AirImage as AirImageType } from '@/components/Image/ImageSchema';
 
@@ -28,11 +29,46 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
         height: parseInt(height, 10)
       };
     }
-  } catch (error) {
-    console.error('Failed to parse Air imgix URL:', error);
-  }
+  } catch {}
 
   return null;
+};
+
+/**
+ * Optimizes Air imgix URLs for better performance
+ * @param url - Original Air imgix URL
+ * @param width - Desired width
+ * @param height - Desired height
+ * @param quality - Image quality (1-100)
+ * @returns Optimized image URL
+ */
+const optimizeAirImage = (
+  url: string,
+  width?: number,
+  height?: number,
+  quality = 75
+): string => {
+  if (!url.includes('air-prod.imgix.net')) {
+    return url; // Not an Air imgix URL
+  }
+
+  try {
+    const urlObj = new URL(url);
+    
+    // Optimize for better compression and performance
+    if (width) urlObj.searchParams.set('w', width.toString());
+    if (height) urlObj.searchParams.set('h', height.toString());
+    
+    // Enhanced compression settings
+    urlObj.searchParams.set('auto', 'compress,format'); // Auto-optimize format and compression
+    urlObj.searchParams.set('q', quality.toString()); // Reduce quality for better compression
+    urlObj.searchParams.set('fit', 'crop'); // Better cropping for responsive images
+    urlObj.searchParams.set('crop', 'smart'); // Smart cropping to focus on important content
+    
+    return urlObj.toString();
+  } catch {
+    return url;
+  }
 };
 
 /**
@@ -47,7 +83,7 @@ const optimizeContentfulImage = (
   url: string,
   width?: number,
   height?: number,
-  quality = 80
+  quality = 75
 ): string => {
   if (!url.includes('images.ctfassets.net') && !url.includes('assets.ctfassets.net')) {
     return url; // Not a Contentful image, return as-is
@@ -57,10 +93,56 @@ const optimizeContentfulImage = (
   if (width) params.set('w', width.toString());
   if (height) params.set('h', height.toString());
   params.set('fm', 'webp'); // Use WebP format for better compression
-  params.set('q', quality.toString()); // Set quality
+  params.set('q', quality.toString()); // Improved quality for better compression
   params.set('fit', 'fill'); // Ensure image fills the dimensions
 
   return `${url}?${params.toString()}`;
+};
+
+/**
+ * Generates responsive image srcset for different screen sizes
+ * @param baseUrl - Base image URL
+ * @param width - Base width
+ * @param height - Base height
+ * @returns srcset string for responsive images
+ */
+const generateSrcSet = (baseUrl: string, width: number, height: number): string => {
+  const isAirImage = baseUrl.includes('air-prod.imgix.net');
+  const isContentfulImage = baseUrl.includes('images.ctfassets.net') || baseUrl.includes('assets.ctfassets.net');
+  
+  if (!isAirImage && !isContentfulImage) {
+    return '';
+  }
+
+  const sizes = [
+    { w: Math.round(width * 0.5), descriptor: '480w' },
+    { w: Math.round(width * 0.75), descriptor: '768w' },
+    { w: width, descriptor: '1200w' },
+    { w: Math.round(width * 1.5), descriptor: '1920w' }
+  ];
+
+  return sizes
+    .map(({ w, descriptor }) => {
+      const h = Math.round((height * w) / width);
+      const optimizedUrl = isAirImage 
+        ? optimizeAirImage(baseUrl, w, h, 75)
+        : optimizeContentfulImage(baseUrl, w, h, 75);
+      return `${optimizedUrl} ${descriptor}`;
+    })
+    .join(', ');
+};
+
+/**
+ * Generates optimized sizes attribute based on common breakpoints
+ * @param priority - Whether this is a priority image
+ * @returns sizes string for responsive images
+ */
+const generateSizes = (priority?: boolean): string => {
+  if (priority) {
+    // For LCP images, be more aggressive with sizing
+    return '(max-width: 480px) 100vw, (max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px';
+  }
+  return '(max-width: 480px) 100vw, (max-width: 768px) 75vw, (max-width: 1200px) 50vw, 600px';
 };
 
 /**
@@ -106,8 +188,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
         if (fullData) {
           setFullImageData(fullData);
         }
-      } catch (error) {
-        console.error('Failed to fetch full image data:', error);
+      } catch {
       } finally {
         setIsLoading(false);
       }
@@ -138,17 +219,20 @@ export const AirImage: React.FC<AirImageType> = (props) => {
   const intrinsicWidth = airDimensions?.width ?? width ?? 1208;
   const intrinsicHeight = airDimensions?.height ?? height ?? 800;
 
-  // For Air imgix URLs, keep original URL completely unchanged, only optimize Contentful images
+  // Optimize both Air and Contentful images for better performance
   const optimizedSrc = airDimensions
-    ? link // Keep original Air URL completely unchanged
-    : optimizeContentfulImage(link, intrinsicWidth, intrinsicHeight, 85);
+    ? optimizeAirImage(link, intrinsicWidth, intrinsicHeight, 75)
+    : optimizeContentfulImage(link, intrinsicWidth, intrinsicHeight, 75);
+
+  // Generate responsive srcset for better performance across devices
+  const _srcSet = generateSrcSet(link, intrinsicWidth, intrinsicHeight);
+  const responsiveSizes = generateSizes(priority);
 
   // Combine alignment classes with existing className
-  const combinedClassName = className 
-    ? `${className} ${alignmentClasses}` 
-    : alignmentClasses;
+  const combinedClassName = className ? `${className} ${alignmentClasses}` : alignmentClasses;
 
-  // For Air images, use unoptimized to preserve intrinsic dimensions
+  // Use optimized images for better LCP performance
+  // Note: Next.js Image component automatically generates srcset, so we don't need to pass it manually
   return (
     <Image
       src={optimizedSrc}
@@ -158,8 +242,11 @@ export const AirImage: React.FC<AirImageType> = (props) => {
       height={intrinsicHeight}
       priority={priority}
       loading={priority ? 'eager' : 'lazy'}
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      unoptimized={!!airDimensions} // Disable Next.js optimization for Air images
+      sizes={responsiveSizes}
+      quality={75} // Optimized quality for better compression
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+      unoptimized={false} // Enable Next.js optimization for all images
     />
   );
 };

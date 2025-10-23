@@ -67,12 +67,12 @@ export async function getAllRegions(): Promise<RegionResponse | null> {
     return {
       items: data.regionCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Services: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Services: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Services');
   }
@@ -91,7 +91,6 @@ export async function getRegionsMapById(id: string): Promise<RegionsMap | null> 
     );
 
     if (!response?.data) {
-      console.error('No data in response for regionsMap with id:', id);
       return null;
     }
 
@@ -104,12 +103,12 @@ export async function getRegionsMapById(id: string): Promise<RegionsMap | null> 
     }
 
     return data.regionsMap;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Region Map: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Region Map: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Region Map');
   }

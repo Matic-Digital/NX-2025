@@ -1,5 +1,6 @@
-import { Text } from '@/components/global/matic-ds';
 import { cn } from '@/lib/utils';
+
+import { Text } from '@/components/global/matic-ds';
 
 const Section = ({
   title,

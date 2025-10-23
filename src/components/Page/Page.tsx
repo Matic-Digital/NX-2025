@@ -112,7 +112,6 @@ export function Page(props: PageProps) {
   // Add a check to ensure props has the required structure
   // This check comes AFTER all hook calls to comply with the rules of hooks
   if (!page?.sys?.id) {
-    console.error('Page component received invalid props:', props);
     return null;
   }
 
@@ -173,8 +172,7 @@ export function Page(props: PageProps) {
                       </div>
                     );
                 }
-              } catch (error) {
-                console.error(`Error rendering content item ${index}:`, error, content);
+              } catch (_error) {
                 return (
                   <div key={key} className="mb-12">
                     <div className="rounded-lg border border-red-200 bg-red-50 p-4">
@@ -182,7 +180,7 @@ export function Page(props: PageProps) {
                         <strong>Render Error:</strong> {content.__typename}
                       </p>
                       <p className="mt-1 text-xs text-red-600">
-                        {error instanceof Error ? error.message : 'Unknown error'}
+                        {_error instanceof Error ? _error.message : 'Unknown error'}
                       </p>
                     </div>
                   </div>

@@ -29,7 +29,7 @@ export function RequestAQuoteModal({
   const defaultFormId = '1d392e69-b470-4703-afa6-19b01f490b84';
   const hubspotFormId = formId ?? defaultFormId;
 
-  const handleFormSubmit = (data: Record<string, unknown>) => {
+  const handleFormSubmit = (_data: Record<string, unknown>) => {
     // You can add additional logic here like tracking, notifications, etc.
 
     // Close the modal after successful submission

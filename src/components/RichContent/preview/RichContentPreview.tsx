@@ -36,9 +36,7 @@ export function RichContentPreview(props: Partial<RichContentType>) {
               {(() => {
                 // Check if we have all required fields for a valid RichContent
                 const hasRequiredFields =
-                  liveRichContent?.sys &&
-                  liveRichContent?.variant &&
-                  liveRichContent?.content;
+                  liveRichContent?.sys && liveRichContent?.variant && liveRichContent?.content;
 
                 if (hasRequiredFields) {
                   return (

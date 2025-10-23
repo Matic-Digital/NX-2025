@@ -32,31 +32,24 @@ import type { Locale } from './LocaleDropdownSchema';
  */
 export async function getAvailableLocales(): Promise<Locale[]> {
   try {
-    console.log('Fetching locales from server API...');
-
     const response = await fetch('/api/locales', {
       method: 'GET',
       cache: 'no-cache' // Don't cache during debugging
     });
 
     if (!response.ok) {
-      console.error('Failed to fetch locales from API:', response.status, response.statusText);
-      const errorData = (await response.json().catch(() => ({}))) as { error?: string };
-      console.error('API Error:', errorData);
+      const _errorData = (await response.json().catch(() => ({}))) as { error?: string };
       return getFallbackLocales();
     }
 
     const data = (await response.json()) as { locales?: Locale[] };
 
     if (!data.locales || data.locales.length === 0) {
-      console.warn('No locales returned from API');
       return getFallbackLocales();
     }
 
-    console.log('Fetched locales from Contentful:', data.locales ?? []);
     return data.locales ?? [];
-  } catch (error) {
-    console.error('Error fetching locales:', error);
+  } catch {
     return getFallbackLocales();
   }
 }
@@ -65,7 +58,6 @@ export async function getAvailableLocales(): Promise<Locale[]> {
  * Fallback locales when API call fails
  */
 function getFallbackLocales(): Locale[] {
-  console.log('Using fallback locales');
   return [{ code: 'en-US', name: 'English (US)', default: true }];
 }
 

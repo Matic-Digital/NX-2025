@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface SvgIconProps {
@@ -50,9 +51,8 @@ export function SvgIcon({ src, alt, className, width, height }: SvgIconProps) {
 
         setSvgContent(cleanSvg);
         setError('');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load SVG');
-        console.error('Error fetching SVG:', err);
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load SVG');
       } finally {
         setIsLoading(false);
       }
@@ -92,8 +92,8 @@ export function SvgIcon({ src, alt, className, width, height }: SvgIconProps) {
     <div
       className={cn('inline-flex', className)}
       style={{ width: width ?? 24, height: height ?? 24 }}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: svgContent }}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: svgContent }}
       role="img"
       aria-label={alt ?? 'Icon'}
     />

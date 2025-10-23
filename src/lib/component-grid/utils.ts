@@ -107,13 +107,13 @@ export const collectionAnalyzers = {
 
   hasServiceCards: (items: ContentGridItemUnion[]): boolean => {
     const hasDirectServices = items.some(contentTypeDetectors.isService);
-    const hasPrimaryHoverSlideUp = items.some(item => 
-      contentTypeDetectors.isContentGridItem(item) && 
-      item.variant === 'PrimaryHoverSlideUp'
+    const hasPrimaryHoverSlideUp = items.some(
+      (item) =>
+        contentTypeDetectors.isContentGridItem(item) && item.variant === 'PrimaryHoverSlideUp'
     );
-    
+
     const result = hasDirectServices || hasPrimaryHoverSlideUp;
-    
+
     return result;
   },
 

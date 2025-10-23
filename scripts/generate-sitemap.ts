@@ -5,7 +5,6 @@
  * Fetches all pages, page lists, products, solutions, services, and posts from Contentful
  * Generates both Pa11y URLs and proper XML sitemap
  */
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -22,8 +21,8 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
 const CONTENTFUL_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
 const CONTENTFUL_ENVIRONMENT = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'staging';
-const BASE_URL = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
+const BASE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
   : process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
@@ -241,10 +240,10 @@ async function getStandaloneContentItems(): Promise<{
   );
 
   return {
-    products: results.find(r => r.name === 'products')?.items || [],
-    solutions: results.find(r => r.name === 'solutions')?.items || [],
-    services: results.find(r => r.name === 'services')?.items || [],
-    posts: results.find(r => r.name === 'posts')?.items || []
+    products: results.find((r) => r.name === 'products')?.items || [],
+    solutions: results.find((r) => r.name === 'solutions')?.items || [],
+    services: results.find((r) => r.name === 'services')?.items || [],
+    posts: results.find((r) => r.name === 'posts')?.items || []
   };
 }
 
@@ -252,8 +251,8 @@ async function getStandaloneContentItems(): Promise<{
  * Build routing path by finding parent PageLists
  */
 function buildRoutingPath(
-  itemId: string, 
-  pageLists: ContentfulPageList[], 
+  itemId: string,
+  pageLists: ContentfulPageList[],
   visited = new Set<string>()
 ): string[] {
   if (visited.has(itemId)) return []; // Prevent infinite loops
@@ -276,8 +275,8 @@ function buildRoutingPath(
  * Check if an item is contained in any PageList
  */
 function isItemInPageList(itemId: string, pageLists: ContentfulPageList[]): boolean {
-  return pageLists.some(pageList => 
-    pageList.pagesCollection?.items?.some(item => item?.sys?.id === itemId)
+  return pageLists.some((pageList) =>
+    pageList.pagesCollection?.items?.some((item) => item?.sys?.id === itemId)
   );
 }
 
@@ -359,7 +358,7 @@ function generateSitemapUrls(
         if (item.slug && item.slug.trim()) {
           const parentPath = buildRoutingPath(pageList.sys.id, pageLists);
           let fullPath: string;
-          
+
           if (parentPath.length > 0 && pageList.slug && pageList.slug.trim()) {
             // Nested PageList: /parent1/parent2/.../pageListSlug/itemSlug
             fullPath = [...parentPath, pageList.slug, item.slug].filter(Boolean).join('/');
@@ -413,8 +412,8 @@ function generateSitemapUrls(
   });
 
   // Remove duplicates, filter out malformed URLs, and sort by URL
-  const uniqueUrls = urls.filter((url, index, self) => 
-    index === self.findIndex(u => u.loc === url.loc)
+  const uniqueUrls = urls.filter(
+    (url, index, self) => index === self.findIndex((u) => u.loc === url.loc)
   );
 
   // Filter out malformed URLs
@@ -424,7 +423,12 @@ function generateSitemapUrls(
       return false;
     }
     // Remove empty or invalid URLs
-    if (!url.loc || url.loc.endsWith('//') || url.loc.endsWith('/undefined') || url.loc.includes('undefined')) {
+    if (
+      !url.loc ||
+      url.loc.endsWith('//') ||
+      url.loc.endsWith('/undefined') ||
+      url.loc.includes('undefined')
+    ) {
       return false;
     }
     return true;
@@ -506,24 +510,26 @@ function generateXmlSitemap(urls: SitemapUrl[]): string {
   const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
   const urlsetClose = '</urlset>';
 
-  const urlEntries = urls.map(url => {
-    let entry = `  <url>\n    <loc>${url.loc}</loc>`;
-    
-    if (url.lastmod) {
-      entry += `\n    <lastmod>${url.lastmod}</lastmod>`;
-    }
-    
-    if (url.changefreq) {
-      entry += `\n    <changefreq>${url.changefreq}</changefreq>`;
-    }
-    
-    if (url.priority !== undefined) {
-      entry += `\n    <priority>${url.priority.toFixed(1)}</priority>`;
-    }
-    
-    entry += '\n  </url>';
-    return entry;
-  }).join('\n');
+  const urlEntries = urls
+    .map((url) => {
+      let entry = `  <url>\n    <loc>${url.loc}</loc>`;
+
+      if (url.lastmod) {
+        entry += `\n    <lastmod>${url.lastmod}</lastmod>`;
+      }
+
+      if (url.changefreq) {
+        entry += `\n    <changefreq>${url.changefreq}</changefreq>`;
+      }
+
+      if (url.priority !== undefined) {
+        entry += `\n    <priority>${url.priority.toFixed(1)}</priority>`;
+      }
+
+      entry += '\n  </url>';
+      return entry;
+    })
+    .join('\n');
 
   return `${xmlHeader}\n${urlsetOpen}\n${urlEntries}\n${urlsetClose}`;
 }
@@ -566,7 +572,9 @@ async function generateSitemap(): Promise<string[]> {
     const sitemapUrls = generateSitemapUrls(standalonePages, pageLists, contentItems);
 
     console.log(`\nGenerated ${sitemapUrls.length} URLs for sitemap.xml:`);
-    sitemapUrls.forEach((url) => console.log(`  - ${url.loc} (priority: ${url.priority}, changefreq: ${url.changefreq})`));
+    sitemapUrls.forEach((url) =>
+      console.log(`  - ${url.loc} (priority: ${url.priority}, changefreq: ${url.changefreq})`)
+    );
 
     // Generate XML content
     const xmlContent = generateXmlSitemap(sitemapUrls);

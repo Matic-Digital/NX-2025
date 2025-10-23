@@ -1,7 +1,9 @@
 import { draftMode } from 'next/headers';
-import { constantTimeCompare } from '@/lib/security-utils';
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+import { constantTimeCompare } from '@/lib/security-utils';
+
+import type { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -137,7 +139,6 @@ export async function GET(request: NextRequest) {
   if (productId) {
     return NextResponse.redirect(new URL(`/product-preview?id=${productId}`, request.url));
   }
-
 
   // If no valid parameters were provided
   return NextResponse.json(

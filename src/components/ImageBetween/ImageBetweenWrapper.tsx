@@ -1,13 +1,16 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@/lib/utils';
 
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
+
 import { AirImage } from '@/components/Image/AirImage';
-import type { z } from 'zod';
+
 import type { MobileOriginSchema } from '@/components/Image/ImageSchema';
+import type { z } from 'zod';
 
 interface ImageBetweenWrapperProps {
   contentTop?: React.ReactNode;
@@ -30,7 +33,7 @@ interface ImageBetweenWrapperProps {
 
 /**
  * ImageBetweenWrapper component
- * 
+ *
  * A flexible wrapper that follows the ImageBetween layout pattern but accepts
  * custom TSX content for contentTop, asset, and contentBottom sections.
  */
@@ -49,10 +52,12 @@ export function ImageBetweenWrapper({
     <ErrorBoundary>
       <div className={cn('relative', className)}>
         {/* Dark Top Section */}
-        <Section className={cn(
-          'dark bg-background flex flex-col relative h-full w-full',
-          darkSectionClassName
-        )}>
+        <Section
+          className={cn(
+            'dark bg-background flex flex-col relative h-full w-full',
+            darkSectionClassName
+          )}
+        >
           {backgroundImage && (
             <AirImage
               link={backgroundImage.link}
@@ -70,39 +75,28 @@ export function ImageBetweenWrapper({
               )}
             >
               {/* Top Content */}
-              {contentTop && (
-                <div className="relative z-10">
-                  {contentTop}
-                </div>
-              )}
+              {contentTop && <div className="relative z-10">{contentTop}</div>}
             </Box>
           ) : (
             /* Default variant - no article spacing */
-            contentTop && (
-              <div className="relative z-10 w-full pb-24">
-                {contentTop}
-              </div>
-            )
+            contentTop && <div className="relative z-10 w-full pb-24">{contentTop}</div>
           )}
         </Section>
 
         {/* Central Asset */}
         {asset && (
-          <div className={cn(
-            'relative flex items-center justify-center w-full mx-auto',
-            variant === 'article' ? 'max-w-full lg:max-w-[71.3rem]' : 'max-w-full'
-          )}>
-            <Container className={cn('absolute z-20', assetClassName)}>
-              {asset}
-            </Container>
+          <div
+            className={cn(
+              'relative flex items-center justify-center w-full mx-auto',
+              variant === 'article' ? 'max-w-full lg:max-w-[71.3rem]' : 'max-w-full'
+            )}
+          >
+            <Container className={cn('absolute z-20', assetClassName)}>{asset}</Container>
           </div>
         )}
 
         {/* Light Bottom Section */}
-        <Section className={cn(
-          'relative h-full w-full overflow-hidden',
-          lightSectionClassName
-        )}>
+        <Section className={cn('relative h-full w-full overflow-hidden', lightSectionClassName)}>
           {variant === 'article' ? (
             <div className="mt-48 pt-24 lg:mt-60 lg:pt-32 xl:mt-64 xl:pt-40">
               <Box direction="col" gap={8}>
@@ -116,11 +110,7 @@ export function ImageBetweenWrapper({
             </div>
           ) : (
             /* Default variant - no article spacing */
-            contentBottom && (
-              <div className="relative z-10 w-full pt-24">
-                {contentBottom}
-              </div>
-            )
+            contentBottom && <div className="relative z-10 w-full pt-24">{contentBottom}</div>
           )}
         </Section>
       </div>

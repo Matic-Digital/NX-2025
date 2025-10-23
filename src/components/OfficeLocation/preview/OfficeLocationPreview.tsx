@@ -48,10 +48,7 @@ export function OfficeLocationPreview(props: Partial<OfficeLocation>) {
                 if (hasRequiredFields && liveOfficeLocation.sys) {
                   return (
                     <div className="overflow-hidden p-6">
-                      <Location
-                        sys={{ id: liveOfficeLocation.sys.id }}
-                        {...inspectorProps}
-                      />
+                      <Location sys={{ id: liveOfficeLocation.sys.id }} {...inspectorProps} />
                     </div>
                   );
                 }

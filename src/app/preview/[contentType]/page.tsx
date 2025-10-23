@@ -21,20 +21,13 @@ import { Accordion } from '@/components/Accordion/Accordion';
 // Component imports
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
 import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
-import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
-import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 // Skeleton imports
 import { AccordionSkeleton } from '@/components/Accordion/components/AccordionSkeleton';
-import { BannerHeroSkeleton } from '@/components/BannerHero/components/BannerHeroSkeleton';
-import { ContactCardSkeleton } from '@/components/ContactCard/components/ContactCardSkeleton';
-import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
-import { EventSkeleton } from '@/components/Event/components/EventSkeleton';
-import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
-import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
-import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
+import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
+import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
 import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
+import { BannerHeroSkeleton } from '@/components/BannerHero/components/BannerHeroSkeleton';
 import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
 import { getButtonById } from '@/components/Button/ButtonApi';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
@@ -42,11 +35,13 @@ import { ButtonPreview } from '@/components/Button/preview/ButtonPreview';
 import { Collection } from '@/components/Collection/Collection';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
 import { CollectionPreview } from '@/components/Collection/preview/CollectionPreview';
+import { ContactCardSkeleton } from '@/components/ContactCard/components/ContactCardSkeleton';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
 import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
 import { Content } from '@/components/Content/Content';
 import { getContentById } from '@/components/Content/ContentApi';
+import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
 import { ContentPreview } from '@/components/Content/preview/ContentPreview';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import {
@@ -58,12 +53,14 @@ import { ContentGridItemPreview } from '@/components/ContentGrid/preview/Content
 import { ContentGridPreview } from '@/components/ContentGrid/preview/ContentGridPreview';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
+import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
 import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPreview';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
-import { EventDetail } from '@/components/Event/EventDetail';
+import { EventSkeleton } from '@/components/Event/components/EventSkeleton';
 import { getEventById } from '@/components/Event/EventApi';
+import { EventDetail } from '@/components/Event/EventDetail';
 import { EventDetailPreview } from '@/components/Event/preview';
 import { EventPreview } from '@/components/Event/preview/EventPreview';
 import { Footer } from '@/components/Footer/Footer';
@@ -74,6 +71,7 @@ import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormAp
 import { HubspotFormPreview } from '@/components/Forms/HubspotForm/preview/HubspotFormPreview';
 import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
+import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
 import { HeaderPreview } from '@/components/Header/preview/HeaderPreview';
 import { AirImage } from '@/components/Image/AirImage';
 import { getImageById } from '@/components/Image/ImageApi';
@@ -102,6 +100,7 @@ import { PageList } from '@/components/PageList/PageList';
 import { getPageListById } from '@/components/PageList/PageListApi';
 import { getPostById } from '@/components/Post/PostApi';
 import { PostCard } from '@/components/Post/PostCard';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { PostPreview } from '@/components/Post/preview/PostPreview';
 import { ProductPreview } from '@/components/Product/preview/ProductPreview';
 import { getProductById } from '@/components/Product/ProductApi';
@@ -120,6 +119,7 @@ import { getRichContentById } from '@/components/RichContent/RichContentApi';
 import { SectionHeadingPreview } from '@/components/SectionHeading/preview/SectionHeadingPreview';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 import { ServicePreview } from '@/components/Service/preview/ServicePreview';
 import { getServiceById } from '@/components/Service/ServiceApi';
 import { Slider } from '@/components/Slider/Slider';
@@ -525,8 +525,27 @@ function PreviewContent({ contentType }: PreviewContentProps) {
         const fetchedContent = await config.fetchFn(id, true);
         setContent(fetchedContent as ContentfulContent);
         setIsLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error(`Failed to fetch ${config.entityName}`));
+      } catch (_err) {
+        // For HubSpot forms, try fallback to published content if preview fails
+        if (
+          contentType === 'hubspot-form' &&
+          _err instanceof Error &&
+          (_err.message.includes('Authentication failed') ||
+            _err.message.includes('access token') ||
+            _err.message.includes('invalid token'))
+        ) {
+          try {
+            // Try fallback to published content
+            const fallbackContent = await config.fetchFn(id, false);
+            setContent(fallbackContent as ContentfulContent);
+            setIsLoading(false);
+            return;
+          } catch {
+            // Fallback failed, continue to show error
+          }
+        }
+
+        setError(_err instanceof Error ? _err : new Error(`Failed to fetch ${config.entityName}`));
         setIsLoading(false);
       }
     }
@@ -572,22 +591,29 @@ function PreviewContent({ contentType }: PreviewContentProps) {
 
   // For components without skeletons, show minimal loading or nothing
   if (isLoading) {
-    return (
-      <div className={containerClass}>
-        {/* No spinner - just wait for content to load */}
-      </div>
-    );
+    return <div className={containerClass}>{/* No spinner - just wait for content to load */}</div>;
   }
 
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md">
           <h1 className="text-2xl font-bold text-red-600">Error</h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Error fetching {entityName}: {error.message}
           </p>
           <p className="mt-2 text-sm text-gray-500">ID: {id}</p>
+
+          {contentType === 'hubspot-form' && (
+            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
+              <h3 className="font-semibold text-yellow-800 mb-2">Possible Issues:</h3>
+              <ul className="text-sm text-yellow-700 space-y-1">
+                <li>• HubSpot Form content type may not exist in this Contentful environment</li>
+                <li>• The entry ID may not exist or may be in a different environment</li>
+                <li>• Preview access token may not have permissions for this content type</li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -631,11 +657,7 @@ function PreviewContent({ contentType }: PreviewContentProps) {
 }
 
 function LoadingFallback() {
-  return (
-    <div className="min-h-screen">
-      {/* No spinner - just empty space while routing */}
-    </div>
-  );
+  return <div className="min-h-screen">{/* No spinner - just empty space while routing */}</div>;
 }
 
 interface PreviewPageProps {

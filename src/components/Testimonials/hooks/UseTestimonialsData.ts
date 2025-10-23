@@ -28,8 +28,7 @@ export const useTestimonialsData = (sysId: string) => {
         } else {
           setError('No testimonials data found');
         }
-      } catch (error) {
-        console.error('Failed to fetch testimonials data:', error);
+      } catch {
         setError('Failed to load testimonials data');
       } finally {
         setLoading(false);

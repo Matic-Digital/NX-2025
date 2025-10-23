@@ -55,12 +55,12 @@ export async function getAllBannerHeroes(
       items: response.data.bannerHeroCollection.items,
       total: response.data.bannerHeroCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching banner heroes: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching banner heroes: ${_error.message}`);
     }
     throw new Error('Unknown error fetching banner heroes');
   }
@@ -91,9 +91,9 @@ export async function getBannerHero(id: string, preview = true): Promise<BannerH
     }
 
     return response.data.bannerHeroCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching banner hero: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching banner hero: ${_error.message}`);
     }
     throw new Error('Unknown error fetching banner hero');
   }

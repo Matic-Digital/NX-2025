@@ -125,7 +125,7 @@ export const contentRenderers = {
       <ServiceCard
         key={item.sys?.id ?? context.index}
         cardId={item.sys?.id ?? `service-${context.index}`}
-        isFirst={isFirstService}
+        isFirstCard={isFirstService}
         serviceId={item.sys?.id ?? `service-${context.index}`}
       />
     );

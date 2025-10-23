@@ -4,7 +4,6 @@
  * Enhanced sitemap generator with routing metadata
  * Generates both XML sitemap and routing lookup cache for fast page resolution
  */
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -21,14 +20,17 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
 const CONTENTFUL_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
 const CONTENTFUL_ENVIRONMENT = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'staging';
-const BASE_URL = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}` 
+const BASE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
   : process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
   console.error('Missing required Contentful environment variables:');
   console.error('NEXT_PUBLIC_CONTENTFUL_SPACE_ID:', CONTENTFUL_SPACE_ID ? 'Set' : 'Missing');
-  console.error('NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN:', CONTENTFUL_ACCESS_TOKEN ? 'Set' : 'Missing');
+  console.error(
+    'NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN:',
+    CONTENTFUL_ACCESS_TOKEN ? 'Set' : 'Missing'
+  );
   process.exit(1);
 }
 
@@ -261,10 +263,10 @@ async function getStandaloneContentItems(): Promise<{
   );
 
   return {
-    products: results.find(r => r.name === 'products')?.items || [],
-    solutions: results.find(r => r.name === 'solutions')?.items || [],
-    services: results.find(r => r.name === 'services')?.items || [],
-    posts: results.find(r => r.name === 'posts')?.items || []
+    products: results.find((r) => r.name === 'products')?.items || [],
+    solutions: results.find((r) => r.name === 'solutions')?.items || [],
+    services: results.find((r) => r.name === 'services')?.items || [],
+    posts: results.find((r) => r.name === 'posts')?.items || []
   };
 }
 
@@ -272,8 +274,8 @@ async function getStandaloneContentItems(): Promise<{
  * Build routing path by finding parent PageLists
  */
 function buildRoutingPath(
-  itemId: string, 
-  pageLists: ContentfulPageList[], 
+  itemId: string,
+  pageLists: ContentfulPageList[],
   visited = new Set<string>()
 ): Array<{ id: string; slug: string; title: string }> {
   if (visited.has(itemId)) return []; // Prevent infinite loops
@@ -286,11 +288,14 @@ function buildRoutingPath(
 
     if (foundItem && pageList.slug) {
       const parentPath = buildRoutingPath(pageList.sys.id, pageLists, visited);
-      return [...parentPath, { 
-        id: pageList.sys.id, 
-        slug: pageList.slug, 
-        title: pageList.title || pageList.slug 
-      }];
+      return [
+        ...parentPath,
+        {
+          id: pageList.sys.id,
+          slug: pageList.slug,
+          title: pageList.title || pageList.slug
+        }
+      ];
     }
   }
   return [];
@@ -300,8 +305,8 @@ function buildRoutingPath(
  * Check if an item is contained in any PageList
  */
 function isItemInPageList(itemId: string, pageLists: ContentfulPageList[]): boolean {
-  return pageLists.some(pageList => 
-    pageList.pagesCollection?.items?.some(item => item?.sys?.id === itemId)
+  return pageLists.some((pageList) =>
+    pageList.pagesCollection?.items?.some((item) => item?.sys?.id === itemId)
   );
 }
 
@@ -351,9 +356,24 @@ function generateRoutingCache(
 
   // Add standalone content items (excluding posts)
   const contentTypeConfig = [
-    { items: contentItems.products, type: 'Product' as const, priority: 0.7, changefreq: 'monthly' as const },
-    { items: contentItems.solutions, type: 'Solution' as const, priority: 0.7, changefreq: 'monthly' as const },
-    { items: contentItems.services, type: 'Service' as const, priority: 0.6, changefreq: 'monthly' as const }
+    {
+      items: contentItems.products,
+      type: 'Product' as const,
+      priority: 0.7,
+      changefreq: 'monthly' as const
+    },
+    {
+      items: contentItems.solutions,
+      type: 'Solution' as const,
+      priority: 0.7,
+      changefreq: 'monthly' as const
+    },
+    {
+      items: contentItems.services,
+      type: 'Service' as const,
+      priority: 0.6,
+      changefreq: 'monthly' as const
+    }
   ];
 
   contentTypeConfig.forEach(({ items, type, priority, changefreq }) => {
@@ -387,10 +407,13 @@ function generateRoutingCache(
           category = postWithCategories.categories;
         }
       }
-      
+
       // Clean category for URL (lowercase, replace spaces with hyphens)
-      const cleanCategory = category.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      
+      const cleanCategory = category
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+
       const path = `/post/${cleanCategory}/${post.slug}`;
       routes[path] = {
         path,
@@ -410,9 +433,10 @@ function generateRoutingCache(
     // Add PageList itself if it has a slug
     if (pageList.slug && pageList.slug.trim()) {
       const parentPath = buildRoutingPath(pageList.sys.id, pageLists);
-      let fullPath = parentPath.length > 0 
-        ? `/${[...parentPath.map(p => p.slug), pageList.slug].join('/')}`
-        : `/${pageList.slug}`;
+      let fullPath =
+        parentPath.length > 0
+          ? `/${[...parentPath.map((p) => p.slug), pageList.slug].join('/')}`
+          : `/${pageList.slug}`;
 
       // Clean up duplicate segments in the path
       const pathSegments = fullPath.split('/').filter(Boolean);
@@ -444,7 +468,7 @@ function generateRoutingCache(
 
         if (item.slug && item.slug.trim()) {
           let fullPath: string;
-          
+
           // Check if the item's slug already contains the full nested path
           if (item.slug.includes('/')) {
             // Item slug already contains nested path, use it as-is
@@ -452,10 +476,10 @@ function generateRoutingCache(
           } else {
             // Item slug is just the final segment, build the full path
             const parentPath = buildRoutingPath(pageList.sys.id, pageLists);
-            
+
             if (parentPath.length > 0 && pageList.slug && pageList.slug.trim()) {
               // Nested PageList: /parent1/parent2/.../pageListSlug/itemSlug
-              fullPath = `/${[...parentPath.map(p => p.slug), pageList.slug, item.slug].join('/')}`;
+              fullPath = `/${[...parentPath.map((p) => p.slug), pageList.slug, item.slug].join('/')}`;
             } else if (pageList.slug && pageList.slug.trim()) {
               // Direct PageList: /pageListSlug/itemSlug
               fullPath = `/${pageList.slug}/${item.slug}`;
@@ -464,7 +488,7 @@ function generateRoutingCache(
               fullPath = `/${item.slug}`;
             }
           }
-          
+
           // Additional check: if the generated path has duplicate segments, clean it up
           const pathSegments = fullPath.split('/').filter(Boolean);
           const uniqueSegments = [];
@@ -509,7 +533,7 @@ function generateRoutingCache(
 
           // Build parent PageLists metadata
           let allParentPageLists: Array<{ id: string; slug: string; title: string }> = [];
-          
+
           if (item.slug.includes('/')) {
             // For items with nested slugs, we need to determine parents from the slug structure
             // This is more complex, so for now we'll mark them as nested but with empty parent list
@@ -517,8 +541,15 @@ function generateRoutingCache(
           } else {
             // For simple slugs, build the parent path normally
             const parentPath = buildRoutingPath(pageList.sys.id, pageLists);
-            allParentPageLists = pageList.slug 
-              ? [...parentPath, { id: pageList.sys.id, slug: pageList.slug, title: pageList.title || pageList.slug }]
+            allParentPageLists = pageList.slug
+              ? [
+                  ...parentPath,
+                  {
+                    id: pageList.sys.id,
+                    slug: pageList.slug,
+                    title: pageList.title || pageList.slug
+                  }
+                ]
               : parentPath;
           }
 
@@ -539,21 +570,21 @@ function generateRoutingCache(
 
   // Filter out malformed routes
   const validRoutes: Record<string, RouteMetadata> = {};
-  
+
   Object.entries(routes).forEach(([path, route]) => {
     // Skip malformed paths
     if (
-      path === '//' ||                           // Double slash
-      path.includes('//') ||                     // Contains double slashes
-      path.endsWith('/undefined') ||             // Contains undefined
-      path.includes('undefined') ||              // Contains undefined anywhere
-      !path.startsWith('/') ||                   // Doesn't start with slash
-      path.trim() === ''                         // Empty path
+      path === '//' || // Double slash
+      path.includes('//') || // Contains double slashes
+      path.endsWith('/undefined') || // Contains undefined
+      path.includes('undefined') || // Contains undefined anywhere
+      !path.startsWith('/') || // Doesn't start with slash
+      path.trim() === '' // Empty path
     ) {
       console.warn(`⚠️ Skipping malformed route: ${path}`);
       return;
     }
-    
+
     validRoutes[path] = route;
   });
 
@@ -576,7 +607,7 @@ function generateRedirects(routingCache: RoutingCache): Array<{
   const allRoutes = Object.keys(routingCache.routes);
 
   // Find potential redirects by looking for nested routes that could conflict with standalone routes
-  allRoutes.forEach(route => {
+  allRoutes.forEach((route) => {
     // Skip root route
     if (route === '/') return;
 
@@ -610,8 +641,8 @@ function generateRedirects(routingCache: RoutingCache): Array<{
   });
 
   // Remove duplicates and sort
-  const uniqueRedirects = redirects.filter((redirect, index, self) =>
-    index === self.findIndex(r => r.source === redirect.source)
+  const uniqueRedirects = redirects.filter(
+    (redirect, index, self) => index === self.findIndex((r) => r.source === redirect.source)
   );
 
   return uniqueRedirects.sort((a, b) => a.source.localeCompare(b.source));
@@ -625,17 +656,19 @@ function generateXmlSitemap(routingCache: RoutingCache): string {
   const urlsetOpen = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
   const urlsetClose = '</urlset>';
 
-  const urlEntries = Object.values(routingCache.routes).map(route => {
-    const fullUrl = route.path === '/' ? BASE_URL : `${BASE_URL}${route.path}`;
-    let entry = `  <url>\n    <loc>${fullUrl}</loc>`;
-    
-    entry += `\n    <lastmod>${routingCache.generatedAt.split('T')[0]}</lastmod>`;
-    entry += `\n    <changefreq>${route.changefreq}</changefreq>`;
-    entry += `\n    <priority>${route.priority.toFixed(1)}</priority>`;
-    
-    entry += '\n  </url>';
-    return entry;
-  }).join('\n');
+  const urlEntries = Object.values(routingCache.routes)
+    .map((route) => {
+      const fullUrl = route.path === '/' ? BASE_URL : `${BASE_URL}${route.path}`;
+      let entry = `  <url>\n    <loc>${fullUrl}</loc>`;
+
+      entry += `\n    <lastmod>${routingCache.generatedAt.split('T')[0]}</lastmod>`;
+      entry += `\n    <changefreq>${route.changefreq}</changefreq>`;
+      entry += `\n    <priority>${route.priority.toFixed(1)}</priority>`;
+
+      entry += '\n  </url>';
+      return entry;
+    })
+    .join('\n');
 
   return `${xmlHeader}\n${urlsetOpen}\n${urlEntries}\n${urlsetClose}`;
 }
@@ -645,62 +678,44 @@ function generateXmlSitemap(routingCache: RoutingCache): string {
  */
 async function generateRoutingSitemap(): Promise<void> {
   try {
-    console.log('🚀 Generating routing sitemap...');
-    console.log('Using environment:', CONTENTFUL_ENVIRONMENT);
-    console.log('Base URL:', BASE_URL);
-
     const [standalonePages, pageLists, contentItems] = await Promise.all([
       getStandalonePages(),
       getPageListsWithPages(),
       getStandaloneContentItems()
     ]);
 
-    console.log(`📄 Found ${standalonePages.length} standalone pages`);
-    console.log(`📋 Found ${pageLists.length} page lists`);
-    console.log(`🛍️ Found ${contentItems.products.length} standalone products`);
-    console.log(`💡 Found ${contentItems.solutions.length} standalone solutions`);
-    console.log(`🔧 Found ${contentItems.services.length} standalone services`);
-    console.log(`📝 Found ${contentItems.posts.length} standalone posts`);
-
     // Generate routing cache
     const routingCache = generateRoutingCache(standalonePages, pageLists, contentItems);
-
-    console.log(`\n🗺️ Generated ${Object.keys(routingCache.routes).length} routes:`);
-    Object.values(routingCache.routes).forEach((route) => {
-      const nestedIndicator = route.isNested ? ' (nested)' : '';
-      console.log(`  - ${route.path} → ${route.contentType}${nestedIndicator}`);
-    });
 
     // Write routing cache to src/lib for runtime access
     const routingCachePath = path.join(__dirname, '..', 'src', 'lib', 'routing-cache.json');
     fs.writeFileSync(routingCachePath, JSON.stringify(routingCache, null, 2));
-    console.log(`\n💾 Routing cache written to: ${routingCachePath}`);
 
     // Generate and write XML sitemap
     const xmlContent = generateXmlSitemap(routingCache);
     const xmlOutputPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
     fs.writeFileSync(xmlOutputPath, xmlContent, 'utf8');
-    console.log(`📄 Sitemap.xml written to: ${xmlOutputPath}`);
 
     // Write debug JSON for development
     const debugPath = path.join(__dirname, '..', 'routing-debug.json');
     fs.writeFileSync(debugPath, JSON.stringify(routingCache, null, 2));
-    console.log(`🐛 Debug JSON written to: ${debugPath}`);
 
     // Generate redirects based on the routing cache
     const redirects = generateRedirects(routingCache);
     const redirectsPath = path.join(__dirname, '..', 'src', 'lib', 'route-redirects.json');
     fs.writeFileSync(redirectsPath, JSON.stringify(redirects, null, 2));
-    console.log(`🔀 Route redirects written to: ${redirectsPath}`);
 
-    console.log(`\n✅ Routing sitemap generation complete!`);
-    console.log(`   - Total routes: ${Object.keys(routingCache.routes).length}`);
-    console.log(`   - Total redirects: ${redirects.length}`);
-    console.log(`   - Generated at: ${routingCache.generatedAt}`);
-
+    // Only show summary on completion
+    console.log(`✅ Generated ${Object.keys(routingCache.routes).length} routes and ${redirects.length} redirects`);
   } catch (error) {
-    console.error('❌ Error generating routing sitemap:', error instanceof Error ? error.message : String(error));
-    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+    console.error(
+      '❌ Error generating routing sitemap:',
+      error instanceof Error ? error.message : String(error)
+    );
+    console.error(
+      'Stack trace:',
+      error instanceof Error ? error.stack : 'No stack trace available'
+    );
     process.exit(1);
   }
 }

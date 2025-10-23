@@ -203,11 +203,8 @@ function createLegalConsentFields(legalConsentOptions: HubSpotV3FormData['legalC
   if (legalConsentOptions.type === 'LEGITIMATE_INTEREST_WITH_CHECKBOX' || 
       legalConsentOptions.type === 'LEGITIMATE_INTEREST_NO_CHECKBOX' ||
       legalConsentOptions.type === 'CONSENT_WITH_CHECKBOX') {
-    console.log('Detected consent type:', legalConsentOptions.type);
-    
     // Add a general processing consent checkbox if we don't already have one
     if (!legalConsentOptions.checkboxText && legalConsentOptions.lawfulBasisForProcessing) {
-      console.log('Adding processing consent checkbox based on lawful basis');
       legalFields.push({
         fieldType: 'single_checkbox',
         objectTypeId: '0-1',
@@ -241,7 +238,6 @@ function addLegalConsentToFinalStep(steps: FormStep[], legalConsentOptions: HubS
   
   // Add legal consent fields to the last step
   finalStep.fields = [...finalStep.fields, ...legalConsentFields];
-  console.log(`Added ${legalConsentFields.length} legal consent fields to final step`);
   
   return steps;
 }
@@ -249,73 +245,33 @@ function addLegalConsentToFinalStep(steps: FormStep[], legalConsentOptions: HubS
 function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   const steps: FormStep[] = [];
   
-  console.log('=== FORM STEP ANALYSIS DEBUG ===');
-  console.log('Form name:', formData.name);
-  console.log('Legal consent options:', formData.legalConsentOptions);
-  console.log('Form ID:', formData.id);
-  console.log('Total field groups:', formData.fieldGroups.length);
-  console.log('Display options:', formData.displayOptions);
-  console.log('Configuration:', formData.configuration);
-  console.log('Field groups:', formData.fieldGroups.map(g => ({
-    groupType: g.groupType,
-    richTextType: g.richTextType,
-    fieldsCount: g.fields.length,
-    richText: g.richText ? g.richText.substring(0, 200) + '...' : null
-  })));
-  
   // Check for rich text content in field groups that might contain additional text
-  formData.fieldGroups.forEach((group, index) => {
-    if (group.richText?.trim()) {
-      console.log(`Rich text content in group ${index + 1}:`, group.richText);
-    }
-  });
   
   // Debug field types and options
-  console.log('=== FIELD TYPE DEBUG ===');
-  formData.fieldGroups.forEach((group, groupIndex) => {
-    group.fields.forEach((field, fieldIndex) => {
-      console.log(`Field ${groupIndex}-${fieldIndex}:`, {
-        name: field.name,
-        label: field.label,
-        fieldType: field.fieldType,
-        hasOptions: !!field.options,
-        optionsCount: field.options?.length ?? 0,
-        options: field.options?.map(opt => ({ label: opt.label, value: opt.value })) ?? []
-      });
-    });
-  });
-  console.log('=== END FIELD TYPE DEBUG ===');
   
   
   // Check if this is actually a multi-step form
-  const hasMultipleGroups = formData.fieldGroups.length > 1;
-  const hasNonDefaultGroups = formData.fieldGroups.some(g => g.groupType !== 'default_group');
+  const _hasMultipleGroups = formData.fieldGroups.length > 1;
+  const _hasNonDefaultGroups = formData.fieldGroups.some(g => g.groupType !== 'default_group');
   
-  console.log('Has multiple groups:', hasMultipleGroups);
-  console.log('Has non-default groups:', hasNonDefaultGroups);
   
   // Strategy 0: Analyze field labels for step numbers (labelName - step number)
   const formFields = formData.fieldGroups.flatMap(group => group.fields);
   const stepPattern = /^(.+?)\s*-\s*(\d+)$/i;
   const fieldsWithSteps: { field: HubSpotV3FormField; stepNumber: number; originalLabel: string }[] = [];
   
-  console.log('Analyzing field labels for step patterns...');
   formFields.forEach(field => {
     const match = stepPattern.exec(field.label);
     if (match?.[2] && match[1]) {
       const stepNumber = parseInt(match[2]);
       const originalLabel = match[1].trim();
       fieldsWithSteps.push({ field, stepNumber, originalLabel });
-      console.log(`Found step ${stepNumber} field: "${originalLabel}" (full label: "${field.label}")`);
     }
   });
   
   if (fieldsWithSteps.length > 0) {
-    console.log(`DETECTED: Multi-step form based on field labels (${fieldsWithSteps.length} fields with step indicators)`);
-    
     // Group fields by step number
     const stepNumbers = [...new Set(fieldsWithSteps.map(f => f.stepNumber))].sort((a, b) => a - b);
-    console.log('Step numbers found:', stepNumbers);
     
     stepNumbers.forEach(stepNum => {
       const stepFields = fieldsWithSteps.filter(f => f.stepNumber === stepNum);
@@ -337,7 +293,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
         )
       });
       
-      console.log(`Created step ${stepNum} with ${stepFieldObjects.length} fields`);
     });
     
     // Add any remaining fields that don't have step indicators to step 1
@@ -346,7 +301,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
     );
     
     if (fieldsWithoutSteps.length > 0) {
-      console.log(`Adding ${fieldsWithoutSteps.length} fields without step indicators to step 1`);
       const step1 = steps.find(s => s.stepNumber === 1);
       if (step1) {
         step1.fields.push(...fieldsWithoutSteps);
@@ -369,14 +323,12 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       }
     }
     
-    console.log('=== END FORM STEP ANALYSIS DEBUG ===');
     return steps.sort((a, b) => a.stepNumber - b.stepNumber);
   }
   
   // If only one default group, it's definitely a single-step form
   const firstGroup = formData.fieldGroups[0];
   if (formData.fieldGroups.length === 1 && firstGroup && firstGroup.groupType === 'default_group') {
-    console.log('DETECTED: Single-step form (only default_group)');
     
     // Calculate max display order from regular form fields
     const maxDisplayOrder = Math.max(
@@ -405,10 +357,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
     
     const allFields = [...formFields, ...richTextFields, ...legalConsentFields];
     
-    console.log('Legal consent fields added:', legalConsentFields.length);
-    console.log('Rich text fields added:', richTextFields.length);
-    console.log('Total fields including all content:', allFields.length);
-    console.log('=== END FORM STEP ANALYSIS DEBUG ===');
     
     steps.push({
       stepNumber: 1,
@@ -432,10 +380,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
     group.groupType === 'page'
   );
   
-  console.log('Page break groups found:', pageBreakGroups.length);
   if (pageBreakGroups.length > 0) {
-    console.log('Page break group types:', pageBreakGroups.map(g => g.groupType));
-    console.log('Found explicit page breaks:', pageBreakGroups.length);
     
     // Split form into steps based on page breaks
     let currentStepFields: HubSpotV3FormField[] = [];
@@ -502,14 +447,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
            group.richTextType === 'page_header';
   });
   
-  console.log('Rich text step indicators found:', richTextStepIndicators.length);
   if (richTextStepIndicators.length > 0) {
-    console.log('Rich text indicators:', richTextStepIndicators.map(g => ({
-      groupType: g.groupType,
-      richTextType: g.richTextType,
-      richText: g.richText?.substring(0, 100)
-    })));
-    console.log('Found rich text step indicators:', richTextStepIndicators.length);
     
     let currentStepFields: HubSpotV3FormField[] = [];
     let currentStepGroups: HubSpotV3FormFieldGroup[] = [];
@@ -571,7 +509,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   const displayOrderFields = formData.fieldGroups.flatMap(group => group.fields);
   const sortedFields = displayOrderFields.sort((a, b) => a.displayOrder - b.displayOrder);
   
-  console.log('All fields display orders:', sortedFields.map(f => ({ name: f.name, displayOrder: f.displayOrder })));
   
   // Look for gaps in display order that might indicate step breaks
   const displayOrderGaps: number[] = [];
@@ -588,15 +525,11 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
       const gap = currentField.displayOrder - previousField.displayOrder;
       if (gap > 10) { // Significant gap might indicate a step break
         displayOrderGaps.push(previousField.displayOrder);
-        console.log(`Found gap: ${previousField.displayOrder} -> ${currentField.displayOrder} (gap: ${gap})`);
       }
     }
   }
   
-  console.log('Display order gaps found:', displayOrderGaps.length);
   if (displayOrderGaps.length > 0) {
-    console.log('Gap positions:', displayOrderGaps);
-    console.log('Found display order gaps indicating steps:', displayOrderGaps.length + 1);
     
     let stepNumber = 1;
     let lastBreakOrder = -1;
@@ -650,13 +583,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
     field.dependentFieldFilters && field.dependentFieldFilters.length > 0
   );
   
-  console.log('Fields with dependencies found:', fieldsWithDependencies.length);
   if (fieldsWithDependencies.length > 0) {
-    console.log('Dependent fields:', fieldsWithDependencies.map(f => ({ 
-      name: f.name, 
-      dependencies: f.dependentFieldFilters?.map(d => d.formFieldProperty) 
-    })));
-    console.log('Creating steps based on conditional logic:', fieldsWithDependencies.length);
     
     // Build dependency tree
     const dependencyMap = new Map<string, string[]>();
@@ -712,9 +639,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   }
   
   // Fallback: Single step form
-  console.log('No step indicators found - treating as single step form');
-  console.log('Final step count will be: 1');
-  console.log('=== END FORM STEP ANALYSIS DEBUG ===');
   
   const fallbackFields = formData.fieldGroups.flatMap(group => group.fields);
   
@@ -745,9 +669,6 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   
   const allFields = [...fallbackFields, ...richTextFields, ...legalConsentFields];
   
-  console.log('Legal consent fields added:', legalConsentFields.length);
-  console.log('Rich text fields added:', richTextFields.length);
-  console.log('Total fields including all content:', allFields.length);
   
   steps.push({
     stepNumber: 1,
@@ -832,7 +753,6 @@ export async function GET(
       }
     });
   } catch (error) {
-    console.error('Error fetching HubSpot v3 form data:', error);
     
     if (error instanceof Error) {
       return NextResponse.json(

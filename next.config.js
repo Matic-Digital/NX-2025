@@ -1,13 +1,9 @@
 /**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
+ * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  */
 import './src/env.js';
 
 import bundleAnalyzer from '@next/bundle-analyzer';
-
-// Check if we're in a Docker environment
-const isDocker = process.env.HOSTNAME === '0.0.0.0' || process.env.DOCKER === 'true';
 
 // Bundle analyzer configuration
 const withBundleAnalyzer = bundleAnalyzer({
@@ -22,7 +18,9 @@ const nextConfig = {
   devIndicators: false,
 
   // Source map configuration
-  productionBrowserSourceMaps: false, // Disable in production for better performance
+  // Enable source maps in production for better debugging and Lighthouse insights
+  // Can be disabled by setting DISABLE_SOURCE_MAPS=true environment variable
+  productionBrowserSourceMaps: process.env.DISABLE_SOURCE_MAPS !== 'true',
 
   // Enable compression
   compress: true,
@@ -68,7 +66,11 @@ const nextConfig = {
       bodySizeLimit: '2mb'
     },
     // Optimize bundle splitting
-    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react']
+    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react'],
+    // Enable CSS optimization
+    optimizeCss: true,
+    // Enable aggressive CSS code splitting
+    cssChunking: 'strict'
   },
 
   // Turbopack configuration (now stable)
@@ -83,6 +85,13 @@ const nextConfig = {
 
   // Webpack optimizations for bundle splitting and CSS optimization
   webpack: (config, { dev, isServer }) => {
+    // Configure source map generation for production
+    if (!dev && !isServer && process.env.DISABLE_SOURCE_MAPS !== 'true') {
+      // Use 'source-map' for production builds to generate separate .map files
+      // This provides full source maps without increasing the main bundle size
+      config.devtool = 'source-map';
+    }
+
     if (!dev && !isServer) {
       // Bundle splitting optimizations
       config.optimization.splitChunks = {
@@ -118,11 +127,22 @@ const nextConfig = {
             priority: 40,
             reuseExistingChunk: true
           },
-          // Separate CSS into its own chunk for better caching
-          styles: {
-            name: 'styles',
+          // Split CSS into critical and non-critical chunks
+          criticalStyles: {
+            name: 'critical-styles',
             test: /\.(css|scss|sass)$/,
-            chunks: 'all',
+            chunks: 'initial',
+            priority: 15,
+            enforce: true,
+            reuseExistingChunk: true,
+            // Only include critical CSS in initial chunk
+            minSize: 0,
+            maxSize: 50000 // 50KB limit for critical CSS
+          },
+          asyncStyles: {
+            name: 'async-styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'async',
             priority: 10,
             enforce: true,
             reuseExistingChunk: true
@@ -135,19 +155,6 @@ const nextConfig = {
     return config;
   },
 
-  // Skip static generation of error pages in Docker to avoid HTML conflicts
-  skipTrailingSlashRedirect: isDocker,
-  skipMiddlewareUrlNormalize: isDocker,
-
-  // Disable specific ESLint rules for Docker builds
-  eslint: {
-    ignoreDuringBuilds: isDocker // Skip ESLint checks in Docker
-  },
-
-  // Disable type checking during build in Docker to reduce memory usage
-  typescript: {
-    ignoreBuildErrors: isDocker
-  },
 
   // Security headers for Contentful live preview
   async headers() {
@@ -171,16 +178,16 @@ const nextConfig = {
       // Import fs to read the redirects JSON file directly
       const fs = await import('fs');
       const path = await import('path');
-      
+
       // Read the generated redirects file
       const redirectsPath = path.join(process.cwd(), 'src/lib/route-redirects.json');
-      
+
       if (fs.existsSync(redirectsPath)) {
         const redirectsData = fs.readFileSync(redirectsPath, 'utf8');
         const redirects = JSON.parse(redirectsData);
-        
+
         console.log(`🔀 Loaded ${redirects.length} dynamic redirects`);
-        
+
         return redirects;
       } else {
         console.warn('⚠️ Redirects file not found, run sitemap:routing first');
@@ -197,9 +204,7 @@ const nextConfig = {
     NEXT_PUBLIC_CONTENTFUL_SPACE_ID: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
     NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
     NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN:
-      process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN,
-    // Set Docker environment variable to true for Docker builds
-    DOCKER: isDocker ? 'true' : undefined
+      process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN
   }
 };
 

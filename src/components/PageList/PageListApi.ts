@@ -122,7 +122,6 @@ export async function checkPageBelongsToPageList(
   preview = true
 ): Promise<PageList | null> {
   try {
-
     // Fetch all PageLists
     const pageLists = await getAllPageLists(preview);
 
@@ -132,37 +131,26 @@ export async function checkPageBelongsToPageList(
 
     // Check each PageList to see if the page belongs to it
     for (const pageList of pageLists.items) {
-      console.log(
-        `Checking PageList: ${pageList.title ?? 'Untitled'} (${pageList.slug ?? 'no-slug'})`
-      );
-
       if (!pageList.pagesCollection?.items?.length) {
         continue;
       }
 
-      console.log(
-        `PageList ${pageList.title ?? 'Untitled'} has ${pageList.pagesCollection.items.length} pages`
-      );
-
       // Log all page IDs in this PageList for debugging
-      const pageIds = pageList.pagesCollection.items
+      const _pageIds = pageList.pagesCollection.items
         .map((item) => item?.sys?.id)
         .filter((id): id is string => Boolean(id));
 
       const pageInList = pageList.pagesCollection.items.some((item) => item?.sys?.id === pageId);
 
       if (pageInList) {
-        console.log(
-          `Page with ID '${pageId}' belongs to PageList '${pageList.title ?? 'Untitled'}' (${pageList.slug ?? 'no-slug'})`
-        );
         return pageList;
       }
     }
 
     return null;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error checking if page belongs to any PageList: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error checking if page belongs to any PageList: ${_error.message}`);
     }
     throw new Error('Unknown error checking if page belongs to any PageList');
   }
@@ -200,12 +188,12 @@ export async function getAllPageLists(preview = false): Promise<PageListResponse
       items: response.data.pageListCollection.items as unknown as PageList[],
       total: response.data.pageListCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching page lists: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching page lists: ${_error.message}`);
     }
     throw new Error('Unknown error fetching page lists');
   }
@@ -398,7 +386,7 @@ export async function getPageListBySlug(
         };
         pageContent = pageListItem.pageContentCollection;
       }
-    } catch (error) {
+    } catch {
       pageContent = undefined;
     }
 
@@ -410,21 +398,10 @@ export async function getPageListBySlug(
       pageContentCollection: pageContent
     } as PageListWithHeaderFooter;
 
-    // Debug the PageList structure
-    console.log('PageList structure:', {
-      title: result.title,
-      slug: result.slug,
-      hasHeader: !!result.header,
-      hasFooter: !!result.footer,
-      hasPageContent: !!result.pageContentCollection,
-      pagesCount: result.pagesCollection?.items?.length ?? 0
-    });
-
     return result;
-  } catch (error) {
-    console.error(`Error handling slug: ${slug}`, error);
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching page list by slug: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching page list by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching page list by slug');
   }
@@ -544,7 +521,7 @@ export async function getPageListById(
         };
         pageContent = pageListItem.pageContentCollection;
       }
-    } catch (error) {
+    } catch {
       pageContent = undefined;
     }
 
@@ -556,21 +533,10 @@ export async function getPageListById(
       pageContentCollection: pageContent
     } as PageListWithHeaderFooter;
 
-    // Debug the PageList structure
-    console.log('PageList structure:', {
-      title: result.title,
-      slug: result.slug,
-      hasHeader: !!result.header,
-      hasFooter: !!result.footer,
-      hasPageContent: !!result.pageContentCollection,
-      pagesCount: result.pagesCollection?.items?.length ?? 0
-    });
-
     return result;
-  } catch (error) {
-    console.error(`Error handling ID: ${id}`, error);
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching page list by ID: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching page list by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching page list by ID');
   }

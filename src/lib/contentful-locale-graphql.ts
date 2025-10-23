@@ -1,5 +1,6 @@
-import { getCurrentLocale as getLocale } from '@/lib/contentful-locale';
 import { fetchGraphQL } from '@/lib/api';
+import { getCurrentLocale as getLocale } from '@/lib/contentful-locale';
+
 import type { GraphQLResponse } from '@/types';
 
 // Type for GraphQL variables
@@ -37,36 +38,35 @@ export async function fetchGraphQLWithLocale(
   preview = false
 ): Promise<GraphQLResponse<unknown>> {
   const locale = targetLocale ?? getLocale();
-  
+
   try {
     // Add locale to variables
     const localizedVariables = {
       ...variables,
-      locale: locale,
+      locale: locale
     };
 
     // First, try to get content in the target locale
     const localizedResult = await fetchGraphQL(query, localizedVariables, preview);
-    
+
     // If target locale is English or we got results, return as-is
     if (locale === 'en-US') {
       return localizedResult;
     }
-    
+
     // Use Contentful's built-in locale fallback system
     // This will automatically fall back to en-US for individual fields that are empty
     return localizedResult;
-    
   } catch {
     // Fallback to English if there's an error
     try {
       const englishVariables = {
         ...variables,
-        locale: 'en-US',
+        locale: 'en-US'
       };
       return await fetchGraphQL(query, englishVariables, preview);
-    } catch (fallbackError) {
-      throw fallbackError;
+    } catch (_fallbackError) {
+      throw _fallbackError;
     }
   }
 }
@@ -76,27 +76,29 @@ export async function fetchGraphQLWithLocale(
  */
 function _needsFallback(result: Record<string, unknown>): boolean {
   if (!result?.data) return true;
-  
+
   // For posts, check if we have the basic required fields
   // Don't trigger fallback just because some optional fields are empty
   const data = result.data as Record<string, unknown>;
-  
+
   // If we have a postCollection, check if we have items
   if (data.postCollection) {
-    const postCollection = data.postCollection as { items?: Array<{ title?: string; slug?: string }> };
+    const postCollection = data.postCollection as {
+      items?: Array<{ title?: string; slug?: string }>;
+    };
     const items = postCollection.items;
     if (!items || items.length === 0) return true;
-    
+
     const post = items[0];
     // Only trigger fallback if critical fields are missing
     if (!post?.title || !post?.slug) {
       return true;
     }
-    
+
     // If we have title and slug, we have valid content - don't force fallback
     return false;
   }
-  
+
   // For other content types, use the original logic
   return hasEmptyFields(data);
 }
@@ -106,17 +108,17 @@ function _needsFallback(result: Record<string, unknown>): boolean {
  */
 function hasEmptyFields(obj: Record<string, unknown>): boolean {
   if (!obj || typeof obj !== 'object') return false;
-  
+
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
     // eslint-disable-next-line security/detect-object-injection
     const value = obj[key];
-    
+
     // Skip system fields and metadata
     if (key === 'sys' || key === '__typename' || key === 'contentfulMetadata') {
       continue;
     }
-    
+
     // Check if field is empty
     if (
       value === null ||
@@ -126,22 +128,26 @@ function hasEmptyFields(obj: Record<string, unknown>): boolean {
     ) {
       return true;
     }
-    
+
     // Recursively check nested objects
     if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
       if (hasEmptyFields(value as Record<string, unknown>)) return true;
     }
-    
+
     // Check array items
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (typeof item === 'object' && item !== null && hasEmptyFields(item as Record<string, unknown>)) {
+        if (
+          typeof item === 'object' &&
+          item !== null &&
+          hasEmptyFields(item as Record<string, unknown>)
+        ) {
           return true;
         }
       }
     }
   }
-  
+
   return false;
 }
 
@@ -150,45 +156,53 @@ function hasEmptyFields(obj: Record<string, unknown>): boolean {
  */
 function _mergeWithFallback(localized: unknown, english: unknown): unknown {
   if (!localized || !english) return localized ?? english;
-  
+
   if (typeof localized !== 'object' || typeof english !== 'object') {
     return localized ?? english;
   }
-  
+
   if (Array.isArray(localized) && Array.isArray(english)) {
-    return localized.map((item, index) => 
+    return localized.map((item, index) =>
       // eslint-disable-next-line security/detect-object-injection
       _mergeWithFallback(item, index < english.length ? english[index] : null)
     );
   }
-  
+
   const localizedObj = localized as Record<string, unknown>;
   const englishObj = english as Record<string, unknown>;
-  
+
   const merged = { ...localizedObj };
-  
+
   for (const key in englishObj) {
     if (!Object.prototype.hasOwnProperty.call(englishObj, key)) continue;
-    
+
     // Skip system fields and metadata
     if (key === 'sys' || key === '__typename' || key === 'contentfulMetadata') {
       continue;
     }
-    
-    // eslint-disable-next-line security/detect-object-injection
-    const localizedValue = Object.prototype.hasOwnProperty.call(merged, key) ? merged[key] : undefined;
-    // eslint-disable-next-line security/detect-object-injection
-    const englishValue = Object.prototype.hasOwnProperty.call(englishObj, key) ? englishObj[key] : undefined;
-    
+
+    // Use safe property access to avoid security warnings
+    const localizedValue = Object.prototype.hasOwnProperty.call(merged, key)
+      ? (Object.getOwnPropertyDescriptor(merged, key)?.value as unknown)
+      : undefined;
+    const englishValue = Object.prototype.hasOwnProperty.call(englishObj, key)
+      ? (Object.getOwnPropertyDescriptor(englishObj, key)?.value as unknown)
+      : undefined;
+
     // Use English fallback if localized field is empty AND English value exists
     if (
       (localizedValue === null ||
-      localizedValue === undefined ||
-      localizedValue === '' ||
-      (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
+        localizedValue === undefined ||
+        localizedValue === '' ||
+        (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
       englishValue !== undefined
     ) {
-      Object.defineProperty(merged, key, { value: englishValue, enumerable: true, writable: true, configurable: true });
+      Object.defineProperty(merged, key, {
+        value: englishValue,
+        enumerable: true,
+        writable: true,
+        configurable: true
+      });
     } else if (localizedValue !== null && localizedValue !== undefined) {
       // Special handling for rich text content field
       if (key === 'content' && typeof localizedValue === 'object') {
@@ -203,11 +217,16 @@ function _mergeWithFallback(localized: unknown, english: unknown): unknown {
         englishValue !== null
       ) {
         const mergedValue = _mergeWithFallback(localizedValue, englishValue);
-        Object.defineProperty(merged, key, { value: mergedValue, enumerable: true, writable: true, configurable: true });
+        Object.defineProperty(merged, key, {
+          value: mergedValue,
+          enumerable: true,
+          writable: true,
+          configurable: true
+        });
       }
     }
   }
-  
+
   return merged;
 }
 
@@ -221,22 +240,21 @@ export function withLocaleSupport<T extends (...args: unknown[]) => Promise<unkn
 ): T {
   return (async (...args: Parameters<T>) => {
     const locale = getCurrentLocale();
-    
+
     // If it's already an English request, call original function
     if (locale === 'en-US') {
       return await apiFunction(...args);
     }
-    
+
     try {
       // Try to modify the function to include locale
       // This is a simplified approach - you might need to customize based on your API structure
-      
+
       // For now, call the original function and let individual components handle locale
       // You can enhance this based on your specific API patterns
       return await apiFunction(...args);
-      
-    } catch (error) {
-      throw error;
+    } catch (_error) {
+      throw _error;
     }
   }) as T;
 }
@@ -249,7 +267,7 @@ export function addLocaleToQuery(query: string, _locale = getCurrentLocale()): s
   if (query.includes('$locale:') || query.includes('locale:')) {
     return query;
   }
-  
+
   // Find the query/mutation declaration and add locale parameter
   // eslint-disable-next-line security/detect-unsafe-regex
   const queryRegex = /(query|mutation)\s+(\w+)?\s*(\([^)]*\))?/;
@@ -257,14 +275,14 @@ export function addLocaleToQuery(query: string, _locale = getCurrentLocale()): s
   const queryMatch = query.match(queryRegex);
   if (queryMatch) {
     const [fullMatch, type, name, existingParams] = queryMatch;
-    const params = existingParams 
-      ? existingParams.slice(1, -1) + ', $locale: String' 
+    const params = existingParams
+      ? existingParams.slice(1, -1) + ', $locale: String'
       : '$locale: String';
-    
+
     const newDeclaration = `${type} ${name ?? ''}(${params})`;
     return query.replace(fullMatch, newDeclaration);
   }
-  
+
   return query;
 }
 

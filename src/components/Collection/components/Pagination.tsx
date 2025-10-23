@@ -10,7 +10,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   // Generate array of page numbers to display
   const getPageNumbers = () => {
     const pages = [];
-    
+
     if (totalPages <= 4) {
       // Show all pages if total is 4 or less
       for (let i = 1; i <= totalPages; i++) {
@@ -39,7 +39,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
@@ -52,19 +52,19 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         className={`${collectionStyles.getPaginationButtonClasses(currentPage === 1)} flex items-center justify-center w-10 h-10`}
         aria-label="Previous page"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="1.02081rem" 
-          height="1.02081rem" 
-          viewBox="0 0 18 18" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.02081rem"
+          height="1.02081rem"
+          viewBox="0 0 18 18"
           fill="none"
           style={{ transform: 'rotate(180deg)' }}
         >
-          <path 
-            d="M0.833374 9.00001H17.1667M17.1667 9.00001L9.00004 0.833344M17.1667 9.00001L9.00004 17.1667" 
-            stroke="currentColor" 
-            strokeWidth="1.5" 
-            strokeLinecap="round" 
+          <path
+            d="M0.833374 9.00001H17.1667M17.1667 9.00001L9.00004 0.833344M17.1667 9.00001L9.00004 17.1667"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
@@ -99,18 +99,18 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
         className={`${collectionStyles.getPaginationButtonClasses(currentPage === totalPages)} flex items-center justify-center w-10 h-10`}
         aria-label="Next page"
       >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="1.02081rem" 
-          height="1.02081rem" 
-          viewBox="0 0 18 18" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1.02081rem"
+          height="1.02081rem"
+          viewBox="0 0 18 18"
           fill="none"
         >
-          <path 
-            d="M0.833374 9.00001H17.1667M17.1667 9.00001L9.00004 0.833344M17.1667 9.00001L9.00004 17.1667" 
-            stroke="currentColor" 
-            strokeWidth="1.5" 
-            strokeLinecap="round" 
+          <path
+            d="M0.833374 9.00001H17.1667M17.1667 9.00001L9.00004 0.833344M17.1667 9.00001L9.00004 17.1667"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>

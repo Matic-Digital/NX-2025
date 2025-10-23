@@ -35,8 +35,7 @@ export function CtaGrid(props: CtaGrid) {
           setCtaGrid(response.item);
         } else {
         }
-      } catch (error) {
-        console.error('Error fetching CtaGrid:', error);
+      } catch {
       } finally {
         setLoading(false);
       }

@@ -26,8 +26,7 @@ export const ProductCard = (props: ProductSys) => {
         if (products.length > 0 && products[0]) {
           setProductData(products[0]);
         }
-      } catch (error) {
-        console.error('Error fetching product data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -52,8 +51,7 @@ export const ProductCard = (props: ProductSys) => {
           // Fallback to the old format if no parent PageList found
           setProductUrl(`/products/${productData.slug}`);
         }
-      } catch (error) {
-        console.error(`Error finding parent PageList for Product ${productData.slug}:`, error);
+      } catch {
         // Fallback to the old format on error
         setProductUrl(`/products/${productData.slug}`);
       }

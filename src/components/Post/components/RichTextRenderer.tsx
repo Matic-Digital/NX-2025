@@ -2,6 +2,7 @@
 import React from 'react';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
+
 import { richTextStyles } from '@/components/Post/styles/RichTextStyles';
 import { Profile } from '@/components/Profile/Profile';
 
@@ -24,16 +25,15 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
     return null;
   }
 
-
   // Create a map of linked entries for easy lookup
   const linkedEntries = new Map<string, any>();
-  
+
   if (content.links?.entries) {
     const allEntries = [
       ...(content.links.entries.inline ?? []),
       ...(content.links.entries.block ?? [])
     ];
-    
+
     allEntries.forEach((entry: any) => {
       if (entry?.sys?.id) {
         linkedEntries.set(entry.sys.id, entry);
@@ -60,15 +60,13 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
       ),
       [MARKS.SUBSCRIPT]: (text: React.ReactNode) => (
         <sub className={richTextStyles.getSubscriptClasses()}>{text}</sub>
-      ),
+      )
     },
     renderNode: {
       // Skip h1 rendering as requested - let it render as default
-      [BLOCKS.HEADING_1]: (node: unknown, children: React.ReactNode) => (
-        <>{children}</>
-      ),
+      [BLOCKS.HEADING_1]: (node: unknown, children: React.ReactNode) => <>{children}</>,
       [BLOCKS.HEADING_2]: (node: unknown, children: React.ReactNode) => (
-        <h2 
+        <h2
           className={richTextStyles.getHeadingClasses(2)}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -76,7 +74,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </h2>
       ),
       [BLOCKS.HEADING_3]: (node: unknown, children: React.ReactNode) => (
-        <h3 
+        <h3
           className={richTextStyles.getHeadingClasses(3)}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -84,7 +82,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </h3>
       ),
       [BLOCKS.HEADING_4]: (node: unknown, children: React.ReactNode) => (
-        <h4 
+        <h4
           className={richTextStyles.getHeadingClasses(4)}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -92,7 +90,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </h4>
       ),
       [BLOCKS.HEADING_5]: (node: unknown, children: React.ReactNode) => (
-        <h5 
+        <h5
           className={richTextStyles.getHeadingClasses(5)}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -100,7 +98,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </h5>
       ),
       [BLOCKS.HEADING_6]: (node: unknown, children: React.ReactNode) => (
-        <h6 
+        <h6
           className={richTextStyles.getHeadingClasses(6)}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -108,7 +106,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </h6>
       ),
       [BLOCKS.PARAGRAPH]: (node: unknown, children: React.ReactNode) => (
-        <p 
+        <p
           className={richTextStyles.getParagraphClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -116,7 +114,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </p>
       ),
       [BLOCKS.QUOTE]: (node: unknown, children: React.ReactNode) => (
-        <blockquote 
+        <blockquote
           className={richTextStyles.getBlockquoteClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -124,7 +122,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </blockquote>
       ),
       [BLOCKS.UL_LIST]: (node: unknown, children: React.ReactNode) => (
-        <ul 
+        <ul
           className={richTextStyles.getUnorderedListClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -132,7 +130,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </ul>
       ),
       [BLOCKS.OL_LIST]: (node: unknown, children: React.ReactNode) => (
-        <ol 
+        <ol
           className={richTextStyles.getOrderedListClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -140,7 +138,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </ol>
       ),
       [BLOCKS.LIST_ITEM]: (node: unknown, children: React.ReactNode) => (
-        <li 
+        <li
           className={richTextStyles.getListItemClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -148,13 +146,13 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </li>
       ),
       [BLOCKS.HR]: () => (
-        <hr 
+        <hr
           className={richTextStyles.getHorizontalRuleClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         />
       ),
       [BLOCKS.TABLE]: (node: unknown, children: React.ReactNode) => (
-        <table 
+        <table
           className={richTextStyles.getTableClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -162,14 +160,10 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </table>
       ),
       [BLOCKS.TABLE_ROW]: (node: unknown, children: React.ReactNode) => (
-        <tr 
-          {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
-        >
-          {children}
-        </tr>
+        <tr {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}>{children}</tr>
       ),
       [BLOCKS.TABLE_HEADER_CELL]: (node: unknown, children: React.ReactNode) => (
-        <th 
+        <th
           className={richTextStyles.getTableHeaderClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -177,7 +171,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         </th>
       ),
       [BLOCKS.TABLE_CELL]: (node: unknown, children: React.ReactNode) => (
-        <td 
+        <td
           className={richTextStyles.getTableCellClasses()}
           {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
         >
@@ -195,7 +189,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         if (!url) return null;
 
         return (
-          <div 
+          <div
             className={richTextStyles.getEmbeddedAssetClasses()}
             {...(inspectorProps ? inspectorProps({ fieldId: 'content' }) : {})}
           >
@@ -212,14 +206,14 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
       },
       [BLOCKS.EMBEDDED_ENTRY]: (node: any) => {
         const entryId = node.data?.target?.sys?.id;
-        
+
         if (!entryId) {
           return null;
         }
 
         // Get the entry from our linked entries map
         const entry = linkedEntries.get(entryId);
-        
+
         if (!entry) {
           return null;
         }
@@ -237,7 +231,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
             }
 
             return (
-              <div 
+              <div
                 className="my-8 w-full max-w-full"
                 {...(inspectorProps ? inspectorProps({ fieldId: `embedded-${entryId}` }) : {})}
               >
@@ -245,7 +239,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
                   src={imageLink}
                   alt={altText ?? title ?? ''}
                   className="w-full h-auto rounded-lg shadow-lg"
-                  style={{ 
+                  style={{
                     width: '100%',
                     height: 'auto',
                     maxWidth: '100%',
@@ -257,15 +251,11 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
           }
           case 'profile': {
             return (
-              <div 
+              <div
                 className="my-6 w-full"
                 {...(inspectorProps ? inspectorProps({ fieldId: `embedded-${entryId}` }) : {})}
               >
-                <Profile 
-                  sys={{ id: entryId }}
-                  variant="card"
-                  className="mx-auto max-w-md"
-                />
+                <Profile sys={{ id: entryId }} variant="card" className="mx-auto max-w-md" />
               </div>
             );
           }
@@ -286,14 +276,14 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
       ),
       [INLINES.ENTRY_HYPERLINK]: (node: any, children: React.ReactNode) => {
         const entryId = node.data?.target?.sys?.id;
-        
+
         if (!entryId) {
           return <span>{children}</span>;
         }
 
         // Get the entry from our linked entries map
         const entry = linkedEntries.get(entryId);
-        
+
         if (!entry) {
           return <span>{children}</span>;
         }
@@ -303,14 +293,11 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
         // Handle Profile entries as inline components
         if (contentType === 'profile') {
           return (
-            <span 
+            <span
               className="inline-block"
               {...(inspectorProps ? inspectorProps({ fieldId: `inline-${entryId}` }) : {})}
             >
-              <Profile 
-                sys={{ id: entryId }}
-                variant="compact"
-              />
+              <Profile sys={{ id: entryId }} variant="compact" />
             </span>
           );
         }
@@ -325,12 +312,12 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
             {children}
           </a>
         );
-      },
-    },
+      }
+    }
   };
 
   return (
-    <div 
+    <div
       className="!w-full !max-w-full overflow-hidden [&>div>*:first-child]:!mt-0"
       style={{
         width: '100%',

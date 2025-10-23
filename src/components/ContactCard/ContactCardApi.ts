@@ -51,12 +51,12 @@ export async function getContactCardById(id: string, preview = false): Promise<C
     }
 
     return data.contactCard;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching ContactCard: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching ContactCard: ${_error.message}`);
     }
     throw new Error('Unknown error fetching ContactCard');
   }

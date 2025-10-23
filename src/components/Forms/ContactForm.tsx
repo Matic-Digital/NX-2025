@@ -104,14 +104,14 @@ export function ContactForm() {
       email: '',
       message: ''
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async (_value) => {
       if (isSubmitting) return;
       setIsSubmitting(true);
       try {
         // Simulate API call - replace with actual API endpoint
         await new Promise((resolve) => setTimeout(resolve, 1000));
         router.push('/contact/success');
-      } catch (error) {
+      } catch {
         toast({
           title: 'Error',
           description: 'Failed to send message. Please try again.',
@@ -146,9 +146,9 @@ export function ContactForm() {
                   contactSchema.shape.message.parse(value);
                 }
                 return undefined;
-              } catch (error) {
-                if (error instanceof z.ZodError && error.errors && error.errors.length > 0) {
-                  const firstError = error.errors[0];
+              } catch (_error) {
+                if (_error instanceof z.ZodError && _error.errors && _error.errors.length > 0) {
+                  const firstError = _error.errors[0];
                   return firstError ? firstError.message : 'Validation error';
                 }
                 return 'Invalid input';

@@ -1,6 +1,9 @@
 'use client';
 
-import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
 
 import { formatDate } from '@/lib/utils';
 
@@ -44,10 +47,7 @@ export function AgendaItemPreview({ agendaItem: initialAgendaItem }: AgendaItemP
         {/* Title */}
         <div>
           <label className="block text-sm font-medium mb-2">Title (Required)</label>
-          <h2 
-            className="text-xl font-semibold"
-            {...inspectorProps({ fieldId: 'title' })}
-          >
+          <h2 className="text-xl font-semibold" {...inspectorProps({ fieldId: 'title' })}>
             {agendaItem.title}
           </h2>
         </div>
@@ -55,7 +55,7 @@ export function AgendaItemPreview({ agendaItem: initialAgendaItem }: AgendaItemP
         {/* Time */}
         <div>
           <label className="block text-sm font-medium mb-2">Time (Required)</label>
-          <time 
+          <time
             className="text-lg text-muted-foreground font-medium"
             dateTime={agendaItem.time}
             {...inspectorProps({ fieldId: 'time' })}
@@ -67,7 +67,7 @@ export function AgendaItemPreview({ agendaItem: initialAgendaItem }: AgendaItemP
         {/* Description */}
         <div>
           <label className="block text-sm font-medium mb-2">Description (Required)</label>
-          <p 
+          <p
             className="text-muted-foreground leading-relaxed"
             {...inspectorProps({ fieldId: 'description' })}
           >

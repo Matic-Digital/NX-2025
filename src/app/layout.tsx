@@ -1,12 +1,12 @@
 // Global styles
 import '@/styles/globals.css';
 
-// Dependencies
-import { Inter } from 'next/font/google';
 import { type Metadata } from 'next';
-
 // Components
 import { Providers } from '@/app/providers';
+// Dependencies
+import { Inter } from 'next/font/google';
+
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({
@@ -65,7 +65,23 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning className={`${layoutClasses} ${inter.variable}`}>
-      <head>{/* This script prevents flash of wrong theme */}</head>
+      <head>
+        {/* Critical CSS to prevent header layout shifts */}
+        {/* eslint-disable-next-line react/no-danger -- Critical CSS injection required for layout shift prevention */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Prevent header layout shifts on initial render */
+            .header-container {
+              position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              z-index: 100 !important;
+              width: 100% !important;
+            }
+          `
+        }} />
+      </head>
       <body className="flex min-h-screen flex-col">
         <Providers>
           {children}

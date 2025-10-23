@@ -6,7 +6,7 @@ interface PreviewLayoutProps {
 
 /**
  * Preview Layout
- * 
+ *
  * Wraps preview pages for Contentful Live Preview.
  * This server component can access draft mode status and pass it to client components.
  */
@@ -17,9 +17,7 @@ export default async function PreviewLayout({ children }: PreviewLayoutProps) {
   return (
     <>
       {/* Draft mode banners removed per user request */}
-      <div>
-        {children}
-      </div>
+      <div>{children}</div>
     </>
   );
 }

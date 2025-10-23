@@ -26,13 +26,13 @@
 import { notFound } from 'next/navigation';
 
 import {
-  extractOpenGraphImage,
-  extractSEODescription,
-  extractSEOTitle,
-  extractOpenGraphTitle,
-  extractOpenGraphDescription,
   extractCanonicalUrl,
-  extractIndexing
+  extractIndexing,
+  extractOpenGraphDescription,
+  extractOpenGraphImage,
+  extractOpenGraphTitle,
+  extractSEODescription,
+  extractSEOTitle
 } from '@/lib/metadata-utils';
 import { staticRoutingService } from '@/lib/static-routing';
 
@@ -119,9 +119,9 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
     };
   }
 
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
   const fullPath = segments.join('/');
 
   try {
@@ -188,7 +188,7 @@ export async function generateMetadata({ params }: NestedSegmentsProps): Promise
         canonical: canonicalUrl ?? `${baseUrl}/${fullPath}`
       }
     };
-  } catch (_error) {
+  } catch {
     return {
       title: 'Error',
       description: 'An error occurred while loading this page.'
@@ -212,12 +212,12 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
 
   // First, try static routing cache for fast lookup
   const staticRoute = staticRoutingService.getRouteBySegments(segments);
-  
+
   if (staticRoute) {
     try {
       // Fetch the content directly using the cached metadata
       let content: ContentItem | PageListType | null = null;
-      
+
       switch (staticRoute.contentType) {
         case 'Page':
           content = await getPageBySlug(segments[segments.length - 1]!, preview);
@@ -242,7 +242,7 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
       if (content) {
         // Build parent PageLists from static cache metadata
         const parentPageLists: PageListType[] = [];
-        
+
         for (const parentInfo of staticRoute.parentPageLists) {
           const parentPageList = await getPageListBySlug(parentInfo.slug, preview);
           if (parentPageList) {
@@ -256,7 +256,7 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
           parentPageLists
         };
       }
-    } catch (_error) {
+    } catch {
       return resolveNestedContent(segments);
     }
   }
@@ -578,7 +578,7 @@ export default async function NestedSegmentsPage({ params, searchParams }: Neste
         <div key={0}>{renderContentByType({ type, content }, 0)}</div>
       </PageLayout>
     );
-  } catch (_error) {
+  } catch {
     notFound();
   }
 }

@@ -43,27 +43,27 @@ export const extractFormMetadata = (hubspotData: HubSpotFormData): FormMetadata 
 
 export const getFormCapabilities = (hubspotData: HubSpotFormData) => {
   const capabilities = [];
-  
+
   if (hubspotData.metadata.isMultiStep) {
     capabilities.push({
       label: 'Multi-Step Form',
       color: 'bg-blue-100 text-blue-800'
     });
   }
-  
+
   if (hubspotData.metadata.hasConditionalLogic) {
     capabilities.push({
       label: 'Conditional Logic',
       color: 'bg-purple-100 text-purple-800'
     });
   }
-  
+
   if ((hubspotData.formData as Record<string, unknown>)?.legalConsentOptions) {
     capabilities.push({
       label: 'Legal Consent',
       color: 'bg-yellow-100 text-yellow-800'
     });
   }
-  
+
   return capabilities;
 };

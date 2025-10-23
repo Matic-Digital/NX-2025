@@ -69,12 +69,12 @@ export async function getImageBetweenById(
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return data.imageBetweenCollection.items[0] as ImageBetween;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching ImageBetween by ID: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching ImageBetween by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching ImageBetween by ID');
   }

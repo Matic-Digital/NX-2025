@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 
 import type { ReactNode } from 'react';
 
@@ -27,12 +27,14 @@ export function AccordionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AccordionContext.Provider value={{ 
-      activeItemId, 
-      setActiveItemId: handleSetActiveItemId,
-      lastHoveredItemId,
-      setLastHoveredItemId: handleSetLastHoveredItemId
-    }}>
+    <AccordionContext.Provider
+      value={{
+        activeItemId,
+        setActiveItemId: handleSetActiveItemId,
+        lastHoveredItemId,
+        setLastHoveredItemId: handleSetLastHoveredItemId
+      }}
+    >
       {children}
     </AccordionContext.Provider>
   );

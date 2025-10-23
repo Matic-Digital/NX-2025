@@ -58,12 +58,12 @@ export async function getLocationById(
     }
 
     return data.officeLocation;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Location: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Location: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Location');
   }
@@ -106,12 +106,12 @@ export async function getAllLocations(preview = false): Promise<OfficeLocationRe
     return {
       items: data.officeLocationCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Locations: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Locations: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Locations');
   }

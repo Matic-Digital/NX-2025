@@ -95,8 +95,7 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     // eslint-disable-next-line security/detect-object-injection
     return Object.prototype.hasOwnProperty.call(data, componentKey) ? data[componentKey] : null;
-  } catch (error) {
-    console.error(`Error fetching ${typename} component:`, error);
+  } catch {
     return null;
   }
 }
@@ -149,12 +148,12 @@ export async function getSolutionById(id: string, preview = false): Promise<Solu
     }
 
     return solution;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Solution: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Solution: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Solution');
   }
@@ -213,12 +212,12 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
     }
 
     return solution;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Solution by slug: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Solution by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Solution by slug');
   }
@@ -249,12 +248,12 @@ export async function getAllSolutions(preview = false): Promise<Solution[]> {
     }
 
     return data.solutionCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Solutions: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Solutions: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Solutions');
   }
@@ -299,12 +298,12 @@ export async function getSolutionsByIds(
     }
 
     return data.solutionCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Solutions: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Solutions: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Solutions');
   }

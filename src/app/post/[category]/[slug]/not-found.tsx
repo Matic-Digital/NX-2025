@@ -17,10 +17,7 @@ export default function PostNotFound() {
             Browse All Posts
           </Link>
           <div>
-            <Link
-              href="/"
-              className="text-primary hover:underline"
-            >
+            <Link href="/" className="text-primary hover:underline">
               Return to Home
             </Link>
           </div>

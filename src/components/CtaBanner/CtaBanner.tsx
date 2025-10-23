@@ -54,9 +54,8 @@ export function CtaBanner(props: CtaBanner) {
             // Fallback to flat URL on API failure
             setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
           }
-        } catch (error) {
-          setError(error as string);
-          console.error('Error fetching nested URL for primary CTA:', error);
+        } catch (_error) {
+          setError(_error instanceof Error ? _error.message : 'Failed to fetch URL');
           // Fallback to flat URL on error
           setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
         } finally {

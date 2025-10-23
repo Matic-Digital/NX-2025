@@ -1,6 +1,6 @@
 /**
  * Contentful to Schema.org Mapping
- * 
+ *
  * Maps Contentful content types and fields to appropriate Schema.org structures
  * This ensures the schema closely matches your actual content structure
  */
@@ -12,7 +12,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 
-import { extractSEOTitle, extractSEODescription, extractOpenGraphImage } from './metadata-utils';
+import { extractOpenGraphImage, extractSEODescription, extractSEOTitle } from './metadata-utils';
 
 export interface ContentfulContent {
   sys: {
@@ -83,12 +83,12 @@ export class ContentfulSchemaMapper {
       // Schema.org validators prefer HTTPS URLs even for localhost
       this.baseUrl = 'https://localhost:3000';
     }
-    
+
     // Ensure URL starts with https:// for better schema validation
     if (!this.baseUrl.startsWith('http')) {
       this.baseUrl = `https://${this.baseUrl}`;
     }
-    
+
     // Normalize the URL for Schema.org compatibility
     this.baseUrl = normalizeSchemaUrl(this.baseUrl);
   }
@@ -194,7 +194,10 @@ export class ContentfulSchemaMapper {
    */
   mapPostToArticle(content: ContentfulContent, path: string): Record<string, unknown> {
     const title = extractSEOTitle(content, content.title || 'Article');
-    const description = extractSEODescription(content, content.excerpt || content.description || '');
+    const description = extractSEODescription(
+      content,
+      content.excerpt || content.description || ''
+    );
     const image = extractOpenGraphImage(content, this.baseUrl, title);
 
     return {
@@ -224,7 +227,9 @@ export class ContentfulSchemaMapper {
       },
       // Map Contentful-specific fields
       identifier: content.sys.id,
-      ...(content.categories && { about: content.categories.map(cat => ({ '@type': 'Thing', name: cat })) }),
+      ...(content.categories && {
+        about: content.categories.map((cat) => ({ '@type': 'Thing', name: cat }))
+      }),
       ...(content.tags && { keywords: content.tags.join(', ') }),
       // Additional Schema.org properties for articles
       accessModeSufficient: [
@@ -433,7 +438,13 @@ export class ContentfulSchemaMapper {
   /**
    * Map Contentful image to Schema.org ImageObject
    */
-  private mapImageToImageObject(image: { url: string; width?: number; height?: number; title?: string; description?: string }): Record<string, unknown> {
+  private mapImageToImageObject(image: {
+    url: string;
+    width?: number;
+    height?: number;
+    title?: string;
+    description?: string;
+  }): Record<string, unknown> {
     return {
       '@type': 'ImageObject',
       '@id': `${image.url}#image`,
@@ -509,10 +520,7 @@ export class ContentfulSchemaMapper {
         contactType: 'customer service',
         url: `${this.baseUrl}/contact`
       },
-      sameAs: [
-        'https://www.linkedin.com/company/nextracker',
-        'https://twitter.com/nextracker'
-      ],
+      sameAs: ['https://www.linkedin.com/company/nextracker', 'https://twitter.com/nextracker'],
       // Additional Schema.org properties
       accessModeSufficient: [
         {
@@ -575,10 +583,9 @@ export class ContentfulSchemaMapper {
         try {
           const { generateWebSiteSchemaFromSitemap } = await import('./sitemap-schema-integration');
           return await generateWebSiteSchemaFromSitemap(this.baseUrl);
-        } catch (error) {
-        }
+        } catch {}
       }
-      
+
       return {
         ...baseSchema,
         mainEntity: {
@@ -599,19 +606,20 @@ export class ContentfulSchemaMapper {
    */
   private async generateSiteNavigationItems(): Promise<any[]> {
     try {
-      const { readSitemapUrls, generateNavigationFromSitemap } = await import('./sitemap-schema-integration');
+      const { readSitemapUrls, generateNavigationFromSitemap } = await import(
+        './sitemap-schema-integration'
+      );
       const sitemapUrls = await readSitemapUrls();
-      
+
       if (sitemapUrls.length > 5) {
       }
-      
+
       if (sitemapUrls.length > 0) {
         const navigation = generateNavigationFromSitemap(sitemapUrls, this.baseUrl);
         return navigation;
       }
-    } catch (error) {
-    }
-    
+    } catch {}
+
     // Fallback navigation based on actual sitemap structure I can see
     const navItems = [
       { name: 'About', url: '/about', description: 'About our company' },
@@ -642,15 +650,16 @@ export class ContentfulSchemaMapper {
    */
   private async generateMainSections(): Promise<any[]> {
     try {
-      const { readSitemapUrls, generateHasPartFromSitemap } = await import('./sitemap-schema-integration');
+      const { readSitemapUrls, generateHasPartFromSitemap } = await import(
+        './sitemap-schema-integration'
+      );
       const sitemapUrls = await readSitemapUrls();
-      
+
       if (sitemapUrls.length > 0) {
         return generateHasPartFromSitemap(sitemapUrls);
       }
-    } catch (error) {
-    }
-    
+    } catch {}
+
     // Fallback sections based on actual sitemap - removing duplicates and non-existent pages
     return [
       {
@@ -732,10 +741,7 @@ export class ContentfulSchemaMapper {
         contactType: 'customer service',
         url: `${this.baseUrl}/contact`
       },
-      sameAs: [
-        'https://www.linkedin.com/company/nextracker',
-        'https://twitter.com/nextracker'
-      ],
+      sameAs: ['https://www.linkedin.com/company/nextracker', 'https://twitter.com/nextracker'],
       // WebSite owned by Organization
       owns: {
         '@type': 'WebSite',

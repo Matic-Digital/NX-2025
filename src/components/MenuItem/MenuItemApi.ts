@@ -47,9 +47,9 @@ export async function getMenuItemById(id: string, preview = false): Promise<Menu
     }
 
     return data.menuItemCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching menu item: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching menu item: ${_error.message}`);
     }
     throw new Error('Unknown error fetching menu item');
   }

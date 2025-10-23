@@ -1,7 +1,9 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import type { HubSpotFormData } from './fields/types';
 import { formatDate, getFormCapabilities } from './utils';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+import type { HubSpotFormData } from './fields/types';
 
 interface FormMetadataDisplayProps {
   hubspotData: HubSpotFormData;
@@ -17,12 +19,14 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             Form Overview
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              (hubspotData.formData as Record<string, unknown>)?.archived 
-                ? 'bg-red-100 text-red-800' 
-                : 'bg-green-100 text-green-800'
-            }`}>
-              {(hubspotData.formData as Record<string, unknown>)?.archived ? "Archived" : "Active"}
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                (hubspotData.formData as Record<string, unknown>)?.archived
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-green-100 text-green-800'
+              }`}
+            >
+              {(hubspotData.formData as Record<string, unknown>)?.archived ? 'Archived' : 'Active'}
             </span>
           </CardTitle>
           <CardDescription>Basic form information and metadata</CardDescription>
@@ -31,19 +35,27 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium">Form Name</p>
-              <p className="text-sm text-muted-foreground">{(hubspotData.formData as Record<string, unknown>)?.name as string}</p>
+              <p className="text-sm text-muted-foreground">
+                {(hubspotData.formData as Record<string, unknown>)?.name as string}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium">Form ID</p>
-              <p className="text-sm text-muted-foreground font-mono">{(hubspotData.formData as Record<string, unknown>)?.id as string}</p>
+              <p className="text-sm text-muted-foreground font-mono">
+                {(hubspotData.formData as Record<string, unknown>)?.id as string}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium">Created</p>
-              <p className="text-sm text-muted-foreground">{formatDate((hubspotData.formData as Record<string, unknown>)?.createdAt as string)}</p>
+              <p className="text-sm text-muted-foreground">
+                {formatDate((hubspotData.formData as Record<string, unknown>)?.createdAt as string)}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium">Last Updated</p>
-              <p className="text-sm text-muted-foreground">{formatDate((hubspotData.formData as Record<string, unknown>)?.updatedAt as string)}</p>
+              <p className="text-sm text-muted-foreground">
+                {formatDate((hubspotData.formData as Record<string, unknown>)?.updatedAt as string)}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -70,20 +82,27 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
               <p className="text-sm text-muted-foreground">Field Groups</p>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-lg">
-              <p className="text-2xl font-bold text-primary">{hubspotData.metadata.requiredFields.length}</p>
+              <p className="text-2xl font-bold text-primary">
+                {hubspotData.metadata.requiredFields.length}
+              </p>
               <p className="text-sm text-muted-foreground">Required Fields</p>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-lg">
-              <p className="text-2xl font-bold text-primary">{hubspotData.metadata.fieldTypes.length}</p>
+              <p className="text-2xl font-bold text-primary">
+                {hubspotData.metadata.fieldTypes.length}
+              </p>
               <p className="text-sm text-muted-foreground">Field Types</p>
             </div>
           </div>
-          
+
           <div className="border-t my-4"></div>
-          
+
           <div className="flex flex-wrap gap-2">
             {capabilities.map((capability, index) => (
-              <span key={index} className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${capability.color}`}>
+              <span
+                key={index}
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${capability.color}`}
+              >
                 {capability.label}
               </span>
             ))}
@@ -100,7 +119,10 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
         <CardContent>
           <div className="flex flex-wrap gap-2">
             {hubspotData.metadata.fieldTypes.map((fieldType, index) => (
-              <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded border text-xs font-medium bg-gray-50">
+              <span
+                key={index}
+                className="inline-flex items-center px-2.5 py-0.5 rounded border text-xs font-medium bg-gray-50"
+              >
                 {fieldType}
               </span>
             ))}
@@ -136,10 +158,13 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
                     )}
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {step.fields.map((field, fieldIndex) => (
-                    <div key={fieldIndex} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
+                    <div
+                      key={fieldIndex}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm"
+                    >
                       <div>
                         <span className="font-medium">{field.label}</span>
                         <span className="text-gray-500 ml-2">({field.name})</span>
@@ -178,7 +203,10 @@ export const FormMetadataDisplay: React.FC<FormMetadataDisplayProps> = ({ hubspo
           {hubspotData.metadata.requiredFields.length > 0 ? (
             <div className="space-y-1">
               {hubspotData.metadata.requiredFields.map((fieldName, index) => (
-                <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-1 mb-1">
+                <span
+                  key={index}
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 mr-1 mb-1"
+                >
                   {fieldName}
                 </span>
               ))}

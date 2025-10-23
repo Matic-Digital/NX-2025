@@ -33,11 +33,7 @@ export function MegaMenuCard({
           className="min-h-[16rem] w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60" />
-        <Box
-          direction="col"
-          gap={0}
-          className="absolute inset-0 w-full h-full justify-between"
-        >
+        <Box direction="col" gap={0} className="absolute inset-0 w-full h-full justify-between">
           <p className="text-[0.875rem] font-medium text-white leading-[120%] tracking-[0.00875rem] uppercase pl-[1.25rem] pt-[1.25rem]">
             {kicker}
           </p>
