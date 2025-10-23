@@ -124,6 +124,9 @@ export function ContentSkeleton({ lines = 3, className = '' }: ContentSkeletonPr
 /**
  * Aspect Ratio Container
  * Prevents image loading layout shifts
+ * 
+ * Note: For image loading states, consider using ImageSkeleton component instead
+ * which provides consistent skeleton styling across the application.
  */
 interface AspectRatioProps {
   ratio: number; // e.g., 16/9, 4/3, 1/1

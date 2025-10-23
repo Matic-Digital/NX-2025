@@ -110,6 +110,16 @@
       "priority": 0.8,
       "changefreq": "weekly"
     },
+    "/traditional-piles": {
+      "path": "/traditional-piles",
+      "contentType": "Product",
+      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
+      "title": "Traditional Piles",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
     "/foundations-product": {
       "path": "/foundations-product",
       "contentType": "Product",
@@ -900,6 +910,301 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
+    "/products/controls": {
+      "path": "/products/controls",
+      "contentType": "PageList",
+      "contentId": "5Y0xG9Yrt9BMykmkT6syFE",
+      "title": "Controls",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/controls/truecapture": {
+      "path": "/products/controls/truecapture",
+      "contentType": "Product",
+      "contentId": "1xeZxPdBlDxpdg6M3hXLx2",
+      "title": "TrueCapture",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-spc-3-0": {
+      "path": "/products/controls/nx-spc-3-0",
+      "contentType": "Product",
+      "contentId": "2RNGo2s5wihk1UGpmZ2i17",
+      "title": "NX SPC 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/controls/nx-ncu-3-0": {
+      "path": "/products/controls/nx-ncu-3-0",
+      "contentType": "Product",
+      "contentId": "4l6SWWrvJpRb7xYP05uS13",
+      "title": "NX NCU 3.0",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "5Y0xG9Yrt9BMykmkT6syFE",
+          "slug": "controls",
+          "title": "Controls"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software": {
+      "path": "/products/software",
+      "contentType": "PageList",
+      "contentId": "7qr1G5kGWgMz0P6h7bP3uh",
+      "title": "Software",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/software/nx-one": {
+      "path": "/products/software/nx-one",
+      "contentType": "Product",
+      "contentId": "1cHN2LeI2avRpFR62rpSU4",
+      "title": "NX One",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-pulse": {
+      "path": "/products/software/nx-pulse",
+      "contentType": "Product",
+      "contentId": "5r0LXjxsjAE9TtvniipiAm",
+      "title": "NX Pulse",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-navigator": {
+      "path": "/products/software/nx-navigator",
+      "contentType": "Product",
+      "contentId": "1EY8F4Gjy6TYpJLsc60C0v",
+      "title": "NX Navigator",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos": {
+      "path": "/products/ebos",
+      "contentType": "PageList",
+      "contentId": "2nZMa6ZFTD4M3mXig0SiNt",
+      "title": "eBOS",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/ebos/nx-trunk-bus": {
+      "path": "/products/ebos/nx-trunk-bus",
+      "contentType": "Product",
+      "contentId": "3cu2FZ5qtkggLVUDPsKawx",
+      "title": "NX Trunk Bus",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-combiner": {
+      "path": "/products/ebos/nx-combiner",
+      "contentType": "Product",
+      "contentId": "3428uOH0oo5HMMCbDp3Hk0",
+      "title": "NX Combiner",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/ebos/nx-string-harnesses": {
+      "path": "/products/ebos/nx-string-harnesses",
+      "contentType": "Product",
+      "contentId": "7zZVu4UAJmILn7nqtIqEF0",
+      "title": "Harnessing Solutions",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2nZMa6ZFTD4M3mXig0SiNt",
+          "slug": "ebos",
+          "title": "eBOS"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations": {
+      "path": "/products/foundations",
+      "contentType": "PageList",
+      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
+      "title": "Foundations",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/foundations/nx-anchor": {
+      "path": "/products/foundations/nx-anchor",
+      "contentType": "Product",
+      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
+      "title": "NX Anchor",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/nx-earth-truss": {
+      "path": "/products/foundations/nx-earth-truss",
+      "contentType": "Product",
+      "contentId": "1a0d7tauTWefbQRZMeQfAt",
+      "title": "NX Earth Truss",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
     "/company/americas": {
       "path": "/company/americas",
       "contentType": "Page",
@@ -980,243 +1285,6 @@
       "priority": 0.7,
       "changefreq": "weekly"
     },
-    "/products/ebos": {
-      "path": "/products/ebos",
-      "contentType": "PageList",
-      "contentId": "2nZMa6ZFTD4M3mXig0SiNt",
-      "title": "eBOS",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/ebos/nx-trunk-bus": {
-      "path": "/products/ebos/nx-trunk-bus",
-      "contentType": "Product",
-      "contentId": "3cu2FZ5qtkggLVUDPsKawx",
-      "title": "NX Trunk Bus",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2nZMa6ZFTD4M3mXig0SiNt",
-          "slug": "ebos",
-          "title": "eBOS"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/ebos/nx-combiner": {
-      "path": "/products/ebos/nx-combiner",
-      "contentType": "Product",
-      "contentId": "3428uOH0oo5HMMCbDp3Hk0",
-      "title": "NX Combiner",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2nZMa6ZFTD4M3mXig0SiNt",
-          "slug": "ebos",
-          "title": "eBOS"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/ebos/nx-string-harnesses": {
-      "path": "/products/ebos/nx-string-harnesses",
-      "contentType": "Product",
-      "contentId": "7zZVu4UAJmILn7nqtIqEF0",
-      "title": "NX String Harnesses",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2nZMa6ZFTD4M3mXig0SiNt",
-          "slug": "ebos",
-          "title": "eBOS"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations": {
-      "path": "/products/foundations",
-      "contentType": "PageList",
-      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
-      "title": "Foundations",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/foundations/nx-anchor": {
-      "path": "/products/foundations/nx-anchor",
-      "contentType": "Product",
-      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
-      "title": "NX Anchor",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations/nx-earth-truss": {
-      "path": "/products/foundations/nx-earth-truss",
-      "contentType": "Product",
-      "contentId": "1a0d7tauTWefbQRZMeQfAt",
-      "title": "NX Earth Truss",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations/traditional-piles": {
-      "path": "/products/foundations/traditional-piles",
-      "contentType": "Product",
-      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
-      "title": "Traditional Piles",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/controls": {
-      "path": "/products/controls",
-      "contentType": "PageList",
-      "contentId": "5Y0xG9Yrt9BMykmkT6syFE",
-      "title": "Controls",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/controls/truecapture": {
-      "path": "/products/controls/truecapture",
-      "contentType": "Product",
-      "contentId": "1xeZxPdBlDxpdg6M3hXLx2",
-      "title": "TrueCapture",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "5Y0xG9Yrt9BMykmkT6syFE",
-          "slug": "controls",
-          "title": "Controls"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/controls/nx-spc-3-0": {
-      "path": "/products/controls/nx-spc-3-0",
-      "contentType": "Product",
-      "contentId": "2RNGo2s5wihk1UGpmZ2i17",
-      "title": "NX SPC 3.0",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "5Y0xG9Yrt9BMykmkT6syFE",
-          "slug": "controls",
-          "title": "Controls"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/controls/nx-ncu-3-0": {
-      "path": "/products/controls/nx-ncu-3-0",
-      "contentType": "Product",
-      "contentId": "4l6SWWrvJpRb7xYP05uS13",
-      "title": "NX NCU 3.0",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "5Y0xG9Yrt9BMykmkT6syFE",
-          "slug": "controls",
-          "title": "Controls"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
     "/products/module-mounting": {
       "path": "/products/module-mounting",
       "contentType": "PageList",
@@ -1248,85 +1316,6 @@
           "id": "2KFnQf1yR0nTFRH4vhgwL3",
           "slug": "module-mounting",
           "title": "Module Mounting"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/software": {
-      "path": "/products/software",
-      "contentType": "PageList",
-      "contentId": "7qr1G5kGWgMz0P6h7bP3uh",
-      "title": "Software",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/software/nx-one": {
-      "path": "/products/software/nx-one",
-      "contentType": "Product",
-      "contentId": "1cHN2LeI2avRpFR62rpSU4",
-      "title": "NX One",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/software/nx-pulse": {
-      "path": "/products/software/nx-pulse",
-      "contentType": "Product",
-      "contentId": "5r0LXjxsjAE9TtvniipiAm",
-      "title": "NX Pulse",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/software/nx-navigator": {
-      "path": "/products/software/nx-navigator",
-      "contentType": "Product",
-      "contentId": "1EY8F4Gjy6TYpJLsc60C0v",
-      "title": "NX Navigator",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
         }
       ],
       "isNested": true,
@@ -1763,6 +1752,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-23T15:15:04.934Z",
+  "generatedAt": "2025-10-23T18:37:54.283Z",
   "version": "1.0.0"
 }

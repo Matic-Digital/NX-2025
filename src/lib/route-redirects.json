@@ -500,11 +500,6 @@
     "permanent": false
   },
   {
-    "source": "/traditional-piles",
-    "destination": "/products/foundations/traditional-piles",
-    "permanent": false
-  },
-  {
     "source": "/truecapture",
     "destination": "/products/controls/truecapture",
     "permanent": false

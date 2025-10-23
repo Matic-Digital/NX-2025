@@ -160,11 +160,24 @@ export function ImageBetween(props: ImageBetween) {
             gap={8}
             className={cn(
               'mb-0 pb-8',
+              // Image assets get large bottom margin
               imageBetween.asset &&
                 imageBetween.asset.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
-              imageBetween.asset && imageBetween.asset.__typename !== 'Image' && 'mb-72',
+              // Non-image assets default to large margin, but with specific overrides
+              imageBetween.asset && 
+                imageBetween.asset.__typename !== 'Image' && 
+                imageBetween.asset.__typename !== 'ContentGrid' &&
+                imageBetween.asset.__typename !== 'Slider' &&
+                'mb-72',
+              // ContentGrid assets get no margin
               imageBetween.asset && imageBetween.asset.__typename === 'ContentGrid' && 'mb-0',
+              // Slider assets get different margins based on contentTop
+              imageBetween.asset && imageBetween.asset.__typename === 'Slider' && 
+                (!imageBetween.contentTop || imageBetween.contentTop.__typename !== 'ContentGrid') && 'mb-72',
+              imageBetween.asset && imageBetween.asset.__typename === 'Slider' && 
+                imageBetween.contentTop && imageBetween.contentTop.__typename === 'ContentGrid' && 'mb-8',
+              // Banner hero specific overrides
               isBannerHero && isPostSlider && 'mb-0 pb-16',
               isBannerHero && isImageSlider && 'mb-14 pb-14'
             )}

@@ -67,6 +67,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>http://localhost:3000/traditional-piles</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>http://localhost:3000/foundations-product</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>monthly</changefreq>
@@ -541,33 +547,51 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/company/americas</loc>
+    <loc>http://localhost:3000/products/controls</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/products/controls/truecapture</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/company/europe</loc>
+    <loc>http://localhost:3000/products/controls/nx-spc-3-0</loc>
     <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/company/latin-america</loc>
+    <loc>http://localhost:3000/products/controls/nx-ncu-3-0</loc>
     <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/company/australian-pacific</loc>
+    <loc>http://localhost:3000/products/software</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/products/software/nx-one</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/company/middle-east-africa-and-india</loc>
+    <loc>http://localhost:3000/products/software/nx-pulse</loc>
     <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/products/software/nx-navigator</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
@@ -613,33 +637,33 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/products/foundations/traditional-piles</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/controls</loc>
+    <loc>http://localhost:3000/company/americas</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/controls/truecapture</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/products/controls/nx-spc-3-0</loc>
+    <loc>http://localhost:3000/company/europe</loc>
     <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://localhost:3000/products/controls/nx-ncu-3-0</loc>
+    <loc>http://localhost:3000/company/latin-america</loc>
     <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/company/australian-pacific</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/company/middle-east-africa-and-india</loc>
+    <lastmod>2025-10-23</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
@@ -650,30 +674,6 @@
   </url>
   <url>
     <loc>http://localhost:3000/products/module-mounting/nx-frame</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/software</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/software/nx-one</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/software/nx-pulse</loc>
-    <lastmod>2025-10-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/products/software/nx-navigator</loc>
     <lastmod>2025-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
