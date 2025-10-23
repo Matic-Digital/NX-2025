@@ -7,10 +7,7 @@ export type ModalType = 'quote' | 'support';
  * Business logic for ModalCtaButton behavior
  * Handles modal vs link decision making and URL generation
  */
-export const useModalButtonLogic = (
-  cta: ButtonType,
-  modalType: ModalType = 'quote'
-) => {
+export const useModalButtonLogic = (cta: ButtonType, modalType: ModalType = 'quote') => {
   // Determine if this should be a modal button
   const isModalButton = Boolean(cta.modal);
 

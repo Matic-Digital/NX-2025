@@ -1,16 +1,13 @@
 import { z } from 'zod';
 
-import { ImageSchema } from '@/components/Image/ImageSchema';
-import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
-import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
 import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
+import { ImageSchema } from '@/components/Image/ImageSchema';
+import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
+import { TeamMemberSchema } from '@/components/TeamMember/TeamMemberSchema';
 import { TestimonialItemSchema } from '@/components/Testimonials/TestimonialsSchema';
 
 // Post template options as defined in the content model
-const PostTemplateSchema = z.enum([
-  'Default',
-  'Gated Content'
-]);
+const PostTemplateSchema = z.enum(['Default', 'Gated Content']);
 
 // Post category options as defined in the content model
 const PostCategorySchema = z.enum([

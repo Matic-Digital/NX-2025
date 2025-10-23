@@ -110,7 +110,7 @@ async function checkForPartialPathRedirect(
     }
 
     return null;
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
@@ -190,7 +190,7 @@ export async function generateMetadata({ params }: NestedPageProps): Promise<Met
         description: 'The requested content could not be found.'
       };
     }
-  } catch (_error) {
+  } catch {
     return {
       title: 'Content Not Found',
       description: 'The requested content could not be found.'
@@ -574,7 +574,7 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
     }
 
     // At this point, we know page and pageList are not null due to the checks above
-  } catch (_error) {
+  } catch {
     notFound();
   }
 

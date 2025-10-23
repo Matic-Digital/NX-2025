@@ -47,9 +47,9 @@ export function ContentfulPreviewProvider({
       if (!ContentfulLivePreview.initialized) {
         try {
           // Get space ID and preview token from URL
-          const spaceId =
+          const _spaceId =
             url.searchParams.get('space_id') ?? process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-          const previewToken =
+          const _previewToken =
             url.searchParams.get('preview_access_token') ??
             process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN;
 
@@ -65,17 +65,11 @@ export function ContentfulPreviewProvider({
               });
 
               // Log the space and token for debugging
-
-            } catch (error) {
-              console.error('ContentfulLivePreview: Failed to initialize SDK', error);
-            }
+            } catch {}
           })();
 
           // Log the space and token for debugging
-
-        } catch (error) {
-          console.error('ContentfulLivePreview: Failed to initialize SDK', error);
-        }
+        } catch {}
       }
     }
   }, []);

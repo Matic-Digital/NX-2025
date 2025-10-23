@@ -24,6 +24,8 @@ import { createPortal } from 'react-dom';
 
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
 
+import { useIsDesktop, useIsTablet } from '@/hooks/useBreakpoint';
+
 import { MegaMenuProvider, useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
 import { Button } from '@/components/ui/button';
@@ -81,6 +83,11 @@ function HeaderContent(props: HeaderProps) {
   const [overflowAnimating, setOverflowAnimating] = useState(false);
   const overflowButtonRef = useRef<HTMLButtonElement>(null);
   const overflowMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Use optimized breakpoint hooks to prevent forced reflows
+  const _isDesktop = useIsDesktop();
+  const _isTablet = useIsTablet();
+  
   const {
     isHeaderBlurVisible,
     setOverflowMenuOpen,
@@ -98,27 +105,19 @@ function HeaderContent(props: HeaderProps) {
   // Add inspector mode for Contentful editing
   const inspectorProps = useContentfulInspectorMode({ entryId: header?.sys?.id });
 
-  // Debug: Log header data
-  useEffect(() => {
-    console.log('Header data:', header);
-    console.log('Header menu:', header?.menu);
-    console.log('Header overflow:', header?.overflow);
-  }, [header]);
 
   // Load menu if header has menu reference
   useEffect(() => {
     if (header?.menu?.sys?.id && !menu) {
-      console.log('Loading menu with ID:', header.menu.sys.id);
       setMenuLoading(true);
       getMenuById(header.menu.sys.id)
         .then((loadedMenu) => {
-          console.log('Menu loaded:', loadedMenu);
           if (loadedMenu) {
             setMenu(loadedMenu);
           }
         })
-        .catch((error: unknown) => {
-          console.error('Failed to load menu:', error);
+        .catch((_error: unknown) => {
+          // Menu loading failed
         })
         .finally(() => {
           setMenuLoading(false);
@@ -129,8 +128,6 @@ function HeaderContent(props: HeaderProps) {
   // Load overflow menu if header has overflow reference
   useEffect(() => {
     if (header?.overflow?.sys?.id && !overflowMenu && !overflowMenuLoading) {
-      console.log('Loading overflow menu with ID:', header.overflow.sys.id);
-      console.log('Overflow typename:', header.overflow.__typename);
       setOverflowMenuLoading(true);
 
       // Since overflow links to MegaMenu, not Menu, we need to use MegaMenu API
@@ -140,7 +137,6 @@ function HeaderContent(props: HeaderProps) {
             return getOverflowMegaMenuById(header.overflow!.sys.id);
           })
           .then((loadedMegaMenu) => {
-            console.log('Overflow MegaMenu loaded:', loadedMegaMenu);
             // Convert MegaMenu to Menu format for compatibility
             if (loadedMegaMenu?.itemsCollection) {
               const menuFormat = {
@@ -161,8 +157,8 @@ function HeaderContent(props: HeaderProps) {
               setOverflowMenuTags(loadedMegaMenu.contentfulMetadata?.tags);
             }
           })
-          .catch((error: unknown) => {
-            console.error('Failed to load overflow MegaMenu:', error);
+          .catch((_error: unknown) => {
+            // Overflow MegaMenu loading failed
           })
           .finally(() => setOverflowMenuLoading(false));
       } else {
@@ -172,13 +168,12 @@ function HeaderContent(props: HeaderProps) {
             return getOverflowMenuById(header.overflow!.sys.id);
           })
           .then((loadedMenu) => {
-            console.log('Overflow menu loaded:', loadedMenu);
             if (loadedMenu) {
               setOverflowMenu(loadedMenu);
             }
           })
-          .catch((error: unknown) => {
-            console.error('Failed to load overflow menu:', error);
+          .catch((_error: unknown) => {
+            // Overflow menu loading failed
           })
           .finally(() => setOverflowMenuLoading(false));
       }
@@ -261,32 +256,21 @@ function HeaderContent(props: HeaderProps) {
   useEffect(() => {
     const loadLocales = async () => {
       try {
-        console.log('🌐 [Header] Loading locales from API...');
         const response = await fetch('/api/locales');
         
-        console.log('🌐 [Header] API response status:', response.status);
-        console.log('🌐 [Header] API response ok:', response.ok);
-        
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error('🌐 [Header] API error response:', errorText);
+          const _errorText = await response.text();
           throw new Error(`Failed to fetch locales: ${response.statusText}`);
         }
         
         const data = await response.json() as LocaleApiResponse;
-        console.log('🌐 [Header] Raw API response:', data);
         
         if (data.locales && Array.isArray(data.locales)) {
-          console.log('🌐 [Header] Setting locales state:', data.locales);
           setLocales(data.locales);
-          console.log('🌐 [Header] Loaded locales:', data.locales.map((l) => l.code));
-          console.log('🌐 [Header] Full locales data:', data.locales);
         } else {
-          console.error('🌐 [Header] Invalid locales response:', data);
           throw new Error('Invalid locales response format');
         }
-      } catch (error) {
-        console.error('🌐 [Header] Failed to load locales:', error);
+      } catch {
         // Fallback to minimal locale set
         setLocales([
           { code: 'en-US', name: 'English (US)', default: true },
@@ -324,10 +308,11 @@ function HeaderContent(props: HeaderProps) {
   }
 
   return (
-    <Container
-      className={`sticky top-0 z-[100] pt-0 transition-all duration-300 max-lg:z-[40] lg:pt-6`}
-    >
-      <header
+    <div className="fixed top-0 left-0 right-0 z-[100] w-full header-container">
+      <Container
+        className={`w-full pt-0 transition-all duration-300 lg:pt-6`}
+      >
+        <header
         className={`relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full ${
           isScrolled && isHeaderBlurVisible ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
         }`}
@@ -760,11 +745,8 @@ function HeaderContent(props: HeaderProps) {
                                                       }));
                                                     }
                                                   })
-                                                  .catch((error: unknown) => {
-                                                    console.error(
-                                                      'Failed to load mega menu:',
-                                                      error
-                                                    );
+                                                  .catch((_error: unknown) => {
+                                                    // Mega menu loading failed
                                                   });
                                               }
                                             } else {
@@ -839,15 +821,10 @@ function HeaderContent(props: HeaderProps) {
                       <div className="space-y-4">
                         {/* LocaleDropdown - Centered above overflow items */}
                         <div className="flex justify-center">
-                          {(() => {
-                            console.log('🌐 [Header] Passing locales to LocaleDropdown:', locales);
-                            return (
-                              <LocaleDropdown 
-                                locales={locales} 
-                                className="rounded-md px-4 py-2" 
-                              />
-                            );
-                          })()}
+                          <LocaleDropdown 
+                            locales={locales} 
+                            className="rounded-md px-4 py-2" 
+                          />
                         </div>
 
                         {/* Overflow Menu Items */}
@@ -885,7 +862,8 @@ function HeaderContent(props: HeaderProps) {
           </Box>
         </Box>
       </header>
-    </Container>
+      </Container>
+    </div>
   );
 }
 

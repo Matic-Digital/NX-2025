@@ -1,6 +1,6 @@
 /**
  * Schema.org JSON-LD Generator
- * 
+ *
  * Generates structured data for different content types using the SEO fields
  * to enhance search engine understanding and enable rich snippets
  */
@@ -15,7 +15,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 /* eslint-disable @typescript-eslint/no-require-imports */
 
-import { extractSEOTitle, extractSEODescription, extractOpenGraphImage } from './metadata-utils';
+import { extractOpenGraphImage, extractSEODescription, extractSEOTitle } from './metadata-utils';
 import { debugSchema } from './schema-validator';
 
 // Base schema interfaces
@@ -170,12 +170,12 @@ export class SchemaGenerator {
       // Schema.org validators prefer HTTPS URLs even for localhost
       this.baseUrl = 'https://localhost:3000';
     }
-    
+
     // Ensure URL starts with https:// for better schema validation
     if (!this.baseUrl.startsWith('http')) {
       this.baseUrl = `https://${this.baseUrl}`;
     }
-    
+
     this.organization = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
@@ -213,9 +213,12 @@ export class SchemaGenerator {
   /**
    * Generate image object from content
    */
-  private generateImageObject(content: any, fallbackTitle: string): ImageObject | string | undefined {
+  private generateImageObject(
+    content: any,
+    fallbackTitle: string
+  ): ImageObject | string | undefined {
     const openGraphImage = extractOpenGraphImage(content, this.baseUrl, fallbackTitle);
-    
+
     if (openGraphImage) {
       return {
         '@type': 'ImageObject',
@@ -224,7 +227,7 @@ export class SchemaGenerator {
         height: openGraphImage.height
       };
     }
-    
+
     return undefined;
   }
 
@@ -372,11 +375,13 @@ export class SchemaGenerator {
       startDate: (content as any)?.dateTime,
       endDate: (content as any)?.endDateTime,
       organizer: this.organization,
-      location: (content as any)?.address ? {
-        '@type': 'Place',
-        name: (content as any)?.address,
-        address: (content as any)?.address
-      } : undefined
+      location: (content as any)?.address
+        ? {
+            '@type': 'Place',
+            name: (content as any)?.address,
+            address: (content as any)?.address
+          }
+        : undefined
     };
   }
 
@@ -420,7 +425,7 @@ export class SchemaGenerator {
     path: string
   ): any {
     let schema;
-    
+
     switch (contentType) {
       case 'post':
         schema = this.generateArticleSchema(content, path);
@@ -440,10 +445,10 @@ export class SchemaGenerator {
       default:
         schema = this.generateWebPageSchema(content, path);
     }
-    
+
     // Validate schema in development
     debugSchema(schema, schema['@type']);
-    
+
     return schema;
   }
 
@@ -476,11 +481,7 @@ export function generateSchema(
 /**
  * Enhanced schema generation using Contentful structure mapping
  */
-export function generateContentfulSchema(
-  content: any,
-  path: string,
-  contentType?: string
-): string {
+export function generateContentfulSchema(content: any, path: string, contentType?: string): string {
   const { contentfulSchemaMapper } = require('./contentful-schema-mapper');
   return JSON.stringify(
     contentfulSchemaMapper.mapContentToSchema(content, path, contentType),

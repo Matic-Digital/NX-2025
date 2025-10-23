@@ -42,6 +42,7 @@ export function HubspotFormPreview(props: Partial<HubspotFormType>) {
                     <div className="overflow-hidden p-6">
                       <HubspotForm
                         hubspotForm={liveHubspotForm as HubspotFormType}
+                        theme="light"
                         {...inspectorProps}
                       />
                     </div>

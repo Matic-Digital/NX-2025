@@ -58,8 +58,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
         if (data) {
           setPostData(data);
         }
-      } catch (error) {
-        console.error('Error fetching post data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }

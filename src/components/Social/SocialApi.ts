@@ -64,12 +64,12 @@ export async function getAllSocials(
       items: data.socialCollection.items,
       total: data.socialCollection.total ?? 0
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching socials: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching socials: ${_error.message}`);
     }
     throw new Error('Unknown error fetching socials');
   }
@@ -109,9 +109,9 @@ export async function getSocialById(id: string, preview = false): Promise<Social
     }
 
     return data.socialCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching social: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching social: ${_error.message}`);
     }
     throw new Error('Unknown error fetching social');
   }

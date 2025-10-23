@@ -54,8 +54,7 @@ export function ImageBetween(props: ImageBetween) {
             const bannerHeroData = await getBannerHero(imageBetween.contentTop.sys.id ?? '');
             setContentTopData(bannerHeroData);
           }
-        } catch (error) {
-          console.error('Failed to fetch contentTop:', error);
+        } catch {
           setContentTopData(null);
         }
       } else {
@@ -77,8 +76,7 @@ export function ImageBetween(props: ImageBetween) {
         try {
           const contentGridData = await getContentGridById(imageBetween.asset.sys.id ?? '');
           setAssetContentGrid(contentGridData);
-        } catch (error) {
-          console.error('Failed to fetch ContentGrid asset:', error);
+        } catch {
           setAssetContentGrid(null);
         }
       } else {
@@ -102,8 +100,7 @@ export function ImageBetween(props: ImageBetween) {
           if (data.length > 0 && data[0]) {
             setSliderData(data[0]);
           }
-        } catch (error) {
-          console.error('Failed to fetch Slider asset:', error);
+        } catch {
           setSliderData(null);
         }
       } else {
@@ -125,8 +122,7 @@ export function ImageBetween(props: ImageBetween) {
         try {
           const contentGridData = await getContentGridById(imageBetween.contentBottom.sys.id ?? '');
           setContentBottomData(contentGridData);
-        } catch (error) {
-          console.error('Failed to fetch contentBottom:', error);
+        } catch {
           setContentBottomData(null);
         }
       } else {
@@ -211,10 +207,13 @@ export function ImageBetween(props: ImageBetween) {
 
         {/* Central Image */}
         {imageBetween.asset && (
-          <div className={cn(
-            "relative flex items-center justify-center",
-            imageBetween.asset.__typename === 'Image' && "-mt-12 -mb-8 lg:-mt-28 lg:-mb-16 xl:-mt-48 xl:-mb-24"
-          )}>
+          <div
+            className={cn(
+              'relative flex items-center justify-center',
+              imageBetween.asset.__typename === 'Image' &&
+                '-mt-12 -mb-8 lg:-mt-28 lg:-mb-16 xl:-mt-48 xl:-mb-24'
+            )}
+          >
             {/* Render asset based on type */}
             {imageBetween.asset && imageBetween.asset.__typename === 'Image' && (
               <Container className="absolute z-20">
@@ -246,8 +245,8 @@ export function ImageBetween(props: ImageBetween) {
               assetContentGrid && (
                 <Container
                   className={cn(
-                    "z-20 !px-0 lg:absolute",
-                    contentTopData ? "-mt-[6rem] -mb-[20rem]" : "-mt-[18rem] -mb-[20rem]"
+                    'z-20 !px-0 lg:absolute',
+                    contentTopData ? '-mt-[6rem] -mb-[20rem]' : '-mt-[18rem] -mb-[20rem]'
                   )}
                   {...inspectorProps({ fieldId: 'asset' })}
                 >
@@ -276,7 +275,11 @@ export function ImageBetween(props: ImageBetween) {
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (
-                <ContentGrid {...contentBottomData} componentType={imageBetween.__typename} isInsideImageBetween={true} />
+                <ContentGrid
+                  {...contentBottomData}
+                  componentType={imageBetween.__typename}
+                  isInsideImageBetween={true}
+                />
               )}
             </Box>
           </div>

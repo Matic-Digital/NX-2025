@@ -52,12 +52,12 @@ export async function getVideosByIds(videoIds: string[], preview = false): Promi
     }
 
     return data.videoCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Videos: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Videos: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Videos');
   }

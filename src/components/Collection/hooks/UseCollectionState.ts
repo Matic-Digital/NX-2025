@@ -31,9 +31,9 @@ export const useCollectionState = (
     }
 
     if (error || !collection) {
-      return { 
-        type: 'error' as const, 
-        message: error ?? 'Collection not found' 
+      return {
+        type: 'error' as const,
+        message: error ?? 'Collection not found'
       };
     }
 
@@ -48,9 +48,9 @@ export const useCollectionState = (
 
     // Check if we have search query but no results
     if (searchQuery.trim() && currentPosts.length === 0 && currentPages.length === 0) {
-      return { 
-        type: 'emptySearch' as const, 
-        searchQuery: searchQuery.trim() 
+      return {
+        type: 'emptySearch' as const,
+        searchQuery: searchQuery.trim()
       };
     }
 
@@ -78,8 +78,8 @@ export const useCollectionState = (
       case 'empty':
         return { shouldRenderContent: false, stateComponent: 'EmptyState' };
       case 'emptySearch':
-        return { 
-          shouldRenderContent: false, 
+        return {
+          shouldRenderContent: false,
           stateComponent: 'EmptySearchState',
           searchQuery: currentState.searchQuery
         };

@@ -37,7 +37,7 @@ export function ServiceCarousel({ services, className }: ServiceCarouselProps) {
                 <div key={service.sys?.id ?? `service-${index}`} className="min-w-0 flex-[0_0_80%]">
                   <ServiceCard
                     cardId={service.sys?.id ?? `service-${index}`}
-                    isFirst={isFirstService}
+                    isFirstCard={isFirstService}
                     serviceId={service.sys?.id ?? `service-${index}`}
                   />
                 </div>
@@ -67,7 +67,7 @@ export function ServiceCarousel({ services, className }: ServiceCarouselProps) {
             <ServiceCard
               key={service.sys?.id ?? `service-${index}`}
               cardId={service.sys?.id ?? `service-${index}`}
-              isFirst={isFirstService}
+              isFirstCard={isFirstService}
               serviceId={service.sys?.id ?? `service-${index}`}
             />
           );

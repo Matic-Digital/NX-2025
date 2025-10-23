@@ -5,9 +5,9 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
-import { ProductCard } from '@/components/Product/ProductCard';
-import { productFields } from '@/components/Product/preview/ProductFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
+import { productFields } from '@/components/Product/preview/ProductFields';
+import { ProductCard } from '@/components/Product/ProductCard';
 
 import type { Product } from '@/components/Product/ProductSchema';
 

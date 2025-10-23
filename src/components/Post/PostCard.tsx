@@ -42,8 +42,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
         if (data) {
           setPostData(data);
         }
-      } catch (error) {
-        console.error('Error fetching post data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }

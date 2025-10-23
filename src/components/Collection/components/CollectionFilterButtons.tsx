@@ -27,9 +27,7 @@ export function CollectionFilterButtons({
 
   return (
     <div className={`mb-6 ${className}`}>
-      {showLabel && (
-        <p className="text-sm text-gray-600 mb-3">{label}</p>
-      )}
+      {showLabel && <p className="text-sm text-gray-600 mb-3">{label}</p>}
       <FilterButtons
         categories={categories}
         activeFilter={activeFilter}

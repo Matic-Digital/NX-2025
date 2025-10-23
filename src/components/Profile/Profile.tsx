@@ -9,6 +9,7 @@ import {
 import { cn } from '@/lib/utils';
 
 import { Box } from '@/components/global/matic-ds';
+
 import { AirImage } from '@/components/Image/AirImage';
 import { getProfileById } from '@/components/Profile/ProfileApi';
 
@@ -34,8 +35,7 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
         if (data) {
           setProfileData(data);
         }
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -62,11 +62,7 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
   }
 
   if (!profile) {
-    return (
-      <div className={cn('text-gray-500 text-sm', className)}>
-        Profile not found
-      </div>
-    );
+    return <div className={cn('text-gray-500 text-sm', className)}>Profile not found</div>;
   }
 
   // Compact variant for inline display
@@ -85,7 +81,10 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
           {profile.name}
         </span>
         {profile.profileLocation && (
-          <span className="text-xs text-gray-500" {...inspectorProps({ fieldId: 'profileLocation' })}>
+          <span
+            className="text-xs text-gray-500"
+            {...inspectorProps({ fieldId: 'profileLocation' })}
+          >
             {profile.profileLocation}
           </span>
         )}
@@ -109,19 +108,19 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
             {...inspectorProps({ fieldId: 'asset' })}
           />
         )}
-        
+
         <Box direction="col" gap={1} className="text-center">
           {profile.name && (
-            <h3 
+            <h3
               className="text-lg font-semibold text-gray-900"
               {...inspectorProps({ fieldId: 'name' })}
             >
               {profile.name}
             </h3>
           )}
-          
+
           {profile.profileLocation && (
-            <p 
+            <p
               className="text-sm text-gray-600"
               {...inspectorProps({ fieldId: 'profileLocation' })}
             >
@@ -131,7 +130,7 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
         </Box>
 
         {profile.description && (
-          <p 
+          <p
             className="text-sm text-gray-700 text-center"
             {...inspectorProps({ fieldId: 'description' })}
           >
@@ -144,11 +143,7 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
 
   // Default variant
   return (
-    <Box
-      direction="row"
-      gap={4}
-      className={cn('items-start', className)}
-    >
+    <Box direction="row" gap={4} className={cn('items-start', className)}>
       {profile.asset && (
         <AirImage
           link={profile.asset.link}
@@ -157,31 +152,25 @@ export function Profile({ sys, variant = 'default', className }: ProfileProps) {
           {...inspectorProps({ fieldId: 'asset' })}
         />
       )}
-      
+
       <Box direction="col" gap={1} className="flex-1">
         {profile.name && (
-          <h4 
+          <h4
             className="text-base font-semibold text-gray-900"
             {...inspectorProps({ fieldId: 'name' })}
           >
             {profile.name}
           </h4>
         )}
-        
+
         {profile.profileLocation && (
-          <p 
-            className="text-sm text-gray-600"
-            {...inspectorProps({ fieldId: 'profileLocation' })}
-          >
+          <p className="text-sm text-gray-600" {...inspectorProps({ fieldId: 'profileLocation' })}>
             {profile.profileLocation}
           </p>
         )}
 
         {profile.description && (
-          <p 
-            className="text-sm text-gray-700 mt-2"
-            {...inspectorProps({ fieldId: 'description' })}
-          >
+          <p className="text-sm text-gray-700 mt-2" {...inspectorProps({ fieldId: 'description' })}>
             {profile.description}
           </p>
         )}

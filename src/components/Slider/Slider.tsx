@@ -5,14 +5,13 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
-import Link from 'next/link';
 import { useIntersectionObserver } from '@uidotdev/usehooks';
-
-import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 import { ArrowUpRight, Plus } from 'lucide-react';
 
 import { resolveNestedUrls } from '@/lib/page-link-utils';
+import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -26,17 +25,15 @@ import {
 import { Box, Container } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
-import type { z } from 'zod';
-import type { MobileOriginSchema } from '@/components/Image/ImageSchema';
-import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
 import { PostSliderCard } from '@/components/Post/PostSliderCard';
+import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
 import { getSlidersByIds } from '@/components/Slider/SliderApi';
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
 
 import type { ContentOverlay } from '@/components/Content/ContentSchema';
-import type { Image as ImageType } from '@/components/Image/ImageSchema';
+import type { Image as ImageType, MobileOriginSchema } from '@/components/Image/ImageSchema';
 import type { PostSliderItem } from '@/components/Post/PostSchema';
 import type { ContentSliderItem as ContentSliderItemType } from '@/components/Slider/components/ContentSliderItemSchema';
 import type { SliderItem } from '@/components/Slider/SliderItemSchema';
@@ -46,6 +43,7 @@ import type { TeamMember } from '@/components/TeamMember/TeamMemberSchema';
 import type { TestimonialItem as TestimonialItemType } from '@/components/Testimonials/TestimonialsSchema';
 import type { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItemSchema';
 import type { CarouselApi } from '@/components/ui/carousel';
+import type { z } from 'zod';
 
 interface SliderCardProps {
   item: SliderItemType;
@@ -72,7 +70,14 @@ const _ContentOverlay = ({ children }: ContentOverlay) => (
   </div>
 );
 
-const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, context = 'default' }: SliderCardProps) => {
+const SliderCard = ({
+  item,
+  index,
+  current,
+  solutionUrls,
+  onTeamMemberClick,
+  context = 'default'
+}: SliderCardProps) => {
   const updatedItem = useContentfulLiveUpdates(item);
   const inspectorProps = useContentfulInspectorMode({ entryId: updatedItem?.sys?.id });
 
@@ -174,14 +179,7 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
   // Handle Post type
   if (updatedItem.__typename === 'Post') {
     const postItem = updatedItem as PostSliderItem;
-    return (
-      <PostSliderCard
-        item={postItem}
-        index={index}
-        current={current}
-        context={context}
-      />
-    );
+    return <PostSliderCard item={postItem} index={index} current={current} context={context} />;
   }
 
   if (updatedItem.__typename === 'TimelineSliderItem') {
@@ -201,7 +199,11 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
                 ? (() => {
                     const videoAsset = timelineItem.asset as {
                       __typename: 'Video';
-                      posterImage: { link?: string; altText?: string; mobileOrigin?: z.infer<typeof MobileOriginSchema> };
+                      posterImage: {
+                        link?: string;
+                        altText?: string;
+                        mobileOrigin?: z.infer<typeof MobileOriginSchema>;
+                      };
                     };
                     return (
                       <div className="relative h-full w-full">
@@ -325,10 +327,13 @@ const SliderCard = ({ item, index, current, solutionUrls, onTeamMemberClick, con
                 (() => {
                   const internalLinkId = solution.cta.internalLink?.sys?.id ?? solution.sys?.id;
                   // eslint-disable-next-line security/detect-object-injection
-                  const resolvedUrl = internalLinkId && solutionUrls && Object.prototype.hasOwnProperty.call(solutionUrls, internalLinkId) 
-                    // eslint-disable-next-line security/detect-object-injection
-                    ? solutionUrls[internalLinkId] 
-                    : null;
+                  const resolvedUrl =
+                    internalLinkId &&
+                    solutionUrls &&
+                    Object.prototype.hasOwnProperty.call(solutionUrls, internalLinkId)
+                      ? // eslint-disable-next-line security/detect-object-injection
+                        solutionUrls[internalLinkId]
+                      : null;
                   return resolvedUrl ?? solution.cta.externalLink ?? 'test';
                 })()
               }
@@ -414,14 +419,14 @@ const GenericSlider = ({
     if (!isPostSlider || sliderData.itemsCollection.items.length <= 1) {
       return sliderData.itemsCollection.items;
     }
-    
+
     const originalItems = sliderData.itemsCollection.items;
     // Duplicate items: [original] + [original] + [original] for seamless infinite loop
     return [...originalItems, ...originalItems, ...originalItems];
   };
 
   const displayItems = getInfiniteLoopItems();
-  
+
   // Helper functions for pagination with infinite loop
   const getPaginationIndex = (currentIndex: number) => {
     if (!isPostSlider || sliderData.itemsCollection.items.length <= 1) {
@@ -433,12 +438,12 @@ const GenericSlider = ({
 
   const handlePaginationClick = (targetIndex: number) => {
     if (!api) return;
-    
+
     if (isPostSlider && sliderData.itemsCollection.items.length > 1) {
       const originalItemCount = sliderData.itemsCollection.items.length;
       const currentSlide = api.selectedScrollSnap();
       const currentSet = Math.floor(currentSlide / originalItemCount);
-      const targetSlide = (currentSet * originalItemCount) + targetIndex;
+      const targetSlide = currentSet * originalItemCount + targetIndex;
       api.scrollTo(targetSlide);
     } else {
       api.scrollTo(targetIndex);
@@ -452,7 +457,11 @@ const GenericSlider = ({
   return (
     <div
       className={cn(
-        hasOnlyOneSlide ? 'relative w-full' : isFullWidth ? 'relative w-screen overflow-hidden md:overflow-visible' : 'relative'
+        hasOnlyOneSlide
+          ? 'relative w-full'
+          : isFullWidth
+            ? 'relative w-screen overflow-hidden md:overflow-visible'
+            : 'relative'
       )}
       style={{
         marginLeft: isFullWidth && !hasOnlyOneSlide ? 'calc(-50vw + 50%)' : ''
@@ -511,19 +520,19 @@ const GenericSlider = ({
                       ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                       : isTeamMemberSlider
                         ? 'basis-[300px]'
-                      : isTimelineSlider
-                        ? 'basis-[calc(100vw-4rem)] lg:basis-full'
-                      : isPostSlider
-                        ? 'basis-full'
-                        : isFullWidth
-                          ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
-                          : isSolutionSlider
-                            ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                            : isTestimonialSlider
-                              ? 'basis-full sm:basis-1/2 lg:basis-1/3'
-                              : isContentSlider
+                        : isTimelineSlider
+                          ? 'basis-[calc(100vw-4rem)] lg:basis-full'
+                          : isPostSlider
+                            ? 'basis-full'
+                            : isFullWidth
+                              ? 'basis-[calc(100vw-3rem)] sm:basis-4/5'
+                              : isSolutionSlider
                                 ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
-                                : 'basis-full'
+                                : isTestimonialSlider
+                                  ? 'basis-full sm:basis-1/2 lg:basis-1/3'
+                                  : isContentSlider
+                                    ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
+                                    : 'basis-full'
                 )}
               >
                 <SliderCard
@@ -583,16 +592,18 @@ const GenericSlider = ({
             const currentPaginationIndex = getPaginationIndex(current - 1);
             const isActive = currentPaginationIndex === index;
             const itemCount = sliderData.itemsCollection.items.length;
-            
+
             return (
               <button
                 key={index}
                 onClick={() => handlePaginationClick(index)}
-                className={cn('h-full cursor-pointer bg-gray-400 opacity-70 flex-1 min-w-0', {
-                  'bg-[#F5B12D] opacity-100': isActive
-                }, 
-                // Responsive width based on item count
-                itemCount <= 3 ? 'w-12' : itemCount <= 6 ? 'w-8 sm:w-12' : 'w-6 sm:w-8'
+                className={cn(
+                  'h-full cursor-pointer bg-gray-400 opacity-70 flex-1 min-w-0',
+                  {
+                    'bg-[#F5B12D] opacity-100': isActive
+                  },
+                  // Responsive width based on item count
+                  itemCount <= 3 ? 'w-12' : itemCount <= 6 ? 'w-8 sm:w-12' : 'w-6 sm:w-8'
                 )}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -878,7 +889,7 @@ export function Slider(props: SliderSys) {
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
     root: null,
-    rootMargin: "0px",
+    rootMargin: '0px'
   });
   const isInView = entry?.isIntersecting ?? false;
 
@@ -915,7 +926,6 @@ export function Slider(props: SliderSys) {
     }
   }, [api, sliderData]);
 
-
   // Global keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -938,26 +948,26 @@ export function Slider(props: SliderSys) {
   useEffect(() => {
     // Default autoplay to true if not explicitly set to false
     const shouldAutoplay = sliderData?.autoplay !== false;
-    
+
     // Don't autoplay if there's only one slide
     const hasMultipleSlides = sliderData && sliderData.itemsCollection.items.length > 1;
-    
+
     if (!api || !shouldAutoplay || !sliderData || !hasMultipleSlides || !isInView) {
       return;
     }
 
     const delay = sliderData.delay ?? 5000; // Default to 5 seconds if no delay specified
-    
+
     const interval = setInterval(() => {
       const currentSlide = api.selectedScrollSnap();
       const totalSlides = api.scrollSnapList().length;
       const originalItemCount = sliderData.itemsCollection.items.length;
       const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
-      
+
       // For post sliders with infinite loop
       if (isPostSlider && originalItemCount > 1) {
         // Check if we're at the last slide of the second set
-        if (currentSlide === (originalItemCount * 2) - 1) {
+        if (currentSlide === originalItemCount * 2 - 1) {
           // Jump to the beginning of the second set to continue the loop
           api.scrollTo(originalItemCount, false); // Jump without animation
         } else if (currentSlide >= originalItemCount * 2) {
@@ -1018,8 +1028,7 @@ export function Slider(props: SliderSys) {
             setSliderData(sliderData);
           }
         }
-      } catch (error) {
-        console.error('Error fetching slider data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }
@@ -1131,9 +1140,7 @@ export function Slider(props: SliderSys) {
             isServiceSlider ||
             isTestimonialSlider)
         }
-        isFullWidth={
-          false
-        }
+        isFullWidth={false}
         onTeamMemberClick={handleTeamMemberClick}
         context={props.context}
       />

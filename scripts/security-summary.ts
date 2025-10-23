@@ -2,11 +2,10 @@
 
 /**
  * Security Summary Script
- * 
+ *
  * Runs all security checks and provides a comprehensive security report
  * suitable for SecurityScorecard preparation.
  */
-
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 
@@ -49,7 +48,7 @@ class SecuritySummary {
 
   async runAllChecks(): Promise<void> {
     console.log('🛡️  Comprehensive Security Assessment\n');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
     console.log('Preparing for SecurityScorecard evaluation...\n');
 
     for (const check of SECURITY_CHECKS) {
@@ -61,25 +60,24 @@ class SecuritySummary {
 
   private async runCheck(check: SecurityCheck): Promise<void> {
     console.log(`🔍 Running: ${check.name}`);
-    
+
     try {
-      const output = execSync(check.command, { 
+      const output = execSync(check.command, {
         encoding: 'utf-8',
         timeout: 60000, // 1 minute timeout
         stdio: ['pipe', 'pipe', 'pipe']
       });
-      
+
       this.results.set(check.name, { success: true, output });
       console.log(`✅ ${check.name}: PASSED\n`);
-      
     } catch (error: any) {
       const errorOutput = error.stdout || error.stderr || error.message;
-      this.results.set(check.name, { 
-        success: false, 
+      this.results.set(check.name, {
+        success: false,
         output: errorOutput,
-        error: error.message 
+        error: error.message
       });
-      
+
       if (check.critical) {
         console.log(`❌ ${check.name}: FAILED (Critical)\n`);
       } else {
@@ -90,7 +88,7 @@ class SecuritySummary {
 
   private generateReport(): void {
     console.log('📊 Security Assessment Report\n');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     let criticalFailures = 0;
     let totalChecks = 0;
@@ -123,13 +121,13 @@ class SecuritySummary {
     this.checkAdditionalSecurity();
 
     // Summary
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
     console.log('📈 Security Score Summary:');
     console.log(`   Total Checks: ${totalChecks}`);
     console.log(`   Passed: ${passedChecks}`);
     console.log(`   Failed: ${totalChecks - passedChecks}`);
     console.log(`   Critical Failures: ${criticalFailures}`);
-    
+
     const score = Math.round((passedChecks / totalChecks) * 100);
     console.log(`   Security Score: ${score}%`);
 
@@ -180,7 +178,7 @@ class SecuritySummary {
 
   private generateRecommendations(): void {
     console.log('\n🎯 SecurityScorecard Preparation Checklist:\n');
-    
+
     const recommendations = [
       '□ Run security scan regularly (weekly)',
       '□ Keep dependencies updated',
@@ -194,7 +192,7 @@ class SecuritySummary {
       '□ Implement proper error handling'
     ];
 
-    recommendations.forEach(rec => console.log(rec));
+    recommendations.forEach((rec) => console.log(rec));
 
     console.log('\n📚 Additional Resources:');
     console.log('• OWASP Top 10: https://owasp.org/www-project-top-ten/');

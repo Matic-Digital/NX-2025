@@ -1,14 +1,14 @@
 // draftMode import removed as it's not used in this file
-import { getCurrentLocale } from '@/lib/contentful-locale';
-import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import { ContentfulError, NetworkError } from '@/lib/errors';
 import { fetchGraphQL } from '@/lib/api';
+import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { getCurrentLocale } from '@/lib/contentful-locale';
+import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
 import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
-import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
+import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PROFILE_SIMPLE_GRAPHQL_FIELDS } from '@/components/Profile/ProfileApi';
+import { TEAM_MEMBER_SIMPLE_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
+import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
 
 import type { Post, PostResponse } from '@/components/Post/PostSchema';
 
@@ -175,12 +175,12 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
     return {
       items: data.postCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Posts: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Posts: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Posts');
   }
@@ -193,10 +193,14 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
  * @param targetLocale - Optional specific locale to fetch (auto-detects if not provided)
  * @returns Promise resolving to Post or null if not found
  */
-export async function getPostById(id: string, preview = false, targetLocale?: string): Promise<Post | null> {
+export async function getPostById(
+  id: string,
+  preview = false,
+  targetLocale?: string
+): Promise<Post | null> {
   try {
     const locale = targetLocale ?? getCurrentLocale();
-    
+
     const response = await fetchGraphQL<Post>(
       `query GetPostById($id: String!, $preview: Boolean!, $locale: String) {
         post(id: $id, preview: $preview, locale: $locale) {
@@ -221,12 +225,12 @@ export async function getPostById(id: string, preview = false, targetLocale?: st
     }
 
     return data.post;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Post: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Post: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Post');
   }
@@ -239,10 +243,14 @@ export async function getPostById(id: string, preview = false, targetLocale?: st
  * @param targetLocale - Optional specific locale to fetch (auto-detects if not provided)
  * @returns Promise resolving to Post or null if not found
  */
-export async function getPostBySlug(slug: string, preview = false, targetLocale?: string): Promise<Post | null> {
+export async function getPostBySlug(
+  slug: string,
+  preview = false,
+  targetLocale?: string
+): Promise<Post | null> {
   try {
     const testLocale = targetLocale ?? getCurrentLocale();
-    
+
     // First, try to find the post in the target locale
     let response = await fetchGraphQL(
       `query GetPostBySlug($slug: String!, $preview: Boolean!, $locale: String) {
@@ -261,7 +269,7 @@ export async function getPostBySlug(slug: string, preview = false, targetLocale?
       // Found in target locale
     } else {
       // Post not found in target locale, search in all locales
-      
+
       // If not found in target locale, search across all locales to find the post
       const allLocales = ['en-US', 'pt-BR', 'es'];
       let foundEntry = null;
@@ -281,7 +289,10 @@ export async function getPostBySlug(slug: string, preview = false, targetLocale?
           preview
         );
 
-        if (localeResponse?.data?.postCollection?.items && localeResponse.data.postCollection.items.length > 0) {
+        if (
+          localeResponse?.data?.postCollection?.items &&
+          localeResponse.data.postCollection.items.length > 0
+        ) {
           foundEntry = localeResponse.data.postCollection.items[0] as Post;
           foundInLocale = locale;
           break;
@@ -290,7 +301,7 @@ export async function getPostBySlug(slug: string, preview = false, targetLocale?
 
       if (foundEntry && foundInLocale) {
         // Now get the same post in the target locale using the entry ID
-        
+
         const targetLocaleResponse = await fetchGraphQL(
           `query GetPostById($id: String!, $preview: Boolean!, $locale: String) {
             post(id: $id, preview: $preview, locale: $locale) {
@@ -352,12 +363,12 @@ export async function getPostBySlug(slug: string, preview = false, targetLocale?
     }
 
     return post;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Post by slug: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Post by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Post by slug');
   }
@@ -369,10 +380,13 @@ export async function getPostBySlug(slug: string, preview = false, targetLocale?
  * @param targetLocale - Optional specific locale to fetch (auto-detects if not provided)
  * @returns Promise resolving to Posts response with minimal data
  */
-export async function getAllPostsMinimal(preview = false, targetLocale?: string): Promise<PostResponse> {
+export async function getAllPostsMinimal(
+  preview = false,
+  targetLocale?: string
+): Promise<PostResponse> {
   try {
     const _locale = targetLocale ?? getCurrentLocale();
-    
+
     const response = await fetchGraphQL<Post>(
       `query GetAllPostsMinimal($preview: Boolean!, $locale: String) {
         postCollection(preview: $preview, order: datePublished_DESC, locale: $locale) {
@@ -415,12 +429,12 @@ export async function getAllPostsMinimal(preview = false, targetLocale?: string)
     return {
       items: data.postCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Posts minimal: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Posts minimal: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Posts minimal');
   }
@@ -462,12 +476,12 @@ export async function getPostsByCategory(category: string, preview = false): Pro
     return {
       items: data.postCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Posts by category: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Posts by category: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Posts by category');
   }
@@ -494,9 +508,9 @@ export const POST_MEGAMENU_GRAPHQL_FIELDS = `
  * @returns Promise resolving to Posts response with related posts
  */
 export async function getRelatedPosts(
-  categories: string[], 
-  excludeId: string, 
-  limit = 3, 
+  categories: string[],
+  excludeId: string,
+  limit = 3,
   preview = false
 ): Promise<PostResponse> {
   try {
@@ -536,12 +550,12 @@ export async function getRelatedPosts(
     return {
       items: data.postCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching related Posts: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching related Posts: ${_error.message}`);
     }
     throw new Error('Unknown error fetching related Posts');
   }
@@ -581,9 +595,9 @@ export async function getRecentPostsForMegaMenu(limit = 3, preview = false): Pro
     }
 
     return { items: data.postCollection.items };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching recent posts for mega menu: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching recent posts for mega menu: ${_error.message}`);
     }
     throw new Error('Unknown error fetching recent posts for mega menu');
   }
@@ -596,7 +610,11 @@ export async function getRecentPostsForMegaMenu(limit = 3, preview = false): Pro
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to Posts response with minimal data for MegaMenu
  */
-export async function getRecentPostsForMegaMenuByCategory(category: string, limit = 3, preview = false): Promise<PostResponse> {
+export async function getRecentPostsForMegaMenuByCategory(
+  category: string,
+  limit = 3,
+  preview = false
+): Promise<PostResponse> {
   try {
     const response = await fetchGraphQL<Post>(
       `query GetRecentPostsForMegaMenuByCategory($category: String!, $limit: Int!, $preview: Boolean!) {
@@ -629,9 +647,11 @@ export async function getRecentPostsForMegaMenuByCategory(category: string, limi
     }
 
     return { items: data.postCollection.items };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching recent posts for mega menu by category: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(
+        `Error fetching recent posts for mega menu by category: ${_error.message}`
+      );
     }
     throw new Error('Unknown error fetching recent posts for mega menu by category');
   }

@@ -68,7 +68,11 @@ const nextConfig = {
       bodySizeLimit: '2mb'
     },
     // Optimize bundle splitting
-    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react']
+    optimizePackageImports: ['@contentful/live-preview', 'gsap', 'lucide-react'],
+    // Enable CSS optimization
+    optimizeCss: true,
+    // Enable aggressive CSS code splitting
+    cssChunking: 'strict'
   },
 
   // Turbopack configuration (now stable)
@@ -118,11 +122,22 @@ const nextConfig = {
             priority: 40,
             reuseExistingChunk: true
           },
-          // Separate CSS into its own chunk for better caching
-          styles: {
-            name: 'styles',
+          // Split CSS into critical and non-critical chunks
+          criticalStyles: {
+            name: 'critical-styles',
             test: /\.(css|scss|sass)$/,
-            chunks: 'all',
+            chunks: 'initial',
+            priority: 15,
+            enforce: true,
+            reuseExistingChunk: true,
+            // Only include critical CSS in initial chunk
+            minSize: 0,
+            maxSize: 50000 // 50KB limit for critical CSS
+          },
+          asyncStyles: {
+            name: 'async-styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'async',
             priority: 10,
             enforce: true,
             reuseExistingChunk: true
@@ -171,16 +186,16 @@ const nextConfig = {
       // Import fs to read the redirects JSON file directly
       const fs = await import('fs');
       const path = await import('path');
-      
+
       // Read the generated redirects file
       const redirectsPath = path.join(process.cwd(), 'src/lib/route-redirects.json');
-      
+
       if (fs.existsSync(redirectsPath)) {
         const redirectsData = fs.readFileSync(redirectsPath, 'utf8');
         const redirects = JSON.parse(redirectsData);
-        
+
         console.log(`🔀 Loaded ${redirects.length} dynamic redirects`);
-        
+
         return redirects;
       } else {
         console.warn('⚠️ Redirects file not found, run sitemap:routing first');

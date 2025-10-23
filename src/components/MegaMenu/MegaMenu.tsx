@@ -11,7 +11,10 @@ import { Text } from '@/components/global/matic-ds';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import { getRecentPostsForMegaMenu, getRecentPostsForMegaMenuByCategory } from '@/components/Post/PostApi';
+import {
+  getRecentPostsForMegaMenu,
+  getRecentPostsForMegaMenuByCategory
+} from '@/components/Post/PostApi';
 
 import type { MegaMenu as MegaMenuType } from '@/components/MegaMenu/MegaMenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
@@ -29,19 +32,24 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   const [loading, setLoading] = useState(false);
   const [postsLoading, setPostsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { setOverflowMenuOpen, openMegaMenu, setMegaMenuContent, clearCloseTimeout, activeMegaMenuId } = useMegaMenuContext();
+  const {
+    setOverflowMenuOpen,
+    openMegaMenu,
+    setMegaMenuContent,
+    clearCloseTimeout,
+    activeMegaMenuId
+  } = useMegaMenuContext();
 
   const menuId = megaMenuId ?? megaMenu?.sys?.id ?? 'unknown';
-  
+
   // Determine if this mega menu should show active state (hovered OR currently open)
   const isActive = isHovered || activeMegaMenuId === menuId;
 
   useEffect(() => {
     if (!megaMenu && megaMenuId) {
       setLoading(true);
-      getMegaMenuById(megaMenuId)
+      void getMegaMenuById(megaMenuId)
         .then(setLoadedMegaMenu)
-        .catch(console.error)
         .finally(() => setLoading(false));
     }
   }, [megaMenu, megaMenuId]);
@@ -52,25 +60,26 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   useEffect(() => {
     setPostsLoading(true);
     const limit = overflow ? 1 : 3; // 1 post for overflow, 3 for regular mega menu
-    
+
     // Extract categories from Contentful tags using same logic as Collection component
-    const postTagCategories = currentMegaMenu?.contentfulMetadata?.tags
-      ?.filter(tag => 
-        tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
-      )
-      ?.map(tag => tag.name.replace(/^post:/i, '').trim()) ?? [];
-    
+    const postTagCategories =
+      currentMegaMenu?.contentfulMetadata?.tags
+        ?.filter(
+          (tag) =>
+            tag.name.toLowerCase().startsWith('post:') || tag.name.toLowerCase().includes('post')
+        )
+        ?.map((tag) => tag.name.replace(/^post:/i, '').trim()) ?? [];
+
     const category = postTagCategories[0]; // Use first matching category
-    
+
     // Debug logging to match Collection component
-    
-    const fetchFunction = category 
+
+    const fetchFunction = category
       ? () => getRecentPostsForMegaMenuByCategory(category, limit)
       : () => getRecentPostsForMegaMenu(limit);
 
-    fetchFunction()
+    void fetchFunction()
       .then((response) => setRecentPosts(response.items))
-      .catch(console.error)
       .finally(() => setPostsLoading(false));
   }, [overflow, currentMegaMenu]);
   const displayTitle = title ?? currentMegaMenu?.title ?? 'Menu';
@@ -91,13 +100,15 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     setIsHovered(true);
     openMegaMenu(menuId);
     setOverflowMenuOpen(false);
-    
+
     // Set the content for this mega menu
     const content = (
       <div className="p-4 sm:p-6 xl:p-8">
         <div className="flex flex-col gap-6 xl:gap-8">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:gap-8">
-            <h2 className="text-lg sm:text-xl xl:text-[1.5rem] text-white xl:flex-shrink-0 xl:w-64">{displayTitle}</h2>
+            <h2 className="text-lg sm:text-xl xl:text-[1.5rem] text-white xl:flex-shrink-0 xl:w-64">
+              {displayTitle}
+            </h2>
             <div className="grid auto-rows-min grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:flex-grow">
               {menuItems.map((menuItem) => (
                 <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
@@ -162,18 +173,22 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className={`flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:transition-transform after:duration-200 after:ease-out after:origin-left ${isActive ? 'after:scale-x-100' : 'after:scale-x-0'}`}>
-          <Text 
+        <div
+          className={`flex items-center relative hover:after:scale-x-100 after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:transition-transform after:duration-200 after:ease-out after:origin-left ${isActive ? 'after:scale-x-100' : 'after:scale-x-0'}`}
+        >
+          <Text
             className="text-white transition-all duration-300 text-sm xl:text-base whitespace-nowrap"
             style={{
-              textShadow: isActive 
+              textShadow: isActive
                 ? '0 0 28px rgba(255, 255, 255, 0.40), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 24px rgba(255, 255, 255, 0.60), 0 0 10px rgba(255, 255, 255, 0.60)'
                 : 'none'
             }}
           >
             {displayTitle}
           </Text>
-          <ChevronDown className={`size-3 xl:size-4 text-white ml-2 transition-transform duration-200 ${isActive ? 'rotate-180' : 'rotate-0'}`} />
+          <ChevronDown
+            className={`size-3 xl:size-4 text-white ml-2 transition-transform duration-200 ${isActive ? 'rotate-180' : 'rotate-0'}`}
+          />
         </div>
       </div>
     </div>

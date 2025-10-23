@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { FieldRenderer, validateField } from './fields';
-import type { HubSpotFormField } from './fields/types';
 import { useForm } from '@tanstack/react-form';
 
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -16,6 +15,7 @@ import { Box } from '@/components/global/matic-ds';
 import { getFormIdFromHubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 import type { HubSpotFormData } from './fields';
+import type { HubSpotFormField } from './fields/types';
 import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
 interface HubspotFormProps {
@@ -70,7 +70,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
         }
 
         // Get the response data to check for HubSpot redirect
-        const result = await response.json() as Record<string, unknown>;
+        const result = (await response.json()) as Record<string, unknown>;
 
         // Call custom onSubmit if provided
         if (onSubmit) {
@@ -79,11 +79,14 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
         // Check if HubSpot provided a redirect URL, otherwise use thank you page
         const hubspotResponse = result.hubspotResponse as Record<string, unknown> | undefined;
-        const redirectUrl = (hubspotResponse?.redirectUri as string) ?? (result.redirectUri as string) ?? '/thank-you';
-        
+        const redirectUrl =
+          (hubspotResponse?.redirectUri as string) ??
+          (result.redirectUri as string) ??
+          '/thank-you';
+
         window.location.href = redirectUrl;
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to submit form');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to submit form');
       } finally {
         setSubmitting(false);
       }
@@ -107,8 +110,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
         }
         const data = (await response.json()) as HubSpotFormData;
         setFormData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load form');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load form');
       } finally {
         setLoading(false);
       }
@@ -153,8 +156,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     );
   }
 
-  // eslint-disable-next-line security/detect-object-injection
-  const stepFields = formData.steps[currentStep];
+  // Use safe array access with bounds checking
+  const stepFields = formData.steps.at(currentStep);
   const isLastStep = currentStep === formData.steps.length - 1;
   const isFirstStep = currentStep === 0;
   const progress = ((currentStep + 1) / formData.steps.length) * 100;
@@ -178,17 +181,12 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
   // The HubSpot form data structure has displayOptions at the top level
   const hubspotFormData = formData.formData as Record<string, unknown>;
   const displayOptions = hubspotFormData?.displayOptions as Record<string, unknown> | undefined;
-  
+
   const submitButtonText =
-    (displayOptions?.submitButtonText as string) ?? (hubspotFormData?.submitText as string) ?? (hubspotFormData?.submitButtonText as string) ?? 'Submit';
-  
-  console.log('Submit button text debug:', {
-    displayOptionsSubmitText: displayOptions?.submitButtonText,
-    formDataSubmitText: hubspotFormData?.submitText,
-    formDataSubmitButtonText: hubspotFormData?.submitButtonText,
-    finalSubmitButtonText: submitButtonText,
-    fullDisplayOptions: displayOptions
-  });
+    (displayOptions?.submitButtonText as string) ??
+    (hubspotFormData?.submitText as string) ??
+    (hubspotFormData?.submitButtonText as string) ??
+    'Submit';
 
   if (formData.metadata.isMultiStep) {
     return (
@@ -225,7 +223,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
               {stepFields?.fields
                 .filter((field: HubSpotFormField) => !field.hidden)
-                .sort((a: HubSpotFormField, b: HubSpotFormField) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+                .sort(
+                  (a: HubSpotFormField, b: HubSpotFormField) =>
+                    (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+                )
                 .map((field: HubSpotFormField) => (
                   <form.Field
                     key={field.name}
@@ -253,7 +254,11 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setCurrentStep((prev) => Math.max(0, prev - 1))}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setCurrentStep((prev) => Math.max(0, prev - 1));
+                }}
                 disabled={isFirstStep}
                 className="flex items-center"
               >
@@ -265,12 +270,17 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 <form.Subscribe
                   selector={(state) => {
                     // Check if all required fields are filled and valid
-                    const requiredFields = stepFields?.fields.filter((field: HubSpotFormField) => field.required && !field.hidden) ?? [];
-                    const allRequiredFieldsFilled = requiredFields.every((field: HubSpotFormField) => {
-                      const value = (state.values as Record<string, unknown>)[field.name];
-                      return value && (typeof value === 'string' ? value.trim() !== '' : true);
-                    });
-                    
+                    const requiredFields =
+                      stepFields?.fields.filter(
+                        (field: HubSpotFormField) => field.required && !field.hidden
+                      ) ?? [];
+                    const allRequiredFieldsFilled = requiredFields.every(
+                      (field: HubSpotFormField) => {
+                        const value = (state.values as Record<string, unknown>)[field.name];
+                        return value && (typeof value === 'string' ? value.trim() !== '' : true);
+                      }
+                    );
+
                     return {
                       canSubmit: state.canSubmit,
                       isSubmitting: state.isSubmitting,
@@ -280,28 +290,93 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                     };
                   }}
                 >
-                  {({ canSubmit, isSubmitting: _isSubmitting, isValid, hasErrors, allRequiredFieldsFilled }) => (
+                  {({
+                    canSubmit,
+                    isSubmitting: _isSubmitting,
+                    isValid,
+                    hasErrors,
+                    allRequiredFieldsFilled
+                  }) => (
                     <Button
                       type="submit"
-                      disabled={!canSubmit || submitting || !isValid || hasErrors || !allRequiredFieldsFilled}
+                      disabled={
+                        !canSubmit ||
+                        submitting ||
+                        !isValid ||
+                        hasErrors ||
+                        !allRequiredFieldsFilled
+                      }
                       className="flex items-center"
                     >
                       {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                      {submitButtonText}
+                      {submitButtonText || 'Submit'}
                     </Button>
                   )}
                 </form.Subscribe>
               ) : (
-                <Button
-                  type="button"
-                  onClick={() =>
-                    setCurrentStep((prev) => Math.min(formData.steps.length - 1, prev + 1))
-                  }
-                  className="flex items-center"
+                <form.Subscribe
+                  selector={(state) => {
+                    // Check if all required fields in current step are filled and valid
+                    const requiredFields =
+                      stepFields?.fields.filter(
+                        (field: HubSpotFormField) => field.required && !field.hidden
+                      ) ?? [];
+                    const allRequiredFieldsFilled = requiredFields.every(
+                      (field: HubSpotFormField) => {
+                        const value = (state.values as Record<string, unknown>)[field.name];
+                        return value && (typeof value === 'string' ? value.trim() !== '' : true);
+                      }
+                    );
+
+                    // Check if current step fields have validation errors
+                    // Use Object.entries to safely iterate over errors without dynamic property access
+                    const hasCurrentStepErrors = (() => {
+                      if (
+                        !state.errors ||
+                        typeof state.errors !== 'object' ||
+                        Array.isArray(state.errors)
+                      ) {
+                        return false;
+                      }
+
+                      const currentStepFieldNames = new Set(
+                        stepFields?.fields?.map((f) => f.name) ?? []
+                      );
+                      const errorEntries = Object.entries(
+                        state.errors as Record<string, unknown[]>
+                      );
+
+                      return errorEntries.some(([fieldName, fieldErrors]) => {
+                        return (
+                          currentStepFieldNames.has(fieldName) &&
+                          Array.isArray(fieldErrors) &&
+                          fieldErrors.length > 0
+                        );
+                      });
+                    })();
+
+                    return {
+                      allRequiredFieldsFilled,
+                      hasCurrentStepErrors
+                    };
+                  }}
                 >
-                  Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
+                  {({ allRequiredFieldsFilled, hasCurrentStepErrors }) => (
+                    <Button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setCurrentStep((prev) => Math.min(formData.steps.length - 1, prev + 1));
+                      }}
+                      disabled={!allRequiredFieldsFilled || hasCurrentStepErrors}
+                      className="flex items-center"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  )}
+                </form.Subscribe>
               )}
             </div>
           </form>
@@ -317,15 +392,19 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
   }
 
   return (
-    <Box
-      direction="col"
-      gap={4}
-      className="relative justify-center h-full w-full"
-    >
+    <Box direction="col" gap={4} className="relative justify-center h-full w-full">
       {!hideHeader && (
-        <h2 className={`${textClass} text-4xl font-normal leading-[120%] md:text-headline-md text-center md:text-left`}>{formTitle}</h2>
+        <h2
+          className={`${textClass} text-4xl font-normal leading-[120%] md:text-headline-md text-center md:text-left`}
+        >
+          {formTitle}
+        </h2>
       )}
-      <p className={`${textClass} text-sm font-normal leading-[160%] tracking-[0.00875rem] md:text-body-xs text-center md:text-left`}>{formDescription}</p>
+      <p
+        className={`${textClass} text-sm font-normal leading-[160%] tracking-[0.00875rem] md:text-body-xs text-center md:text-left`}
+      >
+        {formDescription}
+      </p>
       <CardContent className={`${textClass} p-0 mt-[2.5rem] md:mt-0`}>
         <form
           onSubmit={(e) => {
@@ -340,7 +419,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
             <div className="space-y-4">
               {stepFields?.fields
                 .filter((field: HubSpotFormField) => !field.hidden)
-                .sort((a: HubSpotFormField, b: HubSpotFormField) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+                .sort(
+                  (a: HubSpotFormField, b: HubSpotFormField) =>
+                    (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+                )
                 .map((field: HubSpotFormField) => (
                   <form.Field
                     key={field.name}
@@ -367,12 +449,15 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
             <form.Subscribe
               selector={(state) => {
                 // Check if all required fields are filled and valid
-                const requiredFields = stepFields?.fields.filter((field: HubSpotFormField) => field.required && !field.hidden) ?? [];
+                const requiredFields =
+                  stepFields?.fields.filter(
+                    (field: HubSpotFormField) => field.required && !field.hidden
+                  ) ?? [];
                 const allRequiredFieldsFilled = requiredFields.every((field: HubSpotFormField) => {
                   const value = (state.values as Record<string, unknown>)[field.name];
                   return value && (typeof value === 'string' ? value.trim() !== '' : true);
                 });
-                
+
                 return {
                   canSubmit: state.canSubmit,
                   isSubmitting: state.isSubmitting,
@@ -382,14 +467,22 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 };
               }}
             >
-              {({ canSubmit, isSubmitting: _isSubmitting, isValid, hasErrors, allRequiredFieldsFilled }) => (
+              {({
+                canSubmit,
+                isSubmitting: _isSubmitting,
+                isValid,
+                hasErrors,
+                allRequiredFieldsFilled
+              }) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || submitting || !isValid || hasErrors || !allRequiredFieldsFilled}
+                  disabled={
+                    !canSubmit || submitting || !isValid || hasErrors || !allRequiredFieldsFilled
+                  }
                   className="flex items-center p-3.5 rounded-sm w-full md:w-auto"
                 >
                   {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  {submitButtonText}
+                  {submitButtonText || 'Submit'}
                 </Button>
               )}
             </form.Subscribe>

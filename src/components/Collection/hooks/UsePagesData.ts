@@ -24,8 +24,7 @@ export function usePagesData({ collection, collectionData }: UsePagesDataProps) 
           setIsLoading(true);
           const pagesResponse = await getAllPagesMinimal();
           setPages(pagesResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching pages:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

@@ -43,9 +43,7 @@ export const collectionStyles = {
   getFilterButtonClasses: (isActive: boolean) => {
     return cn(
       'uppercase hover:bg-subtle px-[0.75rem] py-[0.5rem]',
-      isActive
-        ? 'bg-subtle text-primary'
-        : 'bg-white'
+      isActive ? 'bg-subtle text-primary' : 'bg-white'
     );
   },
 

@@ -24,8 +24,7 @@ export function useProductsData({ collection, collectionData }: UseProductsDataP
           setIsLoading(true);
           const productsResponse = await getAllProducts();
           setProducts(productsResponse ?? []);
-        } catch (error) {
-          console.error('Error fetching products:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

@@ -1,5 +1,9 @@
 import { fetchGraphQL } from '@/lib/api';
-import { MENU_ITEM_FIELDS, MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import {
+  MENU_ITEM_FIELDS,
+  MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE,
+  SYS_FIELDS
+} from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import type { MegaMenu } from '@/components/MegaMenu/MegaMenuSchema';
@@ -76,9 +80,9 @@ export async function getMegaMenuById(id: string, preview = false): Promise<Mega
     }
 
     return data.megaMenuCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching mega menu: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching mega menu: ${_error.message}`);
     }
     throw new Error('Unknown error fetching mega menu');
   }
@@ -90,7 +94,10 @@ export async function getMegaMenuById(id: string, preview = false): Promise<Mega
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to the mega menu or null if not found
  */
-export async function getOverflowMegaMenuById(id: string, preview = false): Promise<MegaMenu | null> {
+export async function getOverflowMegaMenuById(
+  id: string,
+  preview = false
+): Promise<MegaMenu | null> {
   try {
     const response = await fetchGraphQL<MegaMenu>(
       `query GetOverflowMegaMenuById($id: String!, $preview: Boolean!) {
@@ -120,9 +127,9 @@ export async function getOverflowMegaMenuById(id: string, preview = false): Prom
     }
 
     return data.megaMenuCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching overflow mega menu: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching overflow mega menu: ${_error.message}`);
     }
     throw new Error('Unknown error fetching overflow mega menu');
   }

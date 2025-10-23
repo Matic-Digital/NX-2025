@@ -31,9 +31,8 @@ export function useContactCardData(contactCardId?: string, initialData?: Partial
         setError(null);
         const data = await getContactCardById(contactCardId ?? '');
         setFetchedData(data);
-      } catch (err) {
-        console.error('Failed to fetch contact card:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load contact card');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load contact card');
       } finally {
         setLoading(false);
       }

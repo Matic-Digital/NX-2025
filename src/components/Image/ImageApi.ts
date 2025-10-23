@@ -54,12 +54,12 @@ export async function getAllImages(preview = false): Promise<ImageResponse> {
     return {
       items: data.imageCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Images: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Images: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Images');
   }
@@ -97,12 +97,12 @@ export async function getImageById(id: string, preview = false): Promise<Image |
     }
 
     return data.image;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Image: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Image: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Image');
   }

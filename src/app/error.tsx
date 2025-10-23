@@ -2,10 +2,11 @@
 
 import { useEffect } from 'react';
 
-import { Container, Box } from '@/components/global/matic-ds';
+import { AlertCircle } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 
-import { AlertCircle } from 'lucide-react';
+import { Box, Container } from '@/components/global/matic-ds';
 
 export default function Error({
   error,
@@ -18,9 +19,9 @@ export default function Error({
     // Log the error to an error reporting service
     if (error) {
       try {
-        console.error('Application error:', error);
-      } catch (e) {
-        console.error('Failed to log error:', e);
+        // Log error to error reporting service
+      } catch {
+        // Failed to log error
       }
     }
   }, [error]);

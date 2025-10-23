@@ -24,8 +24,7 @@ export function usePageListsData({ collection, collectionData }: UsePageListsDat
           setIsLoading(true);
           const pageListsResponse = await getAllPageLists();
           setPageLists(pageListsResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching page lists:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

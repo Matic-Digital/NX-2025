@@ -46,9 +46,7 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
           const footerData = await getFooterById(footer.sys.id);
           setFullFooter(footerData);
         }
-      } catch (error) {
-        console.error('Error fetching header/footer:', error);
-      }
+      } catch {}
     }
 
     // Use void to explicitly mark the promise as handled
@@ -72,7 +70,7 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
   return (
     <>
       {fullHeader && <Header {...fullHeader} />}
-      <Main className="-mt-25">
+      <Main>
         <Box direction="col" gap={0}>
           {children}
         </Box>

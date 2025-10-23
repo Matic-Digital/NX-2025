@@ -511,8 +511,8 @@ const addHierarchicalPadding = (nodes: ContentfulNode[]): ContentfulNode[] => {
 };
 
 export function RichContent({
-  sys,
-  title,
+  sys: _sys,
+  title: _title,
   tableOfContents,
   content,
   legalContent,
@@ -520,15 +520,6 @@ export function RichContent({
   className = '',
   __typename
 }: RichContentProps) {
-  console.log('RichContent component received props:', {
-    sys,
-    title,
-    tableOfContents,
-    content,
-    legalContent,
-    variant,
-    __typename
-  });
 
   // All hooks must be at the top level
   const [activeSection, setActiveSection] = useState<string>('');

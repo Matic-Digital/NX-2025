@@ -63,33 +63,23 @@ export function ContentGridItem(props: ContentGridItemProps) {
           // PageList Nesting Integration: Check if the linked PageList has a parent
           // This ensures URLs like /products/trackers instead of just /trackers
           if (linkData.link.__typename === 'PageList') {
-            console.log(`Checking parent for PageList: ${linkData.link.slug}`);
             try {
               // Query the check-page-parent API to detect nesting relationships
               const response = await fetch(`/api/check-page-parent?slug=${linkData.link.slug}`);
-              console.log(`API response status: ${response.status}`);
 
               if (response.ok) {
                 const data = (await response.json()) as {
                   parentPageList?: unknown;
                   fullPath?: string;
                 };
-                console.log('API response data:', JSON.stringify(data, null, 2));
 
                 if (data.parentPageList) {
                   // Construct proper nested URL: /parent-pagelist/child-pagelist
                   href = `/${(data.parentPageList as { slug?: string }).slug}/${linkData.link.slug}`;
-                  console.log(
-                    `Found parent PageList "${(data.parentPageList as { slug?: string }).slug}" for "${linkData.link.slug}"`
-                  );
-                } else {
-                  console.log(`No parent PageList found for "${linkData.link.slug}"`);
                 }
-              } else {
-                console.warn(`API call failed with status: ${response.status}`);
               }
-            } catch (error) {
-              console.warn('Failed to check parent PageList:', error);
+            } catch {
+              // Failed to check parent PageList
             }
           } else if (props.parentPageListSlug) {
             // For content items (Pages, Products, etc.) with known parent context
@@ -98,8 +88,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
           }
           setLinkHref(href);
         }
-      } catch (error) {
-        console.error(error);
+      } catch {
+        // Error fetching content data
       }
     };
 

@@ -24,8 +24,7 @@ export function useServicesData({ collection, collectionData }: UseServicesDataP
           setIsLoading(true);
           const servicesResponse = await getAllServices();
           setServices(servicesResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching services:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

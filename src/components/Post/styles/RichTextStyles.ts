@@ -18,7 +18,7 @@ export const richTextStyles = {
    */
   getHeadingClasses: (level: 1 | 2 | 3 | 4 | 5 | 6) => {
     const baseClasses = 'font-bold text-gray-900 leading-tight mb-4 mt-8';
-    
+
     switch (level) {
       case 1:
         return cn(baseClasses, 'text-4xl md:text-5xl mt-12');

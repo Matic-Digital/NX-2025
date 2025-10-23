@@ -1,6 +1,6 @@
 /**
  * JSON-LD Schema Component
- * 
+ *
  * Injects structured data into the page head for SEO and rich snippets
  */
 
@@ -23,7 +23,7 @@ export function JsonLdSchema({ schema, id = 'json-ld-schema' }: JsonLdSchemaProp
       type="application/ld+json"
       strategy="afterInteractive"
       dangerouslySetInnerHTML={{
-        __html: schemaString,
+        __html: schemaString
       }}
     />
   );
@@ -40,11 +40,7 @@ export function MultipleJsonLdSchema({ schemas }: MultipleJsonLdSchemaProps) {
   return (
     <>
       {schemas.map((schema, index) => (
-        <JsonLdSchema
-          key={index}
-          schema={schema}
-          id={`json-ld-schema-${index}`}
-        />
+        <JsonLdSchema key={index} schema={schema} id={`json-ld-schema-${index}`} />
       ))}
     </>
   );

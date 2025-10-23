@@ -34,7 +34,6 @@ export function LocaleDropdown({
     const initializeLocale = () => {
       const detectedLocale = getCurrentLocale();
       setCurrentLocale(detectedLocale);
-      console.log('🌐 LocaleDropdown initialized with locale:', detectedLocale);
     };
 
     initializeLocale();
@@ -43,7 +42,6 @@ export function LocaleDropdown({
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'contentful-locale' && e.newValue) {
         setCurrentLocale(e.newValue);
-        console.log('🌐 LocaleDropdown synced with storage change:', e.newValue);
       }
     };
 
@@ -53,27 +51,18 @@ export function LocaleDropdown({
 
   // Handle locale change
   const handleLocaleChange = async (locale: string) => {
-    console.log('🌐 Starting locale change to:', locale);
-
     // Update localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('contentful-locale', locale);
-      console.log('✅ Updated localStorage with locale:', locale);
     }
 
     // Route to localized version of the page
     if (typeof window !== 'undefined') {
-      const currentPath = window.location.pathname;
-      
-      console.log('🔍 Current path:', currentPath);
-      console.log('🔍 Current locale:', currentLocale);
-      console.log('🎯 Target locale:', locale);
+      const _currentPath = window.location.pathname;
       
       // Update the current page URL with new locale
       const url = new URL(window.location.href);
       url.searchParams.set('locale', locale);
-      
-      console.log('🔄 Switching locale via parameter:', url.toString());
       
       // Use pushState to maintain navigation history
       window.history.pushState({}, '', url.toString());
@@ -138,17 +127,9 @@ export function LocaleDropdown({
   // Find current locale info (unused but kept for potential future use)
   // const currentLocaleInfo = locales.find(locale => locale.code === currentLocale) ?? locales[0];
 
-  // Debug logging
-  console.log('LocaleDropdown render check:', { 
-    localesCount: locales?.length ?? 0, 
-    locales,
-    localesType: typeof locales,
-    localesIsArray: Array.isArray(locales)
-  });
 
   // Don't render if locales are not loaded yet or if there's only one locale
   if (!locales || locales.length <= 1) {
-    console.log('LocaleDropdown hidden: locales not loaded or only', locales?.length ?? 0, 'locale(s) available');
     return null;
   }
 
@@ -180,13 +161,11 @@ export function LocaleDropdown({
             <button
               type="button"
               onClick={(e) => {
-                console.log('🔥 Locale button clicked:', locale.code);
                 e.preventDefault();
                 e.stopPropagation();
                 void handleLocaleChange(locale.code);
               }}
               onMouseDown={(e) => {
-                console.log('🔥 Locale button mouse down:', locale.code);
                 e.preventDefault();
                 e.stopPropagation();
                 void handleLocaleChange(locale.code);

@@ -1,7 +1,12 @@
 // Next.js metadata types
 import { getAllPageLists, getAllPages, getPageBySlug } from '@/lib/contentful-api';
-import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 import { contentfulSchemaMapper } from '@/lib/contentful-schema-mapper';
+// renderContentByType will be defined locally
+import {
+  extractOpenGraphImage,
+  extractSEODescription,
+  extractSEOTitle
+} from '@/lib/metadata-utils';
 
 import { Container } from '@/components/global/matic-ds';
 
@@ -12,13 +17,7 @@ import { getAllFooters } from '@/components/Footer/FooterApi';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RegionStats } from '@/components/RegionStats/RegionStats';
-
-// renderContentByType will be defined locally
-import { 
-  extractOpenGraphImage, 
-  extractSEOTitle, 
-  extractSEODescription 
-} from '@/lib/metadata-utils';
+import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
 import type { FooterResponse, Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
@@ -46,9 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   // Construct the base URL for absolute image URLs
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000');
 
   // Use imported utility functions for safe metadata extraction
 
@@ -136,10 +135,13 @@ async function renderContentfulHomePage(page: Page) {
   const pageLayout = page.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
-  
+
   // Generate hierarchical schema: Organization -> WebSite -> Navigation -> Pages
-  const homepageSchema = await contentfulSchemaMapper.generateHomepageSchema(page) as Record<string, unknown>;
-  
+  const homepageSchema = (await contentfulSchemaMapper.generateHomepageSchema(page)) as Record<
+    string,
+    unknown
+  >;
+
   return (
     <PageLayout header={pageHeader} footer={pageFooter}>
       <JsonLdSchema schema={homepageSchema} id="homepage-hierarchy-schema" />
@@ -151,7 +153,6 @@ async function renderContentfulHomePage(page: Page) {
 
         // Type guard to check if component has __typename
         if (!('__typename' in component)) {
-          console.warn('Component missing __typename:', component);
           return null;
         }
 
@@ -163,7 +164,7 @@ async function renderContentfulHomePage(page: Page) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
           // Use type assertion to access sys.id safely
           const componentWithSys = component as { sys: { id: string } };
-          
+
           // Type-cast the component to the expected props interface
           // This assumes the Contentful data structure matches the component's expected props
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,7 +172,6 @@ async function renderContentfulHomePage(page: Page) {
         }
 
         // Log a warning if we don't have a component for this type
-        console.warn(`No component found for type: ${typeName}`);
         return null;
       })}
       {/* Render the page-specific footer if available */}
@@ -186,35 +186,35 @@ async function renderDefaultHomePage() {
   // Generate hierarchical schema for default homepage
   const defaultHomePageData = {
     title: 'PlaceholderCorp Website 2025',
-    description: 'PlaceholderCorp Website 2025 - Solar tracking solutions and renewable energy technology',
+    description:
+      'PlaceholderCorp Website 2025 - Solar tracking solutions and renewable energy technology',
     sys: { id: 'homepage' }
   };
-  const homepageSchema = await contentfulSchemaMapper.generateHomepageSchema(defaultHomePageData) as Record<string, unknown>;
-  
+  const homepageSchema = (await contentfulSchemaMapper.generateHomepageSchema(
+    defaultHomePageData
+  )) as Record<string, unknown>;
+
   // Use try-catch blocks to handle potential API errors
   let pages: PageResponse = { items: [], total: 0 };
   let pageLists: PageList[] = [];
 
   try {
     pages = await getAllPages();
-  } catch (error) {
-    console.error('Error fetching pages:', error);
+  } catch {
     // Continue with empty pages array
   }
 
   try {
     const pageListsResponse = await getAllPageLists();
     pageLists = pageListsResponse.items;
-  } catch (error) {
-    console.error('Error fetching page lists:', error);
+  } catch {
     // Continue with empty pageLists array
   }
 
   let footers: FooterResponse = { items: [], total: 0 };
   try {
     footers = await getAllFooters();
-  } catch (error) {
-    console.error('Error fetching footers:', error);
+  } catch {
     // Continue with empty footers array
   }
 
@@ -224,54 +224,54 @@ async function renderDefaultHomePage() {
       <Container className="py-8">
         <h1 className="text-headline-sm mb-8 font-bold">Nextracker Website 2025</h1>
 
-      {pages.items.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-headline-xs mb-4 font-semibold">Pages</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {pages.items.map((page) => (
-              <div key={page.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{page.title}</h3>
-                {page.description && <p className="text-gray-600">{page.description}</p>}
-              </div>
-            ))}
+        {pages.items.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-headline-xs mb-4 font-semibold">Pages</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {pages.items.map((page) => (
+                <div key={page.sys.id} className="rounded-lg border p-4 shadow-xs">
+                  <h3 className="text-body-lg mb-2 font-medium">{page.title}</h3>
+                  {page.description && <p className="text-gray-600">{page.description}</p>}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {pageLists.length > 0 && (
-        <div>
-          <h2 className="text-headline-xs mb-4 font-semibold">Page Lists</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {pageLists.map((pageList) => (
-              <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{pageList.title}</h3>
-                <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
-              </div>
-            ))}
+        {pageLists.length > 0 && (
+          <div>
+            <h2 className="text-headline-xs mb-4 font-semibold">Page Lists</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {pageLists.map((pageList) => (
+                <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
+                  <h3 className="text-body-lg mb-2 font-medium">{pageList.title}</h3>
+                  <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {pages.items.length === 0 && pageLists.length === 0 && (
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
-          <h2 className="text-body-md mb-2 font-medium">No content found</h2>
-          <p>No pages or page lists were found in your Contentful space.</p>
-        </div>
-      )}
-
-      {footers.items.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-headline-xs mb-4 font-semibold">Footers</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {footers.items.map((footer) => (
-              <div key={footer.sys.id} className="rounded-lg border p-4 shadow-xs">
-                <h3 className="text-body-lg mb-2 font-medium">{footer.title}</h3>
-                {footer.description && <p className="text-body-xs">{footer.description}</p>}
-              </div>
-            ))}
+        {pages.items.length === 0 && pageLists.length === 0 && (
+          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
+            <h2 className="text-body-md mb-2 font-medium">No content found</h2>
+            <p>No pages or page lists were found in your Contentful space.</p>
           </div>
-        </div>
-      )}
+        )}
+
+        {footers.items.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-headline-xs mb-4 font-semibold">Footers</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {footers.items.map((footer) => (
+                <div key={footer.sys.id} className="rounded-lg border p-4 shadow-xs">
+                  <h3 className="text-body-lg mb-2 font-medium">{footer.title}</h3>
+                  {footer.description && <p className="text-body-xs">{footer.description}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </Container>
     </>
   );

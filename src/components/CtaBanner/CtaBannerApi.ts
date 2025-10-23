@@ -61,12 +61,12 @@ export async function getAllCtaBanners(preview = false): Promise<CtaBannerRespon
     return {
       items: data.ctaBannerCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching CtaBanners: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching CtaBanners: ${_error.message}`);
     }
     throw new Error('Unknown error fetching CtaBanners');
   }
@@ -98,12 +98,12 @@ export async function getCtaBannerById(id: string, preview = false): Promise<Cta
     }
 
     return data.ctaBanner;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching CtaBanner: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching CtaBanner: ${_error.message}`);
     }
     throw new Error('Unknown error fetching CtaBanner');
   }

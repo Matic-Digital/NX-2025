@@ -40,12 +40,12 @@ export async function getAllFooters(preview = true): Promise<FooterResponse> {
       items: response.data.footerCollection.items,
       total: response.data.footerCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Footers: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Footers: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Footers');
   }
@@ -77,15 +77,15 @@ export const getFooterById = cache(async (id: string, preview = false): Promise<
 
     const footer = response.data.footerCollection.items[0];
     return footer ?? null;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof GraphQLError) {
-      throw error;
+    if (_error instanceof GraphQLError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Footer by ID: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Footer by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Footer by ID');
   }

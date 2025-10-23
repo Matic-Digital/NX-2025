@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -9,13 +9,13 @@ import {
 import { Event } from '@/components/Event/Event';
 import { EventDetail } from '@/components/Event/EventDetail';
 import { eventFields } from '@/components/Event/preview/EventFields';
-import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
-import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Event as EventType } from '@/components/Event/EventSchema';
-import type { Header } from '@/components/Header/HeaderSchema';
 import type { Footer } from '@/components/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
 
 type PreviewMode = 'card' | 'detail';
 
@@ -27,10 +27,10 @@ export function EventPreview(props: Partial<EventType>) {
   // Contentful Live Preview integration
   const liveEvent = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: liveEvent?.sys?.id });
-  
+
   // Toggle state for preview mode
   const [previewMode, setPreviewMode] = useState<PreviewMode>('detail');
-  
+
   // State for header and footer
   const [header, setHeader] = useState<Header | null>(null);
   const [footer, setFooter] = useState<Footer | null>(null);
@@ -60,8 +60,7 @@ export function EventPreview(props: Partial<EventType>) {
 
         setHeader(headerData);
         setFooter(footerData);
-      } catch (error) {
-        console.error('Error fetching layout:', error);
+      } catch {
         setHeader(null);
         setFooter(null);
       } finally {
@@ -112,17 +111,15 @@ export function EventPreview(props: Partial<EventType>) {
               <div className="text-lg">Loading layout...</div>
             </div>
           ) : (
-            <EventDetail 
-              event={liveEvent as EventType}
-              header={header}
-              footer={footer}
-            />
+            <EventDetail event={liveEvent as EventType} header={header} footer={footer} />
           )
         ) : (
           <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-md">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Preview Not Available</h2>
-              <p className="text-gray-600 mb-4">Detail preview will appear when all required fields are configured:</p>
+              <p className="text-gray-600 mb-4">
+                Detail preview will appear when all required fields are configured:
+              </p>
               <ul className="text-sm text-gray-500 space-y-1">
                 {!liveEvent?.title && <li>• Title is required</li>}
                 {!liveEvent?.dateTime && <li>• Date & Time is required</li>}

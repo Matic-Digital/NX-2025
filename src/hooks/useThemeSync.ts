@@ -1,7 +1,7 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
 /**
  * A custom hook that ensures theme changes are properly applied to both

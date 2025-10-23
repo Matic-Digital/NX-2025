@@ -29,8 +29,7 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
           setIsLoading(true);
           const fetchedLocation = await getLocationById(sys.id);
           setLocation(fetchedLocation);
-        } catch (error) {
-          console.error('Error fetching location:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

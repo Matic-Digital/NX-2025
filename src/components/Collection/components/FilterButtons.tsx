@@ -20,14 +20,14 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
     if (activeButtonRef.current && containerRef.current) {
       const container = containerRef.current;
       const activeButton = activeButtonRef.current;
-      
+
       // Calculate the scroll position to center the active button
       const containerWidth = container.offsetWidth;
       const buttonLeft = activeButton.offsetLeft;
       const buttonWidth = activeButton.offsetWidth;
-      
-      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
-      
+
+      const scrollLeft = buttonLeft - containerWidth / 2 + buttonWidth / 2;
+
       // Smooth scroll to center the active button
       container.scrollTo({
         left: scrollLeft,
@@ -87,7 +87,7 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="mb-6 flex gap-3 sm:gap-[1.5rem] overflow-x-auto scrollbar-hide pb-2 cursor-grab active:cursor-grabbing"
       onTouchStart={handleTouchStart}

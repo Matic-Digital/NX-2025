@@ -35,9 +35,7 @@ export function CollectionSortDropdown({
 
   return (
     <div className={`mb-6 ${className}`}>
-      {showLabel && (
-        <p className="text-sm text-gray-600 mb-3">{label}</p>
-      )}
+      {showLabel && <p className="text-sm text-gray-600 mb-3">{label}</p>}
       <div className="relative inline-block">
         <select
           value={activeSortOption}

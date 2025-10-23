@@ -77,8 +77,7 @@ export function SearchCard(props: SearchCardProps) {
           } else {
             setError(`Unknown content type: ${props.contentType}`);
           }
-        } catch (error) {
-          console.error(`Error fetching ${props.contentType} data:`, error);
+        } catch {
           setError(`Failed to load ${props.contentType}`);
         } finally {
           setLoading(false);

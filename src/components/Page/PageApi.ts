@@ -64,12 +64,12 @@ export async function getAllPagesMinimal(preview = false): Promise<PageResponse>
       items: response.data.pageCollection.items,
       total: response.data.pageCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching pages: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching pages: ${_error.message}`);
     }
     throw new Error('Unknown error fetching pages');
   }
@@ -106,12 +106,12 @@ export async function getAllPages(preview = false, skip = 0, limit = 10): Promis
       items: response.data.pageCollection.items,
       total: response.data.pageCollection.total
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching pages: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching pages: ${_error.message}`);
     }
     throw new Error('Unknown error fetching pages');
   }
@@ -219,7 +219,7 @@ export async function getPageBySlug(
         const pageItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
         pageContent = pageItem.pageContentCollection ?? null;
       }
-    } catch (error) {
+    } catch {
       pageContent = null;
     }
 
@@ -230,9 +230,9 @@ export async function getPageBySlug(
       footer,
       pageContentCollection: pageContent
     } as PageWithHeaderFooter;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching page by slug: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching page by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching page by slug');
   }
@@ -340,7 +340,7 @@ export async function getPageById(
         const pageItem = items[0] as { pageContentCollection?: { items: Array<unknown> } };
         pageContent = pageItem.pageContentCollection ?? null;
       }
-    } catch (error) {
+    } catch {
       pageContent = null;
     }
 
@@ -351,9 +351,9 @@ export async function getPageById(
       footer,
       pageContentCollection: pageContent
     } as PageWithHeaderFooter;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching page by ID: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching page by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching page by ID');
   }

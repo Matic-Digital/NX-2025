@@ -60,12 +60,12 @@ export async function getAllTeamMembers(preview = false): Promise<TeamMemberResp
     return {
       items: data.teamMemberCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching team members: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching team members: ${_error.message}`);
     }
     throw new Error('Unknown error fetching team members');
   }
@@ -99,9 +99,9 @@ export async function getTeamMemberById(id: string, preview = false): Promise<Te
     }
 
     return data.teamMemberCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching team member by ID: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching team member by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching team member by ID');
   }

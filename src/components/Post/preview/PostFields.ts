@@ -101,8 +101,7 @@ export const postFields: FieldConfig<Partial<Post>>[] = [
     required: false,
     description: 'Tags associated with the post.',
     color: 'indigo',
-    getValue: (data) =>
-      data.tags && data.tags.length > 0 ? data.tags.join(', ') : 'Not set'
+    getValue: (data) => (data.tags && data.tags.length > 0 ? data.tags.join(', ') : 'Not set')
   },
   {
     name: 'openGraphImage',

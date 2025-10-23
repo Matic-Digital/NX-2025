@@ -78,9 +78,9 @@ export async function getButtonById(id: string, preview = false): Promise<Button
     }
 
     return data.buttonCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching button: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching button: ${_error.message}`);
     }
     throw new Error('Unknown error fetching button');
   }

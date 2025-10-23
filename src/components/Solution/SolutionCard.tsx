@@ -41,9 +41,8 @@ export function SolutionCard(props: SolutionCardProps) {
         } else {
           setError('Solution not found');
         }
-      } catch (err) {
-        console.error('Failed to fetch solution:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load solution');
+      } catch (_err) {
+        setError(_err instanceof Error ? _err.message : 'Failed to load solution');
       } finally {
         setLoading(false);
       }

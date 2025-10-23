@@ -1,6 +1,6 @@
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
-import { ContentfulError, NetworkError } from '@/lib/errors';
+import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 
 import type { HubspotForm } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 
@@ -145,6 +145,40 @@ export interface ParsedFormStructure {
 // ============================================================================
 
 export async function getHubspotFormById(id: string, preview = false): Promise<HubspotForm | null> {
+  // If preview is requested, try preview first, then fallback to published if auth fails
+  if (preview) {
+    try {
+      return await getHubspotFormByIdInternal(id, true);
+    } catch (_error) {
+      // Check if this is an authentication error
+      if (_error instanceof GraphQLError) {
+        const hasAuthError = _error.errors.some(
+          (err: { message: string }) =>
+            err.message.toLowerCase().includes('authentication failed') ||
+            err.message.toLowerCase().includes('access token') ||
+            err.message.toLowerCase().includes('invalid token')
+        );
+
+        if (hasAuthError) {
+          // Silent fallback to published content
+          return await getHubspotFormByIdInternal(id, false);
+        }
+      }
+
+      // Re-throw non-auth errors
+      throw _error;
+    }
+  }
+
+  // Direct call for published content
+  return await getHubspotFormByIdInternal(id, false);
+}
+
+// Internal function that does the actual GraphQL call
+async function getHubspotFormByIdInternal(
+  id: string,
+  preview: boolean
+): Promise<HubspotForm | null> {
   const query = `
     query GetHubspotFormById($id: String!, $preview: Boolean!) {
       hubspotForm(id: $id, preview: $preview) {
@@ -154,7 +188,7 @@ export async function getHubspotFormById(id: string, preview = false): Promise<H
   `;
 
   try {
-    const response = await fetchGraphQL(query, { id, preview });
+    const response = await fetchGraphQL(query, { id, preview }, preview);
 
     if (!response?.data) {
       throw new ContentfulError('Invalid response from Contentful');
@@ -165,12 +199,12 @@ export async function getHubspotFormById(id: string, preview = false): Promise<H
     };
 
     return data.hubspotForm ?? null;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`getHubspotFormByIdError: fetching HubspotForm: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`getHubspotFormByIdError: fetching HubspotForm: ${_error.message}`);
     }
     throw new Error('getHubspotFormById: Unknown error fetching HubspotForm');
   }
@@ -213,12 +247,12 @@ export async function getHubspotFormsByIds(
     }
 
     return data.hubspotFormCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`getHubspotFormsByIdsError: fetching HubspotForms: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`getHubspotFormsByIdsError: fetching HubspotForms: ${_error.message}`);
     }
     throw new Error('getHubspotFormsByIds: Unknown error fetching HubspotForms');
   }
@@ -462,9 +496,9 @@ export async function getHubSpotFormFields(formId: string): Promise<HubSpotFormF
     });
 
     return fields;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching HubSpot form fields: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching HubSpot form fields: ${_error.message}`);
     }
     throw new NetworkError('Unknown error fetching HubSpot form fields');
   }
@@ -574,9 +608,9 @@ export async function getHubSpotFormStructure(formId: string): Promise<ParsedFor
 
     // Enhanced parsing with data from multiple sources
     return parseFormStructureComprehensive(primaryFormData, allFormData);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching HubSpot form structure: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching HubSpot form structure: ${_error.message}`);
     }
     throw new NetworkError('Unknown error fetching HubSpot form structure');
   }

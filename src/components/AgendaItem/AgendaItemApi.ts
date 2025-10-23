@@ -42,12 +42,12 @@ export async function getAllAgendaItems(preview = false): Promise<AgendaItemResp
     return {
       items: data.agendaItemCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching agenda items: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching agenda items: ${_error.message}`);
     }
     throw new Error('Unknown error fetching agenda items');
   }
@@ -81,9 +81,9 @@ export async function getAgendaItemById(id: string, preview = false): Promise<Ag
     }
 
     return data.agendaItemCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching agenda item by ID: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching agenda item by ID: ${_error.message}`);
     }
     throw new Error('Unknown error fetching agenda item by ID');
   }

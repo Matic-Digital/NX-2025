@@ -1,5 +1,9 @@
 import { fetchGraphQL } from '@/lib/api';
-import { MENU_ITEM_FIELDS, MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import {
+  MENU_ITEM_FIELDS,
+  MENU_ITEM_FIELDS_WITH_ASSOCIATED_IMAGE,
+  SYS_FIELDS
+} from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import type { Menu } from '@/components/Menu/MenuSchema';
@@ -76,9 +80,9 @@ export async function getMenuById(id: string, preview = false): Promise<Menu | n
     }
 
     return data.menuCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching menu: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching menu: ${_error.message}`);
     }
     throw new Error('Unknown error fetching menu');
   }
@@ -120,9 +124,9 @@ export async function getOverflowMenuById(id: string, preview = false): Promise<
     }
 
     return data.menuCollection.items[0]!;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching overflow menu: ${error.message}`);
+  } catch (_error) {
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching overflow menu: ${_error.message}`);
     }
     throw new Error('Unknown error fetching overflow menu');
   }

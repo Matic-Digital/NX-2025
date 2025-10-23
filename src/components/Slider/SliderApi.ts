@@ -72,12 +72,12 @@ export async function getSlidersByIds(sliderIds: string[], preview = false): Pro
     }
 
     return data.sliderCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Sliders: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Sliders: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Sliders');
   }
@@ -115,12 +115,12 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
     }
 
     return data.slider;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Slider: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Slider: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Slider');
   }

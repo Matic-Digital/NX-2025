@@ -79,12 +79,12 @@ export const getContentById = async (
     return {
       item: data.content ?? null
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching content by ID: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching content by ID: ${_error.message}`);
     }
     throw new NetworkError('Unknown error fetching content');
   }

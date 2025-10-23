@@ -1,6 +1,6 @@
 /**
  * Route Redirects Service
- * 
+ *
  * Manages automatic redirects from standalone routes to their nested equivalents.
  * Uses pre-generated redirects from build time.
  */
@@ -10,8 +10,7 @@ let generatedRedirects: Array<{ source: string; destination: string; permanent: 
 try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
   generatedRedirects = require('./route-redirects.json');
-} catch {
-}
+} catch {}
 
 interface RedirectMapping {
   from: string;
@@ -32,7 +31,7 @@ class RouteRedirectsService {
     }
 
     // Use generated redirects
-    this.redirects = generatedRedirects.map(redirect => ({
+    this.redirects = generatedRedirects.map((redirect) => ({
       from: redirect.source,
       to: redirect.destination,
       permanent: redirect.permanent
@@ -62,7 +61,7 @@ class RouteRedirectsService {
       this.initialize();
     }
 
-    const redirect = this.redirects.find(r => r.from === path);
+    const redirect = this.redirects.find((r) => r.from === path);
     return redirect ? redirect.to : null;
   }
 
@@ -85,7 +84,7 @@ class RouteRedirectsService {
       this.initialize();
     }
 
-    return this.redirects.map(redirect => ({
+    return this.redirects.map((redirect) => ({
       source: redirect.from,
       destination: redirect.to,
       permanent: redirect.permanent
@@ -102,8 +101,8 @@ class RouteRedirectsService {
 
     return {
       totalRedirects: this.redirects.length,
-      permanentRedirects: this.redirects.filter(r => r.permanent).length,
-      temporaryRedirects: this.redirects.filter(r => !r.permanent).length
+      permanentRedirects: this.redirects.filter((r) => r.permanent).length,
+      temporaryRedirects: this.redirects.filter((r) => !r.permanent).length
     };
   }
 }

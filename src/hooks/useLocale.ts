@@ -1,7 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { getCurrentLocale, getContentWithFallback, getEntryWithFallback } from '@/lib/contentful-locale';
+import { useCallback, useEffect, useState } from 'react';
+
+import {
+  getContentWithFallback,
+  getCurrentLocale,
+  getEntryWithFallback
+} from '@/lib/contentful-locale';
 
 // Generic content type for Contentful entries
 type ContentfulContent = Record<string, unknown>;
@@ -32,26 +37,30 @@ export function useLocale() {
   }, []);
 
   // Get content with locale fallback
-  const getLocalizedContent = useCallback(async <T = ContentfulContent>(
-    contentType: string,
-    query: ContentfulQuery = {}
-  ): Promise<T[]> => {
-    return getContentWithFallback<T>(contentType, query, currentLocale);
-  }, [currentLocale]);
+  const getLocalizedContent = useCallback(
+    async <T = ContentfulContent>(
+      contentType: string,
+      query: ContentfulQuery = {}
+    ): Promise<T[]> => {
+      return getContentWithFallback<T>(contentType, query, currentLocale);
+    },
+    [currentLocale]
+  );
 
   // Get single entry with locale fallback
-  const getLocalizedEntry = useCallback(async <T = ContentfulContent>(
-    entryId: string
-  ): Promise<T | null> => {
-    return getEntryWithFallback<T>(entryId, currentLocale);
-  }, [currentLocale]);
+  const getLocalizedEntry = useCallback(
+    async <T = ContentfulContent>(entryId: string): Promise<T | null> => {
+      return getEntryWithFallback<T>(entryId, currentLocale);
+    },
+    [currentLocale]
+  );
 
   return {
     currentLocale,
     updateLocale,
     getLocalizedContent,
     getLocalizedEntry,
-    isLoading,
+    isLoading
   };
 }
 
@@ -74,13 +83,13 @@ export function useLocalizedContent<T = ContentfulContent>(
       setError(null);
       const content = await getLocalizedContent<T>(contentType, query);
       setData(content);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch content'));
+    } catch (_err) {
+      setError(_err instanceof Error ? _err : new Error('Failed to fetch content'));
       setData([]);
     } finally {
       setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentType, query, getLocalizedContent, ...dependencies]);
 
   // Fetch content when locale changes or dependencies change
@@ -93,7 +102,7 @@ export function useLocalizedContent<T = ContentfulContent>(
     loading,
     error,
     refetch: fetchContent,
-    currentLocale,
+    currentLocale
   };
 }
 
@@ -108,14 +117,14 @@ export function useLocalizedEntry<T = ContentfulContent>(entryId: string) {
 
   const fetchEntry = useCallback(async () => {
     if (!entryId) return;
-    
+
     try {
       setLoading(true);
       setError(null);
       const entry = await getLocalizedEntry<T>(entryId);
       setData(entry);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch entry'));
+    } catch (_err) {
+      setError(_err instanceof Error ? _err : new Error('Failed to fetch entry'));
       setData(null);
     } finally {
       setLoading(false);
@@ -132,6 +141,6 @@ export function useLocalizedEntry<T = ContentfulContent>(entryId: string) {
     loading,
     error,
     refetch: fetchEntry,
-    currentLocale,
+    currentLocale
   };
 }

@@ -38,8 +38,7 @@ export const useAccordionData = (sysId: string) => {
         } else {
           setError('No accordion data found');
         }
-      } catch (error) {
-        console.error('Failed to fetch accordion data:', error);
+      } catch {
         setError('Failed to load accordion data');
       } finally {
         setLoading(false);

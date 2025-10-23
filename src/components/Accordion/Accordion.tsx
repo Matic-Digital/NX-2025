@@ -1,9 +1,10 @@
 'use client';
 
+import { AccordionProvider, useAccordion } from '@/contexts/AccordionContext';
+
 import { Accordion as AccordionPrimitive } from '@/components/ui/accordion';
 
 import { Box } from '@/components/global/matic-ds';
-import { AccordionProvider, useAccordion } from '@/contexts/AccordionContext';
 
 import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
 import {
@@ -27,9 +28,9 @@ interface AccordionProps {
 function AccordionInternal({ sys }: AccordionProps) {
   // Data layer
   const { accordionItems, loading, error } = useAccordionData(sys.id);
-  
+
   // Context layer
-  const { activeItemId, setActiveItemId, lastHoveredItemId, setLastHoveredItemId } = useAccordion();
+  const { activeItemId, setActiveItemId, lastHoveredItemId: _lastHoveredItemId, setLastHoveredItemId } = useAccordion();
 
   // State layer
   const { currentState } = useAccordionState(accordionItems, loading, error);

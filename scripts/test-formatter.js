@@ -9,7 +9,6 @@
  * Usage:
  * npm run test:coverage | node scripts/test-formatter.js
  */
-
 import { createInterface } from 'readline';
 
 // Create a readline interface to read from stdin

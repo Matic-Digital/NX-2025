@@ -1,6 +1,6 @@
 /**
  * Post Link Utilities
- * 
+ *
  * Helper functions for handling Post navigation and external links
  */
 
@@ -20,7 +20,7 @@ export function getPostHref(post: Post): string {
   if (shouldOpenExternally(post) && post.externalLink) {
     return post.externalLink;
   }
-  
+
   // Default internal link
   const category = post.categories?.[0]?.toLowerCase().replace(/\s+/g, '-') ?? 'uncategorized';
   return `/post/${category}/${post.slug}`;

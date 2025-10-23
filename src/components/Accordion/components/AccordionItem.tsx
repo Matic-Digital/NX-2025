@@ -204,7 +204,7 @@ export const AccordionItem = ({
                     <p
                       className={accordionStyles.getDescriptionTextClasses(
                         isHovered,
-                        shouldShowExpanded,
+                        shouldShowExpanded
                       )}
                       {...(inspectorProps
                         ? (inspectorProps({ fieldId: 'description' }) ?? {})

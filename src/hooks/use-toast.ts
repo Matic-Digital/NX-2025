@@ -2,9 +2,9 @@
 
 // Inspired by react-hot-toast library
 import * as React from 'react';
+import { TOAST_LIMIT, TOAST_REMOVE_DELAY } from '@/constants/toast';
 
 import type { ToastActionElement, ToastProps } from '@/components/ui/toast';
-import { TOAST_LIMIT, TOAST_REMOVE_DELAY } from '@/constants/toast';
 
 type ToasterToast = ToastProps & {
   id: string;

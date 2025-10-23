@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
-import { Search } from 'lucide-react';
-
 import { collectionStyles } from '../utils/CollectionStyles';
+
+import { Search } from 'lucide-react';
 
 interface SearchBarProps {
   searchQuery: string;
@@ -51,24 +51,23 @@ export function SearchBar({ searchQuery, onSearchChange, contentTypes }: SearchB
     wasActiveRef.current = false;
   };
 
-
   // Generate dynamic placeholder text based on content types
   const getPlaceholderText = () => {
     if (!contentTypes || contentTypes.length === 0) {
       return 'Search content by title...';
     }
-    
+
     // Convert content types to lowercase for better readability
-    const lowerCaseTypes = contentTypes.map(type => type.toLowerCase() + 's');
-    
+    const lowerCaseTypes = contentTypes.map((type) => type.toLowerCase() + 's');
+
     // If all common content types are present, use generic text
     const hasPost = contentTypes.includes('Post');
     const hasPage = contentTypes.includes('Page');
-    
+
     if (hasPost && hasPage && contentTypes.length === 2) {
       return 'Search content by title...';
     }
-    
+
     // Create a readable list of content types
     if (lowerCaseTypes.length === 1) {
       return `Search ${lowerCaseTypes[0]} by title...`;

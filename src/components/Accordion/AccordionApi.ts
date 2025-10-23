@@ -63,12 +63,12 @@ export async function getAccordionItemById(
     }
 
     return data.accordionItem;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching AccordionItem: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching AccordionItem: ${_error.message}`);
     }
     throw new Error('Unknown error fetching AccordionItem');
   }
@@ -102,12 +102,12 @@ export async function getAccordionById(
     }
 
     return data.accordionCollection.items[0] ?? null;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Accordion: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Accordion: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Accordion');
   }
@@ -152,12 +152,12 @@ export async function getAccordionsByIds(
     }
 
     return data.accordionCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`getAccordionsByIdsError: fetching Accordions: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`getAccordionsByIdsError: fetching Accordions: ${_error.message}`);
     }
     throw new Error('getAccordionsByIds: Unknown error fetching Accordions');
   }

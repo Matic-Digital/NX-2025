@@ -2,11 +2,10 @@
 
 /**
  * Security Headers Checker
- * 
+ *
  * Tests the application for proper security headers when running locally.
  * This helps ensure security configurations are working before deployment.
  */
-
 import { readFileSync } from 'fs';
 
 interface SecurityHeader {
@@ -71,13 +70,12 @@ class SecurityHeadersChecker {
 
     try {
       const response = await fetch(url, { method: 'HEAD' });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       this.analyzeHeaders(response.headers);
-      
     } catch (error) {
       console.error(`❌ Failed to fetch headers: ${error}`);
       console.log('\n💡 Make sure your development server is running:');
@@ -115,14 +113,16 @@ class SecurityHeadersChecker {
     this.reportResults(results);
   }
 
-  private reportResults(results: Array<{
-    header: SecurityHeader;
-    present: boolean;
-    value?: string;
-    valid?: boolean;
-  }>): void {
+  private reportResults(
+    results: Array<{
+      header: SecurityHeader;
+      present: boolean;
+      value?: string;
+      valid?: boolean;
+    }>
+  ): void {
     console.log('📊 Security Headers Analysis\n');
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
 
     let criticalIssues = 0;
     let highIssues = 0;
@@ -131,7 +131,7 @@ class SecurityHeadersChecker {
 
     for (const result of results) {
       const { header, present, value, valid } = result;
-      
+
       if (!present && header.required) {
         console.log(`❌ ${header.name} (${header.severity.toUpperCase()})`);
         console.log(`   Missing required header`);
@@ -155,7 +155,7 @@ class SecurityHeadersChecker {
     // Check for additional security headers
     this.checkAdditionalHeaders();
 
-    console.log('=' .repeat(60));
+    console.log('='.repeat(60));
     this.printSummary(criticalIssues, highIssues, mediumIssues, lowIssues);
   }
 
@@ -167,40 +167,47 @@ class SecurityHeadersChecker {
 
     return (severity: string) => {
       switch (severity) {
-        case 'critical': criticalIssues++; break;
-        case 'high': highIssues++; break;
-        case 'medium': mediumIssues++; break;
-        case 'low': lowIssues++; break;
+        case 'critical':
+          criticalIssues++;
+          break;
+        case 'high':
+          highIssues++;
+          break;
+        case 'medium':
+          mediumIssues++;
+          break;
+        case 'low':
+          lowIssues++;
+          break;
       }
     };
   })();
 
   private checkAdditionalHeaders(): void {
     console.log('🔧 Additional Security Recommendations:\n');
-    
+
     // Check Next.js config for security headers
     try {
       const nextConfig = readFileSync('next.config.js', 'utf-8');
-      
+
       if (!nextConfig.includes('headers')) {
         console.log('💡 Consider adding security headers to next.config.js');
         console.log('   See: https://nextjs.org/docs/advanced-features/security-headers');
       }
-      
+
       if (!nextConfig.includes('Content-Security-Policy')) {
         console.log('💡 Add Content Security Policy to prevent XSS attacks');
       }
-      
     } catch (error) {
       console.log('⚠️  Could not read next.config.js');
     }
-    
+
     console.log();
   }
 
   private printSummary(critical: number, high: number, medium: number, low: number): void {
     const total = critical + high + medium + low;
-    
+
     if (total === 0) {
       console.log('🎉 Excellent! All security headers are properly configured.');
       return;
@@ -211,7 +218,7 @@ class SecurityHeadersChecker {
     if (high > 0) console.log(`   ⚠️  High: ${high}`);
     if (medium > 0) console.log(`   📋 Medium: ${medium}`);
     if (low > 0) console.log(`   ℹ️  Low: ${low}`);
-    
+
     console.log(`\nTotal issues: ${total}`);
 
     if (critical > 0 || high > 0) {
@@ -244,7 +251,7 @@ async headers() {
   ];
 }
       `);
-      
+
       process.exit(1);
     } else {
       console.log('\n✅ No critical security issues found.');

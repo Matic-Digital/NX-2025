@@ -93,12 +93,12 @@ export const getRichContentById = async (
     }
 
     return data.contentTypeRichText;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching rich content: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching rich content: ${_error.message}`);
     }
     throw new Error('Unknown error fetching rich content');
   }

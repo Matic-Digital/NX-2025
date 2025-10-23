@@ -112,12 +112,12 @@ export async function getProductById(id: string, preview = false): Promise<Produ
     }
 
     return product;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Product: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Product: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Product');
   }
@@ -162,8 +162,7 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     const componentKey = typename.charAt(0).toLowerCase() + typename.slice(1); // Convert to camelCase
     // eslint-disable-next-line security/detect-object-injection
     return Object.prototype.hasOwnProperty.call(data, componentKey) ? data[componentKey] : null;
-  } catch (error) {
-    console.error(`Error fetching ${typename} component:`, error);
+  } catch {
     return null;
   }
 }
@@ -249,12 +248,12 @@ export async function getProductBySlug(slug: string, preview = false): Promise<P
       header,
       footer
     } as Product & { header: Header | null; footer: Footer | null };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Product by slug: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Product by slug: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Product by slug');
   }
@@ -285,12 +284,12 @@ export async function getAllProducts(preview = false): Promise<Product[]> {
     }
 
     return data.productCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Products: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Products: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Products');
   }
@@ -332,12 +331,12 @@ export async function getProductsByIds(productsIds: string[], preview = false): 
     }
 
     return data.productCollection.items;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Products: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Products: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Products');
   }

@@ -58,14 +58,12 @@ export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuP
         ? () => getRecentPostsForMegaMenuByCategory(category, 1)
         : () => getRecentPostsForMegaMenu(1);
 
-      console.log(
-        '- Using function:',
-        category ? 'getRecentPostsForMegaMenuByCategory' : 'getRecentPostsForMegaMenu'
-      );
 
       fetchFunction()
         .then((response) => setRecentPosts(response.items))
-        .catch(console.error)
+        .catch(() => {
+          // Error fetching posts
+        })
         .finally(() => setPostsLoading(false));
     }
   }, [variant, megaMenuTags]);

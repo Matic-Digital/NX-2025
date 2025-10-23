@@ -45,9 +45,9 @@ export function Logo({ logo, className }: LogoProps) {
       <Box gap={2} className="items-center">
         <span className="text-gradient-pink text-lg font-extrabold">|||</span>
         <h1 className="text-headline-xs">Matic</h1>
-        <Image 
-          src="/NXP_Logo_Horizontal_White.svg" 
-          alt="NXP Logo" 
+        <Image
+          src="/NXP_Logo_Horizontal_White.svg"
+          alt="NXP Logo"
           width={120}
           height={40}
           className="h-auto w-auto"

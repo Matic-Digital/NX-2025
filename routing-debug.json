@@ -10,6 +10,16 @@
       "priority": 1,
       "changefreq": "daily"
     },
+    "/resources": {
+      "path": "/resources",
+      "contentType": "Page",
+      "contentId": "5DSiOYcY583zexePdQWMCx",
+      "title": "Resources",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
     "/thank-you": {
       "path": "/thank-you",
       "contentType": "Page",
@@ -35,16 +45,6 @@
       "contentType": "Page",
       "contentId": "7anXk0qLYQCMupVYkDWeAu",
       "title": "Newsroom",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/resources": {
-      "path": "/resources",
-      "contentType": "Page",
-      "contentId": "5DSiOYcY583zexePdQWMCx",
-      "title": "Resources",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.8,
@@ -1763,6 +1763,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-23T00:57:01.478Z",
+  "generatedAt": "2025-10-23T07:57:58.026Z",
   "version": "1.0.0"
 }

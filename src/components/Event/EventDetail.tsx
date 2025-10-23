@@ -1,31 +1,36 @@
 'use client';
 
-import { formatDateRange, formatDate } from '@/lib/utils';
-import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
+import { useEffect, useState } from 'react';
+import { Container } from '../global/matic-ds';
+import { AirImage } from '../Image/AirImage';
+import type { Image as ImageType } from '../Image/ImageSchema';
+import { Button } from '../ui/button';
+import {
+  useContentfulInspectorMode,
+  useContentfulLiveUpdates
+} from '@contentful/live-preview/react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { formatDate, formatDateRange } from '@/lib/utils';
 
 import { AgendaList } from '@/components/AgendaItem/AgendaItem';
+import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { getPostsByCategories } from '@/components/Event/EventApi';
+import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
+import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
+import { getAllPostsMinimal } from '@/components/Post/PostApi';
+import { PostCard } from '@/components/Post/PostCard';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
+import { Slider } from '@/components/Slider/Slider';
 
 import type { Event } from '@/components/Event/EventSchema';
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
-import { Container } from '../global/matic-ds';
-import { AirImage } from '../Image/AirImage';
-import Image from 'next/image';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
-import Link from 'next/link';
-import { Button } from '../ui/button';
-import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
-import { getPostsByCategories } from '@/components/Event/EventApi';
-import { useState, useEffect } from 'react';
 import type { Post } from '@/components/Post/PostSchema';
-import { PostCard } from '@/components/Post/PostCard';
-import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
-import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
-import { Location } from '@/components/OfficeLocation/OfficeLocation';
-import { ContactCard } from '@/components/ContactCard/ContactCard';
-import { Slider } from '@/components/Slider/Slider';
 
 interface EventDetailWithLayoutProps {
   event: Event;
@@ -44,16 +49,18 @@ function NewsPosts() {
         setLoading(true);
         // Get all posts with minimal fields to avoid complexity issues
         const allPosts = await getAllPostsMinimal();
-        
+
         // Filter for "Press Release" or "In The News" categories (using correct enum values)
-        const newsPosts = allPosts.items.filter(post => 
-          post.categories?.some(category => 
-            (category === 'Press Release') || (category === 'In The News')
+        const newsPosts = allPosts.items
+          .filter((post) =>
+            post.categories?.some(
+              (category) => category === 'Press Release' || category === 'In The News'
+            )
           )
-        ).slice(0, 3); // Take only first 3
-        
+          .slice(0, 3); // Take only first 3
+
         setNewsPosts(newsPosts);
-      } catch (error) {
+      } catch {
         setNewsPosts([]);
       } finally {
         setLoading(false);
@@ -80,10 +87,7 @@ function NewsPosts() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {newsPosts.map((post) => (
-        <PostCard 
-          key={post.sys.id} 
-          sys={{ id: post.sys.id }}
-        />
+        <PostCard key={post.sys.id} sys={{ id: post.sys.id }} />
       ))}
     </div>
   );
@@ -97,7 +101,12 @@ interface EventPostCategoriesProps {
   description?: string;
 }
 
-function EventPostCategories({ categories, maxPostsPerCategory, title, description }: EventPostCategoriesProps) {
+function EventPostCategories({
+  categories,
+  maxPostsPerCategory,
+  title,
+  description
+}: EventPostCategoriesProps) {
   const [postsByCategory, setPostsByCategory] = useState<Record<string, Post[]>>({});
   const [loading, setLoading] = useState(true);
 
@@ -107,7 +116,7 @@ function EventPostCategories({ categories, maxPostsPerCategory, title, descripti
         setLoading(true);
         const posts = await getPostsByCategories(categories, maxPostsPerCategory);
         setPostsByCategory(posts);
-      } catch (error) {
+      } catch {
         // Error handled silently
       } finally {
         setLoading(false);
@@ -127,15 +136,11 @@ function EventPostCategories({ categories, maxPostsPerCategory, title, descripti
         {/* Section Header */}
         {(title ?? description) && (
           <div className="mb-12">
-            {title && (
-              <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>
-            )}
-            {description && (
-              <p className="text-lg text-gray-600">{description}</p>
-            )}
+            {title && <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>}
+            {description && <p className="text-lg text-gray-600">{description}</p>}
           </div>
         )}
-        
+
         <div className="space-y-12">
           {categories.map((category) => (
             <div key={category}>
@@ -152,10 +157,15 @@ function EventPostCategories({ categories, maxPostsPerCategory, title, descripti
     );
   }
 
-  // Filter out categories with no posts
-  const categoriesWithPosts = categories.filter(category => 
-    postsByCategory[category] && postsByCategory[category].length > 0
-  );
+  // Filter out categories with no posts using secure property access
+  const categoriesWithPosts = categories.filter((category) => {
+    if (Object.prototype.hasOwnProperty.call(postsByCategory, category)) {
+      const propertyDescriptor = Object.getOwnPropertyDescriptor(postsByCategory, category);
+      const posts = propertyDescriptor?.value as Post[] | undefined;
+      return posts && Array.isArray(posts) && posts.length > 0;
+    }
+    return false;
+  });
 
   if (categoriesWithPosts.length === 0) {
     return null;
@@ -166,26 +176,31 @@ function EventPostCategories({ categories, maxPostsPerCategory, title, descripti
       {/* Section Header */}
       {(title ?? description) && (
         <div className="mb-12">
-          {title && (
-            <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>
-          )}
-          {description && (
-            <p className="text-lg text-gray-600">{description}</p>
-          )}
+          {title && <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{title}</h2>}
+          {description && <p className="text-lg text-gray-600">{description}</p>}
         </div>
       )}
-      
+
       <div className="space-y-12">
         {categoriesWithPosts.map((category) => (
           <div key={category}>
             <h3 className="text-[2rem] font-normal leading-[120%] mb-6">{category}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {postsByCategory[category]?.map((post) => (
-                <PostCard 
-                  key={post.sys.id} 
-                  sys={{ id: post.sys.id }}
-                />
-              ))}
+              {(() => {
+                if (Object.prototype.hasOwnProperty.call(postsByCategory, category)) {
+                  const propertyDescriptor = Object.getOwnPropertyDescriptor(
+                    postsByCategory,
+                    category
+                  );
+                  const posts = propertyDescriptor?.value as Post[] | undefined;
+                  return posts && Array.isArray(posts)
+                    ? posts.map((post: Post) => (
+                        <PostCard key={post.sys.id} sys={{ id: post.sys.id }} />
+                      ))
+                    : null;
+                }
+                return null;
+              })()}
             </div>
           </div>
         ))}
@@ -194,13 +209,17 @@ function EventPostCategories({ categories, maxPostsPerCategory, title, descripti
   );
 }
 
-export function EventDetail({ event: initialEvent, header = null, footer = null }: EventDetailWithLayoutProps) {
+export function EventDetail({
+  event: initialEvent,
+  header = null,
+  footer = null
+}: EventDetailWithLayoutProps) {
   // Contentful Live Preview integration
   const event = useContentfulLiveUpdates(initialEvent);
   const inspectorProps = useContentfulInspectorMode({ entryId: event?.sys?.id });
-  
+
   const _formattedDateTime = formatDateRange(event.dateTime, event.endDateTime ?? undefined, true);
-  
+
   // Format date and time separately for two-line display
   const formattedDate = formatDate(event.dateTime ?? '', false); // Just the date
   const formatTimeRange = (startDateString: string, endDateString?: string): string => {
@@ -210,7 +229,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
       minute: '2-digit',
       hour12: true
     });
-    
+
     // Check if endDateString exists and is not empty
     if (!endDateString || endDateString.trim() === '') {
       // If no end time, include timezone on start time
@@ -222,9 +241,9 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
       });
       return `from ${startTimeWithTz}`;
     }
-    
+
     const endDate = new Date(endDateString);
-    
+
     // Check if the end date is valid
     if (isNaN(endDate.getTime())) {
       const startTimeWithTz = startDate.toLocaleTimeString('en-US', {
@@ -235,19 +254,19 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
       });
       return `from ${startTimeWithTz}`;
     }
-    
+
     const endTime = endDate.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
       timeZoneName: 'short'
     });
-    
+
     return `from ${startTime} to ${endTime}`;
   };
-  
+
   const formattedTimeRange = formatTimeRange(event.dateTime, event.endDateTime);
-  
+
   // Event data processing
 
   // Render based on template type
@@ -255,31 +274,33 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
     case 'Agenda':
       return (
         <PageLayout header={header} footer={footer}>
-          <div className='h-[28.64rem] flex flex-col mb-[3rem] relative overflow-hidden'>
+          <div className="h-[28.64rem] flex flex-col mb-[3rem] relative overflow-hidden">
             {/* Background Image */}
             {event.bannerImage?.link ? (
-              <AirImage 
-                link={event.bannerImage.link} 
-                altText={event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'} 
+              <AirImage
+                link={event.bannerImage.link}
+                altText={event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'}
                 className="w-full h-full absolute inset-0 z-0 object-cover"
               />
             ) : (
               <div className="w-full h-full absolute inset-0 z-0 bg-blue-500" />
             )}
-            
+
             {/* Dark overlay for better text readability */}
             <div className="absolute inset-0 z-10 bg-black/30" />
-            
+
             {/* Content */}
-            <Container className='flex-grow flex flex-col pb-[3rem] relative z-20'>
-              <div className='flex-grow flex flex-col justify-end'>
-                  <h1 
-                    className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'
-                    {...inspectorProps({ fieldId: 'title' })}
-                  >
-                    {event.title ?? ''}
-                  </h1>
-                  <h2 className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'>Nextracker Agenda</h2>
+            <Container className="flex-grow flex flex-col pb-[3rem] relative z-20">
+              <div className="flex-grow flex flex-col justify-end">
+                <h1
+                  className="text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg"
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {event.title ?? ''}
+                </h1>
+                <h2 className="text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg">
+                  Nextracker Agenda
+                </h2>
               </div>
             </Container>
           </div>
@@ -290,22 +311,23 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
               <div className="bg-subtle items-start flex-grow p-[2.5rem] min-h-[13.1875rem] md:items-center flex gap-[1.25rem]">
                 {event.dateIcon && (
                   <div className="bg-black p-[0.58rem] h-fit">
-                      <Image 
-                        src={event.dateIcon.url ?? ''}
-                        alt={event.dateIcon.description ?? 'Date icon'}
-                        width={event.dateIcon.width ?? 24}
-                        height={event.dateIcon.height ?? 24}
-                        className=""
-                      />
+                    <Image
+                      src={event.dateIcon.url ?? ''}
+                      alt={event.dateIcon.description ?? 'Date icon'}
+                      width={event.dateIcon.width ?? 24}
+                      height={event.dateIcon.height ?? 24}
+                      className=""
+                    />
                   </div>
                 )}
                 <div className="flex flex-col gap-[0.5rem]">
-                  <time className="text-4xl font-normal leading-[120%]" dateTime={event.dateTime ?? ''}>
+                  <time
+                    className="text-4xl font-normal leading-[120%]"
+                    dateTime={event.dateTime ?? ''}
+                  >
                     {formattedDate}
                   </time>
-                  <div className="text-2xl font-normal leading-[120%]">
-                    {formattedTimeRange}
-                  </div>
+                  <div className="text-2xl font-normal leading-[120%]">{formattedTimeRange}</div>
                 </div>
               </div>
 
@@ -314,7 +336,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                 <div className="flex-grow bg-subtle items-start flex md:items-center min-h-[13.1875rem] gap-[1.25rem] p-[2.5rem]">
                   {event.addressIcon && (
                     <div className="bg-black p-[0.58rem] h-fit">
-                      <Image 
+                      <Image
                         src={event.addressIcon.url ?? ''}
                         alt={event.addressIcon.description ?? 'Address icon'}
                         width={event.addressIcon.width ?? 24}
@@ -326,7 +348,9 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                   <div className="flex flex-col gap-[0.5rem]">
                     <div className="text-4xl font-normal leading-[120%]">{event.address ?? ''}</div>
                     {event.addressSubline && (
-                      <div className="text-2xl font-normal leading-[120%]">{event.addressSubline ?? ''}</div>
+                      <div className="text-2xl font-normal leading-[120%]">
+                        {event.addressSubline ?? ''}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -337,16 +361,20 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {event.agendaItemsCollection?.items && event.agendaItemsCollection.items.length > 0 && (
               <div className="mb-[7.5rem]">
                 {event.agendaHeadline && (
-                  <h2 className="text-[3rem] font-normal tracking-[-0.04rem] leading-[120%]">{event.agendaHeadline ?? ''}</h2>
+                  <h2 className="text-[3rem] font-normal tracking-[-0.04rem] leading-[120%]">
+                    {event.agendaHeadline ?? ''}
+                  </h2>
                 )}
-                
-                <AgendaList 
-                  agendaItems={event.agendaItemsCollection?.items ?? []} 
+
+                <AgendaList
+                  agendaItems={event.agendaItemsCollection?.items ?? []}
                   className="py-[2rem]"
                 />
-                
+
                 {event.agendaFooter && (
-                  <p className="text-[1.25rem] font-normal leading-[120%]">{event.agendaFooter ?? ''}</p>
+                  <p className="text-[1.25rem] font-normal leading-[120%]">
+                    {event.agendaFooter ?? ''}
+                  </p>
                 )}
               </div>
             )}
@@ -359,14 +387,18 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
         <PageLayout header={header} footer={footer}>
           <ImageBetweenWrapper
             variant="default"
-            backgroundImage={event.bannerImage?.link ? {
-              link: event.bannerImage.link,
-              altText: event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'
-            } : undefined}
+            backgroundImage={
+              event.bannerImage?.link
+                ? {
+                    link: event.bannerImage.link,
+                    altText: event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'
+                  }
+                : undefined
+            }
             contentTop={
-              <Container className='h-[28.64rem] flex flex-col justify-center'>
-                <h1 
-                  className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg text-left'
+              <Container className="h-[28.64rem] flex flex-col justify-center">
+                <h1
+                  className="text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg text-left"
                   {...inspectorProps({ fieldId: 'title' })}
                 >
                   {event.title ?? ''}
@@ -376,11 +408,13 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             asset={
               event.mainImage && (
                 <div className="w-full">
-                  <AirImage 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    link={(event.mainImage as any).link ?? ''} 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    altText={(event.mainImage as any).altText ?? event.mainImage.title ?? 'Event main image'} 
+                  <AirImage
+                    link={event.mainImage.link ?? ''}
+                    altText={
+                      event.mainImage.altText ??
+                      event.mainImage.title ??
+                      'Event main image'
+                    }
                     className="w-full max-h-[33.75rem] object-cover"
                   />
                   {/* Main Image Caption directly under the image */}
@@ -390,9 +424,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                 </div>
               )
             }
-            contentBottom={
-              <div></div>
-            }
+            contentBottom={<div></div>}
           />
 
           {/* Section Heading Content - After ImageBetweenWrapper */}
@@ -402,7 +434,9 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
               <div className="flex-1">
                 {/* Section Heading Title */}
                 {event.sectionHeadingTitle && (
-                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{event.sectionHeadingTitle}</h2>
+                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">
+                    {event.sectionHeadingTitle}
+                  </h2>
                 )}
 
                 {/* Section Heading Description */}
@@ -421,7 +455,11 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                       </Button>
                     </Link>
                   ) : event.sectionHeadingButton.externalLink ? (
-                    <a href={event.sectionHeadingButton.externalLink} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={event.sectionHeadingButton.externalLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                         {event.sectionHeadingButton.text}
                       </Button>
@@ -439,26 +477,23 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {event.landing1Asset && (
               <div className="flex justify-center mt-8">
                 {event.landing1Asset.__typename === 'Image' ? (
-                  <AirImage 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    link={(event.landing1Asset as any).link ?? ''} 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    altText={(event.landing1Asset as any).altText ?? event.landing1Asset.title ?? 'Event asset'} 
+                  <AirImage
+                    link={(event.landing1Asset as ImageType).link ?? ''}
+                    altText={
+                      (event.landing1Asset as ImageType).altText ??
+                      (event.landing1Asset as ImageType).title ??
+                      'Event asset'
+                    }
                     className="w-full h-auto"
                   />
                 ) : event.landing1Asset.__typename === 'Video' ? (
-                  <div className="w-full max-w-[68rem]">
-                    test
-                  </div>
+                  <div className="w-full max-w-[68rem]">test</div>
                 ) : null}
               </div>
             )}
 
             {/* In the News Section */}
-            <div 
-              className="mt-[6rem]"
-              {...inspectorProps({ fieldId: 'content' })}
-            >
+            <div className="mt-[6rem]" {...inspectorProps({ fieldId: 'content' })}>
               <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
               <NewsPosts />
             </div>
@@ -473,7 +508,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {/* Event Post Categories */}
             {event.postCategories && event.postCategories.length > 0 && (
               <div className="mt-[6rem]">
-                <EventPostCategories 
+                <EventPostCategories
                   categories={event.postCategories}
                   maxPostsPerCategory={event.maxPostsPerCategory ?? 3}
                   title="Downloads"
@@ -485,10 +520,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {/* Form CTA */}
             {event.formCta && (
               <div className="mt-[6rem]">
-                <HubspotForm 
-                  hubspotForm={event.formCta}
-                  theme="light"
-                />
+                <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}
           </Container>
@@ -498,119 +530,118 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
     case 'Landing 2':
       return (
         <PageLayout header={header} footer={footer}>
-          <div className='h-[28.64rem] flex flex-col mb-[3rem] relative overflow-hidden'>
+          <div className="h-[28.64rem] flex flex-col mb-[3rem] relative overflow-hidden">
             {/* Background Image */}
             {event.bannerImage?.link ? (
-              <AirImage 
-                link={event.bannerImage.link} 
-                altText={event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'} 
+              <AirImage
+                link={event.bannerImage.link}
+                altText={event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'}
                 className="w-full h-full absolute inset-0 z-0 object-cover"
               />
             ) : (
               <div className="w-full h-full absolute inset-0 z-0 bg-blue-500" />
             )}
-            
+
             {/* Dark overlay for better text readability */}
             <div className="absolute inset-0 z-10 bg-black/30" />
-            
+
             {/* Content */}
-            <Container className='flex-grow flex flex-col pb-[3rem] relative z-20'>
-              <div className='flex-grow flex flex-col justify-end'>
-                  <h1 
-                    className='text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg'
-                    {...inspectorProps({ fieldId: 'title' })}
-                  >
-                    {event.title ?? ''}
-                  </h1>
+            <Container className="flex-grow flex flex-col pb-[3rem] relative z-20">
+              <div className="flex-grow flex flex-col justify-end">
+                <h1
+                  className="text-[3.75rem] text-white font-normal tracking-[-0.0375rem] leading-[120%] drop-shadow-lg"
+                  {...inspectorProps({ fieldId: 'title' })}
+                >
+                  {event.title ?? ''}
+                </h1>
               </div>
             </Container>
           </div>
           <Container className="gap-[6rem] flex flex-col">
-           <div>
-           {event.mainImage && (
-             <div className="w-full">
-               {event.mainImage.__typename === 'Image' ? (
-                 <AirImage 
-                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                   link={(event.mainImage as any).link ?? ''} 
-                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                   altText={(event.mainImage as any).altText ?? event.mainImage?.title ?? 'Event asset'} 
-                   className="w-full h-auto"
-                 />
-               ) : event.mainImage.__typename === 'Video' ? (
-                  <div>
-                    video
+            <div>
+              {event.mainImage && (
+                <div className="w-full">
+                  {event.mainImage.__typename === 'Image' ? (
+                    <AirImage
+                      link={event.mainImage.link ?? ''}
+                      altText={
+                        event.mainImage.altText ?? event.mainImage?.title ?? 'Event asset'
+                      }
+                      className="w-full h-auto"
+                    />
+                  ) : event.mainImage.__typename === 'Video' ? (
+                    <div>video</div>
+                  ) : null}
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-end gap-[2rem] justify-between">
+                {event.mainImageCaption && (
+                  <p className="mt-4 text-gray-600 max-w-[68rem]">{event.mainImageCaption}</p>
+                )}
+
+                {event.sectionHeadingButton && (
+                  <div className="mt-6">
+                    {event.sectionHeadingButton.internalLink ? (
+                      <Link href={`/${event.sectionHeadingButton.internalLink.slug}`}>
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                          {event.sectionHeadingButton.text}
+                        </Button>
+                      </Link>
+                    ) : event.sectionHeadingButton.externalLink ? (
+                      <a
+                        href={event.sectionHeadingButton.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                          {event.sectionHeadingButton.text}
+                        </Button>
+                      </a>
+                    ) : (
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                        {event.sectionHeadingButton.text}
+                      </Button>
+                    )}
                   </div>
-               ) : null}
-             </div>
-           )}
+                )}
+              </div>
+            </div>
+            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+            {(event.sectionRichContent || event.landing1Asset) && (
+              <div className="flex flex-col md:flex-row gap-8 mt-8">
+                {/* Rich Content Section */}
+                {event.sectionRichContent && (
+                  <div className="flex-1">
+                    <RichTextRenderer content={event.sectionRichContent} />
+                  </div>
+                )}
 
-           <div className="flex flex-wrap items-end gap-[2rem] justify-between">  
+                {/* Landing Asset Section */}
+                {event.landing1Asset && (
+                  <div className="flex-1">
+                    {event.landing1Asset.__typename === 'Image' ? (
+                      <AirImage
+                        link={(event.landing1Asset as ImageType).link ?? ''}
+                        altText={
+                          (event.landing1Asset as ImageType).altText ??
+                          (event.landing1Asset as ImageType).title ??
+                          'Event asset'
+                        }
+                        className="w-full h-auto"
+                      />
+                    ) : event.landing1Asset.__typename === 'Video' ? (
+                      <div>video</div>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            )}
 
-
-           {event.mainImageCaption && (
-             <p className="mt-4 text-gray-600 max-w-[68rem]">{event.mainImageCaption}</p>
-           )}
-
-           {event.sectionHeadingButton && (
-             <div className="mt-6">
-               {event.sectionHeadingButton.internalLink ? (
-                 <Link href={`/${event.sectionHeadingButton.internalLink.slug}`}>
-                   <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                     {event.sectionHeadingButton.text}
-                   </Button>
-                 </Link>
-               ) : event.sectionHeadingButton.externalLink ? (
-                 <a href={event.sectionHeadingButton.externalLink} target="_blank" rel="noopener noreferrer">
-                   <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                     {event.sectionHeadingButton.text}
-                   </Button>
-                 </a>
-               ) : (
-                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                   {event.sectionHeadingButton.text}
-                 </Button>
-               )}
-             </div>
-           )}
-           </div>
-           </div>
-           {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-           {(event.sectionRichContent || event.landing1Asset) && (
-             <div className='flex flex-col md:flex-row gap-8 mt-8'>
-               {/* Rich Content Section */}
-               {event.sectionRichContent && (
-                 <div className="flex-1">
-                   <RichTextRenderer content={event.sectionRichContent} />
-                 </div>
-               )}
-               
-               {/* Landing Asset Section */}
-               {event.landing1Asset && (
-                 <div className="flex-1">
-                   {event.landing1Asset.__typename === 'Image' ? (
-                     <AirImage 
-                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                       link={(event.landing1Asset as any).link ?? ''} 
-                       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                       altText={(event.landing1Asset as any).altText ?? event.landing1Asset.title ?? 'Event asset'} 
-                       className="w-full h-auto"
-                     />
-                   ) : event.landing1Asset.__typename === 'Video' ? (
-                     <div>video</div>
-                   ) : null}
-                 </div>
-               )}
-             </div>
-           )}
-
-           <div 
-             className="mt-12"
-             {...inspectorProps({ fieldId: 'content' })}
-           >
-             <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
-             <NewsPosts />
-           </div>
+            <div className="mt-12" {...inspectorProps({ fieldId: 'content' })}>
+              <h2 className="text-[3rem] font-normal leading-[120%] mb-8">In the News</h2>
+              <NewsPosts />
+            </div>
 
             {/* Slider */}
             {event.slider && (
@@ -622,10 +653,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {/* Form CTA */}
             {event.formCta && (
               <div className="mt-[4rem]">
-                <HubspotForm 
-                  hubspotForm={event.formCta}
-                  theme="light"
-                />
+                <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}
           </Container>
@@ -637,16 +665,17 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
         <PageLayout header={header} footer={footer}>
           <ImageBetweenWrapper
             variant="default"
-            backgroundImage={event.bannerImage?.link ? {
-              link: event.bannerImage.link,
-              altText: event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'
-            } : undefined}
+            backgroundImage={
+              event.bannerImage?.link
+                ? {
+                    link: event.bannerImage.link,
+                    altText: event.bannerImage.altText ?? event.bannerImage.title ?? 'Event banner'
+                  }
+                : undefined
+            }
             contentTop={
-              <Container className='h-[40.75rem] flex flex-col justify-center'>
-                <h1 
-                  className='text-display-md'
-                  {...inspectorProps({ fieldId: 'title' })}
-                >
+              <Container className="h-[40.75rem] flex flex-col justify-center">
+                <h1 className="text-display-md" {...inspectorProps({ fieldId: 'title' })}>
                   {event.title ?? ''}
                 </h1>
               </Container>
@@ -654,11 +683,13 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             asset={
               event.mainImage && (
                 <div className="w-full">
-                  <AirImage 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    link={(event.mainImage as any).link ?? ''} 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    altText={(event.mainImage as any).altText ?? event.mainImage.title ?? 'Event main image'} 
+                  <AirImage
+                    link={event.mainImage.link ?? ''}
+                    altText={
+                      event.mainImage.altText ??
+                      event.mainImage.title ??
+                      'Event main image'
+                    }
                     className="w-full max-h-[33.75rem] object-cover"
                   />
                   {/* Main Image Caption directly under the image */}
@@ -668,9 +699,7 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                 </div>
               )
             }
-            contentBottom={
-              <div></div>
-            }
+            contentBottom={<div></div>}
           />
 
           {/* Section Heading Content - After ImageBetweenWrapper */}
@@ -680,7 +709,9 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
               <div className="flex-1">
                 {/* Section Heading Title */}
                 {event.sectionHeadingTitle && (
-                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">{event.sectionHeadingTitle}</h2>
+                  <h2 className="text-[3rem] font-normal leading-[120%] mb-4">
+                    {event.sectionHeadingTitle}
+                  </h2>
                 )}
 
                 {/* Section Heading Description */}
@@ -699,7 +730,11 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                       </Button>
                     </Link>
                   ) : event.sectionHeadingButton.externalLink ? (
-                    <a href={event.sectionHeadingButton.externalLink} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={event.sectionHeadingButton.externalLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                         {event.sectionHeadingButton.text}
                       </Button>
@@ -717,84 +752,93 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
             {event.landing1Asset && (
               <div className="flex justify-center mt-8">
                 {event.landing1Asset.__typename === 'Image' ? (
-                  <AirImage 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    link={(event.landing1Asset as any).link ?? ''} 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-                    altText={(event.landing1Asset as any).altText ?? event.landing1Asset.title ?? 'Event asset'} 
+                  <AirImage
+                    link={(event.landing1Asset as ImageType).link ?? ''}
+                    altText={
+                      (event.landing1Asset as ImageType).altText ??
+                      (event.landing1Asset as ImageType).title ??
+                      'Event asset'
+                    }
                     className="w-full h-auto"
                   />
                 ) : event.landing1Asset.__typename === 'Video' ? (
-                  <div className="w-full max-w-[68rem]">
-                    test
-                  </div>
+                  <div className="w-full max-w-[68rem]">test</div>
                 ) : null}
               </div>
             )}
 
             {/* Referenced Posts Section */}
-            {event.referencedPostsCollection?.items && event.referencedPostsCollection.items.length > 0 && (
-              <div 
-                className="mt-[6rem]"
-                {...inspectorProps({ fieldId: 'referencedPostsCollection' })}
-              >
-                <div className="space-y-6">
-                  {event.referencedPostsCollection.items.map((post, index) => (
-                    <div key={post.sys.id} className={`flex flex-col md:flex-row gap-6 md:h-[34.125rem] ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
-                      {/* Main Image */}
-                      {post.mainImage && (
-                        <div className="flex-grow">
-                          <div className="w-full overflow-hidden h-64 md:h-full max-h-[34.125rem]">
-                            <AirImage
-                              link={post.mainImage.link ?? ''}
-                              altText={post.mainImage.altText ?? post.mainImage.title ?? post.title}
-                              className="w-full h-full object-cover"
-                            />
+            {event.referencedPostsCollection?.items &&
+              event.referencedPostsCollection.items.length > 0 && (
+                <div
+                  className="mt-[6rem]"
+                  {...inspectorProps({ fieldId: 'referencedPostsCollection' })}
+                >
+                  <div className="space-y-6">
+                    {event.referencedPostsCollection.items.map((post, index) => (
+                      <div
+                        key={post.sys.id}
+                        className={`flex flex-col md:flex-row gap-6 md:h-[34.125rem] ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}
+                      >
+                        {/* Main Image */}
+                        {post.mainImage && (
+                          <div className="flex-grow">
+                            <div className="w-full overflow-hidden h-64 md:h-full max-h-[34.125rem]">
+                              <AirImage
+                                link={post.mainImage.link ?? ''}
+                                altText={
+                                  post.mainImage.altText ?? post.mainImage.title ?? post.title
+                                }
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Content */}
+                        <div className="flex-shrink-0 md:w-[30rem] space-y-3 bg-subtle p-[2.5rem] flex flex-col justify-between">
+                          {/* Title */}
+                          <h3
+                            className="leading-[130%]"
+                            style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                          >
+                            {post.title}
+                          </h3>
+
+                          {/* Divider */}
+                          <div className="h-px w-full bg-border"></div>
+
+                          {/* Excerpt */}
+                          {post.excerpt && (
+                            <p className="text-body-sm text-text-subtle leading-relaxed">
+                              {post.excerpt}
+                            </p>
+                          )}
+
+                          {/* Button */}
+                          <div className="pt-3">
+                            <Link href={`/posts/${post.slug}`}>
+                              <Button>Read More</Button>
+                            </Link>
                           </div>
                         </div>
-                      )}
-                      
-                      {/* Content */}
-                      <div className="flex-shrink-0 md:w-[30rem] space-y-3 bg-subtle p-[2.5rem] flex flex-col justify-between">
-                        {/* Title */}
-                        <h3 
-                          className="leading-[130%]"
-                          style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
-                        >
-                          {post.title}
-                        </h3>
-                        
-                        {/* Divider */}
-                        <div className="h-px w-full bg-border"></div>
-                        
-                        {/* Excerpt */}
-                        {post.excerpt && (
-                          <p className="text-body-sm text-text-subtle leading-relaxed">
-                            {post.excerpt}
-                          </p>
-                        )}
-                        
-                        {/* Button */}
-                        <div className="pt-3">
-                          <Link href={`/posts/${post.slug}`}>
-                            <Button>
-                              Read More
-                            </Button>
-                          </Link>
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Contact Section */}
-            {(event.contactHeadline ?? event.officeLocation ?? (event.contactCardsCollection?.items && event.contactCardsCollection.items.length > 0)) && (
+            {(event.contactHeadline ??
+              event.officeLocation ??
+              (event.contactCardsCollection?.items &&
+                event.contactCardsCollection.items.length > 0)) && (
               <div className="mt-[6rem]">
                 {/* Contact Headline */}
                 {event.contactHeadline && (
-                  <h2 className="text-[3rem] font-normal leading-[120%] mb-8">{event.contactHeadline}</h2>
+                  <h2 className="text-[3rem] font-normal leading-[120%] mb-8">
+                    {event.contactHeadline}
+                  </h2>
                 )}
 
                 {/* Office Location */}
@@ -805,27 +849,26 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
                 )}
 
                 {/* Contact Cards */}
-                {event.contactCardsCollection?.items && event.contactCardsCollection.items.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {event.contactCardsCollection.items.map((contactCard) => (
-                      <div key={contactCard.sys.id} className="[&_.bg-subtle]:!bg-white [&_.bg-subtle]:!text-black [&_button]:!bg-white [&_button]:!text-black [&_button]:!border-gray-300 [&_button:hover]:!bg-gray-50">
-                        <ContactCard 
-                          contactCardId={contactCard.sys.id}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {event.contactCardsCollection?.items &&
+                  event.contactCardsCollection.items.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {event.contactCardsCollection.items.map((contactCard) => (
+                        <div
+                          key={contactCard.sys.id}
+                          className="[&_.bg-subtle]:!bg-white [&_.bg-subtle]:!text-black [&_button]:!bg-white [&_button]:!text-black [&_button]:!border-gray-300 [&_button:hover]:!bg-gray-50"
+                        >
+                          <ContactCard contactCardId={contactCard.sys.id} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
               </div>
             )}
 
             {/* Form CTA */}
             {event.formCta && (
               <div className="mt-[6rem]">
-                <HubspotForm 
-                  hubspotForm={event.formCta}
-                  theme="light"
-                />
+                <HubspotForm hubspotForm={event.formCta} theme="light" />
               </div>
             )}
           </Container>
@@ -837,17 +880,22 @@ export function EventDetail({ event: initialEvent, header = null, footer = null 
       return (
         <PageLayout header={header} footer={footer}>
           <Container>
-            <h1 className="text-[3.75rem] font-normal tracking-[-0.0375rem] leading-[120%] mb-8">{event.title ?? ''}</h1>
-            <p className="text-lg text-gray-600 mb-8">Unknown template: {event.template ?? 'undefined'}</p>
-            
+            <h1 className="text-[3.75rem] font-normal tracking-[-0.0375rem] leading-[120%] mb-8">
+              {event.title ?? ''}
+            </h1>
+            <p className="text-lg text-gray-600 mb-8">
+              Unknown template: {event.template ?? 'undefined'}
+            </p>
+
             {/* Basic event info as fallback */}
             <div className="bg-subtle p-[2.5rem] mb-8">
-              <time className="text-2xl font-normal leading-[120%] block mb-2" dateTime={event.dateTime ?? ''}>
+              <time
+                className="text-2xl font-normal leading-[120%] block mb-2"
+                dateTime={event.dateTime ?? ''}
+              >
                 {formattedDate}
               </time>
-              <div className="text-lg font-normal leading-[120%]">
-                {formattedTimeRange}
-              </div>
+              <div className="text-lg font-normal leading-[120%]">{formattedTimeRange}</div>
             </div>
           </Container>
         </PageLayout>

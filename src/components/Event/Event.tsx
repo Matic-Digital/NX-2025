@@ -45,7 +45,9 @@ export function Event(props: EventProps) {
         className="group relative w-full hover:bg-primary p-6 lg:py-12 lg:px-8 text-text-subtle hover:text-text-on-invert items-start lg:border-b-2 lg:hover:border-transparent bg-surface lg:bg-transparent cursor-pointer"
         {...inspectorProps}
       >
-        <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">{formatDateRange(event.dateTime ?? '', event.endDateTime ?? undefined, true)}</div>
+        <div className="text-xs text-[#9A9A9A] group-hover:text-text-on-invert">
+          {formatDateRange(event.dateTime ?? '', event.endDateTime ?? undefined, true)}
+        </div>
         <Box direction="col" gap={1}>
           <h5 className="uppercase text-text-body-xs text-text-primary-active group-hover:text-text-on-invert">
             Event

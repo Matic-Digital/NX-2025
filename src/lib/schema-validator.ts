@@ -1,6 +1,6 @@
 /**
  * Schema Validation Utilities
- * 
+ *
  * Helper functions to validate and debug Schema.org structured data
  */
 
@@ -13,26 +13,29 @@
 /**
  * Validate that a schema object has required fields
  */
-export function validateSchema(schema: any, requiredFields: string[]): { isValid: boolean; errors: string[] } {
+export function validateSchema(
+  schema: any,
+  requiredFields: string[]
+): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   // Check if schema has @context and @type
   if (!schema['@context']) {
     errors.push('Missing @context field');
   }
-  
+
   if (!schema['@type']) {
     errors.push('Missing @type field');
   }
-  
+
   // Check required fields
-  requiredFields.forEach(field => {
+  requiredFields.forEach((field) => {
     // eslint-disable-next-line security/detect-object-injection
     if (!Object.prototype.hasOwnProperty.call(schema, field) || !schema[field]) {
       errors.push(`Missing required field: ${field}`);
     }
   });
-  
+
   return {
     isValid: errors.length === 0,
     errors
@@ -79,9 +82,7 @@ export function validateOrganizationSchema(schema: any) {
  */
 export function debugSchema(schema: any, schemaType: string) {
   if (process.env.NODE_ENV !== 'development') return;
-  
-  console.group(`🔍 Schema Validation: ${schemaType}`);
-  
+
   let validation;
   switch (schemaType.toLowerCase()) {
     case 'webpage':
@@ -102,15 +103,13 @@ export function debugSchema(schema: any, schemaType: string) {
     default:
       validation = validateSchema(schema, ['name']);
   }
-  
+
   if (validation.isValid) {
   } else {
-    validation.errors.forEach(error => {
+    validation.errors.forEach((_error) => {
       // Error logging removed
     });
   }
-  
-  console.groupEnd();
 }
 
 /**
@@ -118,25 +117,17 @@ export function debugSchema(schema: any, schemaType: string) {
  */
 export function validatePageSchemas() {
   if (typeof window === 'undefined') return;
-  
+
   const schemaScripts = document.querySelectorAll('script[type="application/ld+json"]');
-  
-  console.group('🔍 Page Schema Validation');
-  
-  schemaScripts.forEach((script, index) => {
+
+  schemaScripts.forEach((script, _index) => {
     try {
       const schema = JSON.parse(script.textContent || '{}');
       const schemaType = schema['@type'] || 'Unknown';
-      
-      console.group(`Schema ${index + 1}: ${schemaType}`);
+
       debugSchema(schema, schemaType);
-      console.groupEnd();
-    } catch (error) {
-      console.error(`❌ Invalid JSON in schema ${index + 1}:`, error);
-    }
+    } catch {}
   });
-  
-  console.groupEnd();
 }
 
 /**
@@ -144,7 +135,7 @@ export function validatePageSchemas() {
  */
 export function getValidationUrls(pageUrl: string) {
   const encodedUrl = encodeURIComponent(pageUrl);
-  
+
   return {
     googleRichResults: `https://search.google.com/test/rich-results?url=${encodedUrl}`,
     schemaOrgValidator: `https://validator.schema.org/#url=${encodedUrl}`,
@@ -157,11 +148,13 @@ export function getValidationUrls(pageUrl: string) {
  */
 export function logValidationUrls(pageUrl?: string) {
   if (process.env.NODE_ENV !== 'development') return;
-  
-  const url = pageUrl || (typeof window !== 'undefined' ? window.location.href : 
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'));
-  const urls = getValidationUrls(url);
-  
-  console.group('🔗 Schema Validation URLs');
-  console.groupEnd();
+
+  const url =
+    pageUrl ||
+    (typeof window !== 'undefined'
+      ? window.location.href
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'http://localhost:3000');
+  const _urls = getValidationUrls(url);
 }

@@ -11,10 +11,9 @@
  * 2. Use a custom output directory for Docker builds
  * 3. Skip static generation of error pages
  */
-
 import { execSync } from 'child_process';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
 // Set environment variables
 process.env.NEXT_SKIP_APP_STATIC_ERROR_PAGES = 'true';

@@ -52,7 +52,6 @@ export async function getPageSEOBySlug(slug: string, preview = false): Promise<a
 
     return response.data?.pageCollection?.items?.[0] ?? null;
   } catch (error) {
-    console.error(`Error fetching Page SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Page SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -76,19 +75,8 @@ export async function getPageListSEOBySlug(slug: string, preview = false): Promi
 
     const result = response.data?.pageListCollection?.items?.[0] ?? null;
     
-    if (result) {
-      console.log(`📋 [SEO API] PageList data:`, {
-        title: (result as any).title,
-        seoTitle: (result as any).seoTitle,
-        slug: (result as any).slug,
-        hasOpenGraphImage: !!(result as any).openGraphImage
-      });
-    } else {
-    }
-    
     return result;
   } catch (error) {
-    console.error(`❌ [SEO API] Error fetching PageList SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch PageList SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -112,7 +100,6 @@ export async function getProductSEOBySlug(slug: string, preview = false): Promis
 
     return (response.data as any)?.productCollection?.items?.[0] ?? null;
   } catch (error) {
-    console.error(`Error fetching Product SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Product SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -136,7 +123,6 @@ export async function getServiceSEOBySlug(slug: string, preview = false): Promis
 
     return (response.data as any)?.serviceCollection?.items?.[0] || null;
   } catch (error) {
-    console.error(`Error fetching Service SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Service SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -160,7 +146,6 @@ export async function getSolutionSEOBySlug(slug: string, preview = false): Promi
 
     return (response.data as any)?.solutionCollection?.items?.[0] || null;
   } catch (error) {
-    console.error(`Error fetching Solution SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Solution SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -184,7 +169,6 @@ export async function getPostSEOBySlug(slug: string, preview = false): Promise<a
 
     return response.data?.postCollection?.items?.[0] ?? null;
   } catch (error) {
-    console.error(`Error fetching Post SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Post SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
@@ -208,7 +192,6 @@ export async function getEventSEOBySlug(slug: string, preview = false): Promise<
 
     return response.data?.eventCollection?.items?.[0] ?? null;
   } catch (error) {
-    console.error(`Error fetching Event SEO for slug: ${slug}`, error);
     throw new NetworkError(`Failed to fetch Event SEO: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

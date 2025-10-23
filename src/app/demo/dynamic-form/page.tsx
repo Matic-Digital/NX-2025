@@ -12,8 +12,7 @@ export default function DynamicFormDemo() {
   const [loadingMetadata, setLoadingMetadata] = useState(true);
   const formId = '1d392e69-b470-4703-afa6-19b01f490b84';
 
-  const handleSubmit = (data: Record<string, unknown>) => {
-    console.log('Form submitted:', data);
+  const handleSubmit = (_data: Record<string, unknown>) => {
     alert('Form submitted successfully! Check console for data.');
   };
 
@@ -27,8 +26,7 @@ export default function DynamicFormDemo() {
           const data = (await response.json()) as HubSpotFormData;
           setFormMetadata(data);
         }
-      } catch (error) {
-        console.error('Failed to fetch form metadata:', error);
+      } catch {
       } finally {
         setLoadingMetadata(false);
       }

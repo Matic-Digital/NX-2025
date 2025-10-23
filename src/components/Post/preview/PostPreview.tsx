@@ -23,7 +23,7 @@ export function PostPreview(props: Partial<Post>) {
   // Contentful Live Preview integration
   const livePost = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: livePost?.sys?.id });
-  
+
   // Toggle state for preview mode
   const [previewMode, setPreviewMode] = useState<PreviewMode>('detail');
 
@@ -72,7 +72,9 @@ export function PostPreview(props: Partial<Post>) {
           <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-md">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Preview Not Available</h2>
-              <p className="text-gray-600 mb-4">Detail preview will appear when all required fields are configured:</p>
+              <p className="text-gray-600 mb-4">
+                Detail preview will appear when all required fields are configured:
+              </p>
               <ul className="text-sm text-gray-500 space-y-1">
                 {!livePost?.title && <li>• Title is required</li>}
                 {!livePost?.slug && <li>• Slug is required</li>}

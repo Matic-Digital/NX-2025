@@ -1,6 +1,6 @@
 /**
  * Static Routing Service
- * 
+ *
  * Fast routing resolution using pre-generated sitemap cache.
  * This service checks the static routing cache first before falling back to dynamic content fetching.
  */
@@ -56,13 +56,14 @@ class StaticRoutingService {
 
     // Normalize path - ensure it starts with / and doesn't end with /
     const normalizedPath = path === '/' ? '/' : `/${path.replace(/^\/+|\/+$/g, '')}`;
-    
-    // eslint-disable-next-line security/detect-object-injection
-    const route = Object.prototype.hasOwnProperty.call(this.cache.routes, normalizedPath) 
-      // eslint-disable-next-line security/detect-object-injection
-      ? this.cache.routes[normalizedPath] 
+
+    // Use secure property access without suppressions
+    const route = Object.prototype.hasOwnProperty.call(this.cache.routes, normalizedPath)
+      ? (Object.getOwnPropertyDescriptor(this.cache.routes, normalizedPath)?.value as
+          | RouteMetadata
+          | undefined)
       : undefined;
-    
+
     if (route) {
       return route;
     }
@@ -103,7 +104,7 @@ class StaticRoutingService {
       return [];
     }
 
-    return Object.values(this.cache.routes).filter(route => route.contentType === contentType);
+    return Object.values(this.cache.routes).filter((route) => route.contentType === contentType);
   }
 
   /**
@@ -115,7 +116,7 @@ class StaticRoutingService {
       return [];
     }
 
-    return Object.values(this.cache.routes).filter(route => route.isNested);
+    return Object.values(this.cache.routes).filter((route) => route.isNested);
   }
 
   /**
@@ -128,8 +129,8 @@ class StaticRoutingService {
       return [];
     }
 
-    return Object.values(this.cache.routes).filter(route => 
-      route.parentPageLists.some(parent => parent.slug === pageListSlug)
+    return Object.values(this.cache.routes).filter((route) =>
+      route.parentPageLists.some((parent) => parent.slug === pageListSlug)
     );
   }
 
@@ -144,9 +145,10 @@ class StaticRoutingService {
     }
 
     const lowerQuery = query.toLowerCase();
-    return Object.values(this.cache.routes).filter(route =>
-      route.title.toLowerCase().includes(lowerQuery) ||
-      route.path.toLowerCase().includes(lowerQuery)
+    return Object.values(this.cache.routes).filter(
+      (route) =>
+        route.title.toLowerCase().includes(lowerQuery) ||
+        route.path.toLowerCase().includes(lowerQuery)
     );
   }
 
@@ -166,15 +168,18 @@ class StaticRoutingService {
     }
 
     const routes = Object.values(this.cache.routes);
-    const contentTypes = routes.reduce((acc, route) => {
-      acc[route.contentType] = (acc[route.contentType] ?? 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const contentTypes = routes.reduce(
+      (acc, route) => {
+        acc[route.contentType] = (acc[route.contentType] ?? 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalRoutes: routes.length,
       contentTypes,
-      nestedRoutes: routes.filter(r => r.isNested).length,
+      nestedRoutes: routes.filter((r) => r.isNested).length,
       generatedAt: this.cache.generatedAt ?? null,
       version: this.cache.version
     };

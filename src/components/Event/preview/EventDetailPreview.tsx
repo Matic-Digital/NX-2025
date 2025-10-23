@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -8,13 +8,13 @@ import {
 
 import { EventDetail } from '@/components/Event/EventDetail';
 import { eventFields } from '@/components/Event/preview/EventFields';
-import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
-import { getHeaderById } from '@/components/Header/HeaderApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
+import { getHeaderById } from '@/components/Header/HeaderApi';
+import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
 
 import type { Event as EventType } from '@/components/Event/EventSchema';
-import type { Header } from '@/components/Header/HeaderSchema';
 import type { Footer } from '@/components/Footer/FooterSchema';
+import type { Header } from '@/components/Header/HeaderSchema';
 
 /**
  * This component is used in Contentful Live Preview to display Event Detail components
@@ -54,8 +54,7 @@ export function EventDetailPreview(props: Partial<EventType>) {
 
         setHeader(headerData);
         setFooter(footerData);
-      } catch (error) {
-        console.error('Error fetching layout:', error);
+      } catch {
         setHeader(null);
         setFooter(null);
       } finally {
@@ -68,9 +67,9 @@ export function EventDetailPreview(props: Partial<EventType>) {
 
   // Check if we have all required fields for a valid Event
   const hasRequiredFields =
-    liveEvent?.sys && 
-    liveEvent?.title && 
-    liveEvent?.dateTime && 
+    liveEvent?.sys &&
+    liveEvent?.title &&
+    liveEvent?.dateTime &&
     liveEvent?.slug &&
     liveEvent?.template;
 
@@ -84,11 +83,7 @@ export function EventDetailPreview(props: Partial<EventType>) {
               <div className="text-lg">Loading layout...</div>
             </div>
           ) : (
-            <EventDetail 
-              event={liveEvent as EventType}
-              header={header}
-              footer={footer}
-            />
+            <EventDetail event={liveEvent as EventType} header={header} footer={footer} />
           )}
         </div>
       </div>
@@ -115,15 +110,21 @@ export function EventDetailPreview(props: Partial<EventType>) {
           {/* Error State */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <div className="text-center text-gray-500">
-              <p className="text-lg font-medium mb-4">Preview will appear when all required fields are configured:</p>
+              <p className="text-lg font-medium mb-4">
+                Preview will appear when all required fields are configured:
+              </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
                 <div className="text-left">
                   <h4 className="font-medium text-gray-700 mb-2">Required Fields:</h4>
                   <ul className="text-sm space-y-1">
                     {!liveEvent?.title && <li className="text-red-600">• Title is required</li>}
-                    {!liveEvent?.dateTime && <li className="text-red-600">• Date & Time is required</li>}
+                    {!liveEvent?.dateTime && (
+                      <li className="text-red-600">• Date & Time is required</li>
+                    )}
                     {!liveEvent?.slug && <li className="text-red-600">• Slug is required</li>}
-                    {!liveEvent?.template && <li className="text-red-600">• Template is required</li>}
+                    {!liveEvent?.template && (
+                      <li className="text-red-600">• Template is required</li>
+                    )}
                   </ul>
                 </div>
                 <div className="text-left">
@@ -142,10 +143,15 @@ export function EventDetailPreview(props: Partial<EventType>) {
           {/* Template Information */}
           {liveEvent?.template && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-3">Template: {liveEvent.template}</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-3">
+                Template: {liveEvent.template}
+              </h3>
               <div className="text-sm text-gray-600">
                 {liveEvent.template === 'Landing 1' && (
-                  <p>Full-featured layout with banner, content sections, news posts, slider, and form CTA.</p>
+                  <p>
+                    Full-featured layout with banner, content sections, news posts, slider, and form
+                    CTA.
+                  </p>
                 )}
                 {liveEvent.template === 'Landing 2' && (
                   <p>Alternative layout with different styling and content arrangement.</p>

@@ -24,8 +24,7 @@ export function usePostsData({ collection, collectionData }: UsePostsDataProps) 
           setIsLoading(true);
           const postsResponse = await getAllPostsMinimal();
           setPosts(postsResponse.items ?? []);
-        } catch (error) {
-          console.error('Error fetching posts:', error);
+        } catch {
         } finally {
           setIsLoading(false);
         }

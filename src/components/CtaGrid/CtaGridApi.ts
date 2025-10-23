@@ -60,10 +60,7 @@ export const getCtaGridById = async (
     return {
       item: data.ctaGrid ?? null
     };
-  } catch (error) {
-    console.error('❌ Error in getCtaGridById:', error);
-    console.error('❌ Error message:', error instanceof Error ? error.message : 'Unknown error');
-
+  } catch {
     // Return null instead of throwing to prevent component crashes
     return { item: null };
   }

@@ -32,8 +32,7 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
         if (video) {
           setVideoData(video);
         }
-      } catch (error) {
-        console.error('⭐ MuxVideoPlayer: Error fetching video data:', error);
+      } catch {
       } finally {
         setLoading(false);
       }

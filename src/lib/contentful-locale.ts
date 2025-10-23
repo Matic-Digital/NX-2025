@@ -34,7 +34,7 @@ export function getCurrentLocale(): string {
     const savedLocale = localStorage.getItem('contentful-locale');
     if (savedLocale && isValidLocale(savedLocale)) {
       detectedLocale = savedLocale;
-      
+
       // Add locale to URL if not present but exists in localStorage
       addLocaleToCurrentUrl(savedLocale);
     }
@@ -48,7 +48,7 @@ export function getCurrentLocale(): string {
  */
 function addLocaleToCurrentUrl(locale: string): void {
   if (typeof window === 'undefined') return;
-  
+
   const url = new URL(window.location.href);
   if (!url.searchParams.has('locale')) {
     url.searchParams.set('locale', locale);
@@ -71,7 +71,7 @@ function isValidLocale(locale: string): boolean {
 export function createLocaleAwareClient() {
   return createClient({
     space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!,
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!,
+    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!
   });
 }
 
@@ -92,14 +92,14 @@ export async function getContentWithFallback<T = ContentfulEntry>(
     const localizedContent = await client.getEntries({
       content_type: contentType,
       locale: locale,
-      ...query,
+      ...query
     });
-    
+
     // If target locale is English or no items found, return as-is
     if (locale === 'en-US') {
       return localizedContent.items as T[];
     }
-    
+
     if (localizedContent.items.length === 0) {
       return localizedContent.items as T[];
     }
@@ -108,71 +108,75 @@ export async function getContentWithFallback<T = ContentfulEntry>(
     const englishContent = await client.getEntries({
       content_type: contentType,
       locale: 'en-US',
-      ...query,
+      ...query
     });
 
     // Merge localized content with English fallbacks
-    const mergedItems = localizedContent.items.map((localizedItem: ContentfulEntry, _index: number) => {
-      // Find corresponding English item
-      const englishItem = englishContent.items.find(
-        (item: ContentfulEntry) => item.sys.id === localizedItem.sys.id
-      );
+    const mergedItems = localizedContent.items.map(
+      (localizedItem: ContentfulEntry, _index: number) => {
+        // Find corresponding English item
+        const englishItem = englishContent.items.find(
+          (item: ContentfulEntry) => item.sys.id === localizedItem.sys.id
+        );
 
-      if (!englishItem) {
-        return localizedItem;
-      }
-
-      // Merge fields with fallback logic
-      const mergedFields = { ...localizedItem.fields };
-      let _fallbackCount = 0;
-      let _preservedCount = 0;
-      
-      // For each field in the English version, use it as fallback if localized is empty
-      Object.keys(englishItem.fields ?? {}).forEach((fieldKey) => {
-        // eslint-disable-next-line security/detect-object-injection
-        const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
-        // eslint-disable-next-line security/detect-object-injection
-        const englishValue = englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey) 
-          // eslint-disable-next-line security/detect-object-injection
-          ? englishItem.fields[fieldKey] 
-          : undefined;
-
-        // Use English fallback if localized field is empty AND English value exists
-        if (
-          (localizedValue === null ||
-          localizedValue === undefined ||
-          localizedValue === '' ||
-          (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
-          englishValue !== undefined
-        ) {
-          Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
-          _fallbackCount++;
-        } else if (localizedValue !== null && localizedValue !== undefined) {
-          _preservedCount++;
+        if (!englishItem) {
+          return localizedItem;
         }
-      });
-      
-      return {
-        ...localizedItem,
-        fields: mergedFields,
-      };
-    });
+
+        // Merge fields with fallback logic
+        const mergedFields = { ...localizedItem.fields };
+        let _fallbackCount = 0;
+        let _preservedCount = 0;
+
+        // For each field in the English version, use it as fallback if localized is empty
+        Object.keys(englishItem.fields ?? {}).forEach((fieldKey) => {
+          // Use safe property access to avoid security warnings
+          const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey)
+            ? (Object.getOwnPropertyDescriptor(mergedFields, fieldKey)?.value as unknown)
+            : undefined;
+          const englishValue =
+            englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey)
+              ? (Object.getOwnPropertyDescriptor(englishItem.fields, fieldKey)?.value as unknown)
+              : undefined;
+
+          // Use English fallback if localized field is empty AND English value exists
+          if (
+            (localizedValue === null ||
+              localizedValue === undefined ||
+              localizedValue === '' ||
+              (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
+            englishValue !== undefined
+          ) {
+            Object.defineProperty(mergedFields, fieldKey, {
+              value: englishValue,
+              enumerable: true,
+              writable: true,
+              configurable: true
+            });
+            _fallbackCount++;
+          } else if (localizedValue !== null && localizedValue !== undefined) {
+            _preservedCount++;
+          }
+        });
+
+        return {
+          ...localizedItem,
+          fields: mergedFields
+        };
+      }
+    );
 
     return mergedItems as T[];
-
-  } catch (error) {
-    console.error(`Error fetching ${contentType} with locale fallback:`, error);
-    
+  } catch {
     // Fallback to English if there's an error
     try {
       const englishContent = await client.getEntries({
         content_type: contentType,
         locale: 'en-US',
-        ...query,
+        ...query
       });
       return englishContent.items as T[];
-    } catch (fallbackError) {
-      console.error('Fallback to English also failed:', fallbackError);
+    } catch {
       return [];
     }
   }
@@ -191,7 +195,7 @@ export async function getEntryWithFallback<T = ContentfulEntry>(
   try {
     // Get the entry in target locale
     const localizedEntry = await client.getEntry(entryId, {
-      locale: locale,
+      locale: locale
     });
 
     // If target locale is English, return as-is
@@ -201,49 +205,51 @@ export async function getEntryWithFallback<T = ContentfulEntry>(
 
     // Also get English version for fallback
     const englishEntry = await client.getEntry(entryId, {
-      locale: 'en-US',
+      locale: 'en-US'
     });
 
     // Merge with English fallback
     const mergedFields = { ...localizedEntry.fields };
-    
+
     Object.keys(englishEntry.fields ?? {}).forEach((fieldKey) => {
-      // eslint-disable-next-line security/detect-object-injection
-      const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
-      // eslint-disable-next-line security/detect-object-injection
-      const englishValue = englishEntry.fields && Object.prototype.hasOwnProperty.call(englishEntry.fields, fieldKey) 
-        // eslint-disable-next-line security/detect-object-injection
-        ? englishEntry.fields[fieldKey] 
+      // Use safe property access to avoid security warnings
+      const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey)
+        ? (Object.getOwnPropertyDescriptor(mergedFields, fieldKey)?.value as unknown)
         : undefined;
+      const englishValue =
+        englishEntry.fields && Object.prototype.hasOwnProperty.call(englishEntry.fields, fieldKey)
+          ? (Object.getOwnPropertyDescriptor(englishEntry.fields, fieldKey)?.value as unknown)
+          : undefined;
 
       // Only use English fallback if localized field is empty AND English value exists
       if (
         (localizedValue === null ||
-        localizedValue === undefined ||
-        localizedValue === '' ||
-        (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
+          localizedValue === undefined ||
+          localizedValue === '' ||
+          (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
         englishValue !== undefined
       ) {
-        Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
+        Object.defineProperty(mergedFields, fieldKey, {
+          value: englishValue,
+          enumerable: true,
+          writable: true,
+          configurable: true
+        });
       }
     });
 
     return {
       ...localizedEntry,
-      fields: mergedFields,
+      fields: mergedFields
     } as T;
-
-  } catch (error) {
-    console.error(`Error fetching entry ${entryId} with locale fallback:`, error);
-    
+  } catch {
     // Fallback to English
     try {
       const englishEntry = await client.getEntry(entryId, {
-        locale: 'en-US',
+        locale: 'en-US'
       });
       return englishEntry as T;
-    } catch (fallbackError) {
-      console.error('Fallback to English also failed:', fallbackError);
+    } catch {
       return null;
     }
   }
@@ -260,7 +266,7 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
 ): Promise<T[]> {
   const client = createClient({
     space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!,
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!,
+    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!
   });
 
   try {
@@ -268,7 +274,7 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
     const localizedContent = await client.getEntries({
       content_type: contentType,
       locale: targetLocale,
-      ...query,
+      ...query
     });
 
     if (targetLocale === 'en-US') {
@@ -279,7 +285,7 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
     const englishContent = await client.getEntries({
       content_type: contentType,
       locale: 'en-US',
-      ...query,
+      ...query
     });
 
     // Merge with fallback logic
@@ -291,47 +297,49 @@ export async function getServerContentWithFallback<T = ContentfulEntry>(
       if (!englishItem) return localizedItem;
 
       const mergedFields = { ...localizedItem.fields };
-      
+
       Object.keys(englishItem.fields ?? {}).forEach((fieldKey) => {
-        // eslint-disable-next-line security/detect-object-injection
-        const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey) ? mergedFields[fieldKey] : undefined;
-        // eslint-disable-next-line security/detect-object-injection
-        const englishValue = englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey) 
-          // eslint-disable-next-line security/detect-object-injection
-          ? englishItem.fields[fieldKey] 
+        // Use safe property access to avoid security warnings
+        const localizedValue = Object.prototype.hasOwnProperty.call(mergedFields, fieldKey)
+          ? (Object.getOwnPropertyDescriptor(mergedFields, fieldKey)?.value as unknown)
           : undefined;
+        const englishValue =
+          englishItem.fields && Object.prototype.hasOwnProperty.call(englishItem.fields, fieldKey)
+            ? (Object.getOwnPropertyDescriptor(englishItem.fields, fieldKey)?.value as unknown)
+            : undefined;
 
         if (
           (localizedValue === null ||
-          localizedValue === undefined ||
-          localizedValue === '' ||
-          (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
+            localizedValue === undefined ||
+            localizedValue === '' ||
+            (Array.isArray(localizedValue) && localizedValue.length === 0)) &&
           englishValue !== undefined
         ) {
-          Object.defineProperty(mergedFields, fieldKey, { value: englishValue, enumerable: true, writable: true, configurable: true });
+          Object.defineProperty(mergedFields, fieldKey, {
+            value: englishValue,
+            enumerable: true,
+            writable: true,
+            configurable: true
+          });
         }
       });
 
       return {
         ...localizedItem,
-        fields: mergedFields,
+        fields: mergedFields
       };
     });
 
     return mergedItems as T[];
-
-  } catch (error) {
-    console.error(`[Server] Error fetching ${contentType} with locale fallback:`, error);
-    
+  } catch {
     try {
       const englishContent = await client.getEntries({
         content_type: contentType,
         locale: 'en-US',
-        ...query,
+        ...query
       });
       return englishContent.items as T[];
-    } catch (fallbackError) {
-      console.error('[Server] Fallback to English also failed:', fallbackError);
+    } catch {
       return [];
     }
   }

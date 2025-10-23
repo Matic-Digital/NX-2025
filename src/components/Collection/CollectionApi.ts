@@ -55,12 +55,12 @@ export async function getAllCollections(preview = false): Promise<CollectionResp
     return {
       items: data.collectionCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Collections: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Collections: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Collections');
   }
@@ -98,12 +98,12 @@ export async function getCollectionById(id: string, preview = false): Promise<Co
     }
 
     return data.collection;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Collection: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Collection: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Collection');
   }

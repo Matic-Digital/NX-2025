@@ -12,10 +12,20 @@ interface StateProps {
   contentTypes?: string[];
 }
 
-export const LoadingState = ({ searchBarEnabled, searchQuery = '', onSearchChange, contentTypes }: StateProps) => (
+export const LoadingState = ({
+  searchBarEnabled,
+  searchQuery = '',
+  onSearchChange,
+  contentTypes
+}: StateProps) => (
   <div>
     {searchBarEnabled && onSearchChange && (
-      <SearchBar key="loading-search-bar" searchQuery={searchQuery} onSearchChange={onSearchChange} contentTypes={contentTypes} />
+      <SearchBar
+        key="loading-search-bar"
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        contentTypes={contentTypes}
+      />
     )}
     <div className="flex items-center justify-center p-8">
       <div className="text-muted-foreground">Loading collection...</div>
@@ -23,10 +33,21 @@ export const LoadingState = ({ searchBarEnabled, searchQuery = '', onSearchChang
   </div>
 );
 
-export const ErrorState = ({ message, searchBarEnabled, searchQuery = '', onSearchChange, contentTypes }: { message: string } & StateProps) => (
+export const ErrorState = ({
+  message,
+  searchBarEnabled,
+  searchQuery = '',
+  onSearchChange,
+  contentTypes
+}: { message: string } & StateProps) => (
   <div>
     {searchBarEnabled && onSearchChange && (
-      <SearchBar key="error-search-bar" searchQuery={searchQuery} onSearchChange={onSearchChange} contentTypes={contentTypes} />
+      <SearchBar
+        key="error-search-bar"
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        contentTypes={contentTypes}
+      />
     )}
     <div className="flex items-center justify-center p-8">
       <div className="text-red-500">{message}</div>
@@ -34,10 +55,20 @@ export const ErrorState = ({ message, searchBarEnabled, searchQuery = '', onSear
   </div>
 );
 
-export const EmptyState = ({ searchBarEnabled, searchQuery = '', onSearchChange, contentTypes }: StateProps) => (
+export const EmptyState = ({
+  searchBarEnabled,
+  searchQuery = '',
+  onSearchChange,
+  contentTypes
+}: StateProps) => (
   <div>
     {searchBarEnabled && onSearchChange && (
-      <SearchBar key="empty-search-bar" searchQuery={searchQuery} onSearchChange={onSearchChange} contentTypes={contentTypes} />
+      <SearchBar
+        key="empty-search-bar"
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        contentTypes={contentTypes}
+      />
     )}
     <div className="flex items-center justify-center p-8">
       <div className="text-muted-foreground">No results found</div>
@@ -45,13 +76,25 @@ export const EmptyState = ({ searchBarEnabled, searchQuery = '', onSearchChange,
   </div>
 );
 
-export const EmptySearchState = ({ searchQuery, searchBarEnabled, onSearchChange, contentTypes }: { searchQuery: string } & StateProps) => (
+export const EmptySearchState = ({
+  searchQuery,
+  searchBarEnabled,
+  onSearchChange,
+  contentTypes
+}: { searchQuery: string } & StateProps) => (
   <div>
     {searchBarEnabled && onSearchChange && (
-      <SearchBar key="empty-search-search-bar" searchQuery={searchQuery} onSearchChange={onSearchChange} contentTypes={contentTypes} />
+      <SearchBar
+        key="empty-search-search-bar"
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        contentTypes={contentTypes}
+      />
     )}
     <div className="flex flex-col items-center justify-center p-8 text-center">
-      <div className="text-muted-foreground mb-2">No results found for &ldquo;{searchQuery}&rdquo;</div>
+      <div className="text-muted-foreground mb-2">
+        No results found for &ldquo;{searchQuery}&rdquo;
+      </div>
       <div className="text-sm text-muted-foreground">Try adjusting your search terms</div>
     </div>
   </div>

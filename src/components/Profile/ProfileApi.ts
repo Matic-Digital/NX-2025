@@ -62,12 +62,12 @@ export async function getAllProfiles(preview = false): Promise<ProfileResponse> 
     return {
       items: data.profileCollection.items
     };
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Profiles: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Profiles: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Profiles');
   }
@@ -105,12 +105,12 @@ export async function getProfileById(id: string, preview = false): Promise<Profi
     }
 
     return data.profile;
-  } catch (error) {
-    if (error instanceof ContentfulError) {
-      throw error;
+  } catch (_error) {
+    if (_error instanceof ContentfulError) {
+      throw _error;
     }
-    if (error instanceof Error) {
-      throw new NetworkError(`Error fetching Profile: ${error.message}`);
+    if (_error instanceof Error) {
+      throw new NetworkError(`Error fetching Profile: ${_error.message}`);
     }
     throw new Error('Unknown error fetching Profile');
   }

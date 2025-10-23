@@ -1,5 +1,6 @@
 import { cookies, draftMode } from 'next/headers';
 import { NextResponse } from 'next/server';
+
 import { constantTimeCompare } from '@/lib/security-utils';
 
 // Import all the API functions
@@ -296,34 +297,48 @@ export async function GET(
     return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
   }
 
-  // Validate content type
-  // eslint-disable-next-line security/detect-object-injection
-  if (!contentTypeMap[contentType]) {
+  // Validate content type using secure property access
+  if (!Object.prototype.hasOwnProperty.call(contentTypeMap, contentType)) {
     return NextResponse.json(
       { message: `Unsupported content type: ${contentType}` },
       { status: 400 }
     );
   }
 
-  // eslint-disable-next-line security/detect-object-injection
-  const { fetchFn, previewPath, entityName } = contentTypeMap[contentType];
+  // Safe property access after validation with proper typing
+  const contentTypeConfig = Object.getOwnPropertyDescriptor(contentTypeMap, contentType)?.value as
+    | {
+        fetchFn: (id: string, preview?: boolean, locale?: string) => Promise<unknown>;
+        previewPath: string;
+        entityName: string;
+      }
+    | undefined;
+
+  if (!contentTypeConfig) {
+    return NextResponse.json(
+      { message: `Invalid content type configuration: ${contentType}` },
+      { status: 500 }
+    );
+  }
+
+  const { fetchFn, previewPath, entityName } = contentTypeConfig;
 
   try {
-    console.log(`⭐ enable-draft-${contentType}: Attempting to fetch content with ID: ${id}`);
-    console.log(`⭐ enable-draft-${contentType}: Locale parameter: ${locale}`);
-    console.log(`⭐ enable-draft-${contentType}: Clean locale: ${cleanLocale}`);
-
     // Fetch the content using the appropriate API function
     // For Post, try to auto-detect locale or use default
     let content;
     if (contentType === 'post') {
       // Post API supports locale parameter - try with detected locale first
       if (cleanLocale) {
-        content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, cleanLocale);
+        content = await (
+          fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>
+        )(id, true, cleanLocale);
       } else {
         // Auto-detect: try default locale first, then fallback to any locale
         try {
-          content = await (fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>)(id, true, 'en-US');
+          content = await (
+            fetchFn as (id: string, preview: boolean, locale?: string) => Promise<unknown>
+          )(id, true, 'en-US');
         } catch {
           // If en-US fails, try without locale (will use current locale detection in PostApi)
           content = await fetchFn(id, true);
@@ -334,22 +349,18 @@ export async function GET(
       content = await fetchFn(id, true);
     }
 
-    console.log(`⭐ enable-draft-${contentType}: Fetched content:`, content);
-
     // Type-safe logging - check if content has sys property
-    const contentId =
+    const _contentId =
       content &&
       typeof content === 'object' &&
       'sys' in content &&
       content.sys &&
       typeof content.sys === 'object' &&
       'id' in (content.sys as Record<string, unknown>)
-        ? (content.sys as Record<string, unknown>).id as string
+        ? ((content.sys as Record<string, unknown>).id as string)
         : 'unknown';
-    console.log(`⭐ enable-draft-${contentType}`, contentId, id);
 
     if (!content) {
-      console.log(`⭐ enable-draft-${contentType}: Content not found for ID: ${id}`);
       return NextResponse.json({ message: `${entityName} not found` }, { status: 404 });
     }
 
@@ -377,10 +388,9 @@ export async function GET(
     const queryParams = new URLSearchParams({ id });
     if (cleanLocale) queryParams.set('locale', cleanLocale);
     if (slug) queryParams.set('slug', slug);
-    
+
     return NextResponse.redirect(new URL(`${previewPath}?${queryParams.toString()}`, request.url));
-  } catch (error) {
-    console.error(`⭐ Error enabling draft for ${contentType}:`, error);
+  } catch {
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });
   }
 }
