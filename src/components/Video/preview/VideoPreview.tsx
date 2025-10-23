@@ -3,7 +3,7 @@
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
-import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
+import { LivePreview } from '@/components/Preview/LivePreview';
 import { videoFields } from '@/components/Video/preview/VideoFields';
 
 import type { Video } from '@/components/Video/VideoSchema';
@@ -17,51 +17,44 @@ import type { Video } from '@/components/Video/VideoSchema';
 export function VideoPreview(props: Partial<Video>) {
   // Contentful Live Preview integration
   const liveVideo = useContentfulLiveUpdates(props);
+  
+  // Debug: Log what data we're getting
+  console.log('🔍 VideoPreview liveVideo data:', liveVideo);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Live Component Preview */}
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
-            <div className="bg-gray-100 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Live Preview</span>
-              <span className="bg-cyan-100 text-cyan-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                Video
-              </span>
-            </div>
-            <div className="overflow-hidden">
-              {(() => {
-                // Check if we have the minimum required fields
-                const hasMinimumFields = liveVideo?.sys && liveVideo?.playbackId;
+          <LivePreview
+            componentName="Video"
+            data={liveVideo}
+            requiredFields={['sys', 'title', 'playbackId']}
+          >
+            <div className="p-8">
+              <div className="max-w-4xl mx-auto">
+                <h3 className="text-lg font-semibold mb-4 text-gray-600">
+                  Preview (video)
+                </h3>
 
-                if (hasMinimumFields) {
-                  return (
-                    <div className="p-8">
-                      <div className="max-w-4xl mx-auto">
-                        <h3 className="text-lg font-semibold mb-4 text-gray-600">
-                          Preview (video)
-                        </h3>
-
-                        {/* Video Preview */}
-                        <MuxVideoPlayer {...(liveVideo as Video)} />
+                {/* Video Preview - Simple preview without API calls */}
+                <div className="relative bg-gray-900 rounded-lg overflow-hidden aspect-video">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center">
+                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
                       </div>
+                      <h4 className="text-lg font-semibold mb-2">{liveVideo.title}</h4>
+                      <p className="text-sm text-gray-300">Playback ID: {liveVideo.playbackId}</p>
+                      <p className="text-xs text-green-400 mt-2">✅ Video Preview Ready</p>
                     </div>
-                  );
-                }
-
-                // Show preview placeholder when fields are missing
-                return (
-                  <div className="p-8 text-center text-gray-500">
-                    <p>Preview will appear when the video is configured.</p>
-                    <p className="text-sm mt-2">
-                      Add a playback ID and optional title for best results.
-                    </p>
                   </div>
-                );
-              })()}
+                </div>
+              </div>
             </div>
-          </div>
+          </LivePreview>
 
           {/* Field Breakdown */}
           <FieldBreakdown title="Video Fields" fields={videoFields} data={liveVideo} />

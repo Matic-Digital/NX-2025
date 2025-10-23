@@ -62,7 +62,7 @@ export const ProductCard = (props: ProductSys) => {
     void generateProductUrl();
   }, [productData]);
 
-  if (!loading) {
+  if (loading) {
     return <ProductCardSkeleton />;
   }
 

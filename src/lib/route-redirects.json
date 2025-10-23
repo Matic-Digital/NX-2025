@@ -365,6 +365,11 @@
     "permanent": false
   },
   {
+    "source": "/nx-ncu-3-0",
+    "destination": "/products/controls/nx-ncu-3-0",
+    "permanent": false
+  },
+  {
     "source": "/nx-one",
     "destination": "/products/software/nx-one",
     "permanent": false
@@ -372,6 +377,11 @@
   {
     "source": "/nx-pulse",
     "destination": "/products/software/nx-pulse",
+    "permanent": false
+  },
+  {
+    "source": "/nx-spc-3-0",
+    "destination": "/products/controls/nx-spc-3-0",
     "permanent": false
   },
   {
@@ -447,6 +457,11 @@
   {
     "source": "/trackers",
     "destination": "/products/trackers",
+    "permanent": false
+  },
+  {
+    "source": "/truecapture",
+    "destination": "/products/controls/truecapture",
     "permanent": false
   },
   {

@@ -52,3 +52,6 @@ yarn-error.log*
 # PR Documentation
 PR_DOCUMENTATION.md
 .env*.local
+
+routing-debug.json
+src/lib/routing-cache.json
