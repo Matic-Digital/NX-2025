@@ -18,6 +18,7 @@
  * Theme extensions
  * Reusable utility patterns */
 
+/* CSS Variables - Light Mode */
 :root {
   --black: #111111;
   --white: #ffffff;
@@ -703,8 +704,7 @@
   }
 }
 
-/* Animation */
-@layer utilities {
+/* Animation utilities */
   .animate-fade-up {
     animation: fade-up 0.5s ease-out forwards;
   }
@@ -724,10 +724,8 @@
   .animate-subtle-scale {
     animation: subtle-scale 0.2s ease-out forwards;
   }
-}
 
-/* Text Gradient */
-@layer utilities {
+/* Text Gradient utilities */
   .text-gradient-pink {
     @apply bg-linear-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent;
   }
@@ -743,27 +741,25 @@
   .text-gradient-orange {
     @apply bg-linear-to-r from-orange-400 via-amber-500 to-yellow-500 bg-clip-text text-transparent;
   }
-}
 
 /* Interactive SVG Map Styles */
+  .regions-map .map-dots circle {
+    transition: fill 0.3s ease;
+  }
 
-.regions-map .map-dots circle {
-  transition: fill 0.3s ease;
-}
+  .regions-map:has(#northAmerica:hover) #northAmerica-dots circle,
+  .regions-map:has(#europe:hover) #europe-dots circle,
+  .regions-map:has(#latinAmerica:hover) #latinAmerica-dots circle,
+  .regions-map:has(#australiaPacific:hover) #australiaPacific-dots circle,
+  .regions-map:has(#middleEastIndiaAfrica:hover) #middleEastIndiaAfrica-dots circle {
+    fill: #f97316;
+  }
 
-.regions-map:has(#northAmerica:hover) #northAmerica-dots circle,
-.regions-map:has(#europe:hover) #europe-dots circle,
-.regions-map:has(#latinAmerica:hover) #latinAmerica-dots circle,
-.regions-map:has(#australiaPacific:hover) #australiaPacific-dots circle,
-.regions-map:has(#middleEastIndiaAfrica:hover) #middleEastIndiaAfrica-dots circle {
-  fill: #f97316;
-}
-
-/* Scrollbar hide utility */
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
-}
+  /* Scrollbar hide utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+  }

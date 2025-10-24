@@ -1,4 +1,4 @@
-// Global styles
+// Global styles - optimized loading
 import '@/styles/globals.css';
 
 import { type Metadata } from 'next';
