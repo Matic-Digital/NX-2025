@@ -13,6 +13,7 @@
     "build": "npm run build:with-maps",
     "build:with-maps": "node ./scripts/build-with-source-maps.js",
     "build:no-maps": "node ./scripts/build-with-source-maps.js --no-maps",
+    "build:modern": "node ./scripts/build-modern.js",
     "build:analyze": "npm run sitemap:routing && ANALYZE=true next build",
     "\u001b[36mCode Quality\u001b[0m": "\u001b[36m---------------------------------------------\u001b[0m",
     "check": "npm run lint:all && npm run typecheck",
@@ -146,13 +147,30 @@
     "typescript": "^5.5.3",
     "vitest": "^3.0.9"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11",
-    "not op_mini all"
-  ],
+  "browserslist": {
+    "production": [
+      "> 0.5%",
+      "last 2 versions",
+      "not dead",
+      "not ie 11",
+      "not op_mini all",
+      "Chrome >= 88",
+      "Firefox >= 85",
+      "Safari >= 14",
+      "Edge >= 88"
+    ],
+    "modern": [
+      "Chrome >= 91",
+      "Firefox >= 90",
+      "Safari >= 15",
+      "Edge >= 91"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "ct3aMetadata": {
     "initVersion": "7.38.1"
   },

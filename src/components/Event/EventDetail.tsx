@@ -17,7 +17,7 @@ import { formatDate, formatDateRange } from '@/lib/utils';
 import { AgendaList } from '@/components/AgendaItem/AgendaItem';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { getPostsByCategories } from '@/components/Event/EventApi';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { DynamicHubspotForm as HubspotForm } from '@/components/Forms/DynamicContactForm';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PageLayout } from '@/components/PageLayout/PageLayout';

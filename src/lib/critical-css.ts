@@ -123,6 +123,38 @@ export const CRITICAL_CSS = `
     min-height: 0;
   }
   
+  /* Mobile BannerHero section heading stability */
+  @media (max-width: 768px) {
+    /* Reserve space for section heading to prevent layout shifts */
+    .banner-hero-content {
+      min-height: 200px; /* Reserve minimum space for heading */
+    }
+    
+    /* Section heading container stability */
+    .section-heading-container {
+      min-height: 120px; /* Minimum height for typical heading */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Heading text stability */
+    .section-heading h1,
+    .section-heading h2 {
+      line-height: 1.2;
+      margin: 0;
+      padding: 0;
+      /* Reserve space for typical heading sizes */
+      min-height: 2.4em; /* 2 lines at 1.2 line-height */
+    }
+    
+    /* Prevent font loading shifts */
+    .section-heading {
+      font-display: swap;
+      contain: layout;
+    }
+  }
+  
   /* Ensure container stability */
   .container {
     contain: layout;

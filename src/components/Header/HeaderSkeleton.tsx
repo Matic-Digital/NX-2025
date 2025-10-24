@@ -14,8 +14,9 @@ export function HeaderSkeleton() {
   );
 
   return (
-    <Container className="sticky top-0 z-[100] pt-0 transition-all duration-300 max-md:z-[40] md:pt-6">
-      <header className="relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full">
+    <div className="fixed top-0 left-0 right-0 z-[100] w-full header-container">
+      <Container className="w-full pt-0 transition-all duration-300 lg:pt-6">
+        <header className="relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full">
         <Box className="items-center justify-between">
           {/* Logo Section Skeleton */}
           <div className="flex items-center gap-2 py-4">
@@ -83,7 +84,8 @@ export function HeaderSkeleton() {
             </Button>
           </Box>
         </Box>
-      </header>
-    </Container>
+        </header>
+      </Container>
+    </div>
   );
 }

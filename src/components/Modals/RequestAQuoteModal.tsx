@@ -8,7 +8,7 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { DynamicHubspotForm as HubspotForm } from '@/components/Forms/DynamicContactForm';
 
 interface RequestAQuoteModalProps {
   isOpen: boolean;

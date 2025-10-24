@@ -19,19 +19,38 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 
-import type { FooterResponse, Footer as FooterType } from '@/components/Footer/FooterSchema';
+import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
-import type { Page, PageResponse } from '@/components/Page/PageSchema';
+import type { Page } from '@/components/Page/PageSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
-import type { PageList } from '@/components/PageList/PageListSchema';
 import type { Metadata } from 'next';
+
+// Enable static generation for faster initial response
+export const dynamic = 'force-static';
+export const revalidate = 3600; // Revalidate every hour
+
+// Cache the homepage data to avoid duplicate API calls
+let cachedHomePage: Page | null = null;
+let cacheTimestamp = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+async function getCachedHomePage(): Promise<Page | null> {
+  const now = Date.now();
+  if (cachedHomePage && (now - cacheTimestamp) < CACHE_DURATION) {
+    return cachedHomePage;
+  }
+  
+  cachedHomePage = await getPageBySlug('/', false);
+  cacheTimestamp = now;
+  return cachedHomePage;
+}
 
 /**
  * Generate metadata for the page, including Open Graph tags
  */
 export async function generateMetadata(): Promise<Metadata> {
-  // Try to fetch the home page data
-  const homePage = await getPageBySlug('/', false);
+  // Try to fetch the home page data (with caching)
+  const homePage = await getCachedHomePage();
 
   // Default metadata
   const defaultMetadata = {
@@ -116,8 +135,8 @@ const componentMap = {
  * Otherwise, it falls back to the default homepage that displays lists of pages and page lists.
  */
 export default async function HomePage() {
-  // Try to fetch a page with the slug '/' from Contentful
-  const homePage = await getPageBySlug('/', false);
+  // Try to fetch a page with the slug '/' from Contentful (with caching)
+  const homePage = await getCachedHomePage();
 
   // If a page with slug '/' exists, render it as the homepage
   if (homePage) {
@@ -190,45 +209,32 @@ async function renderDefaultHomePage() {
       'PlaceholderCorp Website 2025 - Solar tracking solutions and renewable energy technology',
     sys: { id: 'homepage' }
   };
-  const homepageSchema = (await contentfulSchemaMapper.generateHomepageSchema(
-    defaultHomePageData
-  )) as Record<string, unknown>;
 
-  // Use try-catch blocks to handle potential API errors
-  let pages: PageResponse = { items: [], total: 0 };
-  let pageLists: PageList[] = [];
+  // Parallel API calls for faster loading
+  const [homepageSchema, pages, pageLists, footers] = await Promise.allSettled([
+    contentfulSchemaMapper.generateHomepageSchema(defaultHomePageData),
+    getAllPages(),
+    getAllPageLists().then(response => response.items),
+    getAllFooters()
+  ]);
 
-  try {
-    pages = await getAllPages();
-  } catch {
-    // Continue with empty pages array
-  }
-
-  try {
-    const pageListsResponse = await getAllPageLists();
-    pageLists = pageListsResponse.items;
-  } catch {
-    // Continue with empty pageLists array
-  }
-
-  let footers: FooterResponse = { items: [], total: 0 };
-  try {
-    footers = await getAllFooters();
-  } catch {
-    // Continue with empty footers array
-  }
+  // Extract results with fallbacks
+  const schema = homepageSchema.status === 'fulfilled' ? homepageSchema.value as Record<string, unknown> : {};
+  const pagesData = pages.status === 'fulfilled' ? pages.value : { items: [], total: 0 };
+  const pageListsData = pageLists.status === 'fulfilled' ? pageLists.value : [];
+  const footersData = footers.status === 'fulfilled' ? footers.value : { items: [], total: 0 };
 
   return (
     <>
-      <JsonLdSchema schema={homepageSchema} id="default-homepage-hierarchy-schema" />
+      <JsonLdSchema schema={schema} id="default-homepage-hierarchy-schema" />
       <Container className="py-8">
         <h1 className="text-headline-sm mb-8 font-bold">Nextracker Website 2025</h1>
 
-        {pages.items.length > 0 && (
+        {pagesData.items.length > 0 && (
           <div className="mb-8">
             <h2 className="text-headline-xs mb-4 font-semibold">Pages</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {pages.items.map((page) => (
+              {pagesData.items.map((page) => (
                 <div key={page.sys.id} className="rounded-lg border p-4 shadow-xs">
                   <h3 className="text-body-lg mb-2 font-medium">{page.title}</h3>
                   {page.description && <p className="text-gray-600">{page.description}</p>}
@@ -238,11 +244,11 @@ async function renderDefaultHomePage() {
           </div>
         )}
 
-        {pageLists.length > 0 && (
+        {pageListsData.length > 0 && (
           <div>
             <h2 className="text-headline-xs mb-4 font-semibold">Page Lists</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {pageLists.map((pageList) => (
+              {pageListsData.map((pageList) => (
                 <div key={pageList.sys.id} className="rounded-lg border p-4 shadow-xs">
                   <h3 className="text-body-lg mb-2 font-medium">{pageList.title}</h3>
                   <p className="text-body-xs text-gray-500">Slug: {pageList.slug}</p>
@@ -252,18 +258,18 @@ async function renderDefaultHomePage() {
           </div>
         )}
 
-        {pages.items.length === 0 && pageLists.length === 0 && (
+        {pagesData.items.length === 0 && pageListsData.length === 0 && (
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-800">
             <h2 className="text-body-md mb-2 font-medium">No content found</h2>
             <p>No pages or page lists were found in your Contentful space.</p>
           </div>
         )}
 
-        {footers.items.length > 0 && (
+        {footersData.items.length > 0 && (
           <div className="mb-8">
             <h2 className="text-headline-xs mb-4 font-semibold">Footers</h2>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {footers.items.map((footer) => (
+              {footersData.items.map((footer) => (
                 <div key={footer.sys.id} className="rounded-lg border p-4 shadow-xs">
                   <h3 className="text-body-lg mb-2 font-medium">{footer.title}</h3>
                   {footer.description && <p className="text-body-xs">{footer.description}</p>}
