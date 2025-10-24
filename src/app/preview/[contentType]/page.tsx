@@ -91,6 +91,7 @@ import { MenuItemPreview } from '@/components/MenuItem/preview/MenuItemPreview';
 import { getModalById } from '@/components/Modals/ModalApi';
 import { ModalPreview } from '@/components/Modals/preview/ModalPreview';
 import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
+import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
 import { OfficeLocationPreview } from '@/components/OfficeLocation/preview/OfficeLocationPreview';
 import { Page } from '@/components/Page/Page';
@@ -323,7 +324,7 @@ const contentTypeConfig: Record<string, ContentTypeConfig> = {
   },
   'office-location': {
     fetchFn: getLocationById,
-    component: OfficeLocationPreview,
+    component: Location,
     previewComponent: OfficeLocationPreview,
     entityName: 'OfficeLocation',
     containerClass: 'min-h-screen bg-gray-50'

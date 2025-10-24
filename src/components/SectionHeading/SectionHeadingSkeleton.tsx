@@ -60,9 +60,9 @@ export function SectionHeadingSkeleton({
   );
 
   const StackedSectionHeadingSkeleton = () => (
-    <Box direction="col" gap={12}>
+    <Box direction="col" gap={12} className="section-heading-container">
       {/* title skeleton */}
-      <SkeletonBox className="h-16 w-full max-w-4xl lg:h-20" />
+      <SkeletonBox className="section-heading h-16 w-full max-w-4xl lg:h-20" />
 
       {/* cta section skeleton */}
       <Box direction={{ base: 'col', md: 'row' }} gap={8} className="w-full">
@@ -81,9 +81,9 @@ export function SectionHeadingSkeleton({
   );
 
   const CenteredSectionHeadingSkeleton = () => (
-    <Box direction="col" gap={6} className="items-center text-center">
+    <Box direction="col" gap={6} className="section-heading-container items-center text-center">
       {/* title skeleton */}
-      <SkeletonBox className="col-span-full h-16 w-full max-w-4xl lg:h-20" />
+      <SkeletonBox className="section-heading col-span-full h-16 w-full max-w-4xl lg:h-20" />
 
       {/* cta section skeleton */}
       <Box direction="col" gap={8} className="col-span-full w-full items-center">

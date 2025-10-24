@@ -16,7 +16,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
 import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
+import { DynamicHubspotForm as HubspotForm } from '@/components/Forms/DynamicContactForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';

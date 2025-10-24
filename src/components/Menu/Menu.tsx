@@ -58,7 +58,6 @@ export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuP
         ? () => getRecentPostsForMegaMenuByCategory(category, 1)
         : () => getRecentPostsForMegaMenu(1);
 
-
       fetchFunction()
         .then((response) => setRecentPosts(response.items))
         .catch(() => {

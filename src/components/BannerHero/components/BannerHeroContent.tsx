@@ -41,12 +41,14 @@ export const BannerHeroContent = ({
 
       {/* Content Overlay */}
       <div className={bannerHeroStyles.getOverlayClasses()}>
-        <div className={bannerHeroStyles.getContentClasses()}>
-          <SectionHeading
-            sectionHeadingId={bannerHero.heading.sys.id}
-            variant={bannerHero.heading.variant}
-            componentType="banner-hero"
-          />
+        <div className={`${bannerHeroStyles.getContentClasses()} banner-hero-content`}>
+          <div className="section-heading-container">
+            <SectionHeading
+              sectionHeadingId={bannerHero.heading.sys.id}
+              variant={bannerHero.heading.variant}
+              componentType="banner-hero"
+            />
+          </div>
         </div>
       </div>
     </Section>
