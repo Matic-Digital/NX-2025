@@ -10,7 +10,8 @@ import type { Video } from '@/components/Video/VideoSchema';
 export const VIDEO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
-  playbackId
+  id
+  muxVideo
   posterImage {
     ${IMAGE_SIMPLE_GRAPHQL_FIELDS}
   }

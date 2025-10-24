@@ -27,7 +27,7 @@ export function VideoPreview(props: Partial<Video>) {
           <LivePreview
             componentName="Video"
             data={liveVideo}
-            requiredFields={['sys', 'playbackId']}
+            requiredFields={['sys', 'muxVideo']}
           >
             <div className="p-8">
               <div className="max-w-4xl mx-auto">

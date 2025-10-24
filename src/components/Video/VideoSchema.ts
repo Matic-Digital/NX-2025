@@ -20,7 +20,16 @@ export const VideoSchema = z.object({
   }),
   title: z.string(),
   id: z.string(),
-  playbackId: z.string(),
+  muxVideo: z.object({
+    playbackId: z.string().optional(),
+    assetId: z.string().optional(),
+    uploadId: z.string().optional()
+  }).refine(
+    (data) => data.playbackId ?? data.assetId ?? data.uploadId,
+    {
+      message: "muxVideo must have at least one of: playbackId, assetId, or uploadId"
+    }
+  ),
   posterImage: ImageSchema.optional(),
   __typename: z.string().optional()
 });

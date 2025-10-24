@@ -11,12 +11,16 @@ export const videoFields: FieldConfig<Partial<Video>>[] = [
     getValue: (data) => (data.title ? `"${data.title}"` : 'Not set')
   },
   {
-    name: 'playbackId',
-    label: 'Playback ID',
+    name: 'muxVideo',
+    label: 'Mux Video',
     required: true,
-    description: 'Mux playback ID for video streaming.',
+    description: 'Mux video configuration object.',
     color: 'green',
-    getValue: (data) => (data.playbackId ? `"${data.playbackId}"` : 'Not set')
+    getValue: (data) => {
+      if (!data.muxVideo) return 'Not set';
+      const playbackId = data.muxVideo.playbackId;
+      return playbackId ? `Playback ID: "${playbackId}"` : 'Mux video configured (no playback ID)';
+    }
   },
   {
     name: 'id',
