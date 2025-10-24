@@ -118,7 +118,7 @@ export function ContactCard(props: ContactCardProps) {
         {hasPhone && (
           <Button
             variant="white"
-            className="border-border-input text-body-sm text-body w-full justify-center border-1 [&_svg]:size-5"
+            className="border-border-input text-body-sm text-text-body dark:text-background w-full justify-center border-1 [&_svg]:size-5"
           >
             <Box direction="row" gap={2} className="items-center">
               <Phone />
