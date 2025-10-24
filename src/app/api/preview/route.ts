@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
   const pageId = searchParams.get('pageId');
   const pageListId = searchParams.get('pageListId');
   const imageBetweenId = searchParams.get('imageBetweenId');
+  const videoId = searchParams.get('videoId');
 
   // Check the secret and validate it using constant-time comparison
   const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
@@ -138,6 +139,10 @@ export async function GET(request: NextRequest) {
   // Redirect to Product preview
   if (productId) {
     return NextResponse.redirect(new URL(`/product-preview?id=${productId}`, request.url));
+  }
+
+  if (videoId) {
+    return NextResponse.redirect(new URL(`/video-preview?id=${videoId}`, request.url));
   }
 
   // If no valid parameters were provided
