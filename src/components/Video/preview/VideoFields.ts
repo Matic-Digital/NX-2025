@@ -23,14 +23,6 @@ export const videoFields: FieldConfig<Partial<Video>>[] = [
     }
   },
   {
-    name: 'id',
-    label: 'Video ID',
-    required: true,
-    description: 'Internal video identifier for tracking.',
-    color: 'purple',
-    getValue: (data) => (data.id ? `"${data.id}"` : 'Not set')
-  },
-  {
     name: 'posterImage',
     label: 'Poster Image',
     required: false,

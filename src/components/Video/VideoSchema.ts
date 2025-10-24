@@ -19,7 +19,6 @@ export const VideoSchema = z.object({
     id: z.string()
   }),
   title: z.string(),
-  id: z.string(),
   muxVideo: z.object({
     playbackId: z.string().optional(),
     assetId: z.string().optional(),

@@ -3,7 +3,7 @@ import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
+import { VIDEO_MINIMAL_FIELDS } from '@/components/Video/VideoApi';
 
 import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema';
 
@@ -25,7 +25,7 @@ export const IMAGEBETWEEN_GRAPHQL_FIELDS = `
       ${IMAGE_GRAPHQL_FIELDS}
     }
     ... on Video {
-      ${VIDEO_GRAPHQL_FIELDS}
+      ${VIDEO_MINIMAL_FIELDS}
     }
     ... on Slider {
       ${SYS_FIELDS}

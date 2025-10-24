@@ -65,7 +65,7 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
     <MuxVideo
       playbackId={videoData.muxVideo.playbackId}
       metadata={{
-        video_id: videoData.id,
+        video_id: videoData.sys.id,
         video_title: videoData.title
       }}
       controls

@@ -7,7 +7,7 @@ import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/Hubsp
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PRODUCT_GRAPHQL_FIELDS } from '@/components/Product/ProductApi';
 import { SECTION_HEADING_GRAPHQL_FIELDS } from '@/components/SectionHeading/SectionHeadingApi';
-import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
+import { VIDEO_MINIMAL_FIELDS } from '@/components/Video/VideoApi';
 
 import type { Content } from '@/components/Content/ContentSchema';
 
@@ -28,7 +28,7 @@ export const CONTENT_GRAPHQL_FIELDS = `
       ${IMAGE_GRAPHQL_FIELDS}
     }
     ... on Video {
-      ${VIDEO_GRAPHQL_FIELDS}
+      ${VIDEO_MINIMAL_FIELDS}
     }
   }
   item {

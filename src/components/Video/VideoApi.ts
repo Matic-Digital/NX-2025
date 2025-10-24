@@ -6,11 +6,16 @@ import { IMAGE_SIMPLE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 
 import type { Video } from '@/components/Video/VideoSchema';
 
-// Video fields
+// Minimal Video fields for main queries (lazy loading)
+export const VIDEO_MINIMAL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+`;
+
+// Full Video fields for detailed loading
 export const VIDEO_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
-  id
   muxVideo
   posterImage {
     ${IMAGE_SIMPLE_GRAPHQL_FIELDS}
