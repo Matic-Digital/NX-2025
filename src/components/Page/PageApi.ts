@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { getPAGE_WITH_REFS_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -128,6 +129,9 @@ export async function getPageBySlug(
   preview = true
 ): Promise<PageWithHeaderFooter | null> {
   try {
+    // Generate cache configuration for this page
+    const cacheConfig = getCacheConfig('Page', { slug });
+    
     // First, fetch the basic page data with references
     const response = await fetchGraphQL<PageWithRefs>(
       `query GetPageBySlug($slug: String!, $preview: Boolean!) {
@@ -138,7 +142,8 @@ export async function getPageBySlug(
         }
       }`,
       { slug, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.pageCollection?.items?.length) {

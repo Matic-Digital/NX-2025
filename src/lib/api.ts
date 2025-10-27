@@ -19,7 +19,7 @@ export async function fetchGraphQL<T>(
   query: string,
   variables: Record<string, unknown> = {},
   preview = false,
-  cacheConfig?: { next: { revalidate: number } }
+  cacheConfig?: { next: { revalidate?: number; tags?: string[] } }
 ): Promise<GraphQLResponse<T>> {
   try {
     // Use explicit cache settings based on preview mode
