@@ -526,7 +526,7 @@ async function renderPage(page: Page, slug: string) {
 async function renderPageList(pageList: PageListType, slug: string) {
   const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
-  const pageFooter = pageList.pageLayout as PageLayoutType | undefined;
+  const pageFooter = pageLayout?.footer as FooterType | undefined;
 
   // Extract page content items if available and type them properly
   const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
