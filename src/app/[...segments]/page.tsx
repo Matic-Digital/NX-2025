@@ -104,9 +104,10 @@ export async function generateStaticParams() {
   return [];
 }
 
-// Define appropriate caching behavior
+// Define appropriate caching behavior for ISR
 export const dynamic = 'force-static';
-export const revalidate = 3600;
+export const revalidate = 3600; // Revalidate every hour
+export const dynamicParams = true; // Allow new paths to be generated
 
 // Generate metadata for nested routes
 export async function generateMetadata({ params }: NestedSegmentsProps): Promise<Metadata> {
