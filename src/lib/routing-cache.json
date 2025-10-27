@@ -10,16 +10,6 @@
       "priority": 1,
       "changefreq": "daily"
     },
-    "/asia-pacific": {
-      "path": "/asia-pacific",
-      "contentType": "Page",
-      "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
-      "title": "Australia-Pacific",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/careers": {
       "path": "/careers",
       "contentType": "Page",
@@ -890,6 +880,96 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
+    "/company": {
+      "path": "/company",
+      "contentType": "PageList",
+      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
+      "title": "Company",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/company/americas": {
+      "path": "/company/americas",
+      "contentType": "Page",
+      "contentId": "7utGKQIsIklaMjVxz7k1ST",
+      "title": "North America",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/europe": {
+      "path": "/company/europe",
+      "contentType": "Page",
+      "contentId": "2DtYaKAqtl0pvXZ6r0mGbG",
+      "title": "Europe",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/latin-america": {
+      "path": "/company/latin-america",
+      "contentType": "Page",
+      "contentId": "1H6Wg0pXOWCcPt8SmNI93K",
+      "title": "Latin America",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/asia-pacific": {
+      "path": "/company/asia-pacific",
+      "contentType": "Page",
+      "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
+      "title": "Australia-Pacific",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/company/middle-east-africa-and-india": {
+      "path": "/company/middle-east-africa-and-india",
+      "contentType": "Page",
+      "contentId": "oYRNylrRbGWZw1ekL9893",
+      "title": "Middle East, Africa, and India",
+      "parentPageLists": [
+        {
+          "id": "52QRFJELDLgJQ3Dj7hYy0R",
+          "slug": "company",
+          "title": "Company"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
     "/products/trackers": {
       "path": "/products/trackers",
       "contentType": "PageList",
@@ -1354,80 +1434,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/company": {
-      "path": "/company",
-      "contentType": "PageList",
-      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
-      "title": "Company",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/company/americas": {
-      "path": "/company/americas",
-      "contentType": "Page",
-      "contentId": "7utGKQIsIklaMjVxz7k1ST",
-      "title": "North America",
-      "parentPageLists": [
-        {
-          "id": "52QRFJELDLgJQ3Dj7hYy0R",
-          "slug": "company",
-          "title": "Company"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
-    "/company/europe": {
-      "path": "/company/europe",
-      "contentType": "Page",
-      "contentId": "2DtYaKAqtl0pvXZ6r0mGbG",
-      "title": "Europe",
-      "parentPageLists": [
-        {
-          "id": "52QRFJELDLgJQ3Dj7hYy0R",
-          "slug": "company",
-          "title": "Company"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
-    "/company/latin-america": {
-      "path": "/company/latin-america",
-      "contentType": "Page",
-      "contentId": "1H6Wg0pXOWCcPt8SmNI93K",
-      "title": "Latin America",
-      "parentPageLists": [
-        {
-          "id": "52QRFJELDLgJQ3Dj7hYy0R",
-          "slug": "company",
-          "title": "Company"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
-    "/company/middle-east-africa-and-india": {
-      "path": "/company/middle-east-africa-and-india",
-      "contentType": "Page",
-      "contentId": "oYRNylrRbGWZw1ekL9893",
-      "title": "Middle East, Africa, and India",
-      "parentPageLists": [
-        {
-          "id": "52QRFJELDLgJQ3Dj7hYy0R",
-          "slug": "company",
-          "title": "Company"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
     "/products/module-mounting": {
       "path": "/products/module-mounting",
       "contentType": "PageList",
@@ -1767,6 +1773,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-27T21:16:12.370Z",
+  "generatedAt": "2025-10-27T21:25:20.805Z",
   "version": "1.0.0"
 }

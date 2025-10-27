@@ -20,6 +20,11 @@
     "permanent": false
   },
   {
+    "source": "/asia-pacific",
+    "destination": "/company/asia-pacific",
+    "permanent": false
+  },
+  {
     "source": "/behind-the-meter-energy",
     "destination": "/solutions/energy-and-ai/behind-the-meter-energy",
     "permanent": false
