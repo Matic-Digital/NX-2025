@@ -20,11 +20,6 @@
     "permanent": false
   },
   {
-    "source": "/australian-pacific",
-    "destination": "/company/australian-pacific",
-    "permanent": false
-  },
-  {
     "source": "/behind-the-meter-energy",
     "destination": "/solutions/energy-and-ai/behind-the-meter-energy",
     "permanent": false
@@ -71,7 +66,7 @@
   },
   {
     "source": "/design",
-    "destination": "/what-we-do/design",
+    "destination": "/services/design",
     "permanent": false
   },
   {
@@ -497,6 +492,11 @@
   {
     "source": "/trackers",
     "destination": "/products/trackers",
+    "permanent": false
+  },
+  {
+    "source": "/traditional-piles",
+    "destination": "/products/foundations/traditional-piles",
     "permanent": false
   },
   {
