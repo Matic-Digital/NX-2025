@@ -10,6 +10,26 @@
       "priority": 1,
       "changefreq": "daily"
     },
+    "/asia-pacific": {
+      "path": "/asia-pacific",
+      "contentType": "Page",
+      "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
+      "title": "Australia-Pacific",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/careers": {
+      "path": "/careers",
+      "contentType": "Page",
+      "contentId": "2Kccqh0dLWvKlNpFKP9AFc",
+      "title": "Careers",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
     "/resources": {
       "path": "/resources",
       "contentType": "Page",
@@ -50,16 +70,6 @@
       "priority": 0.8,
       "changefreq": "weekly"
     },
-    "/careers": {
-      "path": "/careers",
-      "contentType": "Page",
-      "contentId": "2Kccqh0dLWvKlNpFKP9AFc",
-      "title": "Careers",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/showcase": {
       "path": "/showcase",
       "contentType": "Page",
@@ -80,26 +90,6 @@
       "priority": 0.8,
       "changefreq": "weekly"
     },
-    "/company": {
-      "path": "/company",
-      "contentType": "PageList",
-      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
-      "title": "Company",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/asia-pacific": {
-      "path": "/asia-pacific",
-      "contentType": "Page",
-      "contentId": "4xzgX3ZQu2rM9IiN5sWxVd",
-      "title": "Asia-Pacific",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/about": {
       "path": "/about",
       "contentType": "Page",
@@ -109,16 +99,6 @@
       "isNested": false,
       "priority": 0.8,
       "changefreq": "weekly"
-    },
-    "/traditional-piles": {
-      "path": "/traditional-piles",
-      "contentType": "Product",
-      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
-      "title": "Traditional Piles",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
     },
     "/foundations-product": {
       "path": "/foundations-product",
@@ -150,11 +130,21 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/dual-land-use": {
-      "path": "/dual-land-use",
+    "/enable-dual-value": {
+      "path": "/enable-dual-value",
       "contentType": "Solution",
-      "contentId": "nr5E2VQIfZ7lK4TlzgVvZ",
-      "title": "Dual Land-Use",
+      "contentId": "73yin9LXWMnm1dcg45lMA",
+      "title": "Enable Dual Value",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/ai-and-the-energy-transition": {
+      "path": "/ai-and-the-energy-transition",
+      "contentType": "Solution",
+      "contentId": "2FerdbjnrZJYq6TJyCr16K",
+      "title": "AI and the Energy Transition",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.7,
@@ -170,21 +160,11 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/decarbonization-lever": {
-      "path": "/decarbonization-lever",
+    "/decarbonization-leader": {
+      "path": "/decarbonization-leader",
       "contentType": "Solution",
       "contentId": "63w7jPufol1Oke2wORbfXz",
-      "title": "Decarbonization Lever",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/cold-climates": {
-      "path": "/cold-climates",
-      "contentType": "Solution",
-      "contentId": "Hg2nkCA2OWcMKLykuTtLv",
-      "title": "Cold Climates",
+      "title": "Decarbonization Leader",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.7,
@@ -200,6 +180,16 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
+    "/cold-climates": {
+      "path": "/cold-climates",
+      "contentType": "Solution",
+      "contentId": "Hg2nkCA2OWcMKLykuTtLv",
+      "title": "Cold Climates",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
     "/desert-climates": {
       "path": "/desert-climates",
       "contentType": "Solution",
@@ -210,41 +200,11 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/ai-and-energy-transition": {
-      "path": "/ai-and-energy-transition",
-      "contentType": "Solution",
-      "contentId": "2FerdbjnrZJYq6TJyCr16K",
-      "title": "AI & Energy Transition",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/a-non-categorized-solution": {
-      "path": "/a-non-categorized-solution",
-      "contentType": "Solution",
-      "contentId": "5KLoRiHizbizG1US1KRTZW",
-      "title": "A Non-Categorized Solution",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/bankability": {
-      "path": "/bankability",
+    "/forecast-precision": {
+      "path": "/forecast-precision",
       "contentType": "Solution",
       "contentId": "4CoBxJR7d1PKCL9fIOhYXJ",
-      "title": "Bankability ",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/enable-dual-value": {
-      "path": "/enable-dual-value",
-      "contentType": "Solution",
-      "contentId": "73yin9LXWMnm1dcg45lMA",
-      "title": "Enable Dual Value",
+      "title": "Forecast Precision",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.7,
@@ -280,11 +240,11 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/localized-supply-chain": {
-      "path": "/localized-supply-chain",
+    "/diverse-soil-conditions": {
+      "path": "/diverse-soil-conditions",
       "contentType": "Solution",
-      "contentId": "6UpQnBTEiLSlWNqlbIrSpR",
-      "title": "Localized Supply Chain",
+      "contentId": "6GQuFt5EZQKWT01njT6KJo",
+      "title": "Diverse Soil Conditions",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.7,
@@ -300,15 +260,55 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/diverse-soil-conditions": {
-      "path": "/diverse-soil-conditions",
+    "/localized-supply-chain": {
+      "path": "/localized-supply-chain",
       "contentType": "Solution",
-      "contentId": "6GQuFt5EZQKWT01njT6KJo",
-      "title": "Diverse Soil Conditions",
+      "contentId": "6UpQnBTEiLSlWNqlbIrSpR",
+      "title": "Localized Supply Chain",
       "parentPageLists": [],
       "isNested": false,
       "priority": 0.7,
       "changefreq": "monthly"
+    },
+    "/dual-land-use": {
+      "path": "/dual-land-use",
+      "contentType": "Solution",
+      "contentId": "nr5E2VQIfZ7lK4TlzgVvZ",
+      "title": "Dual Land-Use",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/a-non-categorized-solution": {
+      "path": "/a-non-categorized-solution",
+      "contentType": "Solution",
+      "contentId": "5KLoRiHizbizG1US1KRTZW",
+      "title": "A Non-Categorized Solution",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/post/case-study/foundations-case-study": {
+      "path": "/post/case-study/foundations-case-study",
+      "contentType": "Post",
+      "contentId": "post-17684",
+      "title": "NX Foundations Case Study",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/data-sheet/nx-anchor-datasheet": {
+      "path": "/post/data-sheet/nx-anchor-datasheet",
+      "contentType": "Post",
+      "contentId": "post-17686",
+      "title": "NX Anchor Foundation System",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
     },
     "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
       "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
@@ -370,16 +370,6 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
-    "/post/data-sheet/nx-anchor-datasheet": {
-      "path": "/post/data-sheet/nx-anchor-datasheet",
-      "contentType": "Post",
-      "contentId": "post-17686",
-      "title": "NX Anchor Foundation System",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
     "/post/data-sheet/nx-horizon-hail-pro": {
       "path": "/post/data-sheet/nx-horizon-hail-pro",
       "contentType": "Post",
@@ -405,16 +395,6 @@
       "contentType": "Post",
       "contentId": "post-18059",
       "title": "NX Horizon XTR™: Reducing costs and complexity for solar projects on challenging terrain",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
-    "/post/case-study/foundations-case-study": {
-      "path": "/post/case-study/foundations-case-study",
-      "contentType": "Post",
-      "contentId": "post-17684",
-      "title": "NX Foundations Case Study",
       "parentPageLists": [],
       "isNested": true,
       "priority": 0.6,
@@ -910,11 +890,238 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
-    "/products/module-mounting": {
-      "path": "/products/module-mounting",
+    "/products/trackers": {
+      "path": "/products/trackers",
       "contentType": "PageList",
-      "contentId": "2KFnQf1yR0nTFRH4vhgwL3",
-      "title": "Module Mounting",
+      "contentId": "4m1qhYPxnSKhmFUfXdHTU6",
+      "title": "Trackers",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/trackers/nx-horizon": {
+      "path": "/products/trackers/nx-horizon",
+      "contentType": "Product",
+      "contentId": "2BiA1smnYF1BgNAoiFDcwT",
+      "title": "NX Horizon",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-xtr": {
+      "path": "/products/trackers/nx-horizon-xtr",
+      "contentType": "Product",
+      "contentId": "3wyPjy8fu54APsGHHBOxc9",
+      "title": "NX Horizon XTR",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-low-carbon": {
+      "path": "/products/trackers/nx-horizon-low-carbon",
+      "contentType": "Product",
+      "contentId": "6C7yOf2KRBh292iC9XHet5",
+      "title": "NX Horizon Low Carbon",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/trackers/nx-horizon-hall-pro": {
+      "path": "/products/trackers/nx-horizon-hall-pro",
+      "contentType": "Product",
+      "contentId": "5U25yOzw7QYeCAaPxTukdz",
+      "title": "NX Horizon Hail Pro",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment": {
+      "path": "/solutions/accelerate-deployment",
+      "contentType": "PageList",
+      "contentId": "6q56XSMwCVB2V71cliepN8",
+      "title": "Accelerate Deployment",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/accelerate-deployment/design-optimization": {
+      "path": "/solutions/accelerate-deployment/design-optimization",
+      "contentType": "Solution",
+      "contentId": "3ZmCBJyUJUajVxrGyN31JD",
+      "title": "Design Optimization",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment/efficient-installation": {
+      "path": "/solutions/accelerate-deployment/efficient-installation",
+      "contentType": "Solution",
+      "contentId": "6uZMSbUsq9hDU3wwC5vqiP",
+      "title": "Efficient Installation",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/solutions/accelerate-deployment/challenging-terrain": {
+      "path": "/solutions/accelerate-deployment/challenging-terrain",
+      "contentType": "Solution",
+      "contentId": "6l4ihujW4glaAjluioKS7u",
+      "title": "Challenging Terrain",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        },
+        {
+          "id": "6q56XSMwCVB2V71cliepN8",
+          "slug": "accelerate-deployment",
+          "title": "Accelerate Deployment"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/services-operate": {
+      "path": "/services-operate",
+      "contentType": "PageList",
+      "contentId": "35camZDt0T2w4PZZeaBPo7",
+      "title": "Services - Operate",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/services/design/placeholder-service": {
+      "path": "/services/design/placeholder-service",
+      "contentType": "Service",
+      "contentId": "135PuXvQxsYRxg5pbcstLq",
+      "title": "Placeholder Service",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "monthly"
+    },
+    "/services-deploy": {
+      "path": "/services-deploy",
+      "contentType": "PageList",
+      "contentId": "5sXMxrilNsRgMrzVqdvXKC",
+      "title": "Services - Deploy",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/services/design": {
+      "path": "/services/design",
+      "contentType": "PageList",
+      "contentId": "5PEdk3ERQ1FiocWOIRGesF",
+      "title": "Services - Design",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions": {
+      "path": "/solutions",
+      "contentType": "PageList",
+      "contentId": "486yYZWU43HKT0m4mQGBAq",
+      "title": "Solutions",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/maximize-energy": {
+      "path": "/solutions/maximize-energy",
+      "contentType": "PageList",
+      "contentId": "1QsL0T1nGia3Xb3QIgAHX9",
+      "title": "Maximize Energy",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/mitigate-risk": {
+      "path": "/solutions/mitigate-risk",
+      "contentType": "PageList",
+      "contentId": "3Y1FxD3zmQaq6sMGVfCabP",
+      "title": "Mitigate Risk",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/solutions/energy-and-ai": {
+      "path": "/solutions/energy-and-ai",
+      "contentType": "PageList",
+      "contentId": "1W1hboXGhFDcZZjPuNz4A6",
+      "title": "Energy & AI",
+      "parentPageLists": [
+        {
+          "id": "486yYZWU43HKT0m4mQGBAq",
+          "slug": "solutions",
+          "title": "Solutions"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/foundations": {
+      "path": "/products/foundations",
+      "contentType": "PageList",
+      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
+      "title": "Foundations",
       "parentPageLists": [
         {
           "id": "68yU43vhRr4sJ4E5qpvWtm",
@@ -926,11 +1133,11 @@
       "priority": 0.8,
       "changefreq": "weekly"
     },
-    "/products/module-mounting/nx-frame": {
-      "path": "/products/module-mounting/nx-frame",
+    "/products/foundations/nx-anchor": {
+      "path": "/products/foundations/nx-anchor",
       "contentType": "Product",
-      "contentId": "4iIEMhihbmbr6g3Gv7Qmw8",
-      "title": "NX Frame",
+      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
+      "title": "NX Anchor",
       "parentPageLists": [
         {
           "id": "68yU43vhRr4sJ4E5qpvWtm",
@@ -938,9 +1145,51 @@
           "title": "Products"
         },
         {
-          "id": "2KFnQf1yR0nTFRH4vhgwL3",
-          "slug": "module-mounting",
-          "title": "Module Mounting"
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/nx-earth-truss": {
+      "path": "/products/foundations/nx-earth-truss",
+      "contentType": "Product",
+      "contentId": "1a0d7tauTWefbQRZMeQfAt",
+      "title": "NX Earth Truss",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/foundations/traditional-piles": {
+      "path": "/products/foundations/traditional-piles",
+      "contentType": "Product",
+      "contentId": "MDXkeEo4tAbx4p5D4QRv2",
+      "title": "Traditional Piles",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2VIqtloLqBUPvhUlVBLzy7",
+          "slug": "foundations",
+          "title": "Foundations"
         }
       ],
       "isNested": true,
@@ -1026,85 +1275,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/products/software": {
-      "path": "/products/software",
-      "contentType": "PageList",
-      "contentId": "7qr1G5kGWgMz0P6h7bP3uh",
-      "title": "Software",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/software/nx-one": {
-      "path": "/products/software/nx-one",
-      "contentType": "Product",
-      "contentId": "1cHN2LeI2avRpFR62rpSU4",
-      "title": "NX One",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/software/nx-pulse": {
-      "path": "/products/software/nx-pulse",
-      "contentType": "Product",
-      "contentId": "5r0LXjxsjAE9TtvniipiAm",
-      "title": "NX Pulse",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/software/nx-navigator": {
-      "path": "/products/software/nx-navigator",
-      "contentType": "Product",
-      "contentId": "1EY8F4Gjy6TYpJLsc60C0v",
-      "title": "NX Navigator",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "7qr1G5kGWgMz0P6h7bP3uh",
-          "slug": "software",
-          "title": "Software"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
     "/products/ebos": {
       "path": "/products/ebos",
       "contentType": "PageList",
@@ -1184,69 +1354,21 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/products/foundations": {
-      "path": "/products/foundations",
+    "/company": {
+      "path": "/company",
       "contentType": "PageList",
-      "contentId": "2VIqtloLqBUPvhUlVBLzy7",
-      "title": "Foundations",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        }
-      ],
-      "isNested": true,
+      "contentId": "52QRFJELDLgJQ3Dj7hYy0R",
+      "title": "Company",
+      "parentPageLists": [],
+      "isNested": false,
       "priority": 0.8,
       "changefreq": "weekly"
-    },
-    "/products/foundations/nx-anchor": {
-      "path": "/products/foundations/nx-anchor",
-      "contentType": "Product",
-      "contentId": "6XHZ9RGotKA1xykRJAkvRn",
-      "title": "NX Anchor",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/foundations/nx-earth-truss": {
-      "path": "/products/foundations/nx-earth-truss",
-      "contentType": "Product",
-      "contentId": "1a0d7tauTWefbQRZMeQfAt",
-      "title": "NX Earth Truss",
-      "parentPageLists": [
-        {
-          "id": "68yU43vhRr4sJ4E5qpvWtm",
-          "slug": "products",
-          "title": "Products"
-        },
-        {
-          "id": "2VIqtloLqBUPvhUlVBLzy7",
-          "slug": "foundations",
-          "title": "Foundations"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
     },
     "/company/americas": {
       "path": "/company/americas",
       "contentType": "Page",
       "contentId": "7utGKQIsIklaMjVxz7k1ST",
-      "title": "Americas",
+      "title": "North America",
       "parentPageLists": [
         {
           "id": "52QRFJELDLgJQ3Dj7hYy0R",
@@ -1290,22 +1412,6 @@
       "priority": 0.7,
       "changefreq": "weekly"
     },
-    "/company/australian-pacific": {
-      "path": "/company/australian-pacific",
-      "contentType": "Page",
-      "contentId": "7aHJKA0m6coEFTGARf4ARF",
-      "title": "Australian Pacific",
-      "parentPageLists": [
-        {
-          "id": "52QRFJELDLgJQ3Dj7hYy0R",
-          "slug": "company",
-          "title": "Company"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
     "/company/middle-east-africa-and-india": {
       "path": "/company/middle-east-africa-and-india",
       "contentType": "Page",
@@ -1322,71 +1428,121 @@
       "priority": 0.7,
       "changefreq": "weekly"
     },
-    "/products/trackers": {
-      "path": "/products/trackers",
+    "/products/module-mounting": {
+      "path": "/products/module-mounting",
       "contentType": "PageList",
-      "contentId": "4m1qhYPxnSKhmFUfXdHTU6",
-      "title": "Trackers",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/products/trackers/nx-horizon": {
-      "path": "/products/trackers/nx-horizon",
-      "contentType": "Product",
-      "contentId": "2BiA1smnYF1BgNAoiFDcwT",
-      "title": "NX Horizon",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/trackers/nx-horizon-xtr": {
-      "path": "/products/trackers/nx-horizon-xtr",
-      "contentType": "Product",
-      "contentId": "3wyPjy8fu54APsGHHBOxc9",
-      "title": "NX Horizon XTR",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/trackers/nx-horizon-low-carbon": {
-      "path": "/products/trackers/nx-horizon-low-carbon",
-      "contentType": "Product",
-      "contentId": "6C7yOf2KRBh292iC9XHet5",
-      "title": "NX Horizon Low Carbon",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/products/trackers/nx-horizon-hall-pro": {
-      "path": "/products/trackers/nx-horizon-hall-pro",
-      "contentType": "Product",
-      "contentId": "5U25yOzw7QYeCAaPxTukdz",
-      "title": "NX Horizon Hall Pro",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/solutions/energy-and-ai": {
-      "path": "/solutions/energy-and-ai",
-      "contentType": "PageList",
-      "contentId": "1W1hboXGhFDcZZjPuNz4A6",
-      "title": "Energy & AI",
+      "contentId": "2KFnQf1yR0nTFRH4vhgwL3",
+      "title": "Module Mounting",
       "parentPageLists": [
         {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
         }
       ],
       "isNested": true,
       "priority": 0.8,
       "changefreq": "weekly"
+    },
+    "/products/module-mounting/nx-frame": {
+      "path": "/products/module-mounting/nx-frame",
+      "contentType": "Product",
+      "contentId": "4iIEMhihbmbr6g3Gv7Qmw8",
+      "title": "NX Frame",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "2KFnQf1yR0nTFRH4vhgwL3",
+          "slug": "module-mounting",
+          "title": "Module Mounting"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software": {
+      "path": "/products/software",
+      "contentType": "PageList",
+      "contentId": "7qr1G5kGWgMz0P6h7bP3uh",
+      "title": "Software",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/products/software/nx-one": {
+      "path": "/products/software/nx-one",
+      "contentType": "Product",
+      "contentId": "1cHN2LeI2avRpFR62rpSU4",
+      "title": "NX One",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-pulse": {
+      "path": "/products/software/nx-pulse",
+      "contentType": "Product",
+      "contentId": "5r0LXjxsjAE9TtvniipiAm",
+      "title": "NX Pulse",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
+    },
+    "/products/software/nx-navigator": {
+      "path": "/products/software/nx-navigator",
+      "contentType": "Product",
+      "contentId": "1EY8F4Gjy6TYpJLsc60C0v",
+      "title": "NX Navigator",
+      "parentPageLists": [
+        {
+          "id": "68yU43vhRr4sJ4E5qpvWtm",
+          "slug": "products",
+          "title": "Products"
+        },
+        {
+          "id": "7qr1G5kGWgMz0P6h7bP3uh",
+          "slug": "software",
+          "title": "Software"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "monthly"
     },
     "/solutions/energy-and-ai/behind-the-meter-energy": {
       "path": "/solutions/energy-and-ai/behind-the-meter-energy",
@@ -1408,22 +1564,6 @@
       "isNested": true,
       "priority": 0.7,
       "changefreq": "monthly"
-    },
-    "/solutions/mitigate-risk": {
-      "path": "/solutions/mitigate-risk",
-      "contentType": "PageList",
-      "contentId": "3Y1FxD3zmQaq6sMGVfCabP",
-      "title": "Mitigate Risk",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
     },
     "/solutions/mitigate-risk/high-winds": {
       "path": "/solutions/mitigate-risk/high-winds",
@@ -1467,22 +1607,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/solutions/maximize-energy": {
-      "path": "/solutions/maximize-energy",
-      "contentType": "PageList",
-      "contentId": "1QsL0T1nGia3Xb3QIgAHX9",
-      "title": "Maximize Energy",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/solutions/maximize-energy/harnessing-diffuse-light": {
       "path": "/solutions/maximize-energy/harnessing-diffuse-light",
       "contentType": "Solution",
@@ -1498,85 +1622,6 @@
           "id": "1QsL0T1nGia3Xb3QIgAHX9",
           "slug": "maximize-energy",
           "title": "Maximize Energy"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/solutions/accelerate-deployment": {
-      "path": "/solutions/accelerate-deployment",
-      "contentType": "PageList",
-      "contentId": "6q56XSMwCVB2V71cliepN8",
-      "title": "Accelerate Deployment",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/solutions/accelerate-deployment/design-optimization": {
-      "path": "/solutions/accelerate-deployment/design-optimization",
-      "contentType": "Solution",
-      "contentId": "3ZmCBJyUJUajVxrGyN31JD",
-      "title": "Design Optimization",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        },
-        {
-          "id": "6q56XSMwCVB2V71cliepN8",
-          "slug": "accelerate-deployment",
-          "title": "Accelerate Deployment"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/solutions/accelerate-deployment/efficient-installation": {
-      "path": "/solutions/accelerate-deployment/efficient-installation",
-      "contentType": "Solution",
-      "contentId": "6uZMSbUsq9hDU3wwC5vqiP",
-      "title": "Efficient Installation",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        },
-        {
-          "id": "6q56XSMwCVB2V71cliepN8",
-          "slug": "accelerate-deployment",
-          "title": "Accelerate Deployment"
-        }
-      ],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "monthly"
-    },
-    "/solutions/accelerate-deployment/challenging-terrain": {
-      "path": "/solutions/accelerate-deployment/challenging-terrain",
-      "contentType": "Solution",
-      "contentId": "6l4ihujW4glaAjluioKS7u",
-      "title": "Challenging Terrain",
-      "parentPageLists": [
-        {
-          "id": "486yYZWU43HKT0m4mQGBAq",
-          "slug": "solutions",
-          "title": "Solutions"
-        },
-        {
-          "id": "6q56XSMwCVB2V71cliepN8",
-          "slug": "accelerate-deployment",
-          "title": "Accelerate Deployment"
         }
       ],
       "isNested": true,
@@ -1622,26 +1667,6 @@
       "isNested": true,
       "priority": 0.7,
       "changefreq": "weekly"
-    },
-    "/services/design": {
-      "path": "/services/design",
-      "contentType": "PageList",
-      "contentId": "5PEdk3ERQ1FiocWOIRGesF",
-      "title": "Services - Design",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/services/design/placeholder-service": {
-      "path": "/services/design/placeholder-service",
-      "contentType": "Service",
-      "contentId": "135PuXvQxsYRxg5pbcstLq",
-      "title": "Placeholder Service",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "monthly"
     },
     "/services": {
       "path": "/services",
@@ -1721,16 +1746,6 @@
       "priority": 0.7,
       "changefreq": "weekly"
     },
-    "/solutions": {
-      "path": "/solutions",
-      "contentType": "PageList",
-      "contentId": "486yYZWU43HKT0m4mQGBAq",
-      "title": "Solutions",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/investors": {
       "path": "/investors",
       "contentType": "PageList",
@@ -1752,6 +1767,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-27T17:31:05.798Z",
+  "generatedAt": "2025-10-27T21:16:12.370Z",
   "version": "1.0.0"
 }
