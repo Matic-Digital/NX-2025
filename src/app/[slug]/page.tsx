@@ -420,7 +420,7 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
   await searchParams; // We need to await this even if we don't use it
 
   // Access params in a way that's compatible with Next.js async components
-  const slug = resolvedParams?.slug;
+  const slug = resolvedParams?.slug ?? 'home';
   const preview = false; // Set to true if you want to enable preview mode
 
   try {
@@ -574,7 +574,9 @@ async function renderPageList(pageList: PageListType, slug: string) {
         sys={pageList.sys}
         title={pageList.title}
         slug={pageList.slug}
-        pagesCollection={pageList.pagesCollection}
+        pagesCollection={{
+          items: pageList.pagesCollection?.items?.filter(Boolean) ?? []
+        }}
         pageContentCollection={undefined}
       />
     </PageLayout>

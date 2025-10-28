@@ -117,9 +117,24 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const slug = searchParams.get('slug');
 
-  // If no slug is provided, return an error
+  // Enhanced input validation
   if (!slug) {
     return NextResponse.json({ error: 'Slug parameter is required' }, { status: 400 });
+  }
+
+  // Validate slug format (should be URL-safe)
+  if (!/^[a-zA-Z0-9-_/.]+$/.test(slug)) {
+    return NextResponse.json({ error: 'Invalid slug format' }, { status: 400 });
+  }
+
+  // Check for reasonable length limits
+  if (slug.length > 200) {
+    return NextResponse.json({ error: 'Slug too long' }, { status: 400 });
+  }
+
+  // Prevent path traversal attempts
+  if (slug.includes('..') || slug.includes('//')) {
+    return NextResponse.json({ error: 'Invalid slug format' }, { status: 400 });
   }
 
   try {

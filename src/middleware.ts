@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { containsXSS, containsSQLInjection } from '@/lib/security';
 
 import type { NextRequest } from 'next/server';
 
@@ -21,6 +22,34 @@ import type { NextRequest } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
+  // Security validation for all requests
+  const requestUrl = request.nextUrl;
+  
+  // Validate query parameters for potential XSS and SQL injection
+  for (const [key, value] of requestUrl.searchParams.entries()) {
+    if (containsXSS(value) || containsSQLInjection(value)) {
+      // eslint-disable-next-line no-console
+      console.warn(`Blocked malicious request: ${key}=${value}`);
+      return NextResponse.json(
+        { error: 'Invalid request parameters' },
+        { status: 400 }
+      );
+    }
+  }
+  
+  // Validate path parameters
+  const pathSegments = requestUrl.pathname.split('/').filter(Boolean);
+  for (const segment of pathSegments) {
+    if (containsXSS(segment) || containsSQLInjection(segment)) {
+      // eslint-disable-next-line no-console
+      console.warn(`Blocked malicious path: ${requestUrl.pathname}`);
+      return NextResponse.json(
+        { error: 'Invalid request path' },
+        { status: 400 }
+      );
+    }
+  }
+
   // Handle CORS for preview pages and API routes first
   if (
     request.nextUrl.pathname.includes('-preview') ||

@@ -688,7 +688,9 @@ async function getHubSpotV3FormData(formId: string): Promise<HubSpotV3FormData> 
   const apiKey = process.env.HUBSPOT_API_KEY;
   
   if (!apiKey) {
-    throw new Error('HUBSPOT_API_KEY environment variable is not set');
+    const error = new Error('HubSpot API key not configured') as Error & { status: number };
+    error.status = 401;
+    throw error;
   }
 
   const response = await fetch(`https://api.hubapi.com/marketing/v3/forms/${formId}`, {
@@ -699,7 +701,9 @@ async function getHubSpotV3FormData(formId: string): Promise<HubSpotV3FormData> 
   });
 
   if (!response.ok) {
-    throw new Error(`HubSpot v3 API error: ${response.status} ${response.statusText}`);
+    const error = new Error(`HubSpot API error: ${response.status} ${response.statusText}`) as Error & { status: number };
+    error.status = response.status === 404 ? 404 : response.status >= 400 && response.status < 500 ? 400 : 500;
+    throw error;
   }
 
   return await response.json() as HubSpotV3FormData;
@@ -712,9 +716,26 @@ export async function GET(
   try {
     const { formId } = await params;
     
+    // Enhanced input validation
     if (!formId) {
       return NextResponse.json(
         { error: 'Form ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Validate formId format (should be alphanumeric with hyphens)
+    if (!/^[a-zA-Z0-9-_]+$/.test(formId)) {
+      return NextResponse.json(
+        { error: 'Invalid form ID format' },
+        { status: 400 }
+      );
+    }
+    
+    // Check for reasonable length limits
+    if (formId.length > 100) {
+      return NextResponse.json(
+        { error: 'Form ID too long' },
         { status: 400 }
       );
     }
@@ -753,16 +774,42 @@ export async function GET(
       }
     });
   } catch (error) {
+    // Enhanced error handling that doesn't leak sensitive information
+    // eslint-disable-next-line no-console
+    console.error('HubSpot form API error:', error);
     
     if (error instanceof Error) {
+      const status = (error as Error & { status?: number }).status ?? 500;
+      
+      // Don't expose detailed error messages in production
+      let message = 'Internal server error';
+      if (process.env.NODE_ENV === 'development') {
+        message = error.message;
+      } else {
+        // Provide safe error messages for common cases
+        if (status === 401) {
+          message = 'Unauthorized - Invalid API credentials';
+        } else if (status === 404) {
+          message = 'Form not found';
+        } else if (status === 400) {
+          message = 'Invalid request';
+        }
+      }
+      
       return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
+        { 
+          error: message,
+          timestamp: new Date().toISOString()
+        },
+        { status }
       );
     }
     
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }

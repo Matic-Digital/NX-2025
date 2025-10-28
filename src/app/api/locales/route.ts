@@ -32,13 +32,13 @@ export async function GET() {
     if (!spaceId || !accessToken) {
       return NextResponse.json(
         {
-          error: 'Missing Contentful credentials',
+          error: 'Contentful credentials not configured',
           details: {
             spaceId: spaceId ? 'Present' : 'Missing',
             token: accessToken ? 'Present' : 'Missing'
           }
         },
-        { status: 500 }
+        { status: 401 }
       );
     }
 
