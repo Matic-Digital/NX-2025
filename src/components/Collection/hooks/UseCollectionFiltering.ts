@@ -194,7 +194,7 @@ export function useCollectionFiltering({
   const endIndex = startIndex + itemsPerPage;
   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
-  // Filter pages by search query
+  // Filter pages by search query and page content
   const filteredPages = pages.filter((page) => {
     // Search filter: check if title or description contains search query
     const matchesSearch =
@@ -202,7 +202,10 @@ export function useCollectionFiltering({
       page.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       page.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch;
+    // Page content filter: only show pages that have content in pageContentCollection
+    const hasPageContent = page.pageContentCollection?.items && page.pageContentCollection.items.length > 0;
+
+    return matchesSearch && hasPageContent;
   });
 
   // Calculate pagination for pages
@@ -211,40 +214,52 @@ export function useCollectionFiltering({
   const endIndexForPages = startIndexForPages + itemsPerPage;
   const currentPages = filteredPages.slice(startIndexForPages, endIndexForPages);
 
-  // Filter products by search query
+  // Filter products by search query and content
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
       !searchQuery ||
       product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch;
+    // Content filter: only show products that have content in itemsCollection
+    const hasContent = product.itemsCollection?.items && product.itemsCollection.items.length > 0;
+
+    return matchesSearch && hasContent;
   });
 
-  // Filter solutions by search query
+  // Filter solutions by search query and content
   const filteredSolutions = solutions.filter((solution) => {
     const matchesSearch =
       !searchQuery ||
       solution.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       solution.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch;
+    // Content filter: only show solutions that have content in itemsCollection
+    const hasContent = solution.itemsCollection?.items && solution.itemsCollection.items.length > 0;
+
+    return matchesSearch && hasContent;
   });
 
-  // Filter services by search query
+  // Filter services by search query and content
   const filteredServices = services.filter((service) => {
     const matchesSearch =
       !searchQuery || service.title?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch;
+    // Content filter: only show services that have content in itemsCollection
+    const hasContent = service.itemsCollection?.items && service.itemsCollection.items.length > 0;
+
+    return matchesSearch && hasContent;
   });
 
-  // Filter page lists by search query
+  // Filter page lists by search query and page content
   const filteredPageLists = pageLists.filter((pageList) => {
     const matchesSearch =
       !searchQuery || pageList.title?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesSearch;
+    // Page content filter: only show page lists that have content in pageContentCollection
+    const hasPageContent = pageList.pageContentCollection?.items && pageList.pageContentCollection.items.length > 0;
+
+    return matchesSearch && hasPageContent;
   });
 
   // Combined content for unified pagination when search bar is enabled
