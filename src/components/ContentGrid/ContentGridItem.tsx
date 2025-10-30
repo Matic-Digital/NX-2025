@@ -423,8 +423,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const ExpandingHoverCardItem = () => {
-    // Get index from ContentGrid context - for now using a placeholder
-    const index = 0; // This will need to be passed from ContentGrid
+    const index = props.index ?? 0;
 
     return (
       <div className="group relative w-full cursor-pointer overflow-hidden bg-gray-100 p-6 transition-all duration-300 xl:mt-12 xl:h-[531px] xl:w-[243px] xl:p-8 xl:hover:mt-[-23px] xl:hover:h-[602px] dark:bg-[#1D1E1F]">
@@ -441,7 +440,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           </div>
         )}
         <div className="relative z-10 h-full">
-          <Box direction="col" gap={12}>
+          <Box direction="col" gap={12} className="h-full">
             {/* Top content - appears on hover */}
             <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
@@ -456,7 +455,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
             </div>
 
             {/* Bottom content - always anchored at bottom */}
-            <div className="xl:absolute xl:right-0 xl:bottom-0 xl:left-0">
+            <div className="mt-auto">
               <Box direction="col" gap={{ base: 2, xl: 6 }}>
                 <Box direction="col" gap={1}>
                   <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
