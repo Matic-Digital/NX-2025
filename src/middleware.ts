@@ -22,8 +22,29 @@ import type { NextRequest } from 'next/server';
  * belongs to a PageList and redirects to the nested URL structure if needed.
  */
 export async function middleware(request: NextRequest) {
+  // T7: HTTPS Redirect - Force HTTPS in production
+  if (process.env.NODE_ENV === 'production' && request.nextUrl.protocol === 'http:') {
+    const httpsUrl = request.nextUrl.clone();
+    httpsUrl.protocol = 'https:';
+    return NextResponse.redirect(httpsUrl);
+  }
+
   // Security validation for all requests
   const requestUrl = request.nextUrl;
+  
+  // T10: Validate and sanitize headers to prevent injection
+  const suspiciousHeaders = ['x-forwarded-for', 'user-agent', 'referer'];
+  for (const headerName of suspiciousHeaders) {
+    const headerValue = request.headers.get(headerName);
+    if (headerValue && (containsXSS(headerValue) || headerValue.includes('<script>'))) {
+      // eslint-disable-next-line no-console
+      console.warn(`Blocked malicious header: ${headerName}=${headerValue}`);
+      return NextResponse.json(
+        { error: 'Invalid request headers' },
+        { status: 400 }
+      );
+    }
+  }
   
   // Validate query parameters for potential XSS and SQL injection
   for (const [key, value] of requestUrl.searchParams.entries()) {
@@ -120,8 +141,37 @@ export async function middleware(request: NextRequest) {
   // 2. Use Edge Config or similar to cache page relationships
   // 3. Move this logic entirely to the page component level
 
-  // Continue with the request if no redirection is needed
-  return NextResponse.next();
+  // Continue with the request and add security headers
+  const response = NextResponse.next();
+  
+  // T7 & T10: Add comprehensive security headers
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  // T10: Strict Content Security Policy
+  const cspPolicy = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Note: In production, remove unsafe-inline and unsafe-eval
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "font-src 'self' data:",
+    "connect-src 'self'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'"
+  ].join('; ');
+  
+  response.headers.set('Content-Security-Policy', cspPolicy);
+  
+  // T7: HSTS (HTTP Strict Transport Security)
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  
+  return response;
 }
 
 // Configure the middleware to run on specific paths

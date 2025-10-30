@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
     
     if (!providedSecret || providedSecret !== REVALIDATE_SECRET) {
       // eslint-disable-next-line no-console
-      console.error('❌ Invalid revalidation secret attempt');
+      console.error('❌ Invalid revalidation attempt');
       return NextResponse.json(
-        { message: 'Invalid token', revalidated: false },
+        { message: 'Unauthorized', revalidated: false },
         { status: 401 }
       );
     }
@@ -266,7 +266,7 @@ export async function GET(request: NextRequest) {
 
   if (!REVALIDATE_SECRET || secret !== REVALIDATE_SECRET) {
     return NextResponse.json(
-      { message: 'Invalid token' },
+      { message: 'Unauthorized' },
       { status: 401 }
     );
   }
