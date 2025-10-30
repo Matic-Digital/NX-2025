@@ -341,14 +341,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
         {/* Text Content */}
         <Box direction="col" gap={2} className="mt-auto">
           <h3
-            className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+            className="text-headline-sm group-hover:text-background transition-colors"
             {...inspectorProps({ fieldId: 'heading' })}
           >
             {heading}
           </h3>
           {description && (
             <p
-              className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 transition-colors"
+              className="text-body-sm group-hover:text-background text-text-subtle transition-colors"
               {...inspectorProps({ fieldId: 'description' })}
             >
               {description}
@@ -384,7 +384,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           </h3>
           {description && (
             <p
-              className="text-body-sm text-white group-hover:text-background md:text-text-subtle line-clamp-3 transition-colors"
+              className="text-body-sm text-white group-hover:text-background md:text-text-subtle transition-colors"
               {...inspectorProps({ fieldId: 'description' })}
             >
               {description}
