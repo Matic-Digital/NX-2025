@@ -113,7 +113,7 @@ const SliderCard = ({
         )}
       >
         {sliderItem.icon && (
-          <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'lg:bg-white')}>
+          <div className={cn('w-fit bg-black p-[0.37rem]', current === index + 1 && 'lg:bg-white')}>
             <AirImage
               link={sliderItem.icon?.url ?? ''}
               altText={sliderItem.title}
