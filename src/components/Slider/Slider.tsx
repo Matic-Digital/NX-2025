@@ -108,7 +108,7 @@ const SliderCard = ({
         direction="col"
         gap={4}
         className={cn(
-          'bg-subtle h-full min-h-[350px] w-full p-8',
+          'bg-subtle h-full min-h-[350px] w-full p-10',
           isCurrentSlide && 'lg:bg-primary'
         )}
       >
