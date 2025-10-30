@@ -271,17 +271,17 @@ export function CtaGrid(props: CtaGrid) {
             </div>
 
             {/* Desktop: Original CSS Grid Layout */}
-            <div className="hidden h-full min-h-[600px] xl:flex xl:gap-[1.25rem]">
+            <div className="hidden min-h-[600px] xl:flex xl:gap-[1.25rem]">
               {/* Content Section */}
               <Box
                 direction="col"
                 gap={8}
-                className={`bg-subtle h-full flex-1 p-10 ${
+                className={`bg-subtle flex-1 p-10 ${
                   variant === 'ContentLeft' ? 'order-1' : 'order-2'
                 }`}
               >
                 {/* Content Grid Items */}
-                <Box direction="col" gap={6} className="flex-1 justify-end">
+                <Box direction="col" gap={6} className="flex-1">
                   {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                     <div key={item.sys?.id || index} className="space-y-3">
                       <h3

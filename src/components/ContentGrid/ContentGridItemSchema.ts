@@ -12,7 +12,7 @@ export const ContentGridItemSchema = z.object({
   title: z.string(),
   variant: z.string().optional(),
   heading: z.string(),
-  subHeading: z.string().optional(),
+  subheading: z.string().optional(),
   tags: z.array(z.string()).optional(),
   ctaCollection: z
     .object({
