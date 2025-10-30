@@ -271,7 +271,7 @@ export function CtaGrid(props: CtaGrid) {
             </div>
 
             {/* Desktop: Original CSS Grid Layout */}
-            <div className="hidden h-full min-h-[600px] xl:flex xl:gap-[1.25rem]">
+            <div className="hidden min-h-[600px] xl:flex xl:gap-[1.25rem]">
               {/* Content Section */}
               <Box
                 direction="col"
