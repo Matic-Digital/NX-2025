@@ -547,6 +547,30 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>http://localhost:3000/what-we-do</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/what-we-do/design</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/what-we-do/deploy</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>http://localhost:3000/what-we-do/operate</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>http://localhost:3000/products/module-mounting</loc>
     <lastmod>2025-10-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -772,30 +796,6 @@
     <loc>http://localhost:3000/solutions/accelerate-deployment/challenging-terrain</loc>
     <lastmod>2025-10-30</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/what-we-do</loc>
-    <lastmod>2025-10-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/what-we-do/design</loc>
-    <lastmod>2025-10-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/what-we-do/deploy</loc>
-    <lastmod>2025-10-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>http://localhost:3000/what-we-do/operate</loc>
-    <lastmod>2025-10-30</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>

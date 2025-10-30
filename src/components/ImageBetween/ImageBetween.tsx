@@ -182,13 +182,25 @@ export function ImageBetween(props: ImageBetween) {
             {imageBetween.contentTop && (
               <>
                 {imageBetween.contentTop.__typename === 'ContentGrid' && contentTopData && (
-                  <div {...inspectorProps({ fieldId: 'contentTop' })}>
-                    <ContentGrid
-                      {...(contentTopData as ContentGridType)}
-                      componentType={imageBetween.__typename}
-                      isInsideImageBetween={true}
-                    />
-                  </div>
+                  <>
+                    <div 
+                      className={cn(
+                        // Add bottom padding when ContentGrid has no items (only section heading)
+                        !(contentTopData as ContentGridType).itemsCollection?.items?.length && 'pb-[4rem]'
+                      )}
+                      {...inspectorProps({ fieldId: 'contentTop' })}
+                    >
+                      <ContentGrid
+                        {...(contentTopData as ContentGridType)}
+                        componentType={imageBetween.__typename}
+                        isInsideImageBetween={true}
+                      />
+                    </div>
+                    {/* Additional spacer when ContentGrid has no items */}
+                    {!(contentTopData as ContentGridType).itemsCollection?.items?.length && (
+                      <div className="h-48" />
+                    )}
+                  </>
                 )}
                 {imageBetween.contentTop.__typename === 'BannerHero' && contentTopData && (
                   <>

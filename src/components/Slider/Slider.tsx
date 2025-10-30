@@ -136,7 +136,7 @@ const SliderCard = ({
           <Box direction="row" gap={2} className="mt-auto">
             <Link
               key={sliderItem.cta.sys?.id}
-              href={sliderItem.cta.internalLink?.slug ?? sliderItem.cta.externalLink ?? '#'}
+              href={sliderItem.cta.internalLink?.slug ? `/${sliderItem.cta.internalLink.slug}` : sliderItem.cta.externalLink ?? '#'}
               {...(sliderItem.cta.externalLink
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
@@ -505,7 +505,8 @@ const GenericSlider = ({
           className={cn(
             isTeamMemberSlider && 'group lg:overflow-visible',
             isTimelineSlider && 'overflow-hidden',
-            isPostSlider && 'overflow-visible'
+            isPostSlider && 'overflow-visible',
+            isTestimonialSlider && 'items-stretch'
           )}
         >
           {displayItems.map((item, index) => {

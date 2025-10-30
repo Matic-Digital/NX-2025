@@ -13,6 +13,7 @@ interface BannerHeroContentProps {
   inspectorProps: (options: { fieldId: string }) => Record<string, unknown> | null;
   isCenteredSectionHeading: boolean;
   isImageBetween: boolean;
+  isImageLight: boolean;
 }
 
 /**
@@ -23,7 +24,8 @@ export const BannerHeroContent = ({
   bannerHero,
   inspectorProps,
   isCenteredSectionHeading,
-  isImageBetween
+  isImageBetween,
+  isImageLight
 }: BannerHeroContentProps) => {
   return (
     <Section
@@ -38,6 +40,11 @@ export const BannerHeroContent = ({
           className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
         />
       </div>
+
+      {/* Gradient Overlay for Light Images */}
+      {isImageLight && (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+      )}
 
       {/* Content Overlay */}
       <div className={bannerHeroStyles.getOverlayClasses()}>
