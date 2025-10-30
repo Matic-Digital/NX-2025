@@ -38,7 +38,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, title, heading, description, variant, icon, image, ctaCollection } = contentData;
+  const { sys, title, heading, subheading, description, variant, icon, image, ctaCollection } =
+    contentData;
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -252,7 +253,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               <div className="mt-auto">
                 <Link href={getHref()} className="inline-block w-full md:w-auto">
                   <Button
-                    variant="white"
+                    variant="outlineTrasparentWhite"
                     className="hover:bg-background hover:text-foreground w-full transition-colors"
                   >
                     {ctaCollection?.items?.[0]?.text}
@@ -340,14 +341,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
         {/* Text Content */}
         <Box direction="col" gap={2} className="mt-auto">
           <h3
-            className="text-headline-sm group-hover:text-background line-clamp-2 transition-colors"
+            className="text-headline-sm group-hover:text-background transition-colors"
             {...inspectorProps({ fieldId: 'heading' })}
           >
             {heading}
           </h3>
           {description && (
             <p
-              className="text-body-sm group-hover:text-background text-text-subtle line-clamp-3 transition-colors"
+              className="text-body-sm group-hover:text-background text-text-subtle transition-colors"
               {...inspectorProps({ fieldId: 'description' })}
             >
               {description}
@@ -383,7 +384,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           </h3>
           {description && (
             <p
-              className="text-body-sm text-white group-hover:text-background md:text-text-subtle line-clamp-3 transition-colors"
+              className="text-body-sm text-white group-hover:text-background md:text-text-subtle transition-colors"
               {...inspectorProps({ fieldId: 'description' })}
             >
               {description}
@@ -423,8 +424,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const ExpandingHoverCardItem = () => {
-    // Get index from ContentGrid context - for now using a placeholder
-    const index = 0; // This will need to be passed from ContentGrid
+    const index = props.index ?? 0;
 
     return (
       <div className="group relative w-full cursor-pointer overflow-hidden bg-gray-100 p-6 transition-all duration-300 xl:mt-12 xl:h-[531px] xl:w-[243px] xl:p-8 xl:hover:mt-[-23px] xl:hover:h-[602px] dark:bg-[#1D1E1F]">
@@ -441,7 +441,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
           </div>
         )}
         <div className="relative z-10 h-full">
-          <Box direction="col" gap={12}>
+          <Box direction="col" gap={12} className="h-full">
             {/* Top content - appears on hover */}
             <div className="transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
@@ -456,7 +456,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
             </div>
 
             {/* Bottom content - always anchored at bottom */}
-            <div className="xl:absolute xl:right-0 xl:bottom-0 xl:left-0">
+            <div className="mt-auto">
               <Box direction="col" gap={{ base: 2, xl: 6 }}>
                 <Box direction="col" gap={1}>
                   <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
@@ -470,7 +470,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                   </h3>
                 </Box>
                 <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
-                  {description}
+                  {subheading}
                 </p>
               </Box>
             </div>
