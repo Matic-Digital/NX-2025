@@ -32,7 +32,7 @@ export const contentGridItemFields: FieldConfig<Partial<ContentGridItem>>[] = [
     required: false,
     description: 'Optional sub heading text for the content grid item.',
     color: 'blue',
-    getValue: (data) => (data.subHeading ? `"${data.subHeading}"` : 'Not set')
+    getValue: (data) => (data.subheading ? `"${data.subheading}"` : 'Not set')
   },
   {
     name: 'ctaCollection',

@@ -38,7 +38,8 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, title, heading, description, variant, icon, image, ctaCollection } = contentData;
+  const { sys, title, heading, subheading, description, variant, icon, image, ctaCollection } =
+    contentData;
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -469,7 +470,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                   </h3>
                 </Box>
                 <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
-                  {description}
+                  {subheading}
                 </p>
               </Box>
             </div>
