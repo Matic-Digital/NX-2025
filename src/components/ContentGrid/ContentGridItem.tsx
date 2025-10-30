@@ -252,7 +252,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               <div className="mt-auto">
                 <Link href={getHref()} className="inline-block w-full md:w-auto">
                   <Button
-                    variant="white"
+                    variant="outlineTrasparentWhite"
                     className="hover:bg-background hover:text-foreground w-full transition-colors"
                   >
                     {ctaCollection?.items?.[0]?.text}
