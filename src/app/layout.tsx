@@ -32,8 +32,10 @@ export const viewport = {
 export const metadata: Metadata = {
   title: 'Nextracker',
   description: 'Modern content management and digital experiences',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
   robots: 'index, follow',
+  appleWebApp: {
+    title: 'Nextpower'
+  },
   openGraph: {
     siteName: 'Nextracker',
     type: 'website'

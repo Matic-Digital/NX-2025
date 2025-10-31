@@ -18,9 +18,9 @@ const nextConfig = {
   devIndicators: false,
 
   // Source map configuration
-  // Enable source maps in production for better debugging and Lighthouse insights
-  // Can be disabled by setting DISABLE_SOURCE_MAPS=true environment variable
-  productionBrowserSourceMaps: process.env.DISABLE_SOURCE_MAPS !== 'true',
+  // Disable source maps in production for security (prevent information disclosure)
+  // Can be enabled for debugging by setting ENABLE_SOURCE_MAPS=true environment variable
+  productionBrowserSourceMaps: process.env.ENABLE_SOURCE_MAPS === 'true',
 
   // Enable compression
   compress: true,
@@ -137,10 +137,13 @@ const nextConfig = {
   // Webpack optimizations for bundle splitting and CSS optimization
   webpack: (config, { dev, isServer }) => {
     // Configure source map generation for production
-    if (!dev && !isServer && process.env.DISABLE_SOURCE_MAPS !== 'true') {
+    if (!dev && !isServer && process.env.ENABLE_SOURCE_MAPS === 'true') {
       // Use 'source-map' for production builds to generate separate .map files
-      // This provides full source maps without increasing the main bundle size
+      // Only when explicitly enabled for debugging purposes
       config.devtool = 'source-map';
+    } else if (!dev && !isServer) {
+      // Disable source maps in production for security
+      config.devtool = false;
     }
 
     if (!dev && !isServer) {
@@ -335,18 +338,88 @@ const nextConfig = {
         // Apply to all routes
         source: '/(.*)',
         headers: [
+          // Content Security Policy - Environment-aware configuration
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://app.contentful.com"
+            value: process.env.NODE_ENV === 'development' ? [
+              // Development CSP - More permissive for local development and network access
+              "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://vercel.live https://app.contentful.com",
+              "style-src 'self' 'unsafe-inline' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://fonts.googleapis.com",
+              "font-src 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https: http: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
+              "media-src 'self' https: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
+              "connect-src 'self' https: wss: ws: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
+              "frame-src 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://app.contentful.com",
+              "frame-ancestors 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://app.contentful.com"
+            ].join('; ') : [
+              // Production CSP - Secure configuration
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "img-src 'self' data: blob: https: http:",
+              "media-src 'self' https:",
+              "connect-src 'self' https: wss:",
+              "frame-src 'self' https://app.contentful.com",
+              "frame-ancestors 'self' https://app.contentful.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "upgrade-insecure-requests",
+              "report-uri /api/csp-report"
+            ].join('; ')
+          },
+          // Report-To header for CSP violation reporting
+          {
+            key: 'Report-To',
+            value: JSON.stringify({
+              group: 'csp-endpoint',
+              max_age: 10886400,
+              endpoints: [{ url: '/api/csp-report' }]
+            })
+          },
+          // Security Headers - OWASP ASVS Level 1 Compliance
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: [
+              'camera=()',
+              'microphone=()',
+              'geolocation=()',
+              'interest-cohort=()',
+              'payment=()',
+              'usb=()',
+              'bluetooth=()',
+              'magnetometer=()',
+              'gyroscope=()',
+              'accelerometer=()'
+            ].join(', ')
+          },
+          // Strict Transport Security (HSTS)
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload'
           },
           // Performance headers
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
           }
         ]
       },
