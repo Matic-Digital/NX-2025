@@ -40,7 +40,6 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
 
-import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
 import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { Menu as MenuComponent } from '@/components/Menu/Menu';
@@ -343,9 +342,8 @@ function HeaderContent(props: HeaderProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  if (menuLoading || overflowMenuLoading) {
-    return <HeaderSkeleton />;
-  }
+  // Don't show full skeleton - render header with logo but skeleton navigation
+  const showNavigationSkeleton = menuLoading || overflowMenuLoading;
 
   if (!header) {
     return (
@@ -446,8 +444,12 @@ function HeaderContent(props: HeaderProps) {
                   {/* Navigation Content */}
                   <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                     {/* Main Menu Items */}
-                    {menuLoading ? (
-                      <div className="text-white">Loading menu...</div>
+                    {showNavigationSkeleton ? (
+                      <div className="space-y-4">
+                        <div className="h-5 w-24 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-32 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-28 animate-pulse rounded bg-white/20" />
+                      </div>
                     ) : menu ? (
                       <div>
                         <div className="space-y-2">
@@ -530,8 +532,12 @@ function HeaderContent(props: HeaderProps) {
                   isHeaderBlurVisible && !isScrolled ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
                 }`}
               >
-                {menuLoading ? (
-                  <div className="px-4 py-2 text-white">Loading menu...</div>
+                {showNavigationSkeleton ? (
+                  <div className="flex items-center px-6 py-3 gap-4">
+                    <div className="h-4 w-16 animate-pulse rounded bg-white/20" />
+                    <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+                    <div className="h-4 w-18 animate-pulse rounded bg-white/20" />
+                  </div>
                 ) : menu ? (
                   <MenuComponent menu={menu} locales={locales} {...inspectorProps} />
                 ) : (
@@ -624,8 +630,18 @@ function HeaderContent(props: HeaderProps) {
                         >
                           <Container>
                             <nav onClick={(e) => e.stopPropagation()}>
-                              {overflowMenuLoading ? (
-                                <div className="text-white">Loading overflow menu...</div>
+                              {showNavigationSkeleton ? (
+                                <div className="flex flex-col gap-4">
+                                  <div className="h-6 w-32 animate-pulse rounded bg-white/20" />
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="h-40 animate-pulse rounded bg-white/10" />
+                                    <div className="flex flex-col gap-2">
+                                      <div className="h-4 w-24 animate-pulse rounded bg-white/20" />
+                                      <div className="h-4 w-28 animate-pulse rounded bg-white/20" />
+                                      <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+                                    </div>
+                                  </div>
+                                </div>
                               ) : overflowMenu ? (
                                 <MenuComponent
                                   menu={overflowMenu}
@@ -694,8 +710,12 @@ function HeaderContent(props: HeaderProps) {
                   {/* Navigation Content */}
                   <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                     {/* Main Menu Items */}
-                    {menuLoading ? (
-                      <div className="text-white">Loading menu...</div>
+                    {showNavigationSkeleton ? (
+                      <div className="space-y-4">
+                        <div className="h-5 w-24 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-32 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-28 animate-pulse rounded bg-white/20" />
+                      </div>
                     ) : menu ? (
                       <div>
                         <div className="space-y-2">

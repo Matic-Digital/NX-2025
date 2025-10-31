@@ -50,7 +50,14 @@ import { ScrollRestoration } from '@/components/ScrollRestoration/ScrollRestorat
  */
 export const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        <div className="flex items-center gap-3">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground/30 border-t-foreground" />
+          <span className="text-foreground text-lg font-medium">Loading...</span>
+        </div>
+      </div>
+    }>
       <LazyQueryProvider>
         <JotaiProvider>
           {/* <DevTools theme="dark" /> */}

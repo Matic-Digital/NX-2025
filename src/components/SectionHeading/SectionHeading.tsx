@@ -385,7 +385,7 @@ export function SectionHeading(props: SectionHeadingProps) {
         )}
         {componentType === 'banner-hero' ? (
           <h1
-            className="text-display-lg text-foreground leading-tight"
+            className="text-display-sm md:text-display-md lg:text-display-lg text-foreground leading-tight"
             {...inspectorProps({ fieldId: 'title' })}
           >
             {sectionHeading.title}
