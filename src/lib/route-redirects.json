@@ -20,8 +20,8 @@
     "permanent": false
   },
   {
-    "source": "/asia-pacific",
-    "destination": "/company/asia-pacific",
+    "source": "/australian-pacific",
+    "destination": "/company/australian-pacific",
     "permanent": false
   },
   {
@@ -71,7 +71,7 @@
   },
   {
     "source": "/design",
-    "destination": "/services/design",
+    "destination": "/what-we-do/design",
     "permanent": false
   },
   {
@@ -497,11 +497,6 @@
   {
     "source": "/trackers",
     "destination": "/products/trackers",
-    "permanent": false
-  },
-  {
-    "source": "/traditional-piles",
-    "destination": "/products/foundations/traditional-piles",
     "permanent": false
   },
   {

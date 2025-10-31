@@ -108,12 +108,12 @@ const SliderCard = ({
         direction="col"
         gap={4}
         className={cn(
-          'bg-subtle h-full min-h-[350px] w-full p-8',
+          'bg-subtle h-full min-h-[350px] w-full p-10',
           isCurrentSlide && 'lg:bg-primary'
         )}
       >
         {sliderItem.icon && (
-          <div className={cn('w-fit bg-black p-[0.38rem]', current === index + 1 && 'lg:bg-white')}>
+          <div className={cn('w-fit bg-black p-[0.37rem]', current === index + 1 && 'lg:bg-white')}>
             <AirImage
               link={sliderItem.icon?.url ?? ''}
               altText={sliderItem.title}
@@ -136,7 +136,7 @@ const SliderCard = ({
           <Box direction="row" gap={2} className="mt-auto">
             <Link
               key={sliderItem.cta.sys?.id}
-              href={sliderItem.cta.internalLink?.slug ?? sliderItem.cta.externalLink ?? '#'}
+              href={sliderItem.cta.internalLink?.slug ? `/${sliderItem.cta.internalLink.slug}` : sliderItem.cta.externalLink ?? '#'}
               {...(sliderItem.cta.externalLink
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
@@ -505,7 +505,8 @@ const GenericSlider = ({
           className={cn(
             isTeamMemberSlider && 'group lg:overflow-visible',
             isTimelineSlider && 'overflow-hidden',
-            isPostSlider && 'overflow-visible'
+            isPostSlider && 'overflow-visible',
+            isTestimonialSlider && 'items-stretch'
           )}
         >
           {displayItems.map((item, index) => {

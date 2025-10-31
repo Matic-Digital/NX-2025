@@ -30,6 +30,7 @@ interface ContentGridProps extends ContentGridType {
   currentPath?: string; // Full current path for deeply nested structures
   forceTabletSingleColumn?: boolean; // Force single column layout on tablet
   isInsideImageBetween?: boolean; // Indicates if ContentGrid is inside ImageBetween component
+  className?: string; // Optional className for additional styling
 }
 
 export function ContentGrid(props: ContentGridProps) {
