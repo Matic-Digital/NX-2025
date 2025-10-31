@@ -305,8 +305,9 @@ export function CtaGrid(props: CtaGrid) {
                       return (
                         <Button
                           key={cta.sys?.id ?? index}
-                          variant="primary"
+                          variant="outline"
                           {...inspectorProps({ fieldId: 'ctaCollection' })}
+                          className="hover:bg-primary hover:text-white hover:border-primary"
                           asChild
                         >
                           {cta.internalLink ? (

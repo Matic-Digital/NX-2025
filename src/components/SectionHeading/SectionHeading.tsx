@@ -425,7 +425,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           sectionHeading.ctaCollection?.items?.map((cta, index) => {
             const totalButtons = sectionHeading.ctaCollection?.items?.length ?? 0;
             const defaultVariant =
-              totalButtons === 1 ? 'outline' : index === 0 ? 'primary' : 'outline';
+              totalButtons === 1 ? 'whiteOutline' : index === 0 ? 'primary' : 'outline';
 
             return (
               <div
