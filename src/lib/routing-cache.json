@@ -910,6 +910,46 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
+    "/what-we-do": {
+      "path": "/what-we-do",
+      "contentType": "PageList",
+      "contentId": "6hZgkzffUtjkdDmLTaxhtA",
+      "title": "What We Do",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/design": {
+      "path": "/what-we-do/design",
+      "contentType": "Page",
+      "contentId": "78Exftk8Eb61rI1aUs6NSP",
+      "title": "Design",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/deploy": {
+      "path": "/what-we-do/deploy",
+      "contentType": "Page",
+      "contentId": "6Zud8HVc7GcgXmXkwagUIG",
+      "title": "Deploy",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
+    "/what-we-do/operate": {
+      "path": "/what-we-do/operate",
+      "contentType": "Page",
+      "contentId": "Yy0cCKER82ItNejQHVupT",
+      "title": "Operate",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.7,
+      "changefreq": "weekly"
+    },
     "/products/module-mounting": {
       "path": "/products/module-mounting",
       "contentType": "PageList",
@@ -1583,46 +1623,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/what-we-do": {
-      "path": "/what-we-do",
-      "contentType": "PageList",
-      "contentId": "6hZgkzffUtjkdDmLTaxhtA",
-      "title": "What We Do",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
-    "/what-we-do/design": {
-      "path": "/what-we-do/design",
-      "contentType": "Page",
-      "contentId": "78Exftk8Eb61rI1aUs6NSP",
-      "title": "Design",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
-    "/what-we-do/deploy": {
-      "path": "/what-we-do/deploy",
-      "contentType": "Page",
-      "contentId": "6Zud8HVc7GcgXmXkwagUIG",
-      "title": "Deploy",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
-    "/what-we-do/operate": {
-      "path": "/what-we-do/operate",
-      "contentType": "Page",
-      "contentId": "Yy0cCKER82ItNejQHVupT",
-      "title": "Operate",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.7,
-      "changefreq": "weekly"
-    },
     "/services/design": {
       "path": "/services/design",
       "contentType": "PageList",
@@ -1752,6 +1752,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-10-30T18:29:30.404Z",
+  "generatedAt": "2025-10-30T23:42:34.089Z",
   "version": "1.0.0"
 }

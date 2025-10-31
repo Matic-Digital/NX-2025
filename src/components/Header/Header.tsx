@@ -307,7 +307,7 @@ function HeaderContent(props: HeaderProps) {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[100] w-full header-container">
+    <div className={`fixed top-0 left-0 right-0 w-full header-container ${isSheetOpen ? 'z-[0] md:z-[90]' : 'z-[100]'}`}>
       <Container className={`w-full pt-0 transition-all duration-300 lg:pt-6`}>
         <header
           className={`relative z-[100] px-6 transition-all duration-300 max-md:z-[40] max-md:py-1.5 lg:w-full ${
@@ -363,7 +363,7 @@ function HeaderContent(props: HeaderProps) {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col">
+                <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col z-[9999]">
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                   {/* Header with Logo, Search, and Close */}
                   <div className="flex items-center justify-between p-6">
@@ -600,17 +600,6 @@ function HeaderContent(props: HeaderProps) {
               className="items-center md:hidden"
               data-testid="mobile-nav"
             >
-              <Link href="/search" className="hidden min-[376px]:block">
-                <Button
-                  variant="ghost"
-                  className={`rounded-xxs ml-2 flex size-10 items-center justify-center bg-black/40 p-2 text-white backdrop-blur-2xl`}
-                  aria-label="Open search"
-                >
-                  <Search className="size-5" />
-                  <span className="sr-only">Open search</span>
-                </Button>
-              </Link>
-
               <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <Button
@@ -622,7 +611,7 @@ function HeaderContent(props: HeaderProps) {
                     <span className="sr-only">Open menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col">
+                <SheetContent side="fullscreen" className="p-0 bg-black flex flex-col z-[9999]">
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                   {/* Header with Logo, Search, and Close */}
                   <div className="flex items-center justify-between p-6">

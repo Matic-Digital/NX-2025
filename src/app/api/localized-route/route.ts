@@ -1,6 +1,7 @@
-import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { createClient } from 'contentful';
+import { validateJSONPayload } from '@/lib/security';
 
 // Disable caching for this API route
 export const dynamic = 'force-dynamic';
@@ -14,8 +15,28 @@ interface LocalizedRouteRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate request body size
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 10240) { // 10KB limit
+      return NextResponse.json(
+        { error: 'Request payload too large' },
+        { status: 413 }
+      );
+    }
+
     const body = await request.json() as LocalizedRouteRequest;
-    const { currentPath, targetLocale, currentLocale } = body;
+    
+    // Validate the JSON payload
+    const payloadValidation = validateJSONPayload(body, 10240);
+    if (!payloadValidation.isValid) {
+      return NextResponse.json(
+        { error: 'Invalid request data', issues: payloadValidation.errors },
+        { status: 400 }
+      );
+    }
+
+    const sanitizedBody = payloadValidation.sanitizedPayload as LocalizedRouteRequest;
+    const { currentPath, targetLocale, currentLocale } = sanitizedBody;
 
 
     // Initialize Contentful client

@@ -10,10 +10,11 @@ interface FilterButtonsProps {
 export function FilterButtons({ categories, activeFilter, onFilterChange }: FilterButtonsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeButtonRef = useRef<HTMLButtonElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [_isDragging, setIsDragging] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [dragDistance, setDragDistance] = useState(0);
 
   // Auto-scroll to center the active button
   useEffect(() => {
@@ -37,8 +38,8 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
   }, [activeFilter]);
 
   const handleFilterClick = (filter: string | null) => {
-    // Don't trigger click if user was dragging
-    if (isDragging) return;
+    // Only prevent click if user dragged more than 5 pixels (intentional drag)
+    if (dragDistance > 5) return;
     onFilterChange(filter);
   };
 
@@ -46,21 +47,29 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!containerRef.current || !e.touches[0]) return;
     setIsDragging(false);
+    setDragDistance(0);
     setStartX(e.touches[0].clientX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!containerRef.current || !e.touches[0]) return;
-    setIsDragging(true);
     const x = e.touches[0].clientX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
-    containerRef.current.scrollLeft = scrollLeft - walk;
+    const distance = Math.abs(x - startX);
+    setDragDistance(distance);
+    
+    if (distance > 5) {
+      setIsDragging(true);
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      containerRef.current.scrollLeft = scrollLeft - walk;
+    }
   };
 
   const handleTouchEnd = () => {
-    // Small delay to prevent click after drag
-    setTimeout(() => setIsDragging(false), 100);
+    // Reset drag state immediately - no delay needed
+    setIsDragging(false);
+    // Keep dragDistance for a brief moment to prevent accidental clicks
+    setTimeout(() => setDragDistance(0), 50);
   };
 
   // Mouse drag handlers for desktop (optional)
@@ -68,6 +77,7 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
     if (!containerRef.current) return;
     setIsMouseDown(true);
     setIsDragging(false);
+    setDragDistance(0);
     setStartX(e.pageX - containerRef.current.offsetLeft);
     setScrollLeft(containerRef.current.scrollLeft);
     e.preventDefault(); // Prevent text selection
@@ -75,15 +85,22 @@ export function FilterButtons({ categories, activeFilter, onFilterChange }: Filt
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current || !isMouseDown) return;
-    setIsDragging(true);
     const x = e.pageX - containerRef.current.offsetLeft;
-    const walk = (x - startX) * 2;
-    containerRef.current.scrollLeft = scrollLeft - walk;
+    const distance = Math.abs(x - startX);
+    setDragDistance(distance);
+    
+    if (distance > 5) {
+      setIsDragging(true);
+      const walk = (x - startX) * 2;
+      containerRef.current.scrollLeft = scrollLeft - walk;
+    }
   };
 
   const handleMouseUp = () => {
     setIsMouseDown(false);
-    setTimeout(() => setIsDragging(false), 100);
+    setIsDragging(false);
+    // Keep dragDistance for a brief moment to prevent accidental clicks
+    setTimeout(() => setDragDistance(0), 50);
   };
 
   return (

@@ -59,3 +59,7 @@ pids/
 # Temporary files
 tmp/
 temp/
+
+# Test files and scripts
+security-tests/
+scripts/

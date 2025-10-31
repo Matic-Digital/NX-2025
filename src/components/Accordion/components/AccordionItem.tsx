@@ -231,7 +231,7 @@ export const AccordionItem = ({
                   {...(inspectorProps ? (inspectorProps({ fieldId: 'cta' }) ?? {}) : {})}
                 >
                   <Button variant="white" asChild>
-                    <Link href={item.cta.internalLink?.slug ?? ''}>{item.cta.text}</Link>
+                    <Link href={item.cta.internalLink?.slug ? `/${item.cta.internalLink.slug}` : item.cta.externalLink ?? '#'}>{item.cta.text}</Link>
                   </Button>
                 </div>
               )}
