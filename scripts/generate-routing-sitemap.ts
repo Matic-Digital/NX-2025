@@ -19,7 +19,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 // Contentful configuration
 const CONTENTFUL_SPACE_ID = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
 const CONTENTFUL_ACCESS_TOKEN = process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN;
-const CONTENTFUL_ENVIRONMENT = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'staging';
+const CONTENTFUL_ENVIRONMENT = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master';
 const BASE_URL = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -114,7 +114,17 @@ async function fetchGraphQL<T>(
 
     if (data.errors) {
       console.error('GraphQL errors:', data.errors);
-      throw new Error(`GraphQL query failed: ${JSON.stringify(data.errors)}`);
+      
+      // Check if all errors are unresolvable links (which we can handle gracefully)
+      const hasOnlyUnresolvableLinks = data.errors.every((error: any) => 
+        error.extensions?.contentful?.code === 'UNRESOLVABLE_LINK'
+      );
+      
+      if (!hasOnlyUnresolvableLinks) {
+        throw new Error(`GraphQL query failed: ${JSON.stringify(data.errors)}`);
+      }
+      
+      console.warn('⚠️  Found unresolvable links, continuing with available data...');
     }
 
     return data;

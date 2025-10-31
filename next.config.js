@@ -337,7 +337,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://app.contentful.com"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.contentful.com https://cdn.jsdelivr.net https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' https: wss: https://api.hubapi.com; frame-ancestors 'self' https://app.contentful.com; base-uri 'self'; form-action 'self' https://api.hubapi.com; object-src 'none'; upgrade-insecure-requests"
           },
           // Performance headers
           {
@@ -347,6 +347,22 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains'
           }
         ]
       },

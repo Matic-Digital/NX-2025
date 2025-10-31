@@ -13,7 +13,12 @@ export const useModalButtonLogic = (cta: ButtonType, modalType: ModalType = 'quo
 
   // Generate link attributes
   const getLinkProps = () => {
-    const href = cta.internalLink?.slug ?? cta.externalLink ?? '#';
+    // Ensure internal links are absolute paths by adding leading slash
+    const internalHref = cta.internalLink?.slug 
+      ? `/${cta.internalLink.slug}` 
+      : null;
+    
+    const href = internalHref ?? cta.externalLink ?? '#';
 
     if (cta.externalLink) {
       return {

@@ -34,6 +34,8 @@ import { Provider as JotaiProvider } from 'jotai';
 // Theme
 import { ThemeProvider } from 'next-themes';
 import { Provider as WrapBalancerProvider } from 'react-wrap-balancer';
+// Scroll Management
+import { ScrollRestoration } from '@/components/ScrollRestoration/ScrollRestoration';
 
 // Utils
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -64,6 +66,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
               enableInspectorMode={true}
               enableLiveUpdates={true}
             >
+              <ScrollRestoration />
               <WrapBalancerProvider>{children}</WrapBalancerProvider>
             </ContentfulLivePreviewProvider>
           </ThemeProvider>

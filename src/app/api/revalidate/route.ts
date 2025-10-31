@@ -35,19 +35,38 @@ interface RevalidationRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify secret token
+    // Enhanced security validation
     const authHeader = request.headers.get('authorization');
     const secretFromQuery = request.nextUrl.searchParams.get('secret');
     const secretFromHeader = authHeader?.replace('Bearer ', '');
     
     const providedSecret = secretFromQuery ?? secretFromHeader;
     
-    if (!REVALIDATE_SECRET || providedSecret !== REVALIDATE_SECRET) {
+    // Validate secret exists and matches
+    if (!REVALIDATE_SECRET) {
       // eslint-disable-next-line no-console
-      console.error('❌ Invalid revalidation secret');
+      console.error('❌ CONTENTFUL_REVALIDATE_SECRET not configured');
       return NextResponse.json(
-        { message: 'Invalid token', revalidated: false },
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+    
+    if (!providedSecret || providedSecret !== REVALIDATE_SECRET) {
+      // eslint-disable-next-line no-console
+      console.error('❌ Invalid revalidation attempt');
+      return NextResponse.json(
+        { message: 'Unauthorized', revalidated: false },
         { status: 401 }
+      );
+    }
+    
+    // Validate Content-Type for POST requests
+    const requestContentType = request.headers.get('content-type');
+    if (!requestContentType?.includes('application/json')) {
+      return NextResponse.json(
+        { error: 'Content-Type must be application/json' },
+        { status: 400 }
       );
     }
 
@@ -247,7 +266,7 @@ export async function GET(request: NextRequest) {
 
   if (!REVALIDATE_SECRET || secret !== REVALIDATE_SECRET) {
     return NextResponse.json(
-      { message: 'Invalid token' },
+      { message: 'Unauthorized' },
       { status: 401 }
     );
   }

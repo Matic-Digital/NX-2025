@@ -6,6 +6,7 @@ import { BannerHeroContent } from '@/components/BannerHero/components/BannerHero
 import { LoadingState } from '@/components/BannerHero/components/BannerHeroStates';
 import { useBannerHeroData } from '@/components/BannerHero/hooks/UseBannerHeroData';
 import { useBannerHeroLogic } from '@/components/BannerHero/hooks/UseBannerHeroLogic';
+import { useImageLuminance } from '@/components/BannerHero/hooks/UseImageLuminance';
 
 import type { BannerHero } from '@/components/BannerHero/BannerHeroSchema';
 
@@ -27,6 +28,10 @@ export function BannerHero(props: BannerHeroProps) {
   // Business logic layer
   const { isCenteredSectionHeading, isImageBetween } = useBannerHeroLogic(props, bannerHero);
 
+  // Image luminance analysis
+  const imageUrl = bannerHero?.backgroundImage?.link;
+  const imageLuminance = useImageLuminance(imageUrl);
+
   // Loading state
   if (!bannerHero) {
     return <LoadingState />;
@@ -39,6 +44,7 @@ export function BannerHero(props: BannerHeroProps) {
         inspectorProps={inspectorProps}
         isCenteredSectionHeading={isCenteredSectionHeading}
         isImageBetween={isImageBetween}
+        isImageLight={imageLuminance.isLight}
       />
     </ErrorBoundary>
   );
