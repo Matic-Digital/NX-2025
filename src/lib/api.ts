@@ -22,6 +22,35 @@ export async function fetchGraphQL<T>(
   cacheConfig?: { next: { revalidate?: number; tags?: string[] } }
 ): Promise<GraphQLResponse<T>> {
   try {
+    // Validate query string to prevent injection
+    if (typeof query !== 'string' || query.trim().length === 0) {
+      throw new Error('Invalid GraphQL query');
+    }
+    
+    // Validate variables object
+    if (variables && typeof variables !== 'object') {
+      throw new Error('Invalid GraphQL variables');
+    }
+    
+    // Sanitize string variables to prevent injection
+    const sanitizedVariables: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(variables)) {
+      if (typeof value === 'string') {
+        // Basic validation - reject strings with potential GraphQL injection patterns
+        if (value.includes('__typename') || value.includes('fragment') || value.includes('{')) {
+          // eslint-disable-next-line no-console
+          console.warn(`Potentially malicious GraphQL variable detected: ${key}`);
+          // eslint-disable-next-line security/detect-object-injection
+          sanitizedVariables[key] = value.replace(/[{}]/g, ''); // Remove curly braces
+        } else {
+          // eslint-disable-next-line security/detect-object-injection
+          sanitizedVariables[key] = value;
+        }
+      } else {
+        // eslint-disable-next-line security/detect-object-injection
+        sanitizedVariables[key] = value;
+      }
+    }
     // Use explicit cache settings based on preview mode
     // For preview content, use no-store to ensure fresh content
     // For production content, use force-cache when not explicitly configured
@@ -45,7 +74,7 @@ export async function fetchGraphQL<T>(
               : process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
           }`
         },
-        body: JSON.stringify({ query, variables }),
+        body: JSON.stringify({ query, variables: sanitizedVariables }),
         ...cacheSettings
       }
     );
