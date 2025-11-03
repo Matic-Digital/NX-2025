@@ -32,8 +32,10 @@ export const viewport = {
 export const metadata: Metadata = {
   title: 'Nextracker',
   description: 'Modern content management and digital experiences',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
   robots: 'index, follow',
+  appleWebApp: {
+    title: 'Nextpower'
+  },
   openGraph: {
     siteName: 'Nextracker',
     type: 'website'
@@ -66,6 +68,17 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${layoutClasses} ${inter.variable}`}>
       <head>
+        {/* Google Tag Manager */}
+        {/* eslint-disable-next-line react/no-danger -- GTM script injection required */}
+        <script dangerouslySetInnerHTML={{
+          __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PNZ4MZGW');`
+        }} />
+        {/* End Google Tag Manager */}
+        
         {/* Critical CSS to prevent header layout shifts */}
         {/* eslint-disable-next-line react/no-danger -- Critical CSS injection required for layout shift prevention */}
         <style dangerouslySetInnerHTML={{
@@ -83,6 +96,17 @@ export default async function RootLayout({
         }} />
       </head>
       <body className="flex min-h-screen flex-col">
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PNZ4MZGW"
+            height="0" 
+            width="0" 
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
+        
         <Providers>
           {children}
           <Toaster />

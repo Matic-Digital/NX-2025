@@ -22,6 +22,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 
+import { staticRoutingService } from '@/lib/static-routing';
+
 import { ChevronDown, Menu, Search, X } from 'lucide-react';
 
 import { useIsDesktop, useIsTablet } from '@/hooks/useBreakpoint';
@@ -38,7 +40,6 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
 
-import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
 import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { Menu as MenuComponent } from '@/components/Menu/Menu';
@@ -104,6 +105,57 @@ function HeaderContent(props: HeaderProps) {
   const header = useContentfulLiveUpdates(props);
   // Add inspector mode for Contentful editing
   const inspectorProps = useContentfulInspectorMode({ entryId: header?.sys?.id });
+
+  // Helper function to resolve the correct URL for menu items
+  const resolveMenuItemUrl = (item: { internalLink?: { slug: string }; externalLink?: string; text: string }) => {
+    if (item.externalLink) {
+      return item.externalLink;
+    }
+    
+    if (item.internalLink?.slug) {
+      const slug = item.internalLink.slug;
+      
+      // If static routing is available, try it first
+      if (staticRoutingService.isAvailable()) {
+        // First try the slug as-is (with leading slash)
+        const directPath = slug.startsWith('/') ? slug : `/${slug}`;
+        const route = staticRoutingService.getRoute(directPath);
+        if (route) {
+          return route.path;
+        }
+        
+        // If not found, search for routes that end with this slug
+        const allPaths = staticRoutingService.getAllPaths();
+        
+        const matchingPaths = allPaths.filter(path => {
+          const pathSegments = path.split('/');
+          const lastSegment = pathSegments[pathSegments.length - 1];
+          return lastSegment === slug || path === directPath;
+        });
+        
+        if (matchingPaths.length > 0) {
+          const selectedPath = matchingPaths[0];
+          return selectedPath;
+        }
+      }
+      
+      // Enhanced fallback logic based on menu item text and slug
+      let fallbackUrl = slug.startsWith('/') ? slug : `/${slug}`;
+      
+      // Special handling for services menu items
+      if (item.text.toLowerCase().includes('deploy') || slug.includes('deploy')) {
+        fallbackUrl = '/services/deploy';
+      } else if (item.text.toLowerCase().includes('operate') || slug.includes('operate')) {
+        fallbackUrl = '/services/operate';
+      } else if (item.text.toLowerCase().includes('design') || slug.includes('design')) {
+        fallbackUrl = '/services/design';
+      }
+      
+      return fallbackUrl;
+    }
+    
+    return '#';
+  };
 
   // Load menu if header has menu reference
   useEffect(() => {
@@ -290,9 +342,8 @@ function HeaderContent(props: HeaderProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  if (menuLoading || overflowMenuLoading) {
-    return <HeaderSkeleton />;
-  }
+  // Don't show full skeleton - render header with logo but skeleton navigation
+  const showNavigationSkeleton = menuLoading || overflowMenuLoading;
 
   if (!header) {
     return (
@@ -393,8 +444,12 @@ function HeaderContent(props: HeaderProps) {
                   {/* Navigation Content */}
                   <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                     {/* Main Menu Items */}
-                    {menuLoading ? (
-                      <div className="text-white">Loading menu...</div>
+                    {showNavigationSkeleton ? (
+                      <div className="space-y-4">
+                        <div className="h-5 w-24 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-32 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-28 animate-pulse rounded bg-white/20" />
+                      </div>
                     ) : menu ? (
                       <div>
                         <div className="space-y-2">
@@ -477,8 +532,12 @@ function HeaderContent(props: HeaderProps) {
                   isHeaderBlurVisible && !isScrolled ? 'bg-black/[0.72] backdrop-blur-[30px]' : ''
                 }`}
               >
-                {menuLoading ? (
-                  <div className="px-4 py-2 text-white">Loading menu...</div>
+                {showNavigationSkeleton ? (
+                  <div className="flex items-center px-6 py-3 gap-4">
+                    <div className="h-4 w-16 animate-pulse rounded bg-white/20" />
+                    <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+                    <div className="h-4 w-18 animate-pulse rounded bg-white/20" />
+                  </div>
                 ) : menu ? (
                   <MenuComponent menu={menu} locales={locales} {...inspectorProps} />
                 ) : (
@@ -571,8 +630,18 @@ function HeaderContent(props: HeaderProps) {
                         >
                           <Container>
                             <nav onClick={(e) => e.stopPropagation()}>
-                              {overflowMenuLoading ? (
-                                <div className="text-white">Loading overflow menu...</div>
+                              {showNavigationSkeleton ? (
+                                <div className="flex flex-col gap-4">
+                                  <div className="h-6 w-32 animate-pulse rounded bg-white/20" />
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div className="h-40 animate-pulse rounded bg-white/10" />
+                                    <div className="flex flex-col gap-2">
+                                      <div className="h-4 w-24 animate-pulse rounded bg-white/20" />
+                                      <div className="h-4 w-28 animate-pulse rounded bg-white/20" />
+                                      <div className="h-4 w-20 animate-pulse rounded bg-white/20" />
+                                    </div>
+                                  </div>
+                                </div>
                               ) : overflowMenu ? (
                                 <MenuComponent
                                   menu={overflowMenu}
@@ -641,8 +710,12 @@ function HeaderContent(props: HeaderProps) {
                   {/* Navigation Content */}
                   <nav className="max-h-[75vh] overflow-y-auto px-6 pt-6 pb-24 space-y-6">
                     {/* Main Menu Items */}
-                    {menuLoading ? (
-                      <div className="text-white">Loading menu...</div>
+                    {showNavigationSkeleton ? (
+                      <div className="space-y-4">
+                        <div className="h-5 w-24 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-32 animate-pulse rounded bg-white/20" />
+                        <div className="h-5 w-28 animate-pulse rounded bg-white/20" />
+                      </div>
                     ) : menu ? (
                       <div>
                         <div className="space-y-2">
@@ -685,9 +758,7 @@ function HeaderContent(props: HeaderProps) {
 
                                 {item.__typename === 'MenuItem'
                                   ? (() => {
-                                      const linkUrl = item.internalLink?.slug
-                                        ? `/${item.internalLink.slug}`
-                                        : (item.externalLink ?? '#');
+                                      const linkUrl = resolveMenuItemUrl(item);
                                       const linkTarget = item.externalLink ? '_blank' : '_self';
                                       const linkRel = item.externalLink
                                         ? 'noopener noreferrer'
@@ -763,9 +834,7 @@ function HeaderContent(props: HeaderProps) {
                                                 {megaMenuData?.itemsCollection?.items?.map(
                                                   (subItem) => {
                                                     if (subItem.__typename === 'MenuItem') {
-                                                      const subLinkUrl = subItem.internalLink?.slug
-                                                        ? `/${subItem.internalLink.slug}`
-                                                        : (subItem.externalLink ?? '#');
+                                                      const subLinkUrl = resolveMenuItemUrl(subItem);
                                                       const subLinkTarget = subItem.externalLink
                                                         ? '_blank'
                                                         : '_self';
@@ -823,9 +892,7 @@ function HeaderContent(props: HeaderProps) {
                           <div className="flex flex-wrap gap-4 justify-center">
                             {overflowMenu.itemsCollection?.items?.map((item) => {
                               if (item.__typename === 'MenuItem') {
-                                const linkUrl = item.internalLink?.slug
-                                  ? `/${item.internalLink.slug}`
-                                  : (item.externalLink ?? '#');
+                                const linkUrl = resolveMenuItemUrl(item);
                                 const linkTarget = item.externalLink ? '_blank' : '_self';
                                 const linkRel = item.externalLink
                                   ? 'noopener noreferrer'

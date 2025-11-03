@@ -24,18 +24,71 @@ export async function middleware(request: NextRequest) {
   // Handle CORS for preview pages and API routes first
   if (
     request.nextUrl.pathname.includes('-preview') ||
-    request.nextUrl.pathname.startsWith('/api/preview')
+    request.nextUrl.pathname.startsWith('/api/preview') ||
+    request.nextUrl.pathname.startsWith('/api/enable-draft') ||
+    request.nextUrl.pathname.startsWith('/api/exit-preview') ||
+    request.nextUrl.searchParams.has('preview') ||
+    request.nextUrl.searchParams.has('contentful_preview')
   ) {
     const response = NextResponse.next();
 
     // Remove restrictive headers and allow iframe embedding from Contentful
     response.headers.delete('X-Frame-Options');
+    response.headers.delete('X-Content-Type-Options');
+    response.headers.delete('Referrer-Policy');
+    
+    // Set permissive CSP for live preview functionality
     response.headers.set(
       'Content-Security-Policy',
-      "frame-ancestors 'self' https://app.contentful.com;"
+      [
+        "default-src 'self' https://app.contentful.com https://images.ctfassets.net https://downloads.ctfassets.net",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.contentful.com https://vercel.live",
+        "style-src 'self' 'unsafe-inline' https://app.contentful.com https://fonts.googleapis.com",
+        "font-src 'self' https://fonts.gstatic.com https://app.contentful.com",
+        "img-src 'self' data: blob: https: http:",
+        "media-src 'self' https:",
+        "connect-src 'self' https: wss:",
+        "frame-src 'self' https://app.contentful.com",
+        "frame-ancestors 'self' https://app.contentful.com",
+        "object-src 'none'",
+        "base-uri 'self'"
+      ].join('; ')
     );
 
     return response;
+  }
+
+  // Create response for further processing
+  const response = NextResponse.next();
+
+  // Secure cookie handling - Apply to all responses
+  const cookieHeader = response.headers.get('set-cookie');
+  if (cookieHeader) {
+    // Parse and secure existing cookies
+    const cookies = cookieHeader.split(', ');
+    const securedCookies = cookies.map(cookie => {
+      // Add security attributes if not already present
+      let securedCookie = cookie;
+      
+      // Add HttpOnly if not present
+      if (!cookie.toLowerCase().includes('httponly')) {
+        securedCookie += '; HttpOnly';
+      }
+      
+      // Add Secure flag for HTTPS
+      if (!cookie.toLowerCase().includes('secure') && request.nextUrl.protocol === 'https:') {
+        securedCookie += '; Secure';
+      }
+      
+      // Add SameSite if not present
+      if (!cookie.toLowerCase().includes('samesite')) {
+        securedCookie += '; SameSite=Strict';
+      }
+      
+      return securedCookie;
+    });
+    
+    response.headers.set('set-cookie', securedCookies.join(', '));
   }
 
   // Only process GET requests to potential page routes
@@ -92,7 +145,7 @@ export async function middleware(request: NextRequest) {
   // 3. Move this logic entirely to the page component level
 
   // Continue with the request if no redirection is needed
-  return NextResponse.next();
+  return response;
 }
 
 // Configure the middleware to run on specific paths
