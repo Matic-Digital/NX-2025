@@ -68,7 +68,9 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'air-prod.imgix.net'
       }
-    ]
+    ],
+    // Add quality levels to prevent Next.js 16 warnings
+    qualities: [50, 60, 75, 90, 100]
   },
 
   // Enable experimental features
@@ -338,29 +340,30 @@ const nextConfig = {
         // Apply to all routes
         source: '/(.*)',
         headers: [
-          // Content Security Policy - Environment-aware configuration
+          // Content Security Policy - Configured for Mux Video Support
           {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'development' ? [
-              // Development CSP - More permissive for local development and network access
-              "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://vercel.live https://app.contentful.com",
-              "style-src 'self' 'unsafe-inline' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://fonts.googleapis.com",
-              "font-src 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https: http: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
-              "media-src 'self' https: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
-              "connect-src 'self' https: wss: ws: localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:*",
-              "frame-src 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://app.contentful.com",
-              "frame-ancestors 'self' localhost:* 127.0.0.1:* 0.0.0.0:* 192.168.*:* 10.*:* 172.*:* https://app.contentful.com"
-            ].join('; ') : [
-              // Production CSP - Secure configuration
+              // Development CSP - Mux optimized + required domains
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://*.mux.com https://*.muxinc.com",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https: wss:",
+              "media-src 'self' blob: https://*.mux.com",
+              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com",
+              "worker-src 'self' blob:",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com",
+              "frame-ancestors 'self' https://app.contentful.com"
+            ].join('; ') : [
+              // Production CSP - Secure configuration with Mux support
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://*.mux.com https://*.muxinc.com https://*.fastly.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https: http: https://*.mux.com https://image.mux.com",
-              "media-src 'self' https: https://*.mux.com https://stream.mux.com https://*.muxinc.com",
-              "connect-src 'self' https: wss: https://*.mux.com https://*.muxinc.com https://stream.mux.com",
+              "media-src 'self' https: https://*.mux.com https://stream.mux.com https://*.muxinc.com https://*.fastly.com https://manifest-oci-us-ashburn-1-vop1.fastly.mux.com",
+              "connect-src 'self' https: wss: https://*.mux.com https://*.muxinc.com https://stream.mux.com https://inferred.litix.io https://*.litix.io https://*.fastly.com https://manifest-oci-us-ashburn-1-vop1.fastly.mux.com",
               "frame-src 'self' https://app.contentful.com https://*.mux.com",
               "frame-ancestors 'self' https://app.contentful.com",
               "object-src 'none'",
