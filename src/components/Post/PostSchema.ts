@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ContentSchema } from '@/components/Content/ContentSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
 import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
@@ -50,13 +52,19 @@ export const PostSchema = z.object({
   categories: z.array(PostCategorySchema),
   tags: z.array(z.string()).optional(),
   openGraphImage: ImageSchema.optional(),
+  openGraphTitle: z.string().optional(),
+  openGraphDescription: z.string().optional(),
   seoTitle: z.string().optional(),
   seoDescription: z.string().optional(),
   seoFocusKeyword: z.string().optional(),
+  canonicalUrl: z.string().optional(),
   externalLink: z.string().optional(),
+  indexing: z.boolean().optional(),
   pageLayout: PageLayoutSchema.optional(),
+  postCtaForm: ContentSchema.optional(),
   gatedContentForm: HubspotFormSchema.optional(),
   testimonial: TestimonialItemSchema.optional(),
+  ctaBanner: CtaBannerSchema.optional(),
   __typename: z.string().optional()
 });
 

@@ -11,6 +11,8 @@ import { getCurrentLocale } from '@/lib/contentful-locale';
 
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
 
+import { Content } from '@/components/Content/Content';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
@@ -32,9 +34,28 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 
   // Fetch full post data on component mount (like ContentGridItem does)
+  // Only fetch if we don't have complete post data already
   useEffect(() => {
     const fetchFullPostData = async () => {
       if (!post.sys?.id) {
+        return;
+      }
+
+      // Skip fetching if we already have the main content fields AND optional fields
+      // This prevents overriding live preview data, but ensures we have complete data
+      const hasCompleteData = post.content && post.pageLayout && 
+        // Check if we have the optional fields that might be missing in preview
+        (post.postCtaForm !== undefined || post.ctaBanner !== undefined || post.gatedContentForm !== undefined || post.testimonial !== undefined);
+      
+      if (hasCompleteData) {
+        // We have enough data, just fetch related posts if needed
+        if (post.categories && post.categories.length > 0) {
+          try {
+            const related = await getRelatedPosts(post.categories, post.sys.id, 3);
+            setRelatedPosts(related.items);
+          } catch {
+          }
+        }
         return;
       }
 
@@ -42,7 +63,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         // Get current locale from URL or localStorage
         const currentLocale = getCurrentLocale();
 
-        const fullData = await getPostById(post.sys.id, false, currentLocale);
+        const fullData = await getPostById(post.sys.id, true, currentLocale);
         if (fullData) {
           setFullPostData(fullData);
 
@@ -60,10 +81,17 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     };
 
     void fetchFullPostData();
-  }, [post.sys.id]); // Re-run when post ID changes
+  }, [post.sys.id, post.content, post.pageLayout, post.categories, post.ctaBanner, post.gatedContentForm, post.postCtaForm, post.testimonial]); // Re-run when essential data changes
 
-  // Use full post data if available, otherwise fall back to initial post
-  const displayPost = fullPostData ?? post;
+  // In live preview mode, prioritize the live-updated post data
+  // Only use fullPostData for missing fields that aren't in the live data
+  const displayPost = {
+    ...fullPostData,
+    ...post,
+    // Ensure we have the full data structure but live updates override
+    postCtaForm: post.postCtaForm ?? fullPostData?.postCtaForm,
+    ctaBanner: post.ctaBanner ?? fullPostData?.ctaBanner
+  };
 
   const _formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -208,6 +236,13 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
             </div>
           </Box>
         </Container>
+
+        {/* CTA Banner for Gated Content template */}
+        {displayPost.ctaBanner && (
+          <div {...inspectorProps({ fieldId: 'ctaBanner' })}>
+            <CtaBanner {...displayPost.ctaBanner} />
+          </div>
+        )}
       </PageLayout>
     );
   }
@@ -322,6 +357,20 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
             </div>
           </Box>
         </Container>
+      )}
+
+      {/* Post CTA Form - Content block after additional resources */}
+      {displayPost.postCtaForm && (
+        <div {...inspectorProps({ fieldId: 'postCtaForm' })}>
+          <Content {...displayPost.postCtaForm} />
+        </div>
+      )}
+
+      {/* CTA Banner - Appears after Post CTA Form */}
+      {displayPost.ctaBanner && (
+        <div {...inspectorProps({ fieldId: 'ctaBanner' })}>
+          <CtaBanner {...displayPost.ctaBanner} />
+        </div>
       )}
     </PageLayout>
   );

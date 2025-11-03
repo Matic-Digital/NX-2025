@@ -1,15 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 
 import { PostCard } from '@/components/Post/PostCard';
-import { PostDetail } from '@/components/Post/PostDetail';
+import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { postFields } from '@/components/Post/preview/PostFields';
 import { FieldBreakdown } from '@/components/Preview/FieldBreakdown';
+
+// Lazy load the heavy PostDetail component
+const PostDetail = lazy(() => import('@/components/Post/PostDetail').then(module => ({ default: module.PostDetail })));
 
 import type { Post } from '@/components/Post/PostSchema';
 
@@ -67,7 +70,24 @@ export function PostPreview(props: Partial<Post>) {
       {/* Detail view - full page layout without field breakdown */}
       {previewMode === 'detail' ? (
         hasRequiredFields ? (
-          <PostDetail post={livePost as Post} />
+          <Suspense fallback={
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div className="animate-pulse space-y-4">
+                  <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-64 bg-gray-200 rounded"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }>
+            <PostDetail post={livePost as Post} />
+          </Suspense>
         ) : (
           <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-md">
@@ -97,7 +117,9 @@ export function PostPreview(props: Partial<Post>) {
                   {hasRequiredFields && livePost.sys ? (
                     <div className="overflow-hidden p-6 max-w-xl mx-auto">
                       <div className="grid gap-6">
-                        <PostCard sys={{ id: livePost.sys.id }} {...inspectorProps} />
+                        <Suspense fallback={<PostCardSkeleton />}>
+                          <PostCard sys={{ id: livePost.sys.id }} {...inspectorProps} />
+                        </Suspense>
                       </div>
                     </div>
                   ) : (

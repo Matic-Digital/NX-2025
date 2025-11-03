@@ -163,10 +163,98 @@ const generateSrcSet = (baseUrl: string, width: number, height: number, classNam
 };
 
 /**
+ * Calculates optimal intrinsic dimensions based on CSS context to match rendered size
+ * @param originalWidth - Original image width
+ * @param originalHeight - Original image height
+ * @param className - CSS classes that affect sizing
+ * @returns Object with optimized width and height
+ */
+const calculateIntrinsicDimensions = (
+  originalWidth: number,
+  originalHeight: number,
+  className?: string
+): { width: number; height: number } => {
+  const aspectRatio = originalWidth / originalHeight;
+  
+  // Parse specific height constraints from Tailwind classes
+  const heightMatch = className?.match(/h-\[([0-9.]+)rem\]/);
+  if (heightMatch?.[1]) {
+    const heightRem = parseFloat(heightMatch[1]);
+    const heightPx = heightRem * 16; // Convert rem to pixels (assuming 16px base)
+    return {
+      width: Math.round(heightPx * aspectRatio),
+      height: Math.round(heightPx)
+    };
+  }
+
+  // Check for fixed height classes
+  const fixedHeightMap: Record<string, number> = {
+    'h-64': 256,   // 16rem
+    'h-72': 288,   // 18rem
+    'h-80': 320,   // 20rem
+    'h-96': 384,   // 24rem
+    'h-full': 800, // Assume reasonable default for h-full
+  };
+
+  // Also check for max-height classes that might constrain the image
+  const maxHeightMatch = className?.match(/max-h-\[([0-9.]+)rem\]/);
+  if (maxHeightMatch?.[1]) {
+    const maxHeightRem = parseFloat(maxHeightMatch[1]);
+    const maxHeightPx = maxHeightRem * 16;
+    const constrainedHeight = Math.min(originalHeight, maxHeightPx);
+    return {
+      width: Math.round(constrainedHeight * aspectRatio),
+      height: constrainedHeight
+    };
+  }
+
+  for (const [heightClass, heightPx] of Object.entries(fixedHeightMap)) {
+    if (className?.includes(heightClass)) {
+      return {
+        width: Math.round(heightPx * aspectRatio),
+        height: heightPx
+      };
+    }
+  }
+
+  // For full-width images, calculate based on common container widths
+  const hasFullWidth = className?.includes('w-full');
+  const isAbsolute = className?.includes('absolute');
+  const isInset = className?.includes('inset-0');
+  
+  if (hasFullWidth || (isAbsolute && isInset)) {
+    // Assume container max-width of 1440px for full-width images
+    const containerWidth = 1440;
+    const containerHeight = Math.round(containerWidth / aspectRatio);
+    
+    // Cap at reasonable dimensions to avoid oversized images
+    return {
+      width: Math.min(containerWidth, originalWidth),
+      height: Math.min(containerHeight, originalHeight)
+    };
+  }
+
+  // For content images, use responsive sizing based on typical usage
+  const maxContentWidth = 800;
+  if (originalWidth > maxContentWidth) {
+    return {
+      width: maxContentWidth,
+      height: Math.round(maxContentWidth / aspectRatio)
+    };
+  }
+
+  // Use original dimensions if they're already reasonable
+  return {
+    width: originalWidth,
+    height: originalHeight
+  };
+};
+
+/**
  * Generates responsive sizes attribute based on className usage patterns
  * @param className - CSS classes applied to the image
  * @param priority - Whether this is a priority image
- * @param intrinsicWidth - The actual width of the image
+ * @param intrinsicWidth - The calculated intrinsic width
  * @returns sizes string for responsive images
  */
 const generateSizes = (className?: string, priority?: boolean, intrinsicWidth?: number): string => {
@@ -175,6 +263,15 @@ const generateSizes = (className?: string, priority?: boolean, intrinsicWidth?: 
   const isAbsolute = className?.includes('absolute');
   const isObjectCover = className?.includes('object-cover');
   const isHero = className?.includes('hero') ?? className?.includes('banner');
+
+  // Check for specific height constraints
+  const heightMatch = className?.match(/h-\[([0-9.]+)rem\]/);
+  if (heightMatch?.[1]) {
+    const heightRem = parseFloat(heightMatch[1]);
+    const heightPx = heightRem * 16;
+    // For fixed height images, size based on the height constraint
+    return `(max-width: 640px) 100vw, (max-width: 1024px) 90vw, ${Math.round(heightPx * 1.5)}px`;
+  }
 
   if (hasFullWidth && hasFullHeight && (isAbsolute || isObjectCover)) {
     // Full container images (like hero banners) - viewport width
@@ -192,7 +289,7 @@ const generateSizes = (className?: string, priority?: boolean, intrinsicWidth?: 
     return `(max-width: 480px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, ${maxWidth}px`;
   }
 
-  // Standard content images - use actual dimensions when available
+  // Standard content images - use calculated dimensions
   if (intrinsicWidth && intrinsicWidth <= 800) {
     // Small images - don't over-size them
     return `(max-width: 480px) 100vw, (max-width: 768px) 60vw, ${Math.min(intrinsicWidth, 600)}px`;
@@ -279,9 +376,14 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
   if (!link) {
     if (isLoading) {
-      // Show skeleton loader matching design system with exact dimensions
-      const skeletonWidth = width ?? 1208;
-      const skeletonHeight = height ?? 800;
+      // Show skeleton loader with calculated dimensions to match final image
+      const originalWidth = width ?? 1208;
+      const originalHeight = height ?? 800;
+      const { width: skeletonWidth, height: skeletonHeight } = calculateIntrinsicDimensions(
+        originalWidth,
+        originalHeight,
+        className
+      );
       return (
         <div className="relative" style={{ width: skeletonWidth, height: skeletonHeight }}>
           <ImageSkeleton
@@ -300,10 +402,13 @@ export const AirImage: React.FC<AirImageType> = (props) => {
   const originalWidth = airDimensions?.width ?? width ?? 1208;
   const originalHeight = airDimensions?.height ?? height ?? 800;
 
-  // Use original image dimensions to let CSS handle responsive sizing
-  // This ensures intrinsic size matches rendered size
-  const intrinsicWidth = originalWidth;
-  const intrinsicHeight = originalHeight;
+  // Calculate optimal intrinsic dimensions based on CSS context
+  // This ensures intrinsic size matches rendered size for better LCP
+  const { width: intrinsicWidth, height: intrinsicHeight } = calculateIntrinsicDimensions(
+    originalWidth,
+    originalHeight,
+    className
+  );
 
   // Use original URLs to avoid hydration mismatches from URL optimization
   // Let Next.js Image component handle optimization consistently
