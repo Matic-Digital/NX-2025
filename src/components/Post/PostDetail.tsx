@@ -41,9 +41,13 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         return;
       }
 
-      // Skip fetching if we already have the main content fields
-      // This prevents overriding live preview data
-      if (post.content && post.pageLayout) {
+      // Skip fetching if we already have the main content fields AND optional fields
+      // This prevents overriding live preview data, but ensures we have complete data
+      const hasCompleteData = post.content && post.pageLayout && 
+        // Check if we have the optional fields that might be missing in preview
+        (post.postCtaForm !== undefined || post.ctaBanner !== undefined || post.gatedContentForm !== undefined || post.testimonial !== undefined);
+      
+      if (hasCompleteData) {
         // We have enough data, just fetch related posts if needed
         if (post.categories && post.categories.length > 0) {
           try {
@@ -77,7 +81,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     };
 
     void fetchFullPostData();
-  }, [post.sys.id, post.content, post.pageLayout, post.categories]); // Re-run when essential data changes
+  }, [post.sys.id, post.content, post.pageLayout, post.categories, post.ctaBanner, post.gatedContentForm, post.postCtaForm, post.testimonial]); // Re-run when essential data changes
 
   // In live preview mode, prioritize the live-updated post data
   // Only use fullPostData for missing fields that aren't in the live data

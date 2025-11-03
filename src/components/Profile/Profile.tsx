@@ -53,7 +53,7 @@ export function Profile({ sys, className }: ProfileProps) {
   }
 
   return (
-    <Box className={className + 'px-0 gap-4 bg-surface'} direction="row">
+    <Box className={`px-0 gap-4 bg-surface ${className ?? ''}`} direction="row">
       {profile.asset && (
         <Box className="w-48 min-h-16 overflow-hidden flex-shrink-0">
         <AirImage
@@ -67,19 +67,19 @@ export function Profile({ sys, className }: ProfileProps) {
 
       <Box direction="col" className="gap-2 p-4">
         {profile.name && (
-          <div {...inspectorProps({ fieldId: 'name' })}>
+          <div className="font-semibold text-lg text-gray-900" {...inspectorProps({ fieldId: 'name' })}>
             {profile.name}
           </div>
         )}
 
         {profile.profileLocation && (
-          <div {...inspectorProps({ fieldId: 'profileLocation' })}>
+          <div className="text-sm text-gray-600" {...inspectorProps({ fieldId: 'profileLocation' })}>
             {profile.profileLocation}
           </div>
         )}
 
         {profile.description && (
-          <div {...inspectorProps({ fieldId: 'description' })}>
+          <div className="text-sm text-gray-700 mt-2" {...inspectorProps({ fieldId: 'description' })}>
             {profile.description}
           </div>
         )}

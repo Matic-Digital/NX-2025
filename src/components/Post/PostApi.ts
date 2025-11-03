@@ -111,10 +111,14 @@ export const POST_GRAPHQL_FIELDS = `
   openGraphImage {
     ${IMAGE_GRAPHQL_FIELDS}
   }
+  openGraphTitle
+  openGraphDescription
   seoTitle
   seoDescription
   seoFocusKeyword
+  canonicalUrl
   externalLink
+  indexing
   pageLayout {
     sys {
       id

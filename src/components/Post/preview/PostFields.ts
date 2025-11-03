@@ -135,5 +135,77 @@ export const postFields: FieldConfig<Partial<Post>>[] = [
     description: 'The SEO focus keyword for the post.',
     color: 'yellow',
     getValue: (data) => (data.seoFocusKeyword ? `"${data.seoFocusKeyword}"` : 'Not set')
+  },
+  {
+    name: 'canonicalUrl',
+    label: 'Canonical URL',
+    required: false,
+    description: 'The canonical URL for the post.',
+    color: 'indigo',
+    getValue: (data) => (data.canonicalUrl ? `"${data.canonicalUrl}"` : 'Not set')
+  },
+  {
+    name: 'externalLink',
+    label: 'External Link',
+    required: false,
+    description: 'External link for the post.',
+    color: 'blue',
+    getValue: (data) => (data.externalLink ? `"${data.externalLink}"` : 'Not set')
+  },
+  {
+    name: 'postCtaForm',
+    label: 'Post CTA Form',
+    required: false,
+    description: 'Content block CTA form for the post.',
+    color: 'green',
+    getValue: (data) => (data.postCtaForm ? 'CTA form configured' : 'Not set')
+  },
+  {
+    name: 'gatedContentForm',
+    label: 'Gated Content Form',
+    required: false,
+    description: 'HubSpot form for gated content template.',
+    color: 'orange',
+    getValue: (data) => (data.gatedContentForm ? 'HubSpot form configured' : 'Not set')
+  },
+  {
+    name: 'testimonial',
+    label: 'Testimonial',
+    required: false,
+    description: 'Testimonial item for the post.',
+    color: 'purple',
+    getValue: (data) => (data.testimonial ? 'Testimonial configured' : 'Not set')
+  },
+  {
+    name: 'ctaBanner',
+    label: 'CTA Banner',
+    required: false,
+    description: 'Call-to-action banner for the post.',
+    color: 'red',
+    getValue: (data) => (data.ctaBanner ? `"${data.ctaBanner.title || 'CTA Banner configured'}"` : 'Not set')
+  },
+  {
+    name: 'indexing',
+    label: 'Indexing',
+    required: false,
+    description: 'Whether the post should be indexed by search engines.',
+    color: 'indigo',
+    getValue: (data) => (data.indexing !== undefined ? (data.indexing ? 'Enabled' : 'Disabled') : 'Not set')
+  },
+  {
+    name: 'openGraphTitle',
+    label: 'Open Graph Title',
+    required: false,
+    description: 'The Open Graph title for social media sharing.',
+    color: 'cyan',
+    getValue: (data) => (data.openGraphTitle ? `"${data.openGraphTitle}"` : 'Not set')
+  },
+  {
+    name: 'openGraphDescription',
+    label: 'Open Graph Description',
+    required: false,
+    description: 'The Open Graph description for social media sharing.',
+    color: 'pink',
+    getValue: (data) => (data.openGraphDescription ? `"${data.openGraphDescription}"` : 'Not set')
   }
 ];
