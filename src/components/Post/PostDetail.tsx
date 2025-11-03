@@ -32,9 +32,24 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 
   // Fetch full post data on component mount (like ContentGridItem does)
+  // Only fetch if we don't have complete post data already
   useEffect(() => {
     const fetchFullPostData = async () => {
       if (!post.sys?.id) {
+        return;
+      }
+
+      // Skip fetching if we already have the main content fields
+      // This prevents overriding live preview data
+      if (post.content && post.pageLayout) {
+        // We have enough data, just fetch related posts if needed
+        if (post.categories && post.categories.length > 0) {
+          try {
+            const related = await getRelatedPosts(post.categories, post.sys.id, 3);
+            setRelatedPosts(related.items);
+          } catch {
+          }
+        }
         return;
       }
 
@@ -42,7 +57,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         // Get current locale from URL or localStorage
         const currentLocale = getCurrentLocale();
 
-        const fullData = await getPostById(post.sys.id, false, currentLocale);
+        const fullData = await getPostById(post.sys.id, true, currentLocale);
         if (fullData) {
           setFullPostData(fullData);
 
@@ -60,10 +75,14 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     };
 
     void fetchFullPostData();
-  }, [post.sys.id]); // Re-run when post ID changes
+  }, [post.sys.id, post.content, post.pageLayout, post.categories]); // Re-run when essential data changes
 
-  // Use full post data if available, otherwise fall back to initial post
-  const displayPost = fullPostData ?? post;
+  // In live preview mode, prioritize the live-updated post data
+  // Only use fullPostData for missing fields that aren't in the live data
+  const displayPost = {
+    ...fullPostData,
+    ...post
+  };
 
   const _formatDate = (dateString?: string) => {
     if (!dateString) return '';

@@ -2,6 +2,7 @@
 import '@/styles/globals.css';
 
 import { type Metadata } from 'next';
+import Script from 'next/script';
 // Components
 import { Providers } from '@/app/providers';
 // Dependencies
@@ -69,14 +70,17 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${layoutClasses} ${inter.variable}`}>
       <head>
         {/* Google Tag Manager */}
-        {/* eslint-disable-next-line react/no-danger -- GTM script injection required */}
-        <script dangerouslySetInnerHTML={{
-          __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-PNZ4MZGW');`
-        }} />
+          }}
+        />
         {/* End Google Tag Manager */}
         
         {/* Critical CSS to prevent header layout shifts */}
