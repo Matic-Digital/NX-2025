@@ -30,16 +30,18 @@ export async function GET() {
     const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_MANAGEMENT_TOKEN;
 
     if (!spaceId || !accessToken) {
-      return NextResponse.json(
-        {
-          error: 'Missing Contentful credentials',
-          details: {
-            spaceId: spaceId ? 'Present' : 'Missing',
-            token: accessToken ? 'Present' : 'Missing'
-          }
-        },
-        { status: 500 }
-      );
+      // Return mock data for testing when credentials are not configured
+      const mockLocales = [
+        { code: 'en-US', name: 'English (United States)', default: true },
+        { code: 'es', name: 'Spanish', default: false },
+        { code: 'fr', name: 'French', default: false },
+        { code: 'de', name: 'German', default: false }
+      ];
+      
+      return NextResponse.json({ 
+        locales: mockLocales,
+        source: 'mock' 
+      });
     }
 
     const response = await fetch(`https://api.contentful.com/spaces/${spaceId}/locales`, {

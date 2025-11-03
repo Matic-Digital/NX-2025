@@ -286,15 +286,15 @@ export async function GET(
   // Clean up locale if it contains error text
   const cleanLocale = locale && !locale.includes('NOT_FOUND') ? locale : null;
 
-  // Validate required parameters
-  if (!secret || !id) {
-    return NextResponse.json({ message: 'No secret or id provided' }, { status: 400 });
+  // Validate secret first (authentication before parameter validation)
+  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
+  if (!expectedSecret || !secret || !constantTimeCompare(secret, expectedSecret)) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  // Validate secret using constant-time comparison
-  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
-  if (!expectedSecret || !constantTimeCompare(secret, expectedSecret)) {
-    return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
+  // Validate required parameters after authentication
+  if (!id) {
+    return NextResponse.json({ message: 'No id provided' }, { status: 400 });
   }
 
   // Validate content type using secure property access
@@ -393,4 +393,40 @@ export async function GET(
   } catch {
     return NextResponse.json({ message: `Error fetching ${entityName}` }, { status: 500 });
   }
+}
+
+// Handle POST requests for security testing
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ contentType: string }> }
+) {
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get('secret');
+  
+  // Check for secret in request body as well
+  let bodySecret: string | undefined;
+  try {
+    const body = await request.json() as { secret?: string };
+    bodySecret = body.secret;
+  } catch {
+    // Invalid JSON or no body
+  }
+  
+  const providedSecret = secret ?? bodySecret;
+  
+  // Validate secret first (authentication before parameter validation)
+  const expectedSecret = process.env.CONTENTFUL_PREVIEW_SECRET;
+  if (!expectedSecret || !providedSecret || !constantTimeCompare(providedSecret, expectedSecret)) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+  
+  // For POST requests, redirect to GET with same parameters
+  const resolvedParams = await params;
+  const contentType = resolvedParams.contentType;
+  
+  return NextResponse.json({ 
+    message: 'Use GET method for draft preview',
+    method: 'GET',
+    endpoint: `/api/enable-draft/${contentType}`
+  }, { status: 405 });
 }

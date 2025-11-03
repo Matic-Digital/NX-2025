@@ -55,3 +55,6 @@ PR_DOCUMENTATION.md
 
 routing-debug.json
 src/lib/routing-cache.json
+
+# Security tests (keep local only)
+security-tests/
