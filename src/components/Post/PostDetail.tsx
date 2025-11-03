@@ -12,6 +12,7 @@ import { getCurrentLocale } from '@/lib/contentful-locale';
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
 
 import { Content } from '@/components/Content/Content';
+import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
@@ -84,7 +85,8 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
     ...fullPostData,
     ...post,
     // Ensure we have the full data structure but live updates override
-    postCtaForm: post.postCtaForm ?? fullPostData?.postCtaForm
+    postCtaForm: post.postCtaForm ?? fullPostData?.postCtaForm,
+    ctaBanner: post.ctaBanner ?? fullPostData?.ctaBanner
   };
 
   const _formatDate = (dateString?: string) => {
@@ -230,6 +232,13 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
             </div>
           </Box>
         </Container>
+
+        {/* CTA Banner for Gated Content template */}
+        {displayPost.ctaBanner && (
+          <div {...inspectorProps({ fieldId: 'ctaBanner' })}>
+            <CtaBanner {...displayPost.ctaBanner} />
+          </div>
+        )}
       </PageLayout>
     );
   }
@@ -350,6 +359,13 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
       {displayPost.postCtaForm && (
         <div {...inspectorProps({ fieldId: 'postCtaForm' })}>
           <Content {...displayPost.postCtaForm} />
+        </div>
+      )}
+
+      {/* CTA Banner - Appears after Post CTA Form */}
+      {displayPost.ctaBanner && (
+        <div {...inspectorProps({ fieldId: 'ctaBanner' })}>
+          <CtaBanner {...displayPost.ctaBanner} />
         </div>
       )}
     </PageLayout>

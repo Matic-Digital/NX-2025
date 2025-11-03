@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ContentSchema } from '@/components/Content/ContentSchema';
+import { CtaBannerSchema } from '@/components/CtaBanner/CtaBannerSchema';
 import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
@@ -59,6 +60,7 @@ export const PostSchema = z.object({
   postCtaForm: ContentSchema.optional(),
   gatedContentForm: HubspotFormSchema.optional(),
   testimonial: TestimonialItemSchema.optional(),
+  ctaBanner: CtaBannerSchema.optional(),
   __typename: z.string().optional()
 });
 
