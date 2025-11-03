@@ -37,6 +37,7 @@ import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { getAllPageLists, getPageListBySlug } from '@/components/PageList/PageListApi';
 import { getPostBySlug } from '@/components/Post/PostApi';
 import { getProductBySlug } from '@/components/Product/ProductApi';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { RichContent } from '@/components/RichContent/RichContent';
 import { JsonLdSchema } from '@/components/Schema/JsonLdSchema';
 import { getServiceBySlug } from '@/components/Service/ServiceApi';
@@ -61,6 +62,7 @@ const componentMap = {
   ContentGrid,
   CtaBanner,
   ImageBetween,
+  RegionStats,
   RichContent,
   ContentTypeRichText: RichContent // Map Contentful's ContentTypeRichText to RichContent component
 };

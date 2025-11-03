@@ -8,8 +8,8 @@ import {
 import type { RegionStats } from '@/components/RegionStats/RegionStatsSchema';
 
 /**
- * Custom hook for BannerHero data management
- * Handles Contentful live preview and inspector mode
+ * Custom hook for RegionStats data management
+ * Handles Contentful live preview (same pattern as ContentGrid)
  */
 export const useRegionStatsData = (props: RegionStats) => {
   const regionStats = useContentfulLiveUpdates(props);
