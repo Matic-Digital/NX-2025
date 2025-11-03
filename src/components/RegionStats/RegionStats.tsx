@@ -14,8 +14,7 @@ import type { RegionStats } from '@/components/RegionStats/RegionStatsSchema';
 
 export function RegionStats(props: RegionStats) {
   const { regionStats } = useRegionStatsData(props);
-  const { title, image, itemsCollection, cta } = regionStats;
-  const { currentState, shouldRenderContent } = useRegionStatsState(props);
+  const { currentState, shouldRenderContent } = useRegionStatsState(regionStats);
 
   if (currentState === 'empty') {
     return <EmptyState />;
@@ -24,6 +23,8 @@ export function RegionStats(props: RegionStats) {
   if (!shouldRenderContent) {
     return null;
   }
+
+  const { title, image, itemsCollection, cta } = regionStats;
 
   return (
     <Container className="md:p-16">

@@ -105,14 +105,21 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     const content = (
       <div className="p-4 sm:p-6 xl:p-8">
         <div className="flex flex-col gap-6 xl:gap-8">
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:gap-8">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:gap-8 min-h-[280px] xl:min-h-[320px]">
             <h2 className="text-lg sm:text-xl xl:text-[1.5rem] text-white xl:flex-shrink-0 xl:w-64">
               {displayTitle}
             </h2>
-            <div className="grid auto-rows-min grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 xl:flex-grow">
-              {menuItems.map((menuItem) => (
-                <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
-              ))}
+            <div className="xl:flex-grow">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 h-[200px] xl:h-[240px] content-start">
+                {Array.from({ length: 6 }, (_, index) => {
+                  const menuItem = menuItems.at(index);
+                  return menuItem ? (
+                    <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
+                  ) : (
+                    <div key={`placeholder-${index}`} className="invisible min-h-[90px] xl:min-h-[110px]" />
+                  );
+                })}
+              </div>
             </div>
           </div>
           {!postsLoading && recentPosts.length > 0 && (
@@ -136,7 +143,14 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center p-4">
+        <div className="flex items-center gap-2 text-white">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          <span className="text-sm">Loading menu...</span>
+        </div>
+      </div>
+    );
   }
 
   if (!currentMegaMenu) {
@@ -148,7 +162,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
     return (
       <div className="flex flex-col gap-4">
         <h3 className="text-foreground mb-2 text-lg font-semibold">{displayTitle}</h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 min-h-[280px] xl:min-h-[320px]">
           {/* First column: MegaMenuCard */}
           <div>
             {!postsLoading && recentPosts.length > 0 && recentPosts[0] && (
@@ -156,10 +170,15 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
             )}
           </div>
           {/* Second column: Menu items */}
-          <div className="flex flex-col gap-2">
-            {menuItems.map((menuItem) => (
-              <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
-            ))}
+          <div className="flex flex-col gap-2 h-[200px] xl:h-[240px] content-start overflow-y-auto">
+            {Array.from({ length: 6 }, (_, index) => {
+              const menuItem = menuItems.at(index);
+              return menuItem ? (
+                <MenuItem key={menuItem.sys.id} menuItem={menuItem} />
+              ) : (
+                <div key={`placeholder-${index}`} className="invisible min-h-[30px]" />
+              );
+            })}
           </div>
         </div>
       </div>
