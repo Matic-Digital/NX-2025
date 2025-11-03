@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { ContentSchema } from '@/components/Content/ContentSchema';
 import { HubspotFormSchema } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import { ImageSchema } from '@/components/Image/ImageSchema';
 import { PageLayoutSchema } from '@/components/PageLayout/PageLayoutSchema';
@@ -55,6 +56,7 @@ export const PostSchema = z.object({
   seoFocusKeyword: z.string().optional(),
   externalLink: z.string().optional(),
   pageLayout: PageLayoutSchema.optional(),
+  postCtaForm: ContentSchema.optional(),
   gatedContentForm: HubspotFormSchema.optional(),
   testimonial: TestimonialItemSchema.optional(),
   __typename: z.string().optional()

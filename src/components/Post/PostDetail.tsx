@@ -11,6 +11,7 @@ import { getCurrentLocale } from '@/lib/contentful-locale';
 
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
 
+import { Content } from '@/components/Content/Content';
 import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
@@ -81,7 +82,9 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
   // Only use fullPostData for missing fields that aren't in the live data
   const displayPost = {
     ...fullPostData,
-    ...post
+    ...post,
+    // Ensure we have the full data structure but live updates override
+    postCtaForm: post.postCtaForm ?? fullPostData?.postCtaForm
   };
 
   const _formatDate = (dateString?: string) => {
@@ -341,6 +344,13 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
             </div>
           </Box>
         </Container>
+      )}
+
+      {/* Post CTA Form - Content block after additional resources */}
+      {displayPost.postCtaForm && (
+        <div {...inspectorProps({ fieldId: 'postCtaForm' })}>
+          <Content {...displayPost.postCtaForm} />
+        </div>
       )}
     </PageLayout>
   );

@@ -4,6 +4,7 @@ import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { getCurrentLocale } from '@/lib/contentful-locale';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
+import { CONTENT_GRAPHQL_FIELDS } from '@/components/Content/ContentApi';
 import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/HubspotFormApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { PROFILE_SIMPLE_GRAPHQL_FIELDS } from '@/components/Profile/ProfileApi';
@@ -128,6 +129,9 @@ export const POST_GRAPHQL_FIELDS = `
         id
       }
     }
+  }
+  postCtaForm {
+    ${CONTENT_GRAPHQL_FIELDS}
   }
   gatedContentForm {
     ${HUBSPOTFORM_GRAPHQL_FIELDS}

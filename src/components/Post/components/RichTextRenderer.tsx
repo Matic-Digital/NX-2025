@@ -255,7 +255,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
                 className="my-6 w-full"
                 {...(inspectorProps ? inspectorProps({ fieldId: `embedded-${entryId}` }) : {})}
               >
-                <Profile sys={{ id: entryId }} variant="card" className="mx-auto max-w-md" />
+                <Profile sys={{ id: entryId }} className="mx-auto max-w-md" />
               </div>
             );
           }
@@ -297,7 +297,7 @@ export function RichTextRenderer({ content, inspectorProps }: RichTextRendererPr
               className="inline-block"
               {...(inspectorProps ? inspectorProps({ fieldId: `inline-${entryId}` }) : {})}
             >
-              <Profile sys={{ id: entryId }} variant="compact" />
+              <Profile sys={{ id: entryId }} />
             </span>
           );
         }

@@ -310,21 +310,21 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
-      "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
-      "contentType": "Post",
-      "contentId": "post-17503",
-      "title": "TrueCapture™ Outperforms Modeled Energy Yield Projections in ICF Engineering Report",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.6,
-      "changefreq": "weekly"
-    },
     "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees": {
       "path": "/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees",
       "contentType": "Post",
       "contentId": "post-17709",
       "title": "Introducing Nextracker’s Half the Sun Class of 2024 Awardees",
+      "parentPageLists": [],
+      "isNested": true,
+      "priority": 0.6,
+      "changefreq": "weekly"
+    },
+    "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report": {
+      "path": "/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report",
+      "contentType": "Post",
+      "contentId": "post-17503",
+      "title": "TrueCapture™ Outperforms Modeled Energy Yield Projections in ICF Engineering Report",
       "parentPageLists": [],
       "isNested": true,
       "priority": 0.6,
@@ -1752,6 +1752,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-11-03T17:41:20.480Z",
+  "generatedAt": "2025-11-03T19:10:04.410Z",
   "version": "1.0.0"
 }
