@@ -19,6 +19,7 @@ export function RegionsMap(props: RegionsMap) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -32,15 +33,29 @@ export function RegionsMap(props: RegionsMap) {
         }
 
         setContent(response);
-      } catch {
-        setError('Failed to load region data');
+        setError(null); // Clear any previous errors
+      } catch (err) {
+        // Log the actual error for debugging
+        console.error('Error fetching region data:', err);
+        
+        // Provide more specific error message
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load region data';
+        setError(errorMessage);
+        
+        // Implement retry logic (max 3 retries)
+        if (retryCount < 3) {
+          setRetryCount(prev => prev + 1);
+          console.log(`Retrying... attempt ${retryCount + 1}`);
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+          void fetchContent();
+        }
       } finally {
         setLoading(false);
       }
     };
 
     void fetchContent();
-  }, [props.sys.id]);
+  }, [props.sys.id, retryCount]);
 
   // Provide default values to prevent destructuring errors
   const { title = '', overline = '', regionsCollection = { items: [] } } = content ?? {};
