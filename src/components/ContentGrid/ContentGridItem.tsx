@@ -5,10 +5,10 @@ import { useContentfulInspectorMode } from '@contentful/live-preview/react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { ArrowUpRight } from 'lucide-react';
+
 import { staticRoutingService } from '@/lib/static-routing';
 import { cn } from '@/lib/utils';
-
-import { ArrowUpRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { SvgIcon } from '@/components/ui/svg-icon';
@@ -62,7 +62,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         if (linkResponse.ok) {
           const linkResponseData = await linkResponse.json();
           const linkData = linkResponseData.linkData;
-          
+
           if (linkData?.link?.slug) {
             // Default to flat URL structure
             let href = `/${linkData.link.slug}`;
@@ -72,8 +72,12 @@ export function ContentGridItem(props: ContentGridItemProps) {
             if (linkData.link.__typename === 'PageList') {
               // Use static routing service to get route metadata (replaces API call)
               const routeMetadata = staticRoutingService.getRoute(`/${linkData.link.slug}`);
-              
-              if (routeMetadata && routeMetadata.isNested && routeMetadata.parentPageLists.length > 0) {
+
+              if (
+                routeMetadata &&
+                routeMetadata.isNested &&
+                routeMetadata.parentPageLists.length > 0
+              ) {
                 // Use the full nested path from routing metadata
                 href = routeMetadata.path;
               }
@@ -189,7 +193,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
             {ctaCollection?.items?.[0]?.text && (
               <div className="mt-auto">
-                <Link href={getHref()} className="inline-block w-full md:w-auto">
+                <Link
+                  href={`/${ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}`}
+                  className="inline-block w-full md:w-auto"
+                >
                   <Button
                     variant="outlineTrasparentWhite"
                     className="hover:bg-background hover:text-foreground w-full transition-colors"
