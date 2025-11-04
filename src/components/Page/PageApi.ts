@@ -321,6 +321,22 @@ export async function getPageBySlug(
                   console.warn(`Failed to enrich Collection ${gridItem.sys.id} in Page ContentGrid:`, error);
                   return gridItem;
                 }
+              } else if (gridItem.__typename === 'Accordion' && gridItem.sys?.id) {
+                try {
+                  // Dynamically import Accordion API to avoid circular dependency
+                  const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
+                  console.log('Page ContentGrid: Enriching Accordion', gridItem.sys.id);
+                  const enrichedAccordion = await getAccordionById(gridItem.sys.id, preview);
+                  console.log('Page ContentGrid: Accordion enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedAccordion,
+                    hasTitle: !!enrichedAccordion?.title
+                  });
+                  return enrichedAccordion || gridItem;
+                } catch (error) {
+                  console.warn(`Failed to enrich Accordion ${gridItem.sys.id} in Page ContentGrid:`, error);
+                  return gridItem;
+                }
               }
               return gridItem;
             });

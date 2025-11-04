@@ -221,7 +221,11 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
 
       switch (staticRoute.contentType) {
         case 'Page':
-          content = await getPageBySlug(segments[segments.length - 1]!, preview);
+          // Try full path first (e.g., 'what-we-do/design'), then fall back to last segment
+          content = await getPageBySlug(segments.join('/'), preview);
+          if (!content) {
+            content = await getPageBySlug(segments[segments.length - 1]!, preview);
+          }
           break;
         case 'Product':
           // Try full path first (e.g., 'products/trackers/nx-horizon'), then fall back to last segment

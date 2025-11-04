@@ -319,8 +319,23 @@ export async function getContentGridById(id: string, preview = false): Promise<C
             console.warn(`Failed to enrich Accordion ${item.sys.id} in ContentGrid:`, error);
             return item;
           }
+        } else if (item.__typename === 'ContentSliderItem' && item.sys?.id) {
+          console.log('ContentGrid: Found ContentSliderItem to enrich:', item.sys.id);
+          try {
+            const { getContentSliderItemById } = await import('@/components/Slider/components/ContentSliderItemApi');
+            const enrichedItem = await getContentSliderItemById(item.sys.id, preview);
+            console.log('ContentGrid: ContentSliderItem enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedItem,
+              hasTitle: !!enrichedItem?.title
+            });
+            return enrichedItem || item;
+          } catch (error) {
+            console.warn(`Failed to enrich ContentSliderItem ${item.sys.id} in ContentGrid:`, error);
+            return item;
+          }
         }
-        return item; // Return non-Slider items as-is
+        return item; // Return non-enrichable items as-is
       });
 
       // Wait for all enrichments to complete
@@ -451,8 +466,17 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
                 console.warn(`Failed to enrich Accordion ${item.sys.id} in ContentGrid collection:`, error);
                 return item;
               }
+            } else if (item.__typename === 'ContentSliderItem' && item.sys?.id) {
+              try {
+                const { getContentSliderItemById } = await import('@/components/Slider/components/ContentSliderItemApi');
+                const enrichedItem = await getContentSliderItemById(item.sys.id, preview);
+                return enrichedItem || item;
+              } catch (error) {
+                console.warn(`Failed to enrich ContentSliderItem ${item.sys.id} in ContentGrid collection:`, error);
+                return item;
+              }
             }
-            return item; // Return non-Slider items as-is
+            return item; // Return non-enrichable items as-is
           });
 
           // Wait for all enrichments to complete

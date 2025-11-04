@@ -29,6 +29,11 @@ export const SLIDER_MINIMAL_FIELDS = `
       ... on Entry {
         ${SYS_FIELDS}
       }
+      ... on ContentSliderItem {
+        ${SYS_FIELDS}
+        title
+        description
+      }
     }
   }
 `;
@@ -249,6 +254,20 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               console.log('Slider API: Enriching ContentGridItem', item.sys.id);
               const enrichedItem = await getContentGridItemById(item.sys.id, preview);
               console.log('Slider API: ContentGridItem enriched:', {
+                id: item.sys.id,
+                hasEnrichedData: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'ContentSliderItem': {
+              // Import and use ContentSliderItem API
+              const { getContentSliderItemById } = await import('@/components/Slider/components/ContentSliderItemApi');
+              console.log('Slider API: Enriching ContentSliderItem', item.sys.id);
+              const enrichedItem = await getContentSliderItemById(item.sys.id, preview);
+              console.log('Slider API: ContentSliderItem enriched:', {
                 id: item.sys.id,
                 hasEnrichedData: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
