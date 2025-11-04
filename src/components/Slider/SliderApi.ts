@@ -10,7 +10,7 @@ import type { Slider } from '@/components/Slider/SliderSchema';
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
-  itemsCollection(limit: 10) {
+  itemsCollection {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }
@@ -23,7 +23,7 @@ export const SLIDER_MINIMAL_FIELDS = `
   title
   autoplay
   delay
-  itemsCollection(limit: 10) {
+  itemsCollection {
     items {
       __typename
       ... on Entry {
@@ -44,7 +44,7 @@ export const SLIDER_GRAPHQL_FIELDS = `
   title
   autoplay
   delay
-  itemsCollection(limit: 10) {
+  itemsCollection {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }
@@ -146,7 +146,11 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
 
     // Step 2: Enrich slider items in parallel (server-side lazy loading)
     if (slider.itemsCollection?.items?.length > 0) {
-      console.log('Slider API: Starting enrichment for', slider.itemsCollection.items.length, 'slider items');
+      console.log(
+        'Slider API: Starting enrichment for',
+        slider.itemsCollection.items.length,
+        'slider items'
+      );
       const enrichmentPromises = slider.itemsCollection.items.map(async (item: any) => {
         console.log('Slider API: Processing slider item:', item.__typename, item.sys?.id);
         if (!item.sys?.id || !item.__typename) {
@@ -163,7 +167,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               const enrichedPost = await getPostById(item.sys.id, preview);
               return enrichedPost || item;
             }
-            
+
             case 'Image': {
               // Import and use Image API
               const { getImageById } = await import('@/components/Image/ImageApi');
@@ -178,21 +182,21 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedImage || item;
             }
-            
+
             case 'Solution': {
               // Import and use Solution API
               const { getSolutionById } = await import('@/components/Solution/SolutionApi');
               const enrichedSolution = await getSolutionById(item.sys.id, preview);
               return enrichedSolution || item;
             }
-            
+
             case 'TeamMember': {
               // Import and use TeamMember API
               const { getTeamMemberById } = await import('@/components/TeamMember/TeamMemberApi');
               const enrichedTeamMember = await getTeamMemberById(item.sys.id, preview);
               return enrichedTeamMember || item;
             }
-            
+
             case 'SliderItem': {
               // Import and use SliderItem API
               const { getSliderItemById } = await import('@/components/Slider/SliderItemApi');
@@ -205,7 +209,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedSliderItem || item;
             }
-            
+
             case 'CtaGrid': {
               // Import and use CtaGrid API
               const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
@@ -219,7 +223,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedItem || item;
             }
-            
+
             case 'Profile': {
               // Import and use Profile API
               const { getProfileById } = await import('@/components/Profile/ProfileApi');
@@ -233,7 +237,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedItem || item;
             }
-            
+
             case 'Accordion': {
               // Import and use Accordion API
               const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
@@ -247,10 +251,12 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedItem || item;
             }
-            
+
             case 'ContentGridItem': {
               // Import and use ContentGridItem API
-              const { getContentGridItemById } = await import('@/components/ContentGrid/ContentGridApi');
+              const { getContentGridItemById } = await import(
+                '@/components/ContentGrid/ContentGridApi'
+              );
               console.log('Slider API: Enriching ContentGridItem', item.sys.id);
               const enrichedItem = await getContentGridItemById(item.sys.id, preview);
               console.log('Slider API: ContentGridItem enriched:', {
@@ -261,10 +267,12 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedItem || item;
             }
-            
+
             case 'ContentSliderItem': {
               // Import and use ContentSliderItem API
-              const { getContentSliderItemById } = await import('@/components/Slider/components/ContentSliderItemApi');
+              const { getContentSliderItemById } = await import(
+                '@/components/Slider/components/ContentSliderItemApi'
+              );
               console.log('Slider API: Enriching ContentSliderItem', item.sys.id);
               const enrichedItem = await getContentSliderItemById(item.sys.id, preview);
               console.log('Slider API: ContentSliderItem enriched:', {
@@ -275,7 +283,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               });
               return enrichedItem || item;
             }
-            
+
             default:
               // For other types, return minimal structure
               console.log('Slider API: Unknown item type, returning as-is:', item.__typename);
@@ -289,7 +297,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
 
       // Wait for all enrichments to complete
       const enrichedItems = await Promise.all(enrichmentPromises);
-      
+
       // Update slider with enriched items
       slider.itemsCollection.items = enrichedItems;
     }
