@@ -23,15 +23,13 @@ export function ContentfulLivePreviewInitializer() {
                 enableLiveUpdates: true,
                 debugMode: true
               });
-            } catch {
-              // Ignore errors when initializing live preview
-            }
+            } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
           })();
-        } else {
-          // Non-preview mode - no initialization needed
         }
-      } catch {
-        // Ignore errors when checking preview environment
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       }
     }
   }, []);

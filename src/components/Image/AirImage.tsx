@@ -31,8 +31,8 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
       };
     }
   } catch (error) {
-    console.warn('Failed to parse image dimensions:', error);
-  }
+        console.warn('Error in catch block:', error);
+      }
 
   return null;
 };
@@ -363,19 +363,21 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
       setIsLoading(true);
       try {
-        const fullData = await getImageById(sys.id);
-        if (fullData) {
-          setFullImageData(fullData);
+        // Use internal API route instead of direct Contentful call
+        const response = await fetch(`/api/components/Image/${sys.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFullImageData(data.image);
         }
       } catch (error) {
-        console.error('Failed to fetch full image data:', error);
+        console.warn('Error in catch block:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
     void fetchFullImageData();
-  }, [sys?.id, link, isLoading]);
+  }, [sys?.id, link]);
 
   if (!link) {
     if (isLoading) {

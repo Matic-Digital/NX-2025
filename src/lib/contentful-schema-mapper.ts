@@ -583,9 +583,9 @@ export class ContentfulSchemaMapper {
         try {
           const { generateWebSiteSchemaFromSitemap } = await import('./sitemap-schema-integration');
           return await generateWebSiteSchemaFromSitemap(this.baseUrl);
-        } catch {
-          // Ignore errors when loading sitemap schema integration
-        }
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
       }
 
       return {
@@ -613,17 +613,15 @@ export class ContentfulSchemaMapper {
       );
       const sitemapUrls = await readSitemapUrls();
 
-      if (sitemapUrls.length > 5) {
-        // Large sitemap detected - could add optimization logic here
-      }
+      // Sitemap URLs loaded successfully
 
       if (sitemapUrls.length > 0) {
         const navigation = generateNavigationFromSitemap(sitemapUrls, this.baseUrl);
         return navigation;
       }
-    } catch {
-      // Ignore errors when reading sitemap for navigation
-    }
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
     // Fallback navigation based on actual sitemap structure I can see
     const navItems = [
@@ -663,9 +661,9 @@ export class ContentfulSchemaMapper {
       if (sitemapUrls.length > 0) {
         return generateHasPartFromSitemap(sitemapUrls);
       }
-    } catch {
-      // Ignore errors when reading sitemap for sections
-    }
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
     // Fallback sections based on actual sitemap - removing duplicates and non-existent pages
     return [

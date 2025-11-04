@@ -37,6 +37,16 @@ export const AccordionItem = ({
   onHover,
   inspectorProps
 }: AccordionItemProps) => {
+  // Debug: Log AccordionItem data to verify server-side enrichment
+  console.log('AccordionItem: Rendering item', {
+    id: item.sys?.id,
+    hasTitle: !!item.title,
+    hasDescription: !!item.description,
+    hasVariant: !!item.variant,
+    hasImage: !!item.image,
+    keysCount: Object.keys(item).length,
+    itemKeys: Object.keys(item)
+  });
   const itemValue = `item-${index}`;
 
   const HorizontalAccordionItem = () => {

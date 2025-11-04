@@ -47,11 +47,8 @@ export function ContentfulPreviewProvider({
       if (!ContentfulLivePreview.initialized) {
         try {
           // Get space ID and preview token from URL
-          const _spaceId =
-            url.searchParams.get('space_id') ?? process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-          const _previewToken =
-            url.searchParams.get('preview_access_token') ??
-            process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN;
+          const _spaceId = url.searchParams.get('space_id') ?? process.env.CONTENTFUL_SPACE_ID;
+          const _previewToken = url.searchParams.get('preview_access_token') ?? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
 
           // Initialize the SDK with all required parameters
           // Use an async IIFE to avoid unbound method issues
@@ -65,15 +62,15 @@ export function ContentfulPreviewProvider({
               });
 
               // Log the space and token for debugging
-            } catch {
-              // Ignore errors when initializing live preview
-            }
+            } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
           })();
 
           // Log the space and token for debugging
-        } catch {
-          // Ignore errors when setting up preview environment
-        }
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
       }
     }
   }, []);

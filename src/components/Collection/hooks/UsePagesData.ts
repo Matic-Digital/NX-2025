@@ -25,8 +25,8 @@ export function usePagesData({ collection, collectionData }: UsePagesDataProps) 
           const pagesResponse = await getAllPagesMinimal();
           setPages(pagesResponse.items ?? []);
         } catch (error) {
-          console.error('Failed to fetch pages:', error);
-        } finally {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

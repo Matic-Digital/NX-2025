@@ -24,33 +24,42 @@ interface PostCardProps {
   sys: {
     id: string;
   };
-  variant?: string;
+  variant?: 'row' | 'featured' | 'default';
 }
 
+// Props for when we have full Post data (server-side enriched)
+interface PostCardWithDataProps {
+  variant?: 'row' | 'featured' | 'default';
+}
+
+type PostCardAllProps = (PostCardProps | (Post & PostCardWithDataProps));
+
 // TODO: need to use variant here to display row on
-export function PostCard({ sys, variant }: PostCardProps) {
-  const [postData, setPostData] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+export function PostCard(props: PostCardAllProps) {
+  // Check if we have full post data (server-side enriched) or just reference (client-side)
+  const hasFullData = 'title' in props && 'slug' in props;
+  const [postData] = useState<Post | null>(hasFullData ? (props as Post) : null);
+  const [loading, setLoading] = useState(!hasFullData);
+  
+  const variant = 'variant' in props ? props.variant : 'default';
   const isRowVariant = variant === 'row';
   const isFeaturedVariant = variant === 'featured';
 
   useEffect(() => {
-    async function fetchPostData() {
-      try {
-        setLoading(true);
-        const data = await getPostById(sys.id);
-        if (data) {
-          setPostData(data);
-        }
-      } catch {
-        // Ignore errors when fetching post data
-      } finally {
-        setLoading(false);
-      }
+    // Show skeleton immediately for minimal data, then wait for server-side enrichment
+    if (hasFullData) {
+      setLoading(false); // Have full data, stop loading
+      return;
     }
 
-    void fetchPostData();
-  }, [sys.id]);
+    // If we have sys.id, show skeleton while waiting for server-side enrichment
+    const sys = 'sys' in props ? props.sys : null;
+    if (sys?.id) {
+      setLoading(true); // Show skeleton for better UX
+    } else {
+      setLoading(false); // No ID, show error state
+    }
+  }, [hasFullData, props]);
 
   const post = useContentfulLiveUpdates(postData);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });
@@ -61,8 +70,15 @@ export function PostCard({ sys, variant }: PostCardProps) {
 
   if (!post) {
     return (
-      <div className="flex h-full items-center justify-center p-4">
-        <div className="text-lg">Post not found</div>
+      <div className="flex h-full items-center justify-center p-4 bg-red-50 border border-red-200">
+        <div className="text-center">
+          <div className="text-lg text-red-600">Post not found</div>
+          <div className="text-sm text-red-500 mt-1">
+            hasFullData: {hasFullData.toString()}<br/>
+            propsKeys: {Object.keys(props).join(', ')}<br/>
+            postData: {postData ? 'exists' : 'null'}
+          </div>
+        </div>
       </div>
     );
   }

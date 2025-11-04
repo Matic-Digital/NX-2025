@@ -6,7 +6,7 @@ import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { BUTTON_GRAPHQL_FIELDS } from '@/components/Button/ButtonApi';
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
-import { POST_SLIDER_GRAPHQL_FIELDS } from '@/components/Post/PostApi';
+import { getPOST_SLIDER_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { SOLUTION_GRAPHQL_FIELDS } from '@/components/Solution/SolutionApi';
 import { TEAM_MEMBER_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
 import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
@@ -37,7 +37,7 @@ export const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
     ${IMAGE_GRAPHQL_FIELDS}
   }
   ... on Post {
-    ${POST_SLIDER_GRAPHQL_FIELDS}
+    ${getPOST_SLIDER_FIELDS()}
   }
   ... on SliderItem {
     ${SLIDERITEM_GRAPHQL_FIELDS}

@@ -25,8 +25,8 @@ export function usePageListsData({ collection, collectionData }: UsePageListsDat
           const pageListsResponse = await getAllPageLists();
           setPageLists(pageListsResponse.items ?? []);
         } catch (error) {
-          console.error('Failed to fetch page lists:', error);
-        } finally {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

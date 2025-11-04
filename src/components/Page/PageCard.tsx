@@ -42,9 +42,9 @@ export function PageCard(props: PageCardProps) {
           if (data) {
             setPageData(data);
           }
-        } catch {
-          // Ignore errors when fetching page data
-        } finally {
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setLoading(false);
         }
       }

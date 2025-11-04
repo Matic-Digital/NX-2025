@@ -41,65 +41,27 @@ export function ContentGrid(props: ContentGridProps) {
 
   const rawItems = contentGrid.itemsCollection?.items;
 
-  // Enhanced items processing with Collection detection and fetching
+  // Use server-enriched items directly (no client-side processing needed)
   React.useEffect(() => {
-    const processItems = async () => {
-      if (!rawItems?.length) {
-        setEnhancedItems([]);
-        return;
-      }
+    if (!rawItems?.length) {
+      setEnhancedItems([]);
+      return;
+    }
 
-      setIsLoadingCollections(true);
-      const processedItems = [];
-
-      // First, check if we have any empty objects (potential Collections)
-      const hasEmptyObjects = rawItems.some(
-        (item) => item && typeof item === 'object' && Object.keys(item).length === 0
-      );
-
-      let collectionIds: string[] = [];
-      if (hasEmptyObjects && contentGrid.sys?.id) {
-        try {
-          collectionIds = await getCollectionIdsFromContentGrid(contentGrid.sys.id);
-        } catch (error) {
-          console.warn('Failed to fetch collection IDs:', error);
-        }
-      }
-
-      let collectionIndex = 0;
-      for (const item of rawItems) {
-        // Processing each item in the collection
-
-        // Check if item might be a Collection (completely empty object)
-        if (item && typeof item === 'object' && Object.keys(item).length === 0) {
-          // Use safe array access to avoid security warnings
-          const collectionId = collectionIds.at(collectionIndex);
-          if (collectionId) {
-            processedItems.push({
-              sys: { id: collectionId },
-              __typename: 'Collection' as const
-            } as ContentGridItemUnion);
-            collectionIndex++;
-          } else {
-            // Fallback placeholder
-            processedItems.push({
-              sys: { id: 'unknown-collection' },
-              __typename: 'Collection' as const,
-              title: 'Collection (No ID Found)',
-              isEmpty: true
-            } as ContentGridItemUnion);
-          }
-        } else {
-          processedItems.push(item);
-        }
-      }
-
-      setEnhancedItems(processedItems);
-      setIsLoadingCollections(false);
-    };
-
-    void processItems();
-  }, [rawItems, contentGrid.sys?.id]);
+    // Server-side enrichment provides complete data - use items directly
+    console.log('ContentGrid: Using server-enriched items:', rawItems);
+    console.log('ContentGrid: Item details:');
+    rawItems.forEach((item, index) => {
+      console.log(`Item ${index}:`, {
+        __typename: item?.__typename,
+        sys: item?.sys,
+        title: item?.title,
+        keys: Object.keys(item || {})
+      });
+    });
+    setEnhancedItems(rawItems);
+    setIsLoadingCollections(false);
+  }, [rawItems]);
 
   // Filter out items that don't have a valid typename or sys.id
   const validItems =
@@ -117,7 +79,7 @@ export function ContentGrid(props: ContentGridProps) {
       .filter((id): id is string => Boolean(id)) ?? [];
   const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
   if (duplicateIds.length > 0) {
-    console.warn('Duplicate content grid item IDs detected:', duplicateIds);
+    console.warn('Duplicate content IDs found in ContentGrid:', duplicateIds);
   }
 
   // Check if content grid contains only services for mobile carousel

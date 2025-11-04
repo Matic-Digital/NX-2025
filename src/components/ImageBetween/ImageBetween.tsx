@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+// No longer need useState/useEffect - using server-side enriched data directly
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -12,12 +12,9 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 
 import { BannerHero } from '@/components/BannerHero/BannerHero';
-import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
 import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import { getContentGridById } from '@/components/ContentGrid/ContentGridApi';
 import { AirImage } from '@/components/Image/AirImage';
 import { Slider } from '@/components/Slider/Slider';
-import { getSlidersByIds } from '@/components/Slider/SliderApi';
 
 import type { BannerHero as BannerHeroType } from '@/components/BannerHero/BannerHeroSchema';
 import type { ContentGrid as ContentGridType } from '@/components/ContentGrid/ContentGridSchema';
@@ -27,108 +24,20 @@ import type { ImageBetween } from '@/components/ImageBetween/ImageBetweenSchema'
 export function ImageBetween(props: ImageBetween) {
   const imageBetween = useContentfulLiveUpdates(props);
   const inspectorProps = useContentfulInspectorMode({ entryId: imageBetween?.sys?.id });
-  const [contentTopData, setContentTopData] = useState<ContentGridType | BannerHeroType | null>(
-    null
-  );
-  const [assetContentGrid, setAssetContentGrid] = useState<ContentGridType | null>(null);
-  const [contentBottomData, setContentBottomData] = useState<ContentGridType | null>(null);
-  const [sliderData, setSliderData] = useState<{
-    itemsCollection?: { items?: Array<{ __typename?: string }> };
-  } | null>(null);
+
+  // Server-side enriched data is now available directly in props
+
+  // Use server-side enriched data directly (no client-side state needed)
+  const contentTopData = imageBetween.contentTop;
+  const assetContentGrid = imageBetween.asset?.__typename === 'ContentGrid' ? imageBetween.asset : null;
+  const contentBottomData = imageBetween.contentBottom;
+  const sliderData = imageBetween.asset?.__typename === 'Slider' ? imageBetween.asset as any : null;
 
   const isBannerHero = imageBetween.contentTop?.__typename === 'BannerHero';
 
-  // Check if the slider contains Post items
+  // Check if the slider contains Post items (only if it's actually a Slider)
   const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
   const isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
-
-  // Fetch full data for contentTop
-  useEffect(() => {
-    const fetchContentTop = async () => {
-      if (imageBetween.contentTop?.sys?.id) {
-        try {
-          if (imageBetween.contentTop.__typename === 'ContentGrid') {
-            const contentGridData = await getContentGridById(imageBetween.contentTop.sys.id ?? '');
-            setContentTopData(contentGridData);
-          } else if (isBannerHero) {
-            const bannerHeroData = await getBannerHero(imageBetween.contentTop.sys.id ?? '');
-            setContentTopData(bannerHeroData);
-          }
-        } catch {
-          setContentTopData(null);
-        }
-      } else {
-        setContentTopData(null);
-      }
-    };
-
-    void fetchContentTop();
-  }, [imageBetween.contentTop, isBannerHero]);
-
-  // Fetch full ContentGrid data if asset is a ContentGrid
-  useEffect(() => {
-    const fetchAssetContentGrid = async () => {
-      if (
-        imageBetween.asset?.__typename === 'ContentGrid' &&
-        imageBetween.asset.sys?.id
-      ) {
-        try {
-          const contentGridData = await getContentGridById(imageBetween.asset.sys.id ?? '');
-          setAssetContentGrid(contentGridData);
-        } catch {
-          setAssetContentGrid(null);
-        }
-      } else {
-        setAssetContentGrid(null);
-      }
-    };
-
-    void fetchAssetContentGrid();
-  }, [imageBetween.asset]);
-
-  // Fetch slider data if asset is a Slider
-  useEffect(() => {
-    const fetchSliderData = async () => {
-      if (
-        imageBetween.asset?.__typename === 'Slider' &&
-        imageBetween.asset.sys?.id
-      ) {
-        try {
-          const data = await getSlidersByIds([imageBetween.asset.sys.id]);
-          if (data.length > 0 && data[0]) {
-            setSliderData(data[0]);
-          }
-        } catch {
-          setSliderData(null);
-        }
-      } else {
-        setSliderData(null);
-      }
-    };
-
-    void fetchSliderData();
-  }, [imageBetween.asset]);
-
-  // Fetch full data for contentBottom
-  useEffect(() => {
-    const fetchContentBottom = async () => {
-      if (
-        imageBetween.contentBottom?.__typename === 'ContentGrid' &&
-        imageBetween.contentBottom.sys?.id
-      ) {
-        try {
-          const contentGridData = await getContentGridById(imageBetween.contentBottom.sys.id ?? '');
-          setContentBottomData(contentGridData);
-        } catch {
-          setContentBottomData(null);
-        }
-      } else {
-        setContentBottomData(null);
-      }
-    };
-
-    void fetchContentBottom();
-  }, [imageBetween.contentBottom]);
 
   return (
     <ErrorBoundary>
@@ -181,7 +90,7 @@ export function ImageBetween(props: ImageBetween) {
             {/* Top Content Grid */}
             {imageBetween.contentTop && (
               <>
-                {imageBetween.contentTop.__typename === 'ContentGrid' && contentTopData && (
+                {imageBetween.contentTop?.__typename === 'ContentGrid' && contentTopData && (
                   <>
                     <div 
                       className={cn(
@@ -202,7 +111,7 @@ export function ImageBetween(props: ImageBetween) {
                     )}
                   </>
                 )}
-                {imageBetween.contentTop.__typename === 'BannerHero' && contentTopData && (
+                {imageBetween.contentTop?.__typename === 'BannerHero' && contentTopData && (
                   <>
                     {isPostSlider ? (
                       <div className="pb-16 -mb-16" {...inspectorProps({ fieldId: 'contentTop' })}>
@@ -242,7 +151,8 @@ export function ImageBetween(props: ImageBetween) {
                   link={(imageBetween.asset as Image).link}
                   altText={(imageBetween.asset as Image).altText ?? imageBetween.asset.title ?? ''}
                   mobileOrigin={(imageBetween.asset as Image).mobileOrigin}
-                  className="w-full"
+                  className="w-full lcp-image"
+                  priority={true}
                   {...inspectorProps({ fieldId: 'asset' })}
                 />
               </Container>
@@ -271,7 +181,7 @@ export function ImageBetween(props: ImageBetween) {
                   {...inspectorProps({ fieldId: 'asset' })}
                 >
                   <ContentGrid
-                    {...assetContentGrid}
+                    {...(assetContentGrid as ContentGridType)}
                     componentType={imageBetween.__typename}
                     forceTabletSingleColumn={true}
                     isInsideImageBetween={true}

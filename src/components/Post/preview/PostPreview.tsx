@@ -114,11 +114,14 @@ export function PostPreview(props: Partial<Post>) {
               {/* Live Component Preview */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
                 <div className="overflow-hidden">
-                  {hasRequiredFields && livePost.sys ? (
+                  {hasRequiredFields && livePost.sys && livePost.title && livePost.slug ? (
                     <div className="overflow-hidden p-6 max-w-xl mx-auto">
                       <div className="grid gap-6">
                         <Suspense fallback={<PostCardSkeleton />}>
-                          <PostCard sys={{ id: livePost.sys.id }} {...inspectorProps} />
+                          <PostCard 
+                            {...(livePost as any)} 
+                            {...inspectorProps} 
+                          />
                         </Suspense>
                       </div>
                     </div>

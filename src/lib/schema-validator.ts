@@ -105,7 +105,7 @@ export function debugSchema(schema: any, schemaType: string) {
   }
 
   if (validation.isValid) {
-    // Schema validation passed
+    console.warn('Schema validation passed for schema type:', schema['@type']);
   } else {
     validation.errors.forEach((_error) => {
       // Error logging removed
@@ -127,9 +127,9 @@ export function validatePageSchemas() {
       const schemaType = schema['@type'] || 'Unknown';
 
       debugSchema(schema, schemaType);
-    } catch {
-      // Ignore errors when parsing schema JSON
-    }
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
   });
 }
 

@@ -8,13 +8,8 @@ import { useMegaMenuContext } from '@/contexts/MegaMenuContext';
 
 import { Text } from '@/components/global/matic-ds';
 
-import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import {
-  getRecentPostsForMegaMenu,
-  getRecentPostsForMegaMenuByCategory
-} from '@/components/Post/PostApi';
 
 import type { MegaMenu as MegaMenuType } from '@/components/MegaMenu/MegaMenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
@@ -48,9 +43,20 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   useEffect(() => {
     if (!megaMenu && megaMenuId) {
       setLoading(true);
-      void getMegaMenuById(megaMenuId)
-        .then(setLoadedMegaMenu)
-        .finally(() => setLoading(false));
+      const fetchMegaMenu = async () => {
+        try {
+          const response = await fetch(`/api/components/MegaMenu/${megaMenuId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setLoadedMegaMenu(data.megaMenu);
+          }
+        } catch (error) {
+          console.warn('Error fetching mega menu:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      void fetchMegaMenu();
     }
   }, [megaMenu, megaMenuId]);
 
@@ -74,13 +80,26 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
 
     // Debug logging to match Collection component
 
-    const fetchFunction = category
-      ? () => getRecentPostsForMegaMenuByCategory(category, limit)
-      : () => getRecentPostsForMegaMenu(limit);
-
-    void fetchFunction()
-      .then((response) => setRecentPosts(response.items))
-      .finally(() => setPostsLoading(false));
+    const fetchRecentPosts = async () => {
+      try {
+        const params = new URLSearchParams({ limit: limit.toString() });
+        if (category) {
+          params.append('category', category);
+        }
+        
+        const response = await fetch(`/api/components/Post/recent?${params}`);
+        if (response.ok) {
+          const data = await response.json();
+          setRecentPosts(data.posts.items);
+        }
+      } catch (error) {
+        console.warn('Error fetching recent posts:', error);
+      } finally {
+        setPostsLoading(false);
+      }
+    };
+    
+    void fetchRecentPosts();
   }, [overflow, currentMegaMenu]);
   const displayTitle = title ?? currentMegaMenu?.title ?? 'Menu';
   const menuItems = currentMegaMenu?.itemsCollection?.items ?? [];

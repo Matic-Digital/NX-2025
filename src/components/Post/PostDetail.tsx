@@ -18,7 +18,7 @@ import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
-import { getPostById, getRelatedPosts } from '@/components/Post/PostApi';
+import { getPostById } from '@/components/Post/PostApi';
 import { PostCard } from '@/components/Post/PostCard';
 
 import type { Post } from '@/components/Post/PostSchema';
@@ -51,11 +51,22 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
         // We have enough data, just fetch related posts if needed
         if (post.categories && post.categories.length > 0) {
           try {
-            const related = await getRelatedPosts(post.categories, post.sys.id, 3);
-            setRelatedPosts(related.items);
-          } catch {
-            // Ignore errors when fetching related posts
-          }
+            // Use API route to get server-side enriched related posts
+            const params = new URLSearchParams({
+              categories: post.categories.join(','),
+              excludeId: post.sys.id,
+              limit: '3'
+            });
+            const response = await fetch(`/api/components/Post/related?${params}`);
+            if (response.ok) {
+              const data = await response.json();
+              setRelatedPosts(data.relatedPosts?.items ?? []);
+            } else {
+              throw new Error('Failed to fetch related posts from API');
+            }
+          } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
         }
         return;
       }
@@ -71,15 +82,26 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
           // Fetch related posts if we have categories
           if (fullData.categories && fullData.categories.length > 0) {
             try {
-              const related = await getRelatedPosts(fullData.categories, post.sys.id, 3);
-              setRelatedPosts(related.items);
-            } catch {
-              // Ignore errors when fetching related posts
-            }
+              // Use API route to get server-side enriched related posts
+              const params = new URLSearchParams({
+                categories: fullData.categories.join(','),
+                excludeId: post.sys.id,
+                limit: '3'
+              });
+              const response = await fetch(`/api/components/Post/related?${params}`);
+              if (response.ok) {
+                const data = await response.json();
+                setRelatedPosts(data.relatedPosts?.items ?? []);
+              } else {
+                throw new Error('Failed to fetch related posts from API');
+              }
+            } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
           }
         }
-      } catch {
-        // Ignore errors when fetching full post data
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       }
     };
 
@@ -355,7 +377,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
               {...inspectorProps({ fieldId: 'categories' })}
             >
               {relatedPosts.map((relatedPost) => (
-                <PostCard key={relatedPost.sys.id} sys={{ id: relatedPost.sys.id }} />
+                <PostCard key={relatedPost.sys.id} {...relatedPost} />
               ))}
             </div>
           </Box>

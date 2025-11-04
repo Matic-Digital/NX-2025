@@ -3,7 +3,6 @@ import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
 import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
@@ -137,10 +136,12 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       fields = SYS_FIELDS;
       query = `content(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
-    case 'ContentGrid':
-      fields = CONTENTGRID_GRAPHQL_FIELDS;
-      query = `contentGrid(id: "${id}", preview: ${preview}) { ${fields} }`;
-      break;
+    case 'ContentGrid': {
+      // Import ContentGrid API dynamically to avoid circular dependencies
+      const { getContentGridItemById } = await import('@/components/ContentGrid/ContentGridApi');
+      // Use the ContentGrid API directly instead of raw GraphQL to get server-side enrichment
+      return await getContentGridItemById(id, preview);
+    }
     case 'CtaBanner':
       fields = CTABANNER_GRAPHQL_FIELDS;
       query = `ctaBanner(id: "${id}", preview: ${preview}) { ${fields} }`;
@@ -149,6 +150,19 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       fields = IMAGEBETWEEN_GRAPHQL_FIELDS;
       query = `imageBetween(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
+    case 'Accordion': {
+      // Import Accordion fields dynamically to avoid circular dependencies
+      const { ACCORDION_GRAPHQL_FIELDS } = await import('@/components/Accordion/AccordionApi');
+      fields = ACCORDION_GRAPHQL_FIELDS;
+      query = `accordion(id: "${id}", preview: ${preview}) { ${fields} }`;
+      break;
+    }
+    case 'Slider': {
+      // Import Slider API dynamically to avoid circular dependencies
+      const { getSliderById } = await import('@/components/Slider/SliderApi');
+      // Use the Slider API directly instead of raw GraphQL to get server-side enrichment
+      return await getSliderById(id, preview);
+    }
     default:
       return null;
   }

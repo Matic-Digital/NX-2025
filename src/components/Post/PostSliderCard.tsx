@@ -40,33 +40,30 @@ const ContentOverlay = ({ children }: ContentOverlay) => (
 );
 
 interface PostSliderCardProps {
-  item: PostSliderItem;
+  item: PostSliderItem | Post;
   index: number;
   current: number;
   context?: 'ImageBetween' | 'ContentGrid' | 'default';
 }
 
 export function PostSliderCard({ item, index, current, context = 'default' }: PostSliderCardProps) {
-  const [postData, setPostData] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Check if we have full post data (server-side enriched) or just reference (client-side)
+  const hasFullData = 'title' in item && 'slug' in item;
+  const [postData, setPostData] = useState<Post | null>(hasFullData ? (item as Post) : null);
+  const [loading, setLoading] = useState(!hasFullData);
 
   useEffect(() => {
-    async function fetchPostData() {
-      try {
-        setLoading(true);
-        const data = await getPostById(item.sys.id);
-        if (data) {
-          setPostData(data);
-        }
-      } catch {
-        // Ignore errors when fetching post data
-      } finally {
-        setLoading(false);
-      }
+    // COMPLETELY DISABLE client-side fetching - only use server-side data
+    if (hasFullData) {
+      return; // Already have server-side data
     }
 
-    void fetchPostData();
-  }, [item.sys.id]);
+    // If we don't have full data, show skeleton indefinitely
+    // This prevents client-side API calls
+    const itemId = (item as any).sys?.id || 'unknown';
+    console.warn('PostSliderCard missing server-side data - showing skeleton. ID:', itemId);
+    setLoading(false); // Stop loading to show the skeleton
+  }, [hasFullData, (item as any).sys?.id]);
 
   const post = useContentfulLiveUpdates(postData);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });

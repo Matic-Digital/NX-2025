@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -879,9 +879,21 @@ const GenericSlider = ({
   );
 };
 
-export function Slider(props: SliderSys) {
-  const [sliderData, setSliderData] = useState<Slider | null>(null);
-  const [loading, setLoading] = useState(true);
+function SliderComponent(props: SliderSys | Slider) {
+  // Check if we have full slider data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'itemsCollection' in props;
+  
+  // Debug logging for PageList re-render issues
+  console.log('Slider component render:', {
+    id: (props as any).sys?.id,
+    hasFullData,
+    hasItemsCollection: 'itemsCollection' in props,
+    itemsCount: (props as any).itemsCollection?.items?.length || 0,
+    propsKeys: Object.keys(props).length
+  });
+  
+  const [sliderData, setSliderData] = useState<Slider | null>(hasFullData ? (props as Slider) : null);
+  const [loading, setLoading] = useState(!hasFullData);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
@@ -994,50 +1006,16 @@ export function Slider(props: SliderSys) {
   }, [api, sliderData, isInView]);
 
   useEffect(() => {
-    async function fetchSliderData() {
-      try {
-        setLoading(true);
-        const data = await getSlidersByIds([props.sys.id]);
-        if (data.length > 0 && data[0]) {
-          const sliderData = data[0];
-
-          // Randomize team member order if this is a team member slider
-          if (sliderData.itemsCollection.items[0]?.__typename === 'TeamMember') {
-            // Fisher-Yates shuffle for equal distribution
-            const shuffledItems = [...sliderData.itemsCollection.items];
-            for (let i = shuffledItems.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              if (j < shuffledItems.length && i < shuffledItems.length) {
-                // eslint-disable-next-line security/detect-object-injection
-                const temp = shuffledItems[i]!;
-                // eslint-disable-next-line security/detect-object-injection
-                const jItem = shuffledItems[j]!;
-                // eslint-disable-next-line security/detect-object-injection
-                shuffledItems[i] = jItem;
-                // eslint-disable-next-line security/detect-object-injection
-                shuffledItems[j] = temp;
-              }
-            }
-            setSliderData({
-              ...sliderData,
-              itemsCollection: {
-                ...sliderData.itemsCollection,
-                items: shuffledItems
-              }
-            });
-          } else {
-            setSliderData(sliderData);
-          }
-        }
-      } catch {
-        // Ignore errors when fetching slider data
-      } finally {
-        setLoading(false);
-      }
+    // COMPLETELY DISABLE client-side fetching - only use server-side data
+    if (hasFullData) {
+      return; // Already have server-side data
     }
 
-    void fetchSliderData();
-  }, [props.sys.id]);
+    // If we don't have full data, show skeleton indefinitely
+    // This prevents client-side API calls that cause GraphQL errors
+    console.warn('Slider missing server-side data - showing skeleton. ID:', props.sys.id);
+    setLoading(false); // Stop loading to show the minimal data skeleton
+  }, [props.sys.id, hasFullData]);
 
   // Generate correct URLs for Solutions by looking up their parent PageList
   // PageList Nesting Integration: Dynamically resolve all Solution URLs to respect nesting hierarchy
@@ -1068,7 +1046,28 @@ export function Slider(props: SliderSys) {
   }, [sliderData?.itemsCollection?.items]);
 
   if (loading) {
-    return <SliderSkeleton itemCount={3} />;
+    return (
+      <div className="w-full">
+        <SliderSkeleton />
+      </div>
+    );
+  }
+
+  if (!sliderData) {
+    return null;
+  }
+
+  // Server-side lazy loading should provide enriched items
+  // If items are still minimal, the server enrichment failed - show skeleton
+  if (sliderData.itemsCollection?.items?.length > 0 && 
+      sliderData.itemsCollection.items[0] && 
+      Object.keys(sliderData.itemsCollection.items[0]).length <= 3) {
+    // Items only have sys.id and __typename (server enrichment failed)
+    return (
+      <div className="w-full">
+        <SliderSkeleton />
+      </div>
+    );
   }
 
   if (!sliderData?.itemsCollection?.items?.length) {
@@ -1144,7 +1143,7 @@ export function Slider(props: SliderSys) {
         }
         isFullWidth={false}
         onTeamMemberClick={handleTeamMemberClick}
-        context={props.context}
+        context={('context' in props) ? props.context : undefined}
       />
 
       {/* Team Member Modal */}
@@ -1158,3 +1157,16 @@ export function Slider(props: SliderSys) {
     </div>
   );
 }
+
+// Memoize the Slider component to prevent unnecessary re-renders
+const MemoizedSlider = memo(SliderComponent, (prevProps, nextProps) => {
+  // Compare sys.id to determine if re-render is needed
+  const prevId = (prevProps as any).sys?.id;
+  const nextId = (nextProps as any).sys?.id;
+  
+  // Only re-render if the ID changes
+  return prevId === nextId;
+});
+
+// Export with proper name
+export { MemoizedSlider as Slider };

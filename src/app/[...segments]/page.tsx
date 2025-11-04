@@ -221,22 +221,39 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
 
       switch (staticRoute.contentType) {
         case 'Page':
-          content = await getPageBySlug(segments[segments.length - 1]!, preview);
+          // Try full path first (e.g., 'what-we-do/design'), then fall back to last segment
+          content = await getPageBySlug(segments.join('/'), preview);
+          if (!content) {
+            content = await getPageBySlug(segments[segments.length - 1]!, preview);
+          }
           break;
         case 'Product':
-          content = await getProductBySlug(segments[segments.length - 1]!, preview);
+          // Try full path first (e.g., 'products/trackers/nx-horizon'), then fall back to last segment
+          content = await getProductBySlug(segments.join('/'), preview);
+          if (!content) {
+            content = await getProductBySlug(segments[segments.length - 1]!, preview);
+          }
           break;
         case 'Service':
-          content = await getServiceBySlug(segments[segments.length - 1]!, preview);
+          // Try full path first, then fall back to last segment
+          content = await getServiceBySlug(segments.join('/'), preview);
+          if (!content) {
+            content = await getServiceBySlug(segments[segments.length - 1]!, preview);
+          }
           break;
         case 'Solution':
-          content = await getSolutionBySlug(segments[segments.length - 1]!, preview);
+          // Try full path first, then fall back to last segment
+          content = await getSolutionBySlug(segments.join('/'), preview);
+          if (!content) {
+            content = await getSolutionBySlug(segments[segments.length - 1]!, preview);
+          }
           break;
         case 'Post':
           content = await getPostBySlug(segments[segments.length - 1]!, preview);
           break;
         case 'PageList':
-          content = await getPageListBySlug(segments[segments.length - 1]!, preview);
+          // For PageLists, use the full path as the slug (e.g., 'services/design')
+          content = await getPageListBySlug(segments.join('/'), preview);
           break;
       }
 

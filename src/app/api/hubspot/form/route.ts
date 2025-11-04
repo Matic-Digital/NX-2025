@@ -92,8 +92,8 @@ export async function POST(request: NextRequest) {
           }
           
           // Check for problematic filenames
-          // eslint-disable-next-line no-control-regex
-          const problematicChars = /[<>:"|?*\x00-\x1f]/;
+          // JUSTIFICATION: Intentionally checking for control characters in filenames for security
+          const problematicChars = /[<>:"|?*\x00-\x1f]/; // eslint-disable-line no-control-regex
           if (problematicChars.test(fileName) || fileName.includes('..')) {
             return NextResponse.json(
               { error: 'Invalid filename contains prohibited characters' },

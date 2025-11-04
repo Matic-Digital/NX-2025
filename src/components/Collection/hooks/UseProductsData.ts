@@ -25,8 +25,8 @@ export function useProductsData({ collection, collectionData }: UseProductsDataP
           const productsResponse = await getAllProducts();
           setProducts(productsResponse ?? []);
         } catch (error) {
-          console.error('Failed to fetch products:', error);
-        } finally {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

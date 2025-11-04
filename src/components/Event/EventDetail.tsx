@@ -87,7 +87,7 @@ function NewsPosts() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {newsPosts.map((post) => (
-        <PostCard key={post.sys.id} sys={{ id: post.sys.id }} />
+        <PostCard key={post.sys.id} {...post} />
       ))}
     </div>
   );
@@ -195,7 +195,7 @@ function EventPostCategories({
                   const posts = propertyDescriptor?.value as Post[] | undefined;
                   return posts && Array.isArray(posts)
                     ? posts.map((post: Post) => (
-                        <PostCard key={post.sys.id} sys={{ id: post.sys.id }} />
+                        <PostCard key={post.sys.id} {...post} />
                       ))
                     : null;
                 }

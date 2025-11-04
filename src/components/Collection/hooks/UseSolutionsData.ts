@@ -25,8 +25,8 @@ export function useSolutionsData({ collection, collectionData }: UseSolutionsDat
           const solutionsResponse = await getAllSolutions();
           setSolutions(solutionsResponse ?? []);
         } catch (error) {
-          console.error('Failed to fetch solutions:', error);
-        } finally {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

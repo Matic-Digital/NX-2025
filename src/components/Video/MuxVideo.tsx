@@ -28,12 +28,14 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
     const fetchVideoData = async () => {
       try {
         setLoading(true);
-        const video = await getVideoById(props.sys.id);
-        if (video) {
-          setVideoData(video);
+        // Use internal API route instead of direct Contentful call
+        const response = await fetch(`/api/components/Video/${props.sys.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setVideoData(data.video);
         }
-      } catch {
-        // Ignore errors when fetching video data
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }
