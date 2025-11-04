@@ -34,6 +34,7 @@ export type Content = z.infer<typeof ContentSchema>;
 
 export type ContentOverlay = {
   children: React.ReactNode;
+  className?: string;
 };
 
 export interface ContentResponse {
