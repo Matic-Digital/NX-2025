@@ -294,14 +294,17 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 </p>
               )}
             </Box>
-            <Link href={getHref()}>
-              <Button
-                variant="outline"
-                className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
-              >
-                See Details
-              </Button>
-            </Link>
+
+            {ctaCollection?.items?.[0]?.text && (
+              <Link href={ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}>
+                <Button
+                  variant="whiteOutline"
+                  className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
+                >
+                  {ctaCollection?.items?.[0]?.text}
+                </Button>
+              </Link>
+            )}
           </Box>
         </Box>
       </div>
