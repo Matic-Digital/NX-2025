@@ -16,7 +16,7 @@
  * - Support for various content types through the pageContentCollection
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 'use client';
 

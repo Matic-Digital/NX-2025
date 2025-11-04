@@ -515,7 +515,7 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
   for (let i = 1; i < sortedFields.length; i++) {
     // eslint-disable-next-line security/detect-object-injection
     const currentField = sortedFields[i];
-    // eslint-disable-next-line security/detect-object-injection
+     
     const previousField = sortedFields[i-1];
     
     // Ensure both fields exist and have displayOrder values
@@ -817,7 +817,7 @@ export async function GET(
     });
   } catch (error) {
     // Enhanced error handling that doesn't leak sensitive information
-    // eslint-disable-next-line no-console
+     
     console.error('HubSpot form API error:', error);
     
     if (error instanceof Error) {
@@ -962,7 +962,8 @@ export async function POST(
           }
           
           // Check for problematic filenames
-          const problematicChars = /[<>:"|?*\x00-\x1f]/;
+          // JUSTIFICATION: Intentionally checking for control characters in filenames for security
+          const problematicChars = /[<>:"|?*\x00-\x1f]/; // eslint-disable-line no-control-regex
           if (problematicChars.test(fileName) || fileName.includes('..')) {
             return NextResponse.json(
               { error: 'Invalid filename contains prohibited characters' },

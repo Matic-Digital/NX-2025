@@ -17,6 +17,22 @@ export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
   }
 `;
 
+// Minimal slider fields for initial fetch (server-side lazy loading)
+export const SLIDER_MINIMAL_FIELDS = `
+  ${SYS_FIELDS}
+  title
+  autoplay
+  delay
+  itemsCollection(limit: 10) {
+    items {
+      __typename
+      ... on Entry {
+        ${SYS_FIELDS}
+      }
+    }
+  }
+`;
+
 // Full slider fields for dedicated slider queries
 export const SLIDER_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
@@ -45,7 +61,7 @@ export async function getSlidersByIds(sliderIds: string[], preview = false): Pro
     query GetSlidersByIds($ids: [String!]!, $preview: Boolean!) {
       sliderCollection(where: { sys: { id_in: $ids } }, preview: $preview) {
         items {
-          ${SLIDER_GRAPHQL_FIELDS_SIMPLE}
+          ${SLIDER_MINIMAL_FIELDS}
         }
       }
     }
@@ -89,12 +105,19 @@ export async function getSlidersByIds(sliderIds: string[], preview = false): Pro
  * @param preview - Whether to fetch draft content
  * @returns Promise resolving to Slider or null if not found
  */
+/**
+ * Fetches a Slider with server-side lazy loading to avoid GraphQL complexity
+ * Step 1: Fetch minimal structure with only sys.id for items
+ * Step 2: Enrich items in parallel with individual API calls
+ * Step 3: Return complete enriched Slider
+ */
 export async function getSliderById(id: string, preview = false): Promise<Slider | null> {
   try {
+    // Step 1: Fetch minimal slider structure
     const response = await fetchGraphQL(
-      `query GetSliderById($id: String!, $preview: Boolean!) {
+      `query GetSliderMinimal($id: String!, $preview: Boolean!) {
         slider(id: $id, preview: $preview) {
-          ${SLIDER_GRAPHQL_FIELDS}
+          ${SLIDER_MINIMAL_FIELDS}
         }
       }`,
       { id, preview },
@@ -106,15 +129,72 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
       throw new ContentfulError('Invalid response from Contentful');
     }
 
-    // Access data using type assertion to help TypeScript understand the structure
-    const data = response.data as unknown as { slider?: Slider };
+    // Access data using type assertion
+    const data = response.data as unknown as { slider?: any };
 
     // Return null if slider not found
     if (!data.slider) {
       return null;
     }
 
-    return data.slider;
+    const slider = data.slider;
+
+    // Step 2: Enrich slider items in parallel (server-side lazy loading)
+    if (slider.itemsCollection?.items?.length > 0) {
+      const enrichmentPromises = slider.itemsCollection.items.map(async (item: any) => {
+        if (!item.sys?.id || !item.__typename) {
+          return item; // Skip items without proper structure
+        }
+
+        try {
+          // Enrich each item type individually to avoid GraphQL complexity
+          switch (item.__typename) {
+            case 'Post': {
+              // Import and use Post API
+              const { getPostById } = await import('@/components/Post/PostApi');
+              const enrichedPost = await getPostById(item.sys.id, preview);
+              return enrichedPost || item;
+            }
+            
+            case 'Image': {
+              // Import and use Image API
+              const { getImageById } = await import('@/components/Image/ImageApi');
+              const enrichedImage = await getImageById(item.sys.id, preview);
+              return enrichedImage || item;
+            }
+            
+            case 'Solution': {
+              // Import and use Solution API
+              const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+              const enrichedSolution = await getSolutionById(item.sys.id, preview);
+              return enrichedSolution || item;
+            }
+            
+            case 'TeamMember': {
+              // Import and use TeamMember API
+              const { getTeamMemberById } = await import('@/components/TeamMember/TeamMemberApi');
+              const enrichedTeamMember = await getTeamMemberById(item.sys.id, preview);
+              return enrichedTeamMember || item;
+            }
+            
+            default:
+              // For other types, return minimal structure
+              return item;
+          }
+        } catch (error) {
+          console.warn(`Failed to enrich ${item.__typename} item ${item.sys.id}:`, error);
+          return item; // Return original item on error
+        }
+      });
+
+      // Wait for all enrichments to complete
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      
+      // Update slider with enriched items
+      slider.itemsCollection.items = enrichedItems;
+    }
+
+    return slider as Slider;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;

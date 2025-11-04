@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     
     // Validate secret exists and matches
     if (!REVALIDATE_SECRET) {
-      // eslint-disable-next-line no-console
+       
       console.error('❌ CONTENTFUL_REVALIDATE_SECRET not configured');
       return NextResponse.json(
         { error: 'Server configuration error' },
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
     
     if (!providedSecret || providedSecret !== REVALIDATE_SECRET) {
-      // eslint-disable-next-line no-console
+       
       console.error('❌ Invalid revalidation attempt');
       return NextResponse.json(
         { message: 'Unauthorized', revalidated: false },
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
           // eslint-disable-next-line no-console
           console.log(`✅ Revalidated path: ${path}`);
         } catch (error) {
-          // eslint-disable-next-line no-console
+           
           console.error(`❌ Failed to revalidate path ${path}:`, error);
         }
       }
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         // eslint-disable-next-line no-console
         console.log(`✅ Revalidated tag: ${tag}`);
       } catch (error) {
-        // eslint-disable-next-line no-console
+         
         console.error(`❌ Failed to revalidate tag ${tag}:`, error);
       }
     }
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         // eslint-disable-next-line no-console
         console.log('✅ Revalidated home page');
       } catch (error) {
-        // eslint-disable-next-line no-console
+         
         console.error('❌ Failed to revalidate home page:', error);
       }
     }
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response);
 
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('❌ Revalidation error:', error);
     return NextResponse.json(
       { 

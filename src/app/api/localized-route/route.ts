@@ -40,9 +40,16 @@ export async function POST(request: NextRequest) {
 
 
     // Initialize Contentful client
+    const CONTENTFUL_SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
+    const CONTENTFUL_ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN;
+    
+    if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_ACCESS_TOKEN) {
+      return NextResponse.json({ error: 'Contentful configuration missing' }, { status: 500 });
+    }
+    
     const client = createClient({
-      space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!,
-      accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN!,
+      space: CONTENTFUL_SPACE_ID,
+      accessToken: CONTENTFUL_ACCESS_TOKEN,
     });
 
     // Extract slug from various path patterns

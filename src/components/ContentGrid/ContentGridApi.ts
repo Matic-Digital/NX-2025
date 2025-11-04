@@ -7,6 +7,7 @@ import {
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
+import { SLIDER_MINIMAL_FIELDS, getSliderById } from '@/components/Slider/SliderApi';
 
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { ContentGrid, ContentGridResponse } from '@/components/ContentGrid/ContentGridSchema';
@@ -93,7 +94,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
         ${SYS_FIELDS}
       }
       ... on Slider {
-        ${SYS_FIELDS}
+        ${SLIDER_MINIMAL_FIELDS}
       }
       ... on Solution {
         ${SYS_FIELDS}
@@ -155,7 +156,112 @@ export async function getContentGridById(id: string, preview = false): Promise<C
       return null;
     }
 
-    return data.contentGrid;
+    const contentGrid = data.contentGrid;
+
+    // Step 2: Enrich Slider, Post, and Collection items in ContentGrid (PARALLEL server-side lazy loading)
+    if (contentGrid.itemsCollection?.items?.length && contentGrid.itemsCollection.items.length > 0) {
+      console.log('ContentGrid: Starting PARALLEL enrichment for', contentGrid.itemsCollection.items.length, 'items');
+      
+      // First, check for empty objects (Collections) and get their IDs (PARALLEL with other processing)
+      const hasEmptyObjects = contentGrid.itemsCollection.items.some(
+        (item: any) => item && typeof item === 'object' && Object.keys(item).length === 0
+      );
+      
+      // Start Collection ID fetching in parallel (don't await yet)
+      const collectionIdsPromise = hasEmptyObjects 
+        ? getCollectionIdsFromContentGrid(id).then(ids => {
+            console.log('ContentGrid: Found Collection IDs (PARALLEL):', ids);
+            return ids;
+          }).catch(error => {
+            console.warn('Failed to get Collection IDs for ContentGrid:', error);
+            return [];
+          })
+        : Promise.resolve([]);
+      
+      // Process all items in parallel, awaiting Collection IDs only when needed
+      const enrichmentPromises = contentGrid.itemsCollection.items.map(async (item: any, index: number) => {
+        // Handle empty objects (Collections) - await Collection IDs when needed
+        if (item && typeof item === 'object' && Object.keys(item).length === 0) {
+          try {
+            const collectionIds = await collectionIdsPromise;
+            // Find the index of this empty object to get the correct Collection ID
+            const items = contentGrid.itemsCollection?.items || [];
+            const emptyObjectsUpToIndex = items
+              .slice(0, index + 1)
+              .filter(i => i && typeof i === 'object' && Object.keys(i).length === 0);
+            const emptyObjectIndex = Math.max(0, emptyObjectsUpToIndex.length - 1);
+            
+            const collectionId = collectionIds[emptyObjectIndex];
+            if (collectionId) {
+              try {
+                const { getCollectionById } = await import('@/components/Collection/CollectionApi');
+                console.log('ContentGrid: Enriching Collection (empty object) PARALLEL', collectionId);
+                const enrichedCollection = await getCollectionById(collectionId, preview);
+                console.log('ContentGrid: Collection enrichment result (PARALLEL):', {
+                  id: collectionId,
+                  hasEnrichedData: !!enrichedCollection,
+                  hasTitle: !!enrichedCollection?.title
+                });
+                return enrichedCollection || { sys: { id: collectionId }, __typename: 'Collection' };
+              } catch (error) {
+                console.warn(`Failed to enrich Collection ${collectionId} in ContentGrid:`, error);
+                return { sys: { id: collectionId }, __typename: 'Collection' };
+              }
+            } else {
+              console.warn('No Collection ID found for empty object at index', index);
+              return { sys: { id: 'unknown-collection' }, __typename: 'Collection', title: 'Collection (No ID Found)' };
+            }
+          } catch (error) {
+            console.warn('Failed to get Collection IDs for empty object:', error);
+            return { sys: { id: 'error-collection' }, __typename: 'Collection', title: 'Collection (Error)' };
+          }
+        }
+        if (item.__typename === 'Slider' && item.sys?.id) {
+          try {
+            // Enrich Slider with full item data
+            const enrichedSlider = await getSliderById(item.sys.id, preview);
+            return enrichedSlider || item;
+          } catch (error) {
+            console.warn(`Failed to enrich Slider ${item.sys.id} in ContentGrid:`, error);
+            return item; // Return original item on error
+          }
+        } else if (item.__typename === 'Post' && item.sys?.id) {
+          console.log('ContentGrid: Found Post to enrich:', item.sys.id, item);
+          try {
+            // Dynamically import Post API to avoid circular dependency
+            const { getPostById } = await import('@/components/Post/PostApi');
+            console.log('ContentGrid: Calling getPostById for', item.sys.id);
+            const enrichedPost = await getPostById(item.sys.id, preview);
+            console.log('ContentGrid: Post enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedPost,
+              hasTitle: !!enrichedPost?.title,
+              hasSlug: !!enrichedPost?.slug,
+              enrichedPost: enrichedPost
+            });
+            if (enrichedPost) {
+              console.log('ContentGrid: Returning enriched Post');
+              return enrichedPost;
+            } else {
+              console.warn('ContentGrid: getPostById returned null, returning original item');
+              return item;
+            }
+          } catch (error) {
+            console.error(`Failed to enrich Post ${item.sys.id} in ContentGrid:`, error);
+            return item; // Return original item on error
+          }
+        }
+        return item; // Return non-Slider items as-is
+      });
+
+      // Wait for all enrichments to complete
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      if (contentGrid.itemsCollection) {
+        contentGrid.itemsCollection.items = enrichedItems;
+      }
+    }
+
+    return contentGrid;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;
@@ -201,8 +307,48 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
       throw new ContentfulError('Failed to fetch ContentGrids from Contentful');
     }
 
+    const contentGrids = data.contentGridCollection.items;
+
+    // Step 2: Enrich Slider items in all ContentGrids (server-side lazy loading)
+    const enrichedContentGrids = await Promise.all(
+      contentGrids.map(async (contentGrid: any) => {
+        if (contentGrid.itemsCollection?.items?.length && contentGrid.itemsCollection.items.length > 0) {
+          const enrichmentPromises = contentGrid.itemsCollection.items.map(async (item: any) => {
+            if (item.__typename === 'Slider' && item.sys?.id) {
+              try {
+                // Enrich Slider with full item data
+                const enrichedSlider = await getSliderById(item.sys.id, preview);
+                return enrichedSlider || item;
+              } catch (error) {
+                console.warn(`Failed to enrich Slider ${item.sys.id} in ContentGrid collection:`, error);
+                return item; // Return original item on error
+              }
+            } else if (item.__typename === 'Post' && item.sys?.id) {
+              try {
+                // Dynamically import Post API to avoid circular dependency
+                const { getPostById } = await import('@/components/Post/PostApi');
+                const enrichedPost = await getPostById(item.sys.id, preview);
+                return enrichedPost || item;
+              } catch (error) {
+                console.warn(`Failed to enrich Post ${item.sys.id} in ContentGrid collection:`, error);
+                return item; // Return original item on error
+              }
+            }
+            return item; // Return non-Slider items as-is
+          });
+
+          // Wait for all enrichments to complete
+          const enrichedItems = await Promise.all(enrichmentPromises);
+          if (contentGrid.itemsCollection) {
+            contentGrid.itemsCollection.items = enrichedItems;
+          }
+        }
+        return contentGrid;
+      })
+    );
+
     return {
-      items: data.contentGridCollection.items
+      items: enrichedContentGrids
     };
   } catch (_error) {
     if (_error instanceof ContentfulError) {

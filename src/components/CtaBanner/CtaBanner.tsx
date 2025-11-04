@@ -6,6 +6,9 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import { staticRoutingService } from '@/lib/static-routing';
+import { cn } from '@/lib/utils';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -35,32 +38,20 @@ export function CtaBanner(props: CtaBanner) {
     const fetchNestedUrl = async () => {
       const primaryCta = ctaBanner.primaryCta;
       if (primaryCta?.internalLink?.slug) {
-        try {
-          setLoading(true);
-          // Query the check-page-parent API to detect if the linked content has parent PageLists
-          const response = await fetch(
-            `/api/check-page-parent?slug=${primaryCta.internalLink.slug}`
-          );
-          if (response.ok) {
-            const data = (await response.json()) as { parentPageList?: unknown; fullPath?: string };
-            if (data.parentPageList && data.fullPath) {
-              // Use the full nested path when parent PageLists are detected
-              setPrimaryCtaUrl(`/${data.fullPath}`);
-            } else {
-              // Fallback to flat URL structure when no nesting is detected
-              setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
-            }
-          } else {
-            // Fallback to flat URL on API failure
-            setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
-          }
-        } catch (_error) {
-          setError(_error instanceof Error ? _error.message : 'Failed to fetch URL');
-          // Fallback to flat URL on error
+        setLoading(true);
+        
+        // Use static routing service to get route metadata (replaces API call)
+        const routeMetadata = staticRoutingService.getRoute(`/${primaryCta.internalLink.slug}`);
+        
+        if (routeMetadata && routeMetadata.isNested && routeMetadata.parentPageLists.length > 0) {
+          // Use the full nested path when parent PageLists are detected
+          setPrimaryCtaUrl(routeMetadata.path);
+        } else {
+          // Fallback to flat URL structure when no nesting is detected
           setPrimaryCtaUrl(`/${primaryCta.internalLink.slug}`);
-        } finally {
-          setLoading(false);
         }
+        
+        setLoading(false);
       } else if (primaryCta?.externalLink) {
         setPrimaryCtaUrl(primaryCta.externalLink);
         setLoading(false);

@@ -66,12 +66,12 @@
   },
   {
     "source": "/deploy",
-    "destination": "/what-we-do/deploy",
+    "destination": "/services/deploy",
     "permanent": false
   },
   {
     "source": "/design",
-    "destination": "/what-we-do/design",
+    "destination": "/services/design",
     "permanent": false
   },
   {

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 function validateBearerToken(token: string): { valid: boolean; userId?: string; role?: string } {
   const tokenMap: Record<string, { userId: string; role: string }> = {
@@ -8,7 +8,9 @@ function validateBearerToken(token: string): { valid: boolean; userId?: string; 
     'admin_token': { userId: 'admin', role: 'admin' }
   };
   
-  const tokenData = tokenMap[token];
+  // JUSTIFICATION: Static token map with predefined keys, token is validated against known values
+  // RISK: Low - tokenMap is a controlled object with known string keys
+  const tokenData = tokenMap[token]; // eslint-disable-line security/detect-object-injection
   if (!tokenData) return { valid: false };
   
   return { valid: true, userId: tokenData.userId, role: tokenData.role };

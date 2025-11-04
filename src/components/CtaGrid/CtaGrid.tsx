@@ -33,9 +33,9 @@ export function CtaGrid(props: CtaGrid) {
         const response = await getCtaGridById(props.sys.id);
         if (response.item) {
           setCtaGrid(response.item);
-        } else {
         }
-      } catch {
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }

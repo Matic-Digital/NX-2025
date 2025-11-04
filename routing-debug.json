@@ -910,6 +910,48 @@
       "priority": 0.6,
       "changefreq": "weekly"
     },
+    "/services": {
+      "path": "/services",
+      "contentType": "PageList",
+      "contentId": "S9VRDgZynofG8njIodBio",
+      "title": "Services",
+      "parentPageLists": [],
+      "isNested": false,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/services/design": {
+      "path": "/services/design",
+      "contentType": "PageList",
+      "contentId": "5PEdk3ERQ1FiocWOIRGesF",
+      "title": "Services - Design",
+      "parentPageLists": [
+        {
+          "id": "S9VRDgZynofG8njIodBio",
+          "slug": "services",
+          "title": "Services"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
+    "/services/deploy": {
+      "path": "/services/deploy",
+      "contentType": "PageList",
+      "contentId": "1robgrXgBTNdq4xAXvLNgO",
+      "title": "Services - Deploy",
+      "parentPageLists": [
+        {
+          "id": "S9VRDgZynofG8njIodBio",
+          "slug": "services",
+          "title": "Services"
+        }
+      ],
+      "isNested": true,
+      "priority": 0.8,
+      "changefreq": "weekly"
+    },
     "/what-we-do": {
       "path": "/what-we-do",
       "contentType": "PageList",
@@ -1623,16 +1665,6 @@
       "priority": 0.7,
       "changefreq": "monthly"
     },
-    "/services/design": {
-      "path": "/services/design",
-      "contentType": "PageList",
-      "contentId": "5PEdk3ERQ1FiocWOIRGesF",
-      "title": "Services - Design",
-      "parentPageLists": [],
-      "isNested": true,
-      "priority": 0.8,
-      "changefreq": "weekly"
-    },
     "/services/design/placeholder-service": {
       "path": "/services/design/placeholder-service",
       "contentType": "Service",
@@ -1642,16 +1674,6 @@
       "isNested": true,
       "priority": 0.6,
       "changefreq": "monthly"
-    },
-    "/services": {
-      "path": "/services",
-      "contentType": "PageList",
-      "contentId": "S9VRDgZynofG8njIodBio",
-      "title": "Services",
-      "parentPageLists": [],
-      "isNested": false,
-      "priority": 0.8,
-      "changefreq": "weekly"
     },
     "/products": {
       "path": "/products",
@@ -1752,6 +1774,6 @@
       "changefreq": "weekly"
     }
   },
-  "generatedAt": "2025-11-03T19:48:49.996Z",
+  "generatedAt": "2025-11-04T13:37:08.284Z",
   "version": "1.0.0"
 }

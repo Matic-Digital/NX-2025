@@ -24,8 +24,9 @@ export function useProductsData({ collection, collectionData }: UseProductsDataP
           setIsLoading(true);
           const productsResponse = await getAllProducts();
           setProducts(productsResponse ?? []);
-        } catch {
-        } finally {
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

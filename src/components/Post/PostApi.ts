@@ -38,19 +38,7 @@ export const POST_GRAPHQL_FIELDS_SIMPLE = `
   categories
 `;
 
-export const POST_SLIDER_GRAPHQL_FIELDS = `
-  ${SYS_FIELDS}
-  title
-  slug
-  excerpt
-  mainImage {
-    ${IMAGE_GRAPHQL_FIELDS}
-  }
-  categories
-  content {
-    json
-  }
-`;
+// POST_SLIDER_GRAPHQL_FIELDS moved to @/lib/contentful-api/shared-fields to prevent circular dependencies
 
 // Full Post fields for individual Post queries
 export const POST_GRAPHQL_FIELDS = `
@@ -184,8 +172,32 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
       throw new ContentfulError('Failed to fetch Posts from Contentful');
     }
 
+    // Step 2: Enrich all Posts with full data (server-side lazy loading for Collections)
+    const posts = data.postCollection.items;
+    const enrichmentPromises = posts.map(async (post) => {
+      if (post.sys?.id) {
+        try {
+          console.log('getAllPosts: Enriching Post', post.sys.id);
+          const enrichedPost = await getPostById(post.sys.id, preview);
+          console.log('getAllPosts: Post enrichment result:', {
+            id: post.sys.id,
+            hasEnrichedData: !!enrichedPost,
+            hasTitle: !!enrichedPost?.title,
+            hasSlug: !!enrichedPost?.slug
+          });
+          return enrichedPost || post;
+        } catch (error) {
+          console.warn(`Failed to enrich Post ${post.sys.id} in getAllPosts:`, error);
+          return post;
+        }
+      }
+      return post;
+    });
+
+    const enrichedPosts = await Promise.all(enrichmentPromises);
+
     return {
-      items: data.postCollection.items
+      items: enrichedPosts
     };
   } catch (_error) {
     if (_error instanceof ContentfulError) {
@@ -559,8 +571,28 @@ export async function getRelatedPosts(
       return { items: [] };
     }
 
+    const posts = data.postCollection.items;
+
+    // Step 2: Enrich Posts with full data (server-side lazy loading)
+    const enrichmentPromises = posts.map(async (post: any) => {
+      if (post.sys?.id) {
+        try {
+          // Enrich Post with full data
+          const enrichedPost = await getPostById(post.sys.id, preview);
+          return enrichedPost || post;
+        } catch (error) {
+          console.warn(`Failed to enrich Post ${post.sys.id} in getRelatedPosts:`, error);
+          return post; // Return original post on error
+        }
+      }
+      return post;
+    });
+
+    // Wait for all enrichments to complete
+    const enrichedPosts = await Promise.all(enrichmentPromises);
+
     return {
-      items: data.postCollection.items
+      items: enrichedPosts
     };
   } catch (_error) {
     if (_error instanceof ContentfulError) {

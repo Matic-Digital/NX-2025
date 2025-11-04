@@ -226,7 +226,7 @@ export async function securityMiddleware(
   // Rate limiting - TODO: Implement when rate-limit module is ready
   if (enableRateLimit) {
     // For now, skip rate limiting - will implement after fixing core security issues
-    // eslint-disable-next-line no-console
+     
     console.warn('Rate limiting not yet implemented');
   }
   

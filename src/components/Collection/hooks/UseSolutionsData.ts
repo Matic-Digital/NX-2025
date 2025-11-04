@@ -24,8 +24,9 @@ export function useSolutionsData({ collection, collectionData }: UseSolutionsDat
           setIsLoading(true);
           const solutionsResponse = await getAllSolutions();
           setSolutions(solutionsResponse ?? []);
-        } catch {
-        } finally {
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

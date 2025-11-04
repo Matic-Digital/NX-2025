@@ -33,13 +33,16 @@ export const BannerHeroContent = ({
       {...inspectorProps}
     >
       {/* Background Image */}
-      <div {...inspectorProps({ fieldId: 'backgroundImage' })}>
-        <AirImage
-          link={bannerHero.backgroundImage.link}
-          altText={bannerHero.backgroundImage.altText}
-          className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
-        />
-      </div>
+      {bannerHero.backgroundImage && (
+        <div {...inspectorProps({ fieldId: 'backgroundImage' })}>
+          <AirImage
+            link={bannerHero.backgroundImage.link}
+            altText={bannerHero.backgroundImage.altText}
+            className={`${bannerHeroStyles.getBackgroundImageClasses(isImageBetween)} lcp-image`}
+            priority={true}
+          />
+        </div>
+      )}
 
       {/* Gradient Overlay for Light Images */}
       {isImageLight && (

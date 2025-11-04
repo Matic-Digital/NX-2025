@@ -24,11 +24,14 @@ interface ContentfulLocaleResponse {
  */
 export const getServerLocales = cache(async (): Promise<LocaleOption[]> => {
   try {
+    const CONTENTFUL_SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
+    const CONTENTFUL_MANAGEMENT_TOKEN = process.env.CONTENTFUL_MANAGEMENT_TOKEN;
+
     const response = await fetch(
-      `https://api.contentful.com/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/locales`,
+      `https://api.contentful.com/spaces/${CONTENTFUL_SPACE_ID}/locales`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_CONTENTFUL_MANAGEMENT_TOKEN}`
+          Authorization: `Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}`
         },
         // Cache for 1 hour since locales don't change frequently
         next: { revalidate: 3600 }

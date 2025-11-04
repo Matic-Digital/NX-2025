@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
+// Import removed - using API route instead
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
@@ -22,10 +22,17 @@ export function usePostsData({ collection, collectionData }: UsePostsDataProps) 
       const fetchPosts = async () => {
         try {
           setIsLoading(true);
-          const postsResponse = await getAllPostsMinimal();
-          setPosts(postsResponse.items ?? []);
-        } catch {
-        } finally {
+          // Use API route to get server-side enriched Posts
+          const response = await fetch('/api/components/Post/all');
+          if (response.ok) {
+            const data = await response.json();
+            setPosts(data.posts?.items ?? []);
+          } else {
+            throw new Error('Failed to fetch posts from API');
+          }
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

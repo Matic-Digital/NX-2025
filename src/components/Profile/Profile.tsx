@@ -32,7 +32,8 @@ export function Profile({ sys, className }: ProfileProps) {
         if (data) {
           setProfileData(data);
         }
-      } catch {
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }

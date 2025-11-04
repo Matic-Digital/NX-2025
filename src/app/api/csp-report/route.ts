@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     const body: unknown = await request.json();
     
     // Log CSP violations for monitoring
-    // eslint-disable-next-line no-console -- Security logging is intentional for CSP violations
+     
     console.warn('🚨 CSP Violation Report:', {
       timestamp: new Date().toISOString(),
       userAgent: request.headers.get('user-agent'),
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ status: 'received' }, { status: 200 });
   } catch (error) {
-    // eslint-disable-next-line no-console -- Error logging is intentional for debugging
+     
     console.error('Error processing CSP report:', error);
     return NextResponse.json({ error: 'Invalid report' }, { status: 400 });
   }

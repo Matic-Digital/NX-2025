@@ -63,6 +63,25 @@ export const contentRenderers = {
   ),
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
+    // Show skeleton immediately if we have sys.id but not full data
+    const hasFullData = Boolean(item.title && item.contentType);
+    
+    if (!hasFullData && item.sys?.id) {
+      // Return a Collection skeleton component
+      return (
+        <div key={`collection-skeleton-${item.sys.id}`} className="animate-pulse">
+          <div className="mb-6">
+            <div className="h-8 w-48 bg-gray-200 rounded mb-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-64 bg-gray-200 rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
     // Collection component handles both full data and lazy loading cases
     return (
       <Collection
@@ -106,8 +125,17 @@ export const contentRenderers = {
   ),
 
   renderPost: (item: PostType, context: RenderContext) => {
-    // spread in context to use the variant prop in PostCard
-    return <PostCard key={item.sys?.id ?? context.index} {...item} {...context} />;
+    // Safely cast variant to PostCard's expected type
+    const validVariant = context.variant as 'default' | 'row' | 'featured' | undefined;
+    const safeVariant = ['default', 'row', 'featured'].includes(validVariant as string) ? validVariant : 'default';
+    
+    return (
+      <PostCard 
+        key={item.sys?.id ?? context.index} 
+        {...item} 
+        variant={safeVariant}
+      />
+    );
   },
 
   renderProduct: (item: ProductType, context: RenderContext) => (

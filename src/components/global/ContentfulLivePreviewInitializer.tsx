@@ -23,11 +23,14 @@ export function ContentfulLivePreviewInitializer() {
                 enableLiveUpdates: true,
                 debugMode: true
               });
-            } catch {}
+            } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
           })();
-        } else {
         }
-      } catch {}
+      } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
     }
   }, []);
 

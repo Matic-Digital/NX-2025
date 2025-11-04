@@ -126,7 +126,7 @@ export function RegionsMap(props: RegionsMap) {
           }}
         >
           {regionNames.map((regionName) => {
-            // eslint-disable-next-line security/detect-object-injection
+             
             const regionLocations = Object.prototype.hasOwnProperty.call(
               regionsByRegion,
               regionName
@@ -140,7 +140,7 @@ export function RegionsMap(props: RegionsMap) {
                 <div
                   className={cn(
                     'group transition-all duration-200',
-                    // eslint-disable-next-line security/detect-object-injection
+                     
                     hoveredRegion ===
                       (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
                         ? // eslint-disable-next-line security/detect-object-injection
@@ -149,7 +149,7 @@ export function RegionsMap(props: RegionsMap) {
                       ? 'scale-105 transform'
                       : ''
                   )}
-                  // eslint-disable-next-line security/detect-object-injection
+                   
                   onMouseEnter={() =>
                     setHoveredRegion(
                       Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
@@ -168,7 +168,7 @@ export function RegionsMap(props: RegionsMap) {
                           href={`/${region.slug}`}
                           className={cn(
                             'transition-colors',
-                            // eslint-disable-next-line security/detect-object-injection
+                             
                             hoveredRegion ===
                               (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
                                 ? // eslint-disable-next-line security/detect-object-injection
@@ -189,7 +189,7 @@ export function RegionsMap(props: RegionsMap) {
                               <p
                                 className={cn(
                                   '!text-body-xxs',
-                                  // eslint-disable-next-line security/detect-object-injection
+                                   
                                   hoveredRegion ===
                                     (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
                                       ? // eslint-disable-next-line security/detect-object-injection

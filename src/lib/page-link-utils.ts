@@ -1,3 +1,5 @@
+import { staticRoutingService } from '@/lib/static-routing';
+
 interface InternalLink {
   sys: {
     id: string;
@@ -30,30 +32,15 @@ export async function resolveNestedUrls<T>(
     const linkItem = getLinkFromItem(item);
 
     if (linkItem?.internalLink?.slug) {
-      try {
-        // Query the check-page-parent API to detect nesting relationships
-        const response = await fetch(`/api/check-page-parent?slug=${linkItem.internalLink.slug}`);
-        if (response.ok) {
-          const data = (await response.json()) as {
-            parentPageList?: unknown;
-            fullPath?: string;
-            parentPath?: string[];
-            parentSlug?: string;
-          };
-          if (data.parentPageList && data.fullPath) {
-            // Use full nested path when parent PageLists are detected
-            // e.g., /products/trackers/nx-horizon instead of /nx-horizon
-            urlMap[linkItem.internalLink.sys.id] = `/${data.fullPath}`;
-          } else {
-            // Fallback to flat URL structure when no nesting is detected
-            urlMap[linkItem.internalLink.sys.id] = `/${linkItem.internalLink.slug}`;
-          }
-        } else {
-          // Fallback to flat slug on API failure
-          urlMap[linkItem.internalLink.sys.id] = `/${linkItem.internalLink.slug}`;
-        }
-      } catch {
-        // Fallback to flat slug on error
+      // Use static routing service to get route metadata (replaces API call)
+      const routeMetadata = staticRoutingService.getRoute(`/${linkItem.internalLink.slug}`);
+      
+      if (routeMetadata && routeMetadata.isNested && routeMetadata.parentPageLists.length > 0) {
+        // Use full nested path when parent PageLists are detected
+        // e.g., /products/trackers/nx-horizon instead of /nx-horizon
+        urlMap[linkItem.internalLink.sys.id] = routeMetadata.path;
+      } else {
+        // Fallback to flat URL structure when no nesting is detected
         urlMap[linkItem.internalLink.sys.id] = `/${linkItem.internalLink.slug}`;
       }
     } else if (linkItem?.externalLink) {

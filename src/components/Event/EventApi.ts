@@ -9,7 +9,7 @@ import { HUBSPOTFORM_GRAPHQL_FIELDS } from '@/components/Forms/HubspotForm/Hubsp
 import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { LOCATION_GRAPHQL_FIELDS } from '@/components/OfficeLocation/OfficeLocationApi';
 import { POST_GRAPHQL_FIELDS_SIMPLE } from '@/components/Post/PostApi';
-import { SLIDER_GRAPHQL_FIELDS_SIMPLE } from '@/components/Slider/SliderApi';
+import { SLIDER_MINIMAL_FIELDS } from '@/components/Slider/SliderApi';
 import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
 
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
@@ -114,7 +114,7 @@ export const EVENT_GRAPHQL_FIELDS = `
     }
   }
   slider {
-    ${SLIDER_GRAPHQL_FIELDS_SIMPLE}
+    ${SLIDER_MINIMAL_FIELDS}
   }
   postCategories
   maxPostsPerCategory
@@ -242,7 +242,34 @@ export async function getEventById(id: string, preview = false): Promise<Event |
     if (!data.eventCollection?.items?.length) {
       return null;
     }
-    return data.eventCollection.items[0]!;
+    
+    const event = data.eventCollection.items[0]!;
+
+    // Step 2: Enrich Post items in Event (server-side lazy loading)
+    if (event.referencedPostsCollection?.items?.length && event.referencedPostsCollection.items.length > 0) {
+      const enrichmentPromises = event.referencedPostsCollection.items.map(async (item: any) => {
+        if (item.__typename === 'Post' && item.sys?.id) {
+          try {
+            // Dynamically import Post API to avoid circular dependency
+            const { getPostById } = await import('@/components/Post/PostApi');
+            const enrichedPost = await getPostById(item.sys.id, preview);
+            return enrichedPost || item;
+          } catch (error) {
+            console.warn(`Failed to enrich Post ${item.sys.id} in Event:`, error);
+            return item; // Return original item on error
+          }
+        }
+        return item;
+      });
+
+      // Wait for all enrichments to complete
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      if (event.referencedPostsCollection) {
+        event.referencedPostsCollection.items = enrichedItems;
+      }
+    }
+
+    return event;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;

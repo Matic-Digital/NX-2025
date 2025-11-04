@@ -26,10 +26,10 @@ interface ContentfulLocalesResponse {
 
 export async function GET() {
   try {
-    const spaceId = process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-    const accessToken = process.env.NEXT_PUBLIC_CONTENTFUL_MANAGEMENT_TOKEN;
+    const CONTENTFUL_SPACE_ID = process.env.CONTENTFUL_SPACE_ID;
+    const CONTENTFUL_MANAGEMENT_TOKEN = process.env.CONTENTFUL_MANAGEMENT_TOKEN;
 
-    if (!spaceId || !accessToken) {
+    if (!CONTENTFUL_SPACE_ID || !CONTENTFUL_MANAGEMENT_TOKEN) {
       // Return mock data for testing when credentials are not configured
       const mockLocales = [
         { code: 'en-US', name: 'English (United States)', default: true },
@@ -44,10 +44,10 @@ export async function GET() {
       });
     }
 
-    const response = await fetch(`https://api.contentful.com/spaces/${spaceId}/locales`, {
+    const response = await fetch(`https://api.contentful.com/spaces/${CONTENTFUL_SPACE_ID}/locales`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${CONTENTFUL_MANAGEMENT_TOKEN}`,
         'Content-Type': 'application/vnd.contentful.management.v1+json'
       },
       cache: 'no-cache'

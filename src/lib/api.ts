@@ -38,7 +38,7 @@ export async function fetchGraphQL<T>(
       if (typeof value === 'string') {
         // Basic validation - reject strings with potential GraphQL injection patterns
         if (value.includes('__typename') || value.includes('fragment') || value.includes('{')) {
-          // eslint-disable-next-line no-console
+           
           console.warn(`Potentially malicious GraphQL variable detected: ${key}`);
           // eslint-disable-next-line security/detect-object-injection
           sanitizedVariables[key] = value.replace(/[{}]/g, ''); // Remove curly braces
@@ -60,26 +60,52 @@ export async function fetchGraphQL<T>(
         ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
 
-    const environment = process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT ?? 'development';
+    const environment = process.env.CONTENTFUL_ENVIRONMENT ?? 'development';
+    const spaceId = process.env.CONTENTFUL_SPACE_ID;
+    const accessToken = preview 
+      ? process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN
+      : process.env.CONTENTFUL_ACCESS_TOKEN;
 
-    const response = await fetch(
-      `https://graphql.contentful.com/content/v1/spaces/${process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/environments/${environment}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${
-            preview
-              ? process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN
-              : process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
-          }`
-        },
-        body: JSON.stringify({ query, variables: sanitizedVariables }),
-        ...cacheSettings
-      }
-    );
+    if (!spaceId || !accessToken) {
+      throw new Error(`Missing Contentful credentials: spaceId=${!!spaceId}, accessToken=${!!accessToken}`);
+    }
+
+    const requestBody = { query, variables: sanitizedVariables };
+    const url = `https://graphql.contentful.com/content/v1/spaces/${spaceId}/environments/${environment}`;
+    
+    console.log('Contentful API Request:', {
+      url,
+      hasAccessToken: !!accessToken,
+      environment,
+      queryLength: query.length,
+      variables: sanitizedVariables
+    });
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(requestBody),
+      ...cacheSettings
+    });
 
     if (!response.ok) {
+      // Log the full error response for debugging
+      let errorText = '';
+      try {
+        errorText = await response.text();
+        console.error('Contentful API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorText,
+          url,
+          environment
+        });
+      } catch (e) {
+        console.error('Could not read error response:', e);
+      }
       try {
         // Try to clone the response to read the body without consuming it
         const clonedResponse = response.clone();
@@ -115,6 +141,7 @@ export async function fetchGraphQL<T>(
 
         // Only log GraphQL errors in development mode, but skip auth errors that have fallbacks
         if (process.env.NODE_ENV === 'development' && !hasAuthError) {
+          console.warn('GraphQL errors detected:', criticalErrors);
         }
 
         throw new GraphQLError('GraphQL query execution error', criticalErrors);
@@ -124,8 +151,14 @@ export async function fetchGraphQL<T>(
 
     return json;
   } catch (error: unknown) {
-    // Only log errors in development mode to avoid console spam in production
+    // Enhanced error logging for debugging
     if (process.env.NODE_ENV === 'development') {
+      console.error('API request failed with detailed error:', {
+        error,
+        errorType: error?.constructor?.name,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined
+      });
     }
 
     // Re-throw NetworkError and GraphQLError as they are already properly formatted
@@ -133,7 +166,8 @@ export async function fetchGraphQL<T>(
       throw error;
     }
 
-    // For any other errors, wrap in ContentfulError
-    throw new ContentfulError('Failed to fetch data from Contentful', error as Error);
+    // For any other errors, wrap in ContentfulError with more details
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new ContentfulError(`Failed to fetch data from Contentful: ${errorMessage}`, error as Error);
   }
 }

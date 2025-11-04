@@ -21,7 +21,7 @@
  * - Generates proper metadata for nested structures
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
+ 
 
 import { notFound } from 'next/navigation';
 
@@ -236,7 +236,8 @@ async function resolveContentWithStaticCache(segments: string[]): Promise<{
           content = await getPostBySlug(segments[segments.length - 1]!, preview);
           break;
         case 'PageList':
-          content = await getPageListBySlug(segments[segments.length - 1]!, preview);
+          // For PageLists, use the full path as the slug (e.g., 'services/design')
+          content = await getPageListBySlug(segments.join('/'), preview);
           break;
       }
 
@@ -526,7 +527,7 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 

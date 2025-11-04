@@ -13,7 +13,7 @@ export async function GET(
   const path = resolvedParams.path.join('/');
   
   // Log for debugging (will be removed in production via webpack config)
-  console.log(`[.well-known] Request for: ${path}`);
+  console.warn(`[.well-known] Request for: ${path}`);
   
   // Return 404 for unknown .well-known paths
   return NextResponse.json(
