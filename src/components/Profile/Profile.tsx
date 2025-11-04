@@ -33,6 +33,7 @@ export function Profile({ sys, className }: ProfileProps) {
           setProfileData(data);
         }
       } catch {
+        // Ignore errors when fetching profile data
       } finally {
         setLoading(false);
       }

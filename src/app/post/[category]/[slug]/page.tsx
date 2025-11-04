@@ -54,7 +54,9 @@ export async function generateStaticParams() {
       });
 
       allParams.push(...localeParams);
-    } catch {}
+    } catch {
+      // Ignore errors when fetching locale-specific posts
+    }
   }
 
   return allParams;

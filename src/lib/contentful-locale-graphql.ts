@@ -59,15 +59,11 @@ export async function fetchGraphQLWithLocale(
     return localizedResult;
   } catch {
     // Fallback to English if there's an error
-    try {
-      const englishVariables = {
-        ...variables,
-        locale: 'en-US'
-      };
-      return await fetchGraphQL(query, englishVariables, preview);
-    } catch (_fallbackError) {
-      throw _fallbackError;
-    }
+    const englishVariables = {
+      ...variables,
+      locale: 'en-US'
+    };
+    return await fetchGraphQL(query, englishVariables, preview);
   }
 }
 
@@ -246,16 +242,12 @@ export function withLocaleSupport<T extends (...args: unknown[]) => Promise<unkn
       return await apiFunction(...args);
     }
 
-    try {
-      // Try to modify the function to include locale
-      // This is a simplified approach - you might need to customize based on your API structure
+    // Try to modify the function to include locale
+    // This is a simplified approach - you might need to customize based on your API structure
 
-      // For now, call the original function and let individual components handle locale
-      // You can enhance this based on your specific API patterns
-      return await apiFunction(...args);
-    } catch (_error) {
-      throw _error;
-    }
+    // For now, call the original function and let individual components handle locale
+    // You can enhance this based on your specific API patterns
+    return await apiFunction(...args);
   }) as T;
 }
 
@@ -271,7 +263,7 @@ export function addLocaleToQuery(query: string, _locale = getCurrentLocale()): s
   // Find the query/mutation declaration and add locale parameter
   // eslint-disable-next-line security/detect-unsafe-regex
   const queryRegex = /(query|mutation)\s+(\w+)?\s*(\([^)]*\))?/;
-  // eslint-disable-next-line security/detect-unsafe-regex, @typescript-eslint/prefer-regexp-exec
+   
   const queryMatch = query.match(queryRegex);
   if (queryMatch) {
     const [fullMatch, type, name, existingParams] = queryMatch;

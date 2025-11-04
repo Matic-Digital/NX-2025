@@ -648,7 +648,7 @@ export function EventDetail({
                 )}
               </div>
             </div>
-            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+            { }
             {(event.sectionRichContent || event.landing1Asset) && (
               <div className="flex flex-col md:flex-row gap-8 mt-8">
                 {/* Rich Content Section */}

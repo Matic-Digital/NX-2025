@@ -110,7 +110,7 @@ export const ContentItemRenderer: React.FC<ContentItemRendererProps> = ({
   // Find the appropriate renderer for this content type
   for (const { detector, renderer } of contentTypeRegistry) {
     if (detector(item)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+       
       return renderer(item as any, context);
     }
   }

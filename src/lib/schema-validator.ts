@@ -4,11 +4,11 @@
  * Helper functions to validate and debug Schema.org structured data
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+ 
+ 
+ 
+ 
+ 
 
 /**
  * Validate that a schema object has required fields
@@ -105,6 +105,7 @@ export function debugSchema(schema: any, schemaType: string) {
   }
 
   if (validation.isValid) {
+    // Schema validation passed
   } else {
     validation.errors.forEach((_error) => {
       // Error logging removed
@@ -126,7 +127,9 @@ export function validatePageSchemas() {
       const schemaType = schema['@type'] || 'Unknown';
 
       debugSchema(schema, schemaType);
-    } catch {}
+    } catch {
+      // Ignore errors when parsing schema JSON
+    }
   });
 }
 

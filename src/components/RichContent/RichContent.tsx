@@ -92,15 +92,15 @@ const checkIfInAppendix = (_node: ContentfulNode): boolean => {
 };
 
 // Pre-compiled regex patterns for security
-// eslint-disable-next-line security/detect-unsafe-regex
+ 
 const APPENDIX_REGEX = /appendix/i;
 // eslint-disable-next-line security/detect-unsafe-regex
 const NUMBERED_SECTION_REGEX = /^\d+(?:\.\d+)?/;
-// eslint-disable-next-line security/detect-unsafe-regex
+ 
 const ROMAN_NUMERAL_REGEX = /^[IVXLCDM]+\./i;
 // eslint-disable-next-line security/detect-unsafe-regex
 const HAS_NUMBER_REGEX = /\d+(?:\.\d+)?/;
-// eslint-disable-next-line security/detect-unsafe-regex
+ 
 const H3_ROMAN_REGEX = /[A-Z]\.[ivxlcdm]+/i;
 // eslint-disable-next-line security/detect-unsafe-regex
 const NUMBER_PREFIX_REGEX = /^(\d+(?:\.\d+)?)\.?\s*/;

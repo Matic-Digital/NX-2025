@@ -60,14 +60,14 @@ export async function getImageBetweenById(
     );
 
     // Use type assertion to bypass the strict typing issue
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+     
     const data = response.data as any;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     if (!data?.imageBetweenCollection?.items?.length) {
       return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     return data.imageBetweenCollection.items[0] as ImageBetween;
   } catch (_error) {
     if (_error instanceof ContentfulError) {

@@ -17,7 +17,7 @@
  * - Support for various content types through nested page content collections
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 'use client';
 

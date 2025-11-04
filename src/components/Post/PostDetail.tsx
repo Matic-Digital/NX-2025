@@ -54,6 +54,7 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
             const related = await getRelatedPosts(post.categories, post.sys.id, 3);
             setRelatedPosts(related.items);
           } catch {
+            // Ignore errors when fetching related posts
           }
         }
         return;
@@ -73,10 +74,12 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
               const related = await getRelatedPosts(fullData.categories, post.sys.id, 3);
               setRelatedPosts(related.items);
             } catch {
+              // Ignore errors when fetching related posts
             }
           }
         }
       } catch {
+        // Ignore errors when fetching full post data
       }
     };
 
@@ -121,9 +124,9 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
   if (displayPost.template === 'Gated Content') {
     return (
       <PageLayout
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         header={displayPost.pageLayout?.header ?? undefined}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         footer={displayPost.pageLayout?.footer ?? undefined}
       >
         {/* Banner Section with Title */}
@@ -250,9 +253,9 @@ export function PostDetail({ post: initialPost }: PostDetailProps) {
   // Default template
   return (
     <PageLayout
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+       
       header={displayPost.pageLayout?.header ?? undefined}
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+       
       footer={displayPost.pageLayout?.footer ?? undefined}
     >
       <ImageBetweenWrapper

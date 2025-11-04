@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-assignment */
+ 
 
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
@@ -89,10 +89,10 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     if (!response?.data) return null;
 
     // Extract the component data based on type
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+     
     const data = response.data as Record<string, unknown>;
     const componentKey = typename.charAt(0).toLowerCase() + typename.slice(1); // Convert to camelCase
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+     
     // eslint-disable-next-line security/detect-object-injection
     return Object.prototype.hasOwnProperty.call(data, componentKey) ? data[componentKey] : null;
   } catch {
@@ -142,7 +142,7 @@ export async function getSolutionById(id: string, preview = false): Promise<Solu
       );
 
       if (solution.itemsCollection) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+         
         solution.itemsCollection.items = hydratedItems as typeof solution.itemsCollection.items;
       }
     }
@@ -206,7 +206,7 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
       );
 
       if (solution.itemsCollection) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+         
         solution.itemsCollection.items = hydratedItems as typeof solution.itemsCollection.items;
       }
     }

@@ -158,13 +158,8 @@ export function useCollectionFiltering({
         const postCategories = post.categories?.map((category) => category.toLowerCase()) ?? [];
         const hasMatch = postCategories.some((category) => collectionTagNames.includes(category));
 
-        if (hasMatch) {
-        } else {
-        }
-
         return hasMatch;
       });
-    } else {
     }
 
     // Then apply search and category filters

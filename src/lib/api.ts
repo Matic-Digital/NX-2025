@@ -38,7 +38,7 @@ export async function fetchGraphQL<T>(
       if (typeof value === 'string') {
         // Basic validation - reject strings with potential GraphQL injection patterns
         if (value.includes('__typename') || value.includes('fragment') || value.includes('{')) {
-          // eslint-disable-next-line no-console
+           
           console.warn(`Potentially malicious GraphQL variable detected: ${key}`);
           // eslint-disable-next-line security/detect-object-injection
           sanitizedVariables[key] = value.replace(/[{}]/g, ''); // Remove curly braces
@@ -115,6 +115,7 @@ export async function fetchGraphQL<T>(
 
         // Only log GraphQL errors in development mode, but skip auth errors that have fallbacks
         if (process.env.NODE_ENV === 'development' && !hasAuthError) {
+          // GraphQL errors logged in development mode only
         }
 
         throw new GraphQLError('GraphQL query execution error', criticalErrors);
@@ -126,6 +127,7 @@ export async function fetchGraphQL<T>(
   } catch (error: unknown) {
     // Only log errors in development mode to avoid console spam in production
     if (process.env.NODE_ENV === 'development') {
+      // Development error logging
     }
 
     // Re-throw NetworkError and GraphQLError as they are already properly formatted

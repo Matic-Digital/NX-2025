@@ -30,7 +30,9 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
         height: parseInt(height, 10)
       };
     }
-  } catch {}
+  } catch (error) {
+    console.warn('Failed to parse image dimensions:', error);
+  }
 
   return null;
 };
@@ -365,7 +367,8 @@ export const AirImage: React.FC<AirImageType> = (props) => {
         if (fullData) {
           setFullImageData(fullData);
         }
-      } catch {
+      } catch (error) {
+        console.error('Failed to fetch full image data:', error);
       } finally {
         setIsLoading(false);
       }

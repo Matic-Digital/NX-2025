@@ -46,7 +46,9 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
           const footerData = await getFooterById(footer.sys.id);
           setFullFooter(footerData);
         }
-      } catch {}
+      } catch {
+        // Ignore errors when fetching header/footer data
+      }
     }
 
     // Use void to explicitly mark the promise as handled

@@ -107,7 +107,7 @@ export const Box = ({
         })
         .join(' ');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+     
     return classMap[prop as keyof typeof classMap] ?? '';
   };
 

@@ -186,7 +186,7 @@ async function renderContentfulHomePage(page: Page) {
 
           // Type-cast the component to the expected props interface
           // This assumes the Contentful data structure matches the component's expected props
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 

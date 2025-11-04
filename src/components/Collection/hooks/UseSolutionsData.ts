@@ -24,7 +24,8 @@ export function useSolutionsData({ collection, collectionData }: UseSolutionsDat
           setIsLoading(true);
           const solutionsResponse = await getAllSolutions();
           setSolutions(solutionsResponse ?? []);
-        } catch {
+        } catch (error) {
+          console.error('Failed to fetch solutions:', error);
         } finally {
           setIsLoading(false);
         }
