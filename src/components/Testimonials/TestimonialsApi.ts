@@ -58,11 +58,7 @@ export async function getTestimonials(preview = false): Promise<Testimonials[]> 
   }
 
   return data.testimonialsCollection.items.filter(Boolean).map((item, _index) => {
-    try {
-      return TestimonialsSchema.parse(item);
-    } catch (_error) {
-      throw _error;
-    }
+    return TestimonialsSchema.parse(item);
   });
 }
 

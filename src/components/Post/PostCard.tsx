@@ -43,6 +43,7 @@ export function PostCard({ sys, variant }: PostCardProps) {
           setPostData(data);
         }
       } catch {
+        // Ignore errors when fetching post data
       } finally {
         setLoading(false);
       }

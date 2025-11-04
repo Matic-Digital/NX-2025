@@ -5,7 +5,7 @@
  * Displays any component in a centered layout with Contentful Live Preview integration.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment */
+ 
 
 'use client';
 

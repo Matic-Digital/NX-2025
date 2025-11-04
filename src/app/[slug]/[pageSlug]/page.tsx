@@ -288,7 +288,7 @@ function renderContentByType(
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
@@ -315,7 +315,7 @@ function renderContentByType(
       // Check if we have a component for this type
       if (typeName && typeName in componentMap) {
         const ComponentType = componentMap[typeName as keyof typeof componentMap];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         return <ComponentType key={component.sys.id} {...(component as any)} />;
       }
 
@@ -343,11 +343,11 @@ function renderContentByType(
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             return (
               <ComponentType
                 key={component.sys?.id || `component-${index}`}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 {...(component as any)}
               />
             );
@@ -395,11 +395,11 @@ function renderContentByType(
               // Check if we have a component for this type
               if (typeName && typeName in componentMap) {
                 const ComponentType = componentMap[typeName as keyof typeof componentMap];
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 return (
                   <ComponentType
                     key={component.sys?.id || `component-${index}`}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     
                     {...(component as any)}
                   />
                 );

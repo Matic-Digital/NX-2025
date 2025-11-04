@@ -43,6 +43,7 @@ export function PageCard(props: PageCardProps) {
             setPageData(data);
           }
         } catch {
+          // Ignore errors when fetching page data
         } finally {
           setLoading(false);
         }
@@ -84,9 +85,9 @@ export function PageCard(props: PageCardProps) {
           {/* Thumbnail */}
           <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded overflow-hidden">
             <AirImage
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+               
               link={(page?.openGraphImage as any)?.link}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+               
               altText={(page?.openGraphImage as any)?.altText ?? page?.title}
               className="w-full h-full object-cover"
             />
@@ -143,9 +144,9 @@ export function PageCard(props: PageCardProps) {
         )}
       >
         <AirImage
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+           
           link={(page?.openGraphImage as any)?.link}
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+           
           altText={(page?.openGraphImage as any)?.altText ?? page?.title}
           className={cn(
             // Mobile: consistent height for all cards, Large: different heights for variants

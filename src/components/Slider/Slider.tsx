@@ -326,7 +326,7 @@ const SliderCard = ({
                 // Use the internalLink sys.id as the key (matching resolveNestedUrls logic)
                 (() => {
                   const internalLinkId = solution.cta.internalLink?.sys?.id ?? solution.sys?.id;
-                  // eslint-disable-next-line security/detect-object-injection
+                   
                   const resolvedUrl =
                     internalLinkId &&
                     solutionUrls &&
@@ -1030,6 +1030,7 @@ export function Slider(props: SliderSys) {
           }
         }
       } catch {
+        // Ignore errors when fetching slider data
       } finally {
         setLoading(false);
       }

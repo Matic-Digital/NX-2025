@@ -65,11 +65,15 @@ export function ContentfulPreviewProvider({
               });
 
               // Log the space and token for debugging
-            } catch {}
+            } catch {
+              // Ignore errors when initializing live preview
+            }
           })();
 
           // Log the space and token for debugging
-        } catch {}
+        } catch {
+          // Ignore errors when setting up preview environment
+        }
       }
     }
   }, []);

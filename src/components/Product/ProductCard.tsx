@@ -27,6 +27,7 @@ export const ProductCard = (props: ProductSys) => {
           setProductData(products[0]);
         }
       } catch {
+        // Ignore errors when fetching product data
       } finally {
         setLoading(false);
       }

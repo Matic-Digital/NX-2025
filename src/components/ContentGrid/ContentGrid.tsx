@@ -61,7 +61,9 @@ export function ContentGrid(props: ContentGridProps) {
       if (hasEmptyObjects && contentGrid.sys?.id) {
         try {
           collectionIds = await getCollectionIdsFromContentGrid(contentGrid.sys.id);
-        } catch {}
+        } catch (error) {
+          console.warn('Failed to fetch collection IDs:', error);
+        }
       }
 
       let collectionIndex = 0;
@@ -115,6 +117,7 @@ export function ContentGrid(props: ContentGridProps) {
       .filter((id): id is string => Boolean(id)) ?? [];
   const duplicateIds = itemIds.filter((id, index) => itemIds.indexOf(id) !== index);
   if (duplicateIds.length > 0) {
+    console.warn('Duplicate content grid item IDs detected:', duplicateIds);
   }
 
   // Check if content grid contains only services for mobile carousel

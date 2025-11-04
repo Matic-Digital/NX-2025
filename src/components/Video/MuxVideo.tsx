@@ -33,6 +33,7 @@ export function MuxVideoPlayer(props: VideoSys | Video) {
           setVideoData(video);
         }
       } catch {
+        // Ignore errors when fetching video data
       } finally {
         setLoading(false);
       }

@@ -30,6 +30,7 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
           const fetchedLocation = await getLocationById(sys.id);
           setLocation(fetchedLocation);
         } catch {
+          // Ignore errors when parsing office location data
         } finally {
           setIsLoading(false);
         }

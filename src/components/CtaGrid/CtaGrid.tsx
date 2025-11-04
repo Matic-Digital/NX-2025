@@ -34,8 +34,10 @@ export function CtaGrid(props: CtaGrid) {
         if (response.item) {
           setCtaGrid(response.item);
         } else {
+          console.warn('No CTA grid data received');
         }
-      } catch {
+      } catch (error) {
+        console.error('Failed to fetch CTA grid:', error);
       } finally {
         setLoading(false);
       }

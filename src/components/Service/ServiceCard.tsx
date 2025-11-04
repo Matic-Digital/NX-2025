@@ -49,6 +49,7 @@ export function ServiceCard(props: ServiceCardProps) {
         const data = await getServiceById(serviceId, false);
         setFetchedData(data);
       } catch {
+        // Ignore errors when fetching service data
       } finally {
         setLoading(false);
       }

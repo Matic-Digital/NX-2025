@@ -15,7 +15,7 @@ export function constantTimeCompare(a: string, b: string): boolean {
 
   let result = 0;
   for (let i = 0; i < a.length; i++) {
-    // eslint-disable-next-line security/detect-object-injection
+     
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
 

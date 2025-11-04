@@ -21,7 +21,7 @@
  * - Generates proper metadata for nested structures
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unnecessary-type-assertion */
+ 
 
 import { notFound } from 'next/navigation';
 
@@ -526,7 +526,7 @@ const renderPageListContentByType = (component: unknown, componentIndex: number)
 
   const ComponentType = componentMap[typedComponent.__typename as keyof typeof componentMap];
   if (ComponentType) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     return <ComponentType key={typedComponent.sys?.id ?? componentIndex} {...(component as any)} />;
   }
 

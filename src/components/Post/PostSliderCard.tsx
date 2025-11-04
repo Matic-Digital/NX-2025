@@ -59,6 +59,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
           setPostData(data);
         }
       } catch {
+        // Ignore errors when fetching post data
       } finally {
         setLoading(false);
       }

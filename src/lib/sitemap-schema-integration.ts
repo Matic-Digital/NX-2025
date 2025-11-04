@@ -100,7 +100,9 @@ export async function readSitemapUrls(): Promise<SitemapUrl[]> {
         }
       }
     }
-  } catch {}
+  } catch {
+    // Ignore errors when reading sitemap file
+  }
 
   return sitemapUrls;
 }
@@ -257,7 +259,9 @@ export function generateHasPartFromSitemap(sitemapUrls: SitemapUrl[]): Record<st
           sectionItems.push(item);
         }
       }
-    } catch {}
+    } catch {
+      // Ignore errors when processing sitemap URL
+    }
   });
 
   // Convert sections to hasPart references
