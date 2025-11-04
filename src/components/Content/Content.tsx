@@ -97,8 +97,14 @@ export function Content(props: ContentProps) {
     async function fetchContent() {
       try {
         setLoading(true);
-        const data = await getContentById(contentId ?? '', false);
-        setFetchedData(data.item);
+        // Use internal API route instead of direct Contentful call
+        const response = await fetch(`/api/components/Content/${contentId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFetchedData(data.content.item);
+        } else {
+          throw new Error('Failed to fetch content');
+        }
       } catch (_err) {
         setError(_err instanceof Error ? _err.message : 'Failed to load content');
       } finally {

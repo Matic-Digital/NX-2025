@@ -46,9 +46,15 @@ export function ServiceCard(props: ServiceCardProps) {
 
       try {
         setLoading(true);
-        const data = await getServiceById(serviceId, false);
-        setFetchedData(data);
-      } catch {
+        const response = await fetch(`/api/components/Service/${serviceId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFetchedData(data.service);
+        } else {
+          throw new Error('Failed to fetch service data');
+        }
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }

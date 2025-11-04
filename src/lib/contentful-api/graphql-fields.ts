@@ -278,6 +278,20 @@ const fragments = {
     ${SEO_FIELDS}
   `,
 
+  POST_SLIDER_FIELDS: () => `
+    ${SYS_FIELDS}
+    title
+    slug
+    excerpt
+    mainImage {
+      ${ASSET_FIELDS}
+    }
+    categories
+    content {
+      json
+    }
+  `,
+
   PAGELIST_BASIC_FIELDS: () => `
     ${SYS_FIELDS}
     title
@@ -399,6 +413,7 @@ export const getSOLUTION_BASIC_FIELDS = () => fragments.SOLUTION_BASIC_FIELDS();
 export const getSOLUTION_SEO_FIELDS = () => fragments.SOLUTION_SEO_FIELDS();
 export const getPOST_BASIC_FIELDS = () => fragments.POST_BASIC_FIELDS();
 export const getPOST_SEO_FIELDS = () => fragments.POST_SEO_FIELDS();
+export const getPOST_SLIDER_FIELDS = () => fragments.POST_SLIDER_FIELDS();
 export const getEXTERNAL_PAGE_FIELDS = () => fragments.EXTERNAL_PAGE_FIELDS();
 export const getTESTIMONIALS_BASIC_FIELDS = () => fragments.TESTIMONIALS_BASIC_FIELDS();
 export const getCOLLECTION_BASIC_FIELDS = () => fragments.COLLECTION_BASIC_FIELDS();

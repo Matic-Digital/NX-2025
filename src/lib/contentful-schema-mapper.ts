@@ -5,12 +5,12 @@
  * This ensures the schema closely matches your actual content structure
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+ 
+ 
+ 
+ 
+ 
+ 
 
 import { extractOpenGraphImage, extractSEODescription, extractSEOTitle } from './metadata-utils';
 
@@ -27,24 +27,24 @@ export interface ContentfulContent {
   slug?: string;
   description?: string;
   excerpt?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   content?: any;
   dateTime?: string;
   endDateTime?: string;
   address?: string;
   categories?: string[];
   tags?: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   author?: any;
   seoTitle?: string;
   seoDescription?: string;
   openGraphTitle?: string;
   openGraphDescription?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   openGraphImage?: any;
   canonicalUrl?: string;
   indexing?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   [key: string]: any;
 }
 
@@ -490,7 +490,7 @@ export class ContentfulSchemaMapper {
   /**
    * Generate Organization schema with proper structure
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   async generateOrganizationSchema(includeWebSite = false): Promise<any> {
     return {
       '@context': 'https://schema.org',
@@ -556,7 +556,7 @@ export class ContentfulSchemaMapper {
   /**
    * Generate WebSite schema with proper structure including site navigation
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   async generateWebSiteSchema(includeNavigation = false, useSitemapData = false): Promise<any> {
     const baseSchema = {
       '@context': 'https://schema.org',
@@ -583,7 +583,9 @@ export class ContentfulSchemaMapper {
         try {
           const { generateWebSiteSchemaFromSitemap } = await import('./sitemap-schema-integration');
           return await generateWebSiteSchemaFromSitemap(this.baseUrl);
-        } catch {}
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
       }
 
       return {
@@ -611,14 +613,15 @@ export class ContentfulSchemaMapper {
       );
       const sitemapUrls = await readSitemapUrls();
 
-      if (sitemapUrls.length > 5) {
-      }
+      // Sitemap URLs loaded successfully
 
       if (sitemapUrls.length > 0) {
         const navigation = generateNavigationFromSitemap(sitemapUrls, this.baseUrl);
         return navigation;
       }
-    } catch {}
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
     // Fallback navigation based on actual sitemap structure I can see
     const navItems = [
@@ -658,7 +661,9 @@ export class ContentfulSchemaMapper {
       if (sitemapUrls.length > 0) {
         return generateHasPartFromSitemap(sitemapUrls);
       }
-    } catch {}
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
     // Fallback sections based on actual sitemap - removing duplicates and non-existent pages
     return [
@@ -711,7 +716,7 @@ export class ContentfulSchemaMapper {
    * Generate complete hierarchical schema for homepage
    * Organization -> WebSite -> Navigation -> Pages
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   async generateHomepageSchema(content?: ContentfulContent): Promise<any> {
     const organizationSchema = {
       '@context': 'https://schema.org',

@@ -6,13 +6,13 @@ import Link from 'next/link';
 import type { Document } from '@contentful/rich-text-types';
 
 interface ContentfulRichTextProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   content: any;
   className?: string;
 }
 
 export const ContentfulRichText = ({ content, className = '' }: ContentfulRichTextProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+   
   if (!content?.json) {
     return null;
   }
@@ -61,9 +61,9 @@ export const ContentfulRichText = ({ content, className = '' }: ContentfulRichTe
         <blockquote className="my-4 border-l-4 border-gray-300 pl-4 italic">{children}</blockquote>
       ),
       [BLOCKS.HR]: () => <hr className="my-8 border-t border-gray-200" />,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       [INLINES.HYPERLINK]: (node: any, children: React.ReactNode) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+         
         const uri = node.data?.uri as string;
         const isInternal = uri?.startsWith('/');
 
@@ -86,7 +86,7 @@ export const ContentfulRichText = ({ content, className = '' }: ContentfulRichTe
           </a>
         );
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       [BLOCKS.EMBEDDED_ENTRY]: (_node: unknown) => {
         return (
           <div className="my-4 rounded border border-gray-200 bg-gray-50 p-4">
@@ -98,7 +98,7 @@ export const ContentfulRichText = ({ content, className = '' }: ContentfulRichTe
   };
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+     
     const reactContent = documentToReactComponents(content.json as Document, options);
     return <div className={className}>{reactContent}</div>;
   } catch {

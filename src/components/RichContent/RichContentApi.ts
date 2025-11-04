@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+ 
+ 
+ 
+ 
+ 
 
 import { fetchGraphQL } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
@@ -50,7 +50,7 @@ export async function getAllRichContents(
     preview
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const typedResponse = response as any;
 
   if (!typedResponse.contentTypeRichTextCollection) {
@@ -127,7 +127,7 @@ export async function getRichContentsByIds(ids: string[], preview = false): Prom
     preview
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const typedResponse = response as any;
 
   return typedResponse.contentTypeRichTextCollection?.items ?? [];
@@ -166,7 +166,7 @@ export async function searchRichContents(
     preview
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const typedResponse = response as any;
 
   return typedResponse.contentTypeRichTextCollection?.items ?? [];
@@ -188,7 +188,7 @@ export async function getRichContentsCount(preview = false): Promise<number> {
     preview
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const typedResponse = response as any;
 
   return typedResponse.contentTypeRichTextCollection?.total ?? 0;

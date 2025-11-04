@@ -54,7 +54,9 @@ export async function generateStaticParams() {
       });
 
       allParams.push(...localeParams);
-    } catch {}
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
   }
 
   return allParams;

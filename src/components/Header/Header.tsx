@@ -41,14 +41,13 @@ import { Logo } from '@/components/global/Logo';
 import { Box, Container } from '@/components/global/matic-ds';
 
 import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
-import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
 import { Menu as MenuComponent } from '@/components/Menu/Menu';
-import { getMenuById } from '@/components/Menu/MenuApi';
 
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Page } from '@/components/Page/PageSchema';
 import type { LocaleOption } from '@/lib/server-locales';
+import type { MenuItem } from '@/components/MenuItem/MenuItemSchema';
 
 // Interface for locale API response
 interface LocaleApiResponse {
@@ -161,18 +160,20 @@ function HeaderContent(props: HeaderProps) {
   useEffect(() => {
     if (header?.menu?.sys?.id && !menu) {
       setMenuLoading(true);
-      getMenuById(header.menu.sys.id)
-        .then((loadedMenu) => {
-          if (loadedMenu) {
-            setMenu(loadedMenu);
+      const fetchMenu = async () => {
+        try {
+          const response = await fetch(`/api/components/Menu/${header.menu?.sys.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setMenu(data.menu);
           }
-        })
-        .catch((_error: unknown) => {
-          // Menu loading failed
-        })
-        .finally(() => {
+        } catch (error) {
+          console.warn('Error fetching menu:', error);
+        } finally {
           setMenuLoading(false);
-        });
+        }
+      };
+      void fetchMenu();
     }
   }, [header?.menu?.sys?.id, menu]);
 
@@ -183,50 +184,61 @@ function HeaderContent(props: HeaderProps) {
 
       // Since overflow links to MegaMenu, not Menu, we need to use MegaMenu API
       if (header.overflow.__typename === 'MegaMenu') {
-        import('../MegaMenu/MegaMenuApi')
-          .then(({ getOverflowMegaMenuById }) => {
-            return getOverflowMegaMenuById(header.overflow!.sys.id);
-          })
-          .then((loadedMegaMenu) => {
-            // Convert MegaMenu to Menu format for compatibility
-            if (loadedMegaMenu?.itemsCollection) {
-              const menuFormat = {
-                sys: loadedMegaMenu.sys,
-                __typename: 'Menu' as const,
-                title: loadedMegaMenu.title,
-                itemsCollection: {
-                  items: loadedMegaMenu.itemsCollection.items.map((item) => ({
-                    ...item,
-                    __typename: 'MenuItem' as const,
-                    description: item.description ?? ''
-                  }))
-                }
-              };
-              setOverflowMenu(menuFormat);
+        const fetchOverflowMegaMenu = async () => {
+          try {
+            const response = await fetch(`/api/components/MegaMenu/${header.overflow!.sys.id}/overflow`);
+            if (response.ok) {
+              const data = await response.json();
+              const loadedMegaMenu = data.megaMenu;
+              
+              // Convert MegaMenu to Menu format for compatibility
+              if (loadedMegaMenu?.itemsCollection) {
+                const menuFormat = {
+                  sys: loadedMegaMenu.sys,
+                  __typename: 'Menu' as const,
+                  title: loadedMegaMenu.title,
+                  itemsCollection: {
+                    items: loadedMegaMenu.itemsCollection.items.map((item: MenuItem) => ({
+                      ...item,
+                      __typename: 'MenuItem' as const,
+                      description: item.description ?? '',
+                      // Preserve associatedImage if it exists
+                      associatedImage: item.associatedImage || null
+                    }))
+                  }
+                };
+                setOverflowMenu(menuFormat);
 
-              // Store the tags from the original MegaMenu
-              setOverflowMenuTags(loadedMegaMenu.contentfulMetadata?.tags);
+                // Store the tags from the original MegaMenu
+                setOverflowMenuTags(loadedMegaMenu.contentfulMetadata?.tags);
+              }
             }
-          })
-          .catch((_error: unknown) => {
-            // Overflow MegaMenu loading failed
-          })
-          .finally(() => setOverflowMenuLoading(false));
+          } catch (error) {
+            console.warn('Error fetching overflow mega menu:', error);
+          } finally {
+            setOverflowMenuLoading(false);
+          }
+        };
+        void fetchOverflowMegaMenu();
       } else {
         // Fallback to Menu API with associated images for overflow
-        import('../Menu/MenuApi')
-          .then(({ getOverflowMenuById }) => {
-            return getOverflowMenuById(header.overflow!.sys.id);
-          })
-          .then((loadedMenu) => {
-            if (loadedMenu) {
-              setOverflowMenu(loadedMenu);
+        const fetchOverflowMenu = async () => {
+          try {
+            const response = await fetch(`/api/components/Menu/${header.overflow!.sys.id}/overflow`);
+            if (response.ok) {
+              const data = await response.json();
+              const loadedMenu = data.menu;
+              if (loadedMenu) {
+                setOverflowMenu(loadedMenu);
+              }
             }
-          })
-          .catch((_error: unknown) => {
-            // Overflow menu loading failed
-          })
-          .finally(() => setOverflowMenuLoading(false));
+          } catch (error) {
+            console.warn('Error fetching overflow menu:', error);
+          } finally {
+            setOverflowMenuLoading(false);
+          }
+        };
+        void fetchOverflowMenu();
       }
     }
   }, [header?.overflow?.sys?.id, header?.overflow, overflowMenu, overflowMenuLoading]);
@@ -347,13 +359,25 @@ function HeaderContent(props: HeaderProps) {
 
   if (!header) {
     return (
-      <header className="bg-background/95 px-6 py-4">
-        <Container>
-          <Box direction="row" className="items-center justify-between">
-            <p>No header found</p>
-          </Box>
+      <div className="fixed top-0 left-0 right-0 w-full header-skeleton z-[100]">
+        <Container className="w-full pt-0 lg:pt-6">
+          <header className="relative z-[100] px-6 py-1.5 lg:py-4">
+            <div className="nav-container">
+              <div className="logo-container">
+                {/* Logo skeleton */}
+                <div className="h-10 w-10 animate-pulse rounded-full bg-white/20"></div>
+                <div className="h-6 w-24 animate-pulse rounded bg-white/20"></div>
+              </div>
+              {/* Navigation skeleton */}
+              <div className="hidden md:flex items-center gap-4">
+                <div className="h-6 w-16 animate-pulse rounded bg-white/20"></div>
+                <div className="h-6 w-20 animate-pulse rounded bg-white/20"></div>
+                <div className="h-6 w-18 animate-pulse rounded bg-white/20"></div>
+              </div>
+            </div>
+          </header>
         </Container>
-      </header>
+      </div>
     );
   }
 
@@ -788,32 +812,36 @@ function HeaderContent(props: HeaderProps) {
                                               if (open) {
                                                 setOpenCollapsible(`main-${item.sys.id}`);
                                                 if (!megaMenuData) {
-                                                  getMegaMenuById(item.sys.id)
-                                                    .then((loadedMenu) => {
-                                                      if (loadedMenu?.itemsCollection) {
-                                                        const itemsCollection =
-                                                          loadedMenu.itemsCollection;
-                                                        setLoadedMegaMenus((prev) => ({
-                                                          ...prev,
-                                                          [item.sys.id]: {
-                                                            ...loadedMenu,
-                                                            itemsCollection: {
-                                                              items: itemsCollection.items.map(
-                                                                (menuItem) => ({
-                                                                  ...menuItem,
-                                                                  __typename: 'MenuItem' as const,
-                                                                  description:
-                                                                    menuItem.description ?? ''
-                                                                })
-                                                              )
+                                                  const fetchMegaMenu = async () => {
+                                                    try {
+                                                      const response = await fetch(`/api/components/MegaMenu/${item.sys.id}`);
+                                                      if (response.ok) {
+                                                        const data = await response.json();
+                                                        const loadedMenu = data.megaMenu;
+                                                        if (loadedMenu?.itemsCollection) {
+                                                          const itemsCollection = loadedMenu.itemsCollection;
+                                                          setLoadedMegaMenus((prev) => ({
+                                                            ...prev,
+                                                            [item.sys.id]: {
+                                                              ...loadedMenu,
+                                                              itemsCollection: {
+                                                                items: itemsCollection.items.map(
+                                                                  (menuItem: MenuItem) => ({
+                                                                    ...menuItem,
+                                                                    __typename: 'MenuItem' as const,
+                                                                    description: menuItem.description ?? ''
+                                                                  })
+                                                                )
+                                                              }
                                                             }
-                                                          }
-                                                        }));
+                                                          }));
+                                                        }
                                                       }
-                                                    })
-                                                    .catch((_error: unknown) => {
-                                                      // Mega menu loading failed
-                                                    });
+                                                    } catch (error) {
+                                                      console.warn('Error fetching mega menu:', error);
+                                                    }
+                                                  };
+                                                  void fetchMegaMenu();
                                                 }
                                               } else {
                                                 setOpenCollapsible(null);

@@ -288,7 +288,7 @@ function renderContentByType(
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             return <ComponentType key={component.sys.id} {...(component as any)} />;
           }
 
@@ -315,7 +315,7 @@ function renderContentByType(
       // Check if we have a component for this type
       if (typeName && typeName in componentMap) {
         const ComponentType = componentMap[typeName as keyof typeof componentMap];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         return <ComponentType key={component.sys.id} {...(component as any)} />;
       }
 
@@ -343,11 +343,11 @@ function renderContentByType(
           // Check if we have a component for this type
           if (typeName && typeName in componentMap) {
             const ComponentType = componentMap[typeName as keyof typeof componentMap];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             return (
               <ComponentType
                 key={component.sys?.id || `component-${index}`}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 {...(component as any)}
               />
             );
@@ -395,11 +395,11 @@ function renderContentByType(
               // Check if we have a component for this type
               if (typeName && typeName in componentMap) {
                 const ComponentType = componentMap[typeName as keyof typeof componentMap];
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 return (
                   <ComponentType
                     key={component.sys?.id || `component-${index}`}
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     
                     {...(component as any)}
                   />
                 );
@@ -482,14 +482,15 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       const itemSlug = (item as { slug?: string }).slug;
       if (typeof itemSlug !== 'string') return false;
 
-      // Check for exact match or if the item slug ends with the pageSlug
-      // But ensure it's a proper path segment match, not just a substring match
+      // Check for exact match or if the item slug matches the full route
+      // Handle full route slugs like 'products/trackers/nx-horizon'
+      const fullRouteSlug = `${pageListSlug}/${pageSlug}`;
       const hasMatchingSlug =
         itemSlug === pageSlug ||
+        itemSlug === fullRouteSlug ||
         (itemSlug.endsWith(`/${pageSlug}`) && itemSlug.split('/').pop() === pageSlug);
 
       if (hasMatchingSlug) {
-        const _typename = (item as { __typename?: string }).__typename ?? 'Unknown';
         return true;
       }
 
@@ -512,13 +513,19 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       contentItem = await getPageListBySlug(actualSlug, preview);
       contentType = 'PageList';
     } else if (itemTypename === 'Product') {
-      contentItem = await getProductBySlug(actualSlug, preview);
+      // Products use full path as slug (e.g., 'products/trackers/nx-horizon')
+      const fullProductSlug = `${pageListSlug}/${pageSlug}`;
+      contentItem = await getProductBySlug(fullProductSlug, preview);
       contentType = 'Product';
     } else if (itemTypename === 'Service') {
-      contentItem = await getServiceBySlug(actualSlug, preview);
+      // Services use full path as slug
+      const fullServiceSlug = `${pageListSlug}/${pageSlug}`;
+      contentItem = await getServiceBySlug(fullServiceSlug, preview);
       contentType = 'Service';
     } else if (itemTypename === 'Solution') {
-      contentItem = await getSolutionBySlug(actualSlug, preview);
+      // Solutions use full path as slug
+      const fullSolutionSlug = `${pageListSlug}/${pageSlug}`;
+      contentItem = await getSolutionBySlug(fullSolutionSlug, preview);
       contentType = 'Solution';
     } else if (itemTypename === 'Post') {
       contentItem = await getPostBySlug(actualSlug, preview);
@@ -530,18 +537,21 @@ export default async function NestedPage({ params, searchParams }: NestedPagePro
       if (contentItem) {
         contentType = 'Page';
       } else {
-        // Try as Product
-        contentItem = await getProductBySlug(actualSlug, preview);
+        // Try as Product (use full path)
+        const fullProductSlug = `${pageListSlug}/${pageSlug}`;
+        contentItem = await getProductBySlug(fullProductSlug, preview);
         if (contentItem) {
           contentType = 'Product';
         } else {
-          // Try as Service
-          contentItem = await getServiceBySlug(actualSlug, preview);
+          // Try as Service (use full path)
+          const fullServiceSlug = `${pageListSlug}/${pageSlug}`;
+          contentItem = await getServiceBySlug(fullServiceSlug, preview);
           if (contentItem) {
             contentType = 'Service';
           } else {
-            // Try as Solution
-            contentItem = await getSolutionBySlug(actualSlug, preview);
+            // Try as Solution (use full path)
+            const fullSolutionSlug = `${pageListSlug}/${pageSlug}`;
+            contentItem = await getSolutionBySlug(fullSolutionSlug, preview);
             if (contentItem) {
               contentType = 'Solution';
             } else {

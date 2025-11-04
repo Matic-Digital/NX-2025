@@ -8,9 +8,11 @@
 // Try to import the generated redirects file
 let generatedRedirects: Array<{ source: string; destination: string; permanent: boolean }> = [];
 try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+   
   generatedRedirects = require('./route-redirects.json');
-} catch {}
+} catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
 interface RedirectMapping {
   from: string;
@@ -40,6 +42,7 @@ class RouteRedirectsService {
     this.initialized = true;
 
     if (this.redirects.length > 0) {
+      console.warn('Route redirects loaded:', this.redirects.length, 'redirects');
     }
   }
 

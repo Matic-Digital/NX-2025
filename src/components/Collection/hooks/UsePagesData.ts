@@ -24,8 +24,9 @@ export function usePagesData({ collection, collectionData }: UsePagesDataProps) 
           setIsLoading(true);
           const pagesResponse = await getAllPagesMinimal();
           setPages(pagesResponse.items ?? []);
-        } catch {
-        } finally {
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

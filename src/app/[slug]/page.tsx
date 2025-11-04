@@ -204,10 +204,7 @@ async function checkForNestedRedirect(slug: string): Promise<string | null> {
             if (!pageList.pagesCollection?.items?.length) continue;
 
             const isInPageList = pageList.pagesCollection.items.some((item) => {
-              const match = item?.sys?.id === contentItem.sys.id;
-              if (match) {
-              }
-              return match;
+              return item?.sys?.id === contentItem.sys.id;
             });
 
             if (isInPageList) {
@@ -423,62 +420,56 @@ export default async function ContentPage({ params, searchParams }: ContentPageP
   const slug = resolvedParams?.slug ?? 'home';
   const preview = false; // Set to true if you want to enable preview mode
 
-  try {
-    // First, check if this slug should be redirected to a nested path
-    const nestedPath = await checkForNestedRedirect(slug);
-    if (nestedPath && nestedPath !== slug) {
-      redirect(`/${nestedPath}`);
-    }
-
-    // Try to fetch the content as a Page first
-    let page;
-    try {
-      page = await getPageBySlug(slug, preview);
-    } catch (pageError) {
-      throw new Error(
-        `Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`
-      );
-    }
-
-    // If it's a Page, render it as a standalone page
-    if (page) {
-      try {
-        return await renderPage(page, slug);
-      } catch (renderError) {
-        throw new Error(
-          `Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`
-        );
-      }
-    }
-
-    // If it's not a Page, try to fetch it as a PageList
-    let pageList;
-    try {
-      pageList = await getPageListBySlug(slug, preview);
-    } catch (pageListError) {
-      throw new Error(
-        `Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`
-      );
-    }
-
-    // If it's a PageList, render it
-    if (pageList) {
-      try {
-        return await renderPageList(pageList, slug);
-      } catch (renderError) {
-        throw new Error(
-          `Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`
-        );
-      }
-    }
-
-    // If neither Page nor PageList is found, return a 404
-    notFound();
-  } catch (_error) {
-    // Instead of converting all errors to 404s, let's throw the actual error
-    // to help with debugging the 500 error in production
-    throw _error;
+  // First, check if this slug should be redirected to a nested path
+  const nestedPath = await checkForNestedRedirect(slug);
+  if (nestedPath && nestedPath !== slug) {
+    redirect(`/${nestedPath}`);
   }
+
+  // Try to fetch the content as a Page first
+  let page;
+  try {
+    page = await getPageBySlug(slug, preview);
+  } catch (pageError) {
+    throw new Error(
+      `Failed to fetch page: ${pageError instanceof Error ? pageError.message : String(pageError)}`
+    );
+  }
+
+  // If it's a Page, render it as a standalone page
+  if (page) {
+    try {
+      return await renderPage(page, slug);
+    } catch (renderError) {
+      throw new Error(
+        `Failed to render page: ${renderError instanceof Error ? renderError.message : String(renderError)}`
+      );
+    }
+  }
+
+  // If it's not a Page, try to fetch it as a PageList
+  let pageList;
+  try {
+    pageList = await getPageListBySlug(slug, preview);
+  } catch (pageListError) {
+    throw new Error(
+      `Failed to fetch pageList: ${pageListError instanceof Error ? pageListError.message : String(pageListError)}`
+    );
+  }
+
+  // If it's a PageList, render it
+  if (pageList) {
+    try {
+      return await renderPageList(pageList, slug);
+    } catch (renderError) {
+      throw new Error(
+        `Failed to render pageList: ${renderError instanceof Error ? renderError.message : String(renderError)}`
+      );
+    }
+  }
+
+  // If neither Page nor PageList is found, return a 404
+  notFound();
 }
 
 // Helper function to render a Page
@@ -511,7 +502,7 @@ async function renderPage(page: Page, slug: string) {
           const ComponentType = componentMap[typeName as keyof typeof componentMap];
           // Use type assertion to access sys.id safely
           const componentWithSys = component as { sys: { id: string } };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
         }
 
@@ -528,11 +519,6 @@ async function renderPageList(pageList: PageListType, slug: string) {
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
-  // Extract page content items if available and type them properly
-  const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
-    Boolean
-  ) as PageListContent[];
-
   // Generate connected schema (includes organization connections)
   const pageListSchema = contentfulSchemaMapper.mapContentToSchema(
     pageList,
@@ -544,32 +530,8 @@ async function renderPageList(pageList: PageListType, slug: string) {
     <PageLayout header={pageHeader} footer={pageFooter}>
       <JsonLdSchema schema={pageListSchema} id="pagelist-schema" />
       <h1 className="sr-only">{pageList.title}</h1>
-      {/* Render components from pageContentCollection directly */}
-      {pageContentItems.map((component) => {
-        if (!component) return null;
-
-        // Type guard to check if component has __typename
-        if (!('__typename' in component)) {
-          return null;
-        }
-
-        // Use type assertion to access __typename safely
-        const typeName = (component as { __typename: string }).__typename;
-
-        // Check if we have a component for this type
-        if (typeName && typeName in componentMap) {
-          const ComponentType = componentMap[typeName as keyof typeof componentMap];
-          // Use type assertion to access sys.id safely
-          const componentWithSys = component as { sys: { id: string } };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
-        }
-
-        // Log a warning if we don't have a component for this type
-        return null;
-      })}
-
-      {/* Render the PageList component for pages collection only */}
+      
+      {/* Render the PageList component with both pages and pageContent */}
       <PageList
         sys={pageList.sys}
         title={pageList.title}
@@ -577,7 +539,7 @@ async function renderPageList(pageList: PageListType, slug: string) {
         pagesCollection={{
           items: pageList.pagesCollection?.items?.filter(Boolean) ?? []
         }}
-        pageContentCollection={undefined}
+        pageContentCollection={pageList.pageContentCollection}
       />
     </PageLayout>
   );

@@ -50,8 +50,14 @@ export function SectionHeading(props: SectionHeadingProps) {
     async function fetchSectionHeading() {
       try {
         setLoading(true);
-        const data = await getSectionHeadingById(sectionHeadingId ?? '', false);
-        setFetchedData(data);
+        // Use internal API route instead of direct Contentful call
+        const response = await fetch(`/api/components/SectionHeading/${sectionHeadingId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFetchedData(data.sectionHeading);
+        } else {
+          throw new Error('Failed to fetch section heading');
+        }
       } catch (_err) {
         setError(_err instanceof Error ? _err.message : 'Failed to load section heading');
       } finally {

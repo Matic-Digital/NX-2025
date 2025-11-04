@@ -100,7 +100,9 @@ export async function readSitemapUrls(): Promise<SitemapUrl[]> {
         }
       }
     }
-  } catch {}
+  } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
   return sitemapUrls;
 }
@@ -257,7 +259,9 @@ export function generateHasPartFromSitemap(sitemapUrls: SitemapUrl[]): Record<st
           sectionItems.push(item);
         }
       }
-    } catch {}
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
   });
 
   // Convert sections to hasPart references

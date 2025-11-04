@@ -112,7 +112,9 @@ export const validateField = (field: HubSpotFormField) => {
                   if (!regex.test(trimmedValue)) {
                     errors.push(field.validation.message ?? 'Please enter a valid value.');
                   }
-                } catch {}
+                } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
               }
               break;
           }

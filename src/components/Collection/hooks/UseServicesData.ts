@@ -24,8 +24,9 @@ export function useServicesData({ collection, collectionData }: UseServicesDataP
           setIsLoading(true);
           const servicesResponse = await getAllServices();
           setServices(servicesResponse.items ?? []);
-        } catch {
-        } finally {
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

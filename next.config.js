@@ -346,10 +346,10 @@ const nextConfig = {
             value: process.env.NODE_ENV === 'development' ? [
               // Development CSP - Mux optimized + required domains
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
               "media-src 'self' blob: https://*.mux.com",
               "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
@@ -358,10 +358,10 @@ const nextConfig = {
             ].join('; ') : [
               // Production CSP - Mux optimized + required domains
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
               "media-src 'self' blob: https://*.mux.com",
               "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
@@ -476,13 +476,8 @@ const nextConfig = {
     }
   },
 
-  // Environment variable configuration
-  env: {
-    NEXT_PUBLIC_CONTENTFUL_SPACE_ID: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
-    NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-    NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN:
-      process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN
-  }
+  // Environment variable configuration - Server-only variables (no NEXT_PUBLIC_ for security)
+  // Contentful credentials are now server-only and not exposed to client
 };
 
 export default withBundleAnalyzer(nextConfig);

@@ -20,26 +20,30 @@ interface ProfileProps {
   className?: string;
 }
 
-export function Profile({ sys, className }: ProfileProps) {
-  const [profileData, setProfileData] = useState<ProfileType | null>(null);
-  const [loading, setLoading] = useState(true);
+// Support both minimal sys data and full Profile data
+type ProfileAllProps = ProfileProps | (ProfileType & { className?: string });
+
+export function Profile(props: ProfileAllProps) {
+  // Check if we have full Profile data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'title' in props || 'name' in props;
+  const [profileData, setProfileData] = useState<ProfileType | null>(hasFullData ? (props as ProfileType) : null);
+  const [loading, setLoading] = useState(!hasFullData);
+  const className = 'className' in props ? props.className : undefined;
+  const sys = 'sys' in props ? props.sys : (props as ProfileType).sys;
 
   useEffect(() => {
-    async function fetchProfileData() {
-      try {
-        setLoading(true);
-        const data = await getProfileById(sys.id);
-        if (data) {
-          setProfileData(data);
-        }
-      } catch {
-      } finally {
-        setLoading(false);
-      }
+    // COMPLETELY DISABLE client-side fetching - only use server-side data
+    if (hasFullData) {
+      console.log('Profile: Using server-side enriched data');
+      setLoading(false);
+      return; // Already have server-side data
     }
 
-    void fetchProfileData();
-  }, [sys.id]);
+    // If we don't have full data, show skeleton indefinitely
+    // This prevents client-side API calls that cause GraphQL errors
+    console.warn('Profile missing server-side data - showing skeleton. ID:', sys.id);
+    setLoading(false); // Stop loading to show the minimal data skeleton
+  }, [sys.id, hasFullData]);
 
   const profile = useContentfulLiveUpdates(profileData);
   const inspectorProps = useContentfulInspectorMode({ entryId: profile?.sys?.id });
