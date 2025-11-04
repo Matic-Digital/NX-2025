@@ -39,8 +39,7 @@ export function RegionsMapPreview(props: Partial<RegionsMapType>) {
                   liveRegionsMap?.sys &&
                   liveRegionsMap?.title &&
                   liveRegionsMap?.overline &&
-                  liveRegionsMap?.regionsCollection &&
-                  liveRegionsMap?.mapImage;
+                  liveRegionsMap?.regionsCollection;
 
                 if (hasRequiredFields) {
                   return (
@@ -60,7 +59,6 @@ export function RegionsMapPreview(props: Partial<RegionsMapType>) {
                       {!liveRegionsMap?.regionsCollection && (
                         <li>• Regions Collection is required</li>
                       )}
-                      {!liveRegionsMap?.mapImage && <li>• Map Image is required</li>}
                     </ul>
                   </div>
                 );

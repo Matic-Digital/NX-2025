@@ -32,9 +32,6 @@ export const REGIONS_MAP_GRAPHQL_FIELDS = `
       ${REGION_GRAPHQL_FIELDS}
     }
   }
-  mapImage {
-    ${ASSET_FIELDS}
-  }
 `;
 
 export async function getAllRegions(): Promise<RegionResponse | null> {

@@ -1,17 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  useContentfulInspectorMode,
-  useContentfulLiveUpdates
-} from '@contentful/live-preview/react';
+import { useContentfulInspectorMode, useContentfulLiveUpdates } from '@contentful/live-preview/react';
 import Link from 'next/link';
+
+
 
 import { cn } from '@/lib/utils';
 
+
+
 import { Button } from '@/components/ui/button';
 
+
+
 import { Box, Container } from '@/components/global/matic-ds';
+
+
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import { getContentById } from '@/components/Content/ContentApi';
@@ -21,10 +26,9 @@ import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 
-import type {
-  SectionHeading as SectionHeadingType,
-  SectionHeadingVariant
-} from '../SectionHeading/SectionHeadingSchema';
+
+
+import type { SectionHeading as SectionHeadingType, SectionHeadingVariant } from '../SectionHeading/SectionHeadingSchema';
 // Types
 import type { Content, ContentOverlay } from '@/components/Content/ContentSchema';
 import type { ContentVariant } from '@/components/Content/ContentVariant';
@@ -32,6 +36,7 @@ import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSc
 import type { HubspotForm as HubspotFormType } from '@/components/Forms/HubspotForm/HubspotFormSchema';
 import type { Image } from '@/components/Image/ImageSchema';
 import type { Product } from '@/components/Product/ProductSchema';
+
 
 // ===== TYPES & INTERFACES =====
 
@@ -215,9 +220,12 @@ export function Content(props: ContentProps) {
       </div>
     );
 
-  const ContentOverlay = ({ children }: ContentOverlay) => (
+  const ContentOverlay = ({ children, className }: ContentOverlay) => (
     <div
-      className="flex h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10"
+      className={cn(
+        'flex justify-center items-center h-auto w-full max-w-[558px] p-6 backdrop-blur-[14px] sm:p-8 md:h-full md:p-10',
+        className
+      )}
       style={{
         background:
           'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
@@ -352,73 +360,75 @@ export function Content(props: ContentProps) {
     if (variant === 'ContentCenter') {
       return (
         <>
-          <div className="relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9 flex items-center justify-center">
+          <div className="relative container mx-auto mt-12 mb-20 min-h-[43.6rem] overflow-hidden px-6 sm:px-6 md:h-[502px] md:px-9 flex items-center justify-center w-full">
             <AirImage
               link={data.image?.link}
               altText={data.image?.altText ?? data.image?.title}
               className="absolute inset-0 h-full w-full object-cover px-6 md:px-9"
             />
-            <div className="relative z-10 text-center">
-              <Box direction="col" gap={5} className="p-[3.44rem]">
-                <Box direction="col" gap={1.5}>
-                  {isProductData(data) && data.tags && (
-                    <p
-                      className="text-body-sm text-text-on-invert uppercase"
-                      {...inspectorProps({ fieldId: 'categories' })}
+            <div className="relative z-10 text-center w-full h-full p-[72px]">
+              <ContentOverlay className="max-w-none">
+                <Box direction="col" gap={5} className="p-[3.44rem]">
+                  <Box direction="col" gap={1.5}>
+                    {isProductData(data) && data.tags && (
+                      <p
+                        className="text-body-sm text-text-on-invert uppercase"
+                        {...inspectorProps({ fieldId: 'categories' })}
+                      >
+                        {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                      </p>
+                    )}
+                    {!isProductData(data) && 'overline' in data && data.overline && (
+                      <p
+                        className="text-white uppercase"
+                        {...inspectorProps({ fieldId: 'heading.overline' })}
+                      >
+                        {data.overline}
+                      </p>
+                    )}
+                    <h2
+                      className="text-headline-lg text-text-on-invert leading-tight"
+                      {...inspectorProps({ fieldId: 'title' })}
                     >
-                      {Array.isArray(data.tags) ? data.tags.join(', ') : data.tags}
+                      {data.title}
+                    </h2>
+                  </Box>
+                  {data.description && (
+                    <p
+                      className="text-body-xs letter-spacing-[0.14px] text-text-on-invert mx-auto max-w-lg leading-normal"
+                      {...inspectorProps({ fieldId: 'excerpt' })}
+                    >
+                      {data.description}
                     </p>
                   )}
-                  {!isProductData(data) && 'overline' in data && data.overline && (
-                    <p
-                      className="text-white uppercase"
-                      {...inspectorProps({ fieldId: 'heading.overline' })}
+                  {/* Render button for Product or CTA collection for SectionHeading */}
+                  {isProductData(data) ? (
+                    <Button
+                      variant="white"
+                      {...inspectorProps({ fieldId: 'button' })}
+                      className="w-fit"
+                      asChild
                     >
-                      {data.overline}
-                    </p>
+                      <Link href={data.slug}>Explore {data.title}</Link>
+                    </Button>
+                  ) : (
+                    'ctaCollection' in data &&
+                    data.ctaCollection?.items?.map((cta, index) => (
+                      <ModalCtaButton
+                        key={cta.sys?.id || index}
+                        cta={cta}
+                        variant={
+                          (data.ctaCollection?.items?.length ?? 0) === 1
+                            ? 'white'
+                            : index === 0
+                              ? 'primary'
+                              : 'white'
+                        }
+                      />
+                    ))
                   )}
-                  <h2
-                    className="text-headline-lg text-text-on-invert leading-tight"
-                    {...inspectorProps({ fieldId: 'title' })}
-                  >
-                    {data.title}
-                  </h2>
                 </Box>
-                {data.description && (
-                  <p
-                    className="text-body-xs letter-spacing-[0.14px] text-text-on-invert mx-auto max-w-lg leading-normal"
-                    {...inspectorProps({ fieldId: 'excerpt' })}
-                  >
-                    {data.description}
-                  </p>
-                )}
-                {/* Render button for Product or CTA collection for SectionHeading */}
-                {isProductData(data) ? (
-                  <Button
-                    variant="white"
-                    {...inspectorProps({ fieldId: 'button' })}
-                    className="w-fit"
-                    asChild
-                  >
-                    <Link href={data.slug}>Explore {data.title}</Link>
-                  </Button>
-                ) : (
-                  'ctaCollection' in data &&
-                  data.ctaCollection?.items?.map((cta, index) => (
-                    <ModalCtaButton
-                      key={cta.sys?.id || index}
-                      cta={cta}
-                      variant={
-                        (data.ctaCollection?.items?.length ?? 0) === 1
-                          ? 'white'
-                          : index === 0
-                            ? 'primary'
-                            : 'white'
-                      }
-                    />
-                  ))
-                )}
-              </Box>
+              </ContentOverlay>
             </div>
           </div>
         </>

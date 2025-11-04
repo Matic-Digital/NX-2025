@@ -28,13 +28,5 @@ export const regionsMapFields: FieldConfig<Partial<RegionsMap>>[] = [
       data.regionsCollection?.items && data.regionsCollection.items.length > 0
         ? `${data.regionsCollection.items.length} region(s)`
         : 'Not set'
-  },
-  {
-    name: 'mapImage',
-    label: 'Map Image',
-    required: true,
-    description: 'The background map image asset.',
-    color: 'orange',
-    getValue: (data) => (data.mapImage ? `Asset (${data.mapImage.title ?? 'Untitled'})` : 'Not set')
   }
 ];

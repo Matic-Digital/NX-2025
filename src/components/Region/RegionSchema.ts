@@ -29,8 +29,7 @@ export const RegionsMapSchema = z.object({
   overline: z.string(),
   regionsCollection: z.object({
     items: z.array(RegionSchema)
-  }),
-  mapImage: AssetSchema
+  })
 });
 
 export type RegionsMap = z.infer<typeof RegionsMapSchema>;
