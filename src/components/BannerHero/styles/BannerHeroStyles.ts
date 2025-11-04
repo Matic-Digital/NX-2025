@@ -11,9 +11,15 @@ export const bannerHeroStyles = {
    */
   getSectionClasses: (isCenteredSectionHeading: boolean, isImageBetween: boolean) => {
     return cn(
+      // Layout and positioning
       'relative flex',
+      // Height management
       isImageBetween ? 'h-[789px]' : 'max-h-[100vh] h-[789px]',
+      // Content alignment
       isCenteredSectionHeading || isImageBetween ? 'items-center justify-center' : 'items-end',
+      // Overflow handling - hide overflow to prevent image bleeding
+      'overflow-hidden',
+      // Theme
       'dark'
     );
   },
@@ -30,7 +36,13 @@ export const bannerHeroStyles = {
    */
   getBackgroundImageClasses: (isImageBetween?: boolean) => {
     return cn(
-      'absolute inset-0 w-full object-cover',
+      // Position and size
+      'absolute inset-0 w-full h-full',
+      // Image behavior - cover ensures image fills container while maintaining aspect ratio
+      'object-cover object-center',
+      // Responsive sizing - ensure image covers on all devices
+      'min-w-full min-h-full',
+      // Specific height for ImageBetween variant
       isImageBetween ? 'h-[calc(789px+4rem)]' : 'h-full'
     );
   },

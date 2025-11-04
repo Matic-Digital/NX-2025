@@ -4,6 +4,7 @@
  */
 
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
+import { memoizedFetchGraphQL } from '@/lib/api-cache';
 
 import type { GraphQLResponse } from '@/types';
 
@@ -170,4 +171,22 @@ export async function fetchGraphQL<T>(
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new ContentfulError(`Failed to fetch data from Contentful: ${errorMessage}`, error as Error);
   }
+}
+
+/**
+ * Memoized version of fetchGraphQL to reduce duplicate API calls during SSR
+ * Use this for component APIs that might be called multiple times with same parameters
+ */
+export async function fetchGraphQLMemoized<T>(
+  query: string,
+  variables: Record<string, unknown> = {},
+  preview = false,
+  cacheConfig?: { next: { revalidate?: number; tags?: string[] } }
+): Promise<GraphQLResponse<T>> {
+  return memoizedFetchGraphQL(
+    (q, v, p) => fetchGraphQL<T>(q, v, p, cacheConfig),
+    query,
+    variables,
+    preview
+  );
 }

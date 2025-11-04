@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -879,9 +879,19 @@ const GenericSlider = ({
   );
 };
 
-export function Slider(props: SliderSys | Slider) {
+function SliderComponent(props: SliderSys | Slider) {
   // Check if we have full slider data (server-side rendered) or just reference (client-side)
   const hasFullData = 'itemsCollection' in props;
+  
+  // Debug logging for PageList re-render issues
+  console.log('Slider component render:', {
+    id: (props as any).sys?.id,
+    hasFullData,
+    hasItemsCollection: 'itemsCollection' in props,
+    itemsCount: (props as any).itemsCollection?.items?.length || 0,
+    propsKeys: Object.keys(props).length
+  });
+  
   const [sliderData, setSliderData] = useState<Slider | null>(hasFullData ? (props as Slider) : null);
   const [loading, setLoading] = useState(!hasFullData);
   const [api, setApi] = useState<CarouselApi>();
@@ -1147,3 +1157,16 @@ export function Slider(props: SliderSys | Slider) {
     </div>
   );
 }
+
+// Memoize the Slider component to prevent unnecessary re-renders
+const MemoizedSlider = memo(SliderComponent, (prevProps, nextProps) => {
+  // Compare sys.id to determine if re-render is needed
+  const prevId = (prevProps as any).sys?.id;
+  const nextId = (nextProps as any).sys?.id;
+  
+  // Only re-render if the ID changes
+  return prevId === nextId;
+});
+
+// Export with proper name
+export { MemoizedSlider as Slider };

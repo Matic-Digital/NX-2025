@@ -217,12 +217,33 @@ export async function getContentGridById(id: string, preview = false): Promise<C
           }
         }
         if (item.__typename === 'Slider' && item.sys?.id) {
+          console.log('ContentGrid: Found Slider to enrich:', item.sys.id, {
+            hasTitle: !!item.title,
+            hasItemsCollection: !!item.itemsCollection,
+            itemsCount: item.itemsCollection?.items?.length || 0,
+            originalKeysCount: Object.keys(item).length
+          });
           try {
             // Enrich Slider with full item data
+            console.log('ContentGrid: Calling getSliderById for', item.sys.id);
             const enrichedSlider = await getSliderById(item.sys.id, preview);
-            return enrichedSlider || item;
+            console.log('ContentGrid: Slider enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedSlider,
+              hasTitle: !!enrichedSlider?.title,
+              hasItemsCollection: !!enrichedSlider?.itemsCollection,
+              itemsCount: enrichedSlider?.itemsCollection?.items?.length || 0,
+              enrichedKeysCount: enrichedSlider ? Object.keys(enrichedSlider).length : 0
+            });
+            if (enrichedSlider) {
+              console.log('ContentGrid: Returning enriched Slider');
+              return enrichedSlider;
+            } else {
+              console.warn('ContentGrid: getSliderById returned null, returning original item');
+              return item;
+            }
           } catch (error) {
-            console.warn(`Failed to enrich Slider ${item.sys.id} in ContentGrid:`, error);
+            console.warn(`ContentGrid: Failed to enrich Slider ${item.sys.id}:`, error);
             return item; // Return original item on error
           }
         } else if (item.__typename === 'Post' && item.sys?.id) {
@@ -249,6 +270,54 @@ export async function getContentGridById(id: string, preview = false): Promise<C
           } catch (error) {
             console.error(`Failed to enrich Post ${item.sys.id} in ContentGrid:`, error);
             return item; // Return original item on error
+          }
+        } else if (item.__typename === 'CtaGrid' && item.sys?.id) {
+          console.log('ContentGrid: Found CtaGrid to enrich:', item.sys.id);
+          try {
+            const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
+            const enrichedResult = await getCtaGridById(item.sys.id, preview);
+            const enrichedItem = enrichedResult?.item;
+            console.log('ContentGrid: CtaGrid enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedItem,
+              hasTitle: !!enrichedItem?.title
+            });
+            return enrichedItem || item;
+          } catch (error) {
+            console.warn(`Failed to enrich CtaGrid ${item.sys.id} in ContentGrid:`, error);
+            return item;
+          }
+        } else if (item.__typename === 'Profile' && item.sys?.id) {
+          console.log('ContentGrid: Found Profile to enrich:', item.sys.id);
+          try {
+            const { getProfileById } = await import('@/components/Profile/ProfileApi');
+            const enrichedItem = await getProfileById(item.sys.id, preview);
+            console.log('ContentGrid: Profile enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedItem,
+              hasTitle: !!enrichedItem?.title,
+              hasName: !!enrichedItem?.name
+            });
+            return enrichedItem || item;
+          } catch (error) {
+            console.warn(`Failed to enrich Profile ${item.sys.id} in ContentGrid:`, error);
+            return item;
+          }
+        } else if (item.__typename === 'Accordion' && item.sys?.id) {
+          console.log('ContentGrid: Found Accordion to enrich:', item.sys.id);
+          try {
+            const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
+            const enrichedItem = await getAccordionById(item.sys.id, preview);
+            console.log('ContentGrid: Accordion enrichment result:', {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedItem,
+              hasTitle: !!enrichedItem?.title,
+              hasItemsCollection: !!enrichedItem?.itemsCollection
+            });
+            return enrichedItem || item;
+          } catch (error) {
+            console.warn(`Failed to enrich Accordion ${item.sys.id} in ContentGrid:`, error);
+            return item;
           }
         }
         return item; // Return non-Slider items as-is
@@ -315,12 +384,33 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
         if (contentGrid.itemsCollection?.items?.length && contentGrid.itemsCollection.items.length > 0) {
           const enrichmentPromises = contentGrid.itemsCollection.items.map(async (item: any) => {
             if (item.__typename === 'Slider' && item.sys?.id) {
+              console.log('ContentGrid Collection: Found Slider to enrich:', item.sys.id, {
+                hasTitle: !!item.title,
+                hasItemsCollection: !!item.itemsCollection,
+                itemsCount: item.itemsCollection?.items?.length || 0,
+                originalKeysCount: Object.keys(item).length
+              });
               try {
                 // Enrich Slider with full item data
+                console.log('ContentGrid Collection: Calling getSliderById for', item.sys.id);
                 const enrichedSlider = await getSliderById(item.sys.id, preview);
-                return enrichedSlider || item;
+                console.log('ContentGrid Collection: Slider enrichment result:', {
+                  id: item.sys.id,
+                  hasEnrichedData: !!enrichedSlider,
+                  hasTitle: !!enrichedSlider?.title,
+                  hasItemsCollection: !!enrichedSlider?.itemsCollection,
+                  itemsCount: enrichedSlider?.itemsCollection?.items?.length || 0,
+                  enrichedKeysCount: enrichedSlider ? Object.keys(enrichedSlider).length : 0
+                });
+                if (enrichedSlider) {
+                  console.log('ContentGrid Collection: Returning enriched Slider');
+                  return enrichedSlider;
+                } else {
+                  console.warn('ContentGrid Collection: getSliderById returned null, returning original item');
+                  return item;
+                }
               } catch (error) {
-                console.warn(`Failed to enrich Slider ${item.sys.id} in ContentGrid collection:`, error);
+                console.warn(`ContentGrid Collection: Failed to enrich Slider ${item.sys.id}:`, error);
                 return item; // Return original item on error
               }
             } else if (item.__typename === 'Post' && item.sys?.id) {
@@ -332,6 +422,34 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
               } catch (error) {
                 console.warn(`Failed to enrich Post ${item.sys.id} in ContentGrid collection:`, error);
                 return item; // Return original item on error
+              }
+            } else if (item.__typename === 'CtaGrid' && item.sys?.id) {
+              try {
+                const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
+                const enrichedResult = await getCtaGridById(item.sys.id, preview);
+                const enrichedItem = enrichedResult?.item;
+                return enrichedItem || item;
+              } catch (error) {
+                console.warn(`Failed to enrich CtaGrid ${item.sys.id} in ContentGrid collection:`, error);
+                return item;
+              }
+            } else if (item.__typename === 'Profile' && item.sys?.id) {
+              try {
+                const { getProfileById } = await import('@/components/Profile/ProfileApi');
+                const enrichedItem = await getProfileById(item.sys.id, preview);
+                return enrichedItem || item;
+              } catch (error) {
+                console.warn(`Failed to enrich Profile ${item.sys.id} in ContentGrid collection:`, error);
+                return item;
+              }
+            } else if (item.__typename === 'Accordion' && item.sys?.id) {
+              try {
+                const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
+                const enrichedItem = await getAccordionById(item.sys.id, preview);
+                return enrichedItem || item;
+              } catch (error) {
+                console.warn(`Failed to enrich Accordion ${item.sys.id} in ContentGrid collection:`, error);
+                return item;
               }
             }
             return item; // Return non-Slider items as-is
@@ -420,6 +538,19 @@ export async function getContentGridItemById(
   preview = false
 ): Promise<ContentGridItem | null> {
   try {
+    // Check if this is actually a ContentGrid (not ContentGridItem)
+    // If so, use the full enrichment function
+    const contentGrid = await getContentGridById(id, preview);
+    if (contentGrid) {
+      console.log('ContentGrid: getContentGridItemById found ContentGrid, returning enriched version');
+      // Transform ContentGrid to ContentGridItem format
+      return {
+        ...contentGrid,
+        heading: typeof contentGrid.heading === 'object' ? contentGrid.heading?.title || '' : contentGrid.heading || ''
+      } as ContentGridItem;
+    }
+    
+    // Fallback to original ContentGridItem query
     const response = await fetchGraphQL<ContentGridItem>(
       `query GetContentGridItemById($id: String!, $preview: Boolean!) {
         contentGridItem(id: $id, preview: $preview) {

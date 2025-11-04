@@ -1,5 +1,5 @@
 // draftMode import removed as it's not used in this file
-import { fetchGraphQL } from '@/lib/api';
+import { fetchGraphQLMemoized } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { getCurrentLocale } from '@/lib/contentful-locale';
 import { ContentfulError, NetworkError } from '@/lib/errors';
@@ -144,7 +144,7 @@ export const POST_GRAPHQL_FIELDS = `
  */
 export async function getAllPosts(preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetAllPosts($preview: Boolean!) {
         postCollection(preview: $preview, order: datePublished_DESC) {
           items {
@@ -225,7 +225,7 @@ export async function getPostById(
   try {
     const locale = targetLocale ?? getCurrentLocale();
 
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetPostById($id: String!, $preview: Boolean!, $locale: String) {
         post(id: $id, preview: $preview, locale: $locale) {
           ${POST_GRAPHQL_FIELDS}
@@ -276,7 +276,7 @@ export async function getPostBySlug(
     const testLocale = targetLocale ?? getCurrentLocale();
 
     // First, try to find the post in the target locale
-    let response = await fetchGraphQL(
+    let response = await fetchGraphQLMemoized(
       `query GetPostBySlug($slug: String!, $preview: Boolean!, $locale: String) {
         postCollection(where: { slug: $slug }, limit: 1, preview: $preview, locale: $locale) {
           items {
@@ -301,7 +301,7 @@ export async function getPostBySlug(
 
       for (const locale of allLocales) {
         if (locale === testLocale) continue; // Already tried this one
-        const localeResponse = await fetchGraphQL(
+        const localeResponse = await fetchGraphQLMemoized(
           `query GetPostBySlug($slug: String!, $preview: Boolean!, $locale: String) {
             postCollection(where: { slug: $slug }, limit: 1, preview: $preview, locale: $locale) {
               items {
@@ -326,7 +326,7 @@ export async function getPostBySlug(
       if (foundEntry && foundInLocale) {
         // Now get the same post in the target locale using the entry ID
 
-        const targetLocaleResponse = await fetchGraphQL(
+        const targetLocaleResponse = await fetchGraphQLMemoized(
           `query GetPostById($id: String!, $preview: Boolean!, $locale: String) {
             post(id: $id, preview: $preview, locale: $locale) {
               ${POST_GRAPHQL_FIELDS}
@@ -411,7 +411,7 @@ export async function getAllPostsMinimal(
   try {
     const _locale = targetLocale ?? getCurrentLocale();
 
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetAllPostsMinimal($preview: Boolean!, $locale: String) {
         postCollection(preview: $preview, order: datePublished_DESC, locale: $locale) {
           items {
@@ -472,7 +472,7 @@ export async function getAllPostsMinimal(
  */
 export async function getPostsByCategory(category: string, preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetPostsByCategory($category: String!, $preview: Boolean!) {
         postCollection(where: { categories_contains_some: [$category] }, preview: $preview, order: datePublished_DESC) {
           items {
@@ -538,7 +538,7 @@ export async function getRelatedPosts(
   preview = false
 ): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetRelatedPosts($categories: [String!]!, $excludeId: String!, $limit: Int!, $preview: Boolean!) {
         postCollection(
           where: { 
@@ -613,7 +613,7 @@ export async function getRelatedPosts(
  */
 export async function getRecentPostsForMegaMenu(limit = 3, preview = false): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetRecentPostsForMegaMenu($limit: Int!, $preview: Boolean!) {
         postCollection(preview: $preview, order: datePublished_DESC, limit: $limit) {
           items {
@@ -660,7 +660,7 @@ export async function getRecentPostsForMegaMenuByCategory(
   preview = false
 ): Promise<PostResponse> {
   try {
-    const response = await fetchGraphQL<Post>(
+    const response = await fetchGraphQLMemoized<Post>(
       `query GetRecentPostsForMegaMenuByCategory($category: String!, $limit: Int!, $preview: Boolean!) {
         postCollection(
           preview: $preview, 

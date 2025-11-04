@@ -159,9 +159,17 @@ export const contentRenderers = {
     );
   },
 
-  renderSlider: (item: SliderType, context: RenderContext) => (
-    <Slider key={item.sys?.id ?? context.index} {...item} />
-  ),
+  renderSlider: (item: SliderType, context: RenderContext) => {
+    console.log('ContentGrid Renderers: Rendering Slider', {
+      id: item.sys?.id,
+      hasTitle: !!item.title,
+      hasItemsCollection: !!item.itemsCollection,
+      itemsCount: item.itemsCollection?.items?.length || 0,
+      keysCount: Object.keys(item).length,
+      contextIndex: context.index
+    });
+    return <Slider key={item.sys?.id ?? context.index} {...item} />;
+  },
 
   renderSolution: (item: SolutionType, context: RenderContext) => (
     <SolutionCard key={item.sys?.id ?? context.index} {...item} index={context.index} />

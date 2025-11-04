@@ -20,29 +20,28 @@ import { AirImage } from '@/components/Image/AirImage';
 import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 
 export function CtaGrid(props: CtaGrid) {
-  const [ctaGrid, setCtaGrid] = useState<CtaGrid>(props);
+  // Check if we have full CtaGrid data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'title' in props && props.title !== undefined;
+  const [ctaGrid, setCtaGrid] = useState<CtaGrid>(hasFullData ? props : props);
   const liveCtaGrid = useContentfulLiveUpdates(ctaGrid);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!hasFullData);
   const [productUrls, setProductUrls] = useState<Record<string, string>>({});
   const inspectorProps = useContentfulInspectorMode({ entryId: liveCtaGrid?.sys?.id });
   const variant = liveCtaGrid.variant || 'ContentRight';
 
   useEffect(() => {
-    const fetchCtaGrid = async () => {
-      try {
-        const response = await getCtaGridById(props.sys.id);
-        if (response.item) {
-          setCtaGrid(response.item);
-        }
-      } catch (error) {
-        console.warn('Error in catch block:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // COMPLETELY DISABLE client-side fetching - only use server-side data
+    if (hasFullData) {
+      console.log('CtaGrid: Using server-side enriched data');
+      setLoading(false);
+      return; // Already have server-side data
+    }
 
-    void fetchCtaGrid();
-  }, [props.sys.id]);
+    // If we don't have full data, show skeleton indefinitely
+    // This prevents client-side API calls that cause GraphQL errors
+    console.warn('CtaGrid missing server-side data - showing skeleton. ID:', props.sys.id);
+    setLoading(false); // Stop loading to show the minimal data skeleton
+  }, [props.sys.id, hasFullData]);
 
   // Generate correct URLs for Products by looking up their parent PageList
   // PageList Nesting Integration: Dynamically resolve all CTA URLs to respect nesting hierarchy

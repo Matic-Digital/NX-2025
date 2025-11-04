@@ -519,11 +519,6 @@ async function renderPageList(pageList: PageListType, slug: string) {
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
 
-  // Extract page content items if available and type them properly
-  const pageContentItems = (pageList.pageContentCollection?.items ?? []).filter(
-    Boolean
-  ) as PageListContent[];
-
   // Generate connected schema (includes organization connections)
   const pageListSchema = contentfulSchemaMapper.mapContentToSchema(
     pageList,
@@ -535,32 +530,8 @@ async function renderPageList(pageList: PageListType, slug: string) {
     <PageLayout header={pageHeader} footer={pageFooter}>
       <JsonLdSchema schema={pageListSchema} id="pagelist-schema" />
       <h1 className="sr-only">{pageList.title}</h1>
-      {/* Render components from pageContentCollection directly */}
-      {pageContentItems.map((component) => {
-        if (!component) return null;
-
-        // Type guard to check if component has __typename
-        if (!('__typename' in component)) {
-          return null;
-        }
-
-        // Use type assertion to access __typename safely
-        const typeName = (component as { __typename: string }).__typename;
-
-        // Check if we have a component for this type
-        if (typeName && typeName in componentMap) {
-          const ComponentType = componentMap[typeName as keyof typeof componentMap];
-          // Use type assertion to access sys.id safely
-          const componentWithSys = component as { sys: { id: string } };
-           
-          return <ComponentType key={componentWithSys.sys.id} {...(component as any)} />;
-        }
-
-        // Log a warning if we don't have a component for this type
-        return null;
-      })}
-
-      {/* Render the PageList component for pages collection only */}
+      
+      {/* Render the PageList component with both pages and pageContent */}
       <PageList
         sys={pageList.sys}
         title={pageList.title}
@@ -568,7 +539,7 @@ async function renderPageList(pageList: PageListType, slug: string) {
         pagesCollection={{
           items: pageList.pagesCollection?.items?.filter(Boolean) ?? []
         }}
-        pageContentCollection={undefined}
+        pageContentCollection={pageList.pageContentCollection}
       />
     </PageLayout>
   );
