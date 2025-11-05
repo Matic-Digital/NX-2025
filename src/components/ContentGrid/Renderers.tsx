@@ -54,13 +54,19 @@ export const contentRenderers = {
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderContactCard: (item: ContactCardType, context: RenderContext) => (
-    <ContactCard
-      key={item.sys?.id ?? context.index}
-      {...item}
-      contactCardId={item.sys?.id ?? `contact-card-${context.index}`}
-    />
-  ),
+  renderContactCard: (item: ContactCardType, context: RenderContext) => {
+    // Check if we have enriched data (title indicates full data)
+    const hasEnrichedData = Boolean(item.title);
+    
+    return (
+      <ContactCard
+        key={item.sys?.id ?? context.index}
+        {...item}
+        // Only pass contactCardId if we don't have enriched data
+        {...(!hasEnrichedData && { contactCardId: item.sys?.id ?? `contact-card-${context.index}` })}
+      />
+    );
+  },
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
     // Show skeleton immediately if we have sys.id but not full data
