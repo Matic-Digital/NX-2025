@@ -27,7 +27,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { PostSliderCard } from '@/components/Post/PostSliderCard';
 import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
-import { getSlidersByIds } from '@/components/Slider/SliderApi';
+// Import removed - using server-enriched data only
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
@@ -880,20 +880,24 @@ const GenericSlider = ({
 };
 
 function SliderComponent(props: SliderSys | Slider) {
+  // Use server-enriched data directly (same pattern as ContentGrid)
+  const sliderData = useContentfulLiveUpdates(props);
+  
   // Check if we have full slider data (server-side rendered) or just reference (client-side)
-  const hasFullData = 'itemsCollection' in props;
+  const hasFullData = 'itemsCollection' in sliderData && sliderData.itemsCollection?.items?.length > 0;
   
-  // Debug logging for PageList re-render issues
-  console.log('Slider component render:', {
-    id: (props as any).sys?.id,
+  // Type assertion for full slider data when we know it exists
+  const slider = hasFullData ? (sliderData as Slider) : null;
+  
+  // Debug logging to see what data Slider component receives
+  console.warn('Slider Component: Data received:', {
+    id: sliderData.sys?.id,
+    hasItemsCollection: 'itemsCollection' in sliderData,
+    itemsLength: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.length || 0 : 0,
     hasFullData,
-    hasItemsCollection: 'itemsCollection' in props,
-    itemsCount: (props as any).itemsCollection?.items?.length || 0,
-    propsKeys: Object.keys(props).length
+    itemTypes: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.map(item => item.__typename) || [] : [],
+    sliderData: sliderData
   });
-  
-  const [sliderData, setSliderData] = useState<Slider | null>(hasFullData ? (props as Slider) : null);
-  const [loading, setLoading] = useState(!hasFullData);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
@@ -930,14 +934,14 @@ function SliderComponent(props: SliderSys | Slider) {
     });
 
     // Initialize post sliders at the middle set for infinite loop
-    if (sliderData && sliderData.itemsCollection.items.length > 1) {
-      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+    if (slider && slider.itemsCollection?.items?.length > 1) {
+      const isPostSlider = slider.itemsCollection.items[0]?.__typename === 'Post';
       if (isPostSlider) {
-        const originalItemCount = sliderData.itemsCollection.items.length;
+        const originalItemCount = slider.itemsCollection.items.length;
         api.scrollTo(originalItemCount, false); // Start at the middle set without animation
       }
     }
-  }, [api, sliderData]);
+  }, [api, slider]);
 
   // Global keyboard navigation
   useEffect(() => {
@@ -960,22 +964,22 @@ function SliderComponent(props: SliderSys | Slider) {
   // Autoplay functionality
   useEffect(() => {
     // Default autoplay to true if not explicitly set to false
-    const shouldAutoplay = sliderData?.autoplay !== false;
+    const shouldAutoplay = slider?.autoplay !== false;
 
     // Don't autoplay if there's only one slide
-    const hasMultipleSlides = sliderData && sliderData.itemsCollection.items.length > 1;
+    const hasMultipleSlides = slider && slider.itemsCollection?.items?.length > 1;
 
-    if (!api || !shouldAutoplay || !sliderData || !hasMultipleSlides || !isInView) {
+    if (!api || !shouldAutoplay || !slider || !hasMultipleSlides || !isInView) {
       return;
     }
 
-    const delay = sliderData.delay ?? 5000; // Default to 5 seconds if no delay specified
+    const delay = slider.delay ?? 5000; // Default to 5 seconds if no delay specified
 
     const interval = setInterval(() => {
       const currentSlide = api.selectedScrollSnap();
       const totalSlides = api.scrollSnapList().length;
-      const originalItemCount = sliderData.itemsCollection.items.length;
-      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+      const originalItemCount = slider.itemsCollection?.items?.length || 0;
+      const isPostSlider = slider.itemsCollection?.items?.[0]?.__typename === 'Post';
 
       // For post sliders with infinite loop
       if (isPostSlider && originalItemCount > 1) {
@@ -1003,33 +1007,24 @@ function SliderComponent(props: SliderSys | Slider) {
     return () => {
       clearInterval(interval);
     };
-  }, [api, sliderData, isInView]);
+  }, [api, slider, isInView]);
 
-  useEffect(() => {
-    // COMPLETELY DISABLE client-side fetching - only use server-side data
-    if (hasFullData) {
-      return; // Already have server-side data
-    }
-
-    // If we don't have full data, show skeleton indefinitely
-    // This prevents client-side API calls that cause GraphQL errors
-    console.warn('Slider missing server-side data - showing skeleton. ID:', props.sys.id);
-    setLoading(false); // Stop loading to show the minimal data skeleton
-  }, [props.sys.id, hasFullData]);
+  // No client-side fetching needed - ContentGrid pattern
+  // Server-side enrichment should provide all data
 
   // Generate correct URLs for Solutions by looking up their parent PageList
   // PageList Nesting Integration: Dynamically resolve all Solution URLs to respect nesting hierarchy
   // This ensures all Solution slider items link to proper nested URLs when parent PageLists exist
   useEffect(() => {
     const fetchNestedUrls = async () => {
-      if (!sliderData?.itemsCollection?.items) return;
+      if (!slider?.itemsCollection?.items) return;
 
       // Filter only Solution items and extract their CTA links
-      const allSolutions = sliderData.itemsCollection.items
-        .filter((item) => item.__typename === 'Solution')
-        .map((item) => item as Solution);
+      const allSolutions = slider.itemsCollection.items
+        .filter((item: any) => item.__typename === 'Solution')
+        .map((item: any) => item as Solution);
 
-      const solutionItems = allSolutions.filter((solution) => solution.cta);
+      const solutionItems = allSolutions.filter((solution: Solution) => solution.cta);
 
       const urlMap = await resolveNestedUrls(solutionItems, (solution) => ({
         sys: solution.cta!.sys,
@@ -1043,9 +1038,10 @@ function SliderComponent(props: SliderSys | Slider) {
     };
 
     void fetchNestedUrls();
-  }, [sliderData?.itemsCollection?.items]);
+  }, [slider?.itemsCollection?.items]);
 
-  if (loading) {
+  if (!hasFullData) {
+    console.warn('Slider missing server-side data - showing skeleton. ID:', sliderData.sys?.id);
     return (
       <div className="w-full">
         <SliderSkeleton />
@@ -1053,15 +1049,11 @@ function SliderComponent(props: SliderSys | Slider) {
     );
   }
 
-  if (!sliderData) {
-    return null;
-  }
-
   // Server-side lazy loading should provide enriched items
   // If items are still minimal, the server enrichment failed - show skeleton
-  if (sliderData.itemsCollection?.items?.length > 0 && 
-      sliderData.itemsCollection.items[0] && 
-      Object.keys(sliderData.itemsCollection.items[0]).length <= 3) {
+  if (slider!.itemsCollection?.items?.length > 0 && 
+      slider!.itemsCollection.items[0] && 
+      Object.keys(slider!.itemsCollection.items[0]).length <= 3) {
     // Items only have sys.id and __typename (server enrichment failed)
     return (
       <div className="w-full">
@@ -1070,7 +1062,7 @@ function SliderComponent(props: SliderSys | Slider) {
     );
   }
 
-  if (!sliderData?.itemsCollection?.items?.length) {
+  if (!slider!.itemsCollection?.items?.length) {
     return (
       <div className="flex h-[669px] items-center justify-center">
         <div className="text-lg">No slider items found</div>
@@ -1079,7 +1071,7 @@ function SliderComponent(props: SliderSys | Slider) {
   }
 
   // Determine slider configuration based on the first item's type
-  const firstItem = sliderData.itemsCollection.items[0];
+  const firstItem = slider!.itemsCollection.items[0];
   if (!firstItem) {
     return (
       <div className="flex h-[669px] items-center justify-center">
@@ -1099,13 +1091,13 @@ function SliderComponent(props: SliderSys | Slider) {
   const isTestimonialSlider = firstItem.__typename === 'TestimonialItem';
 
   // Check if there's only one item to hide navigation
-  const hasOnlyOneItem = sliderData.itemsCollection.items.length === 1;
+  const hasOnlyOneItem = slider!.itemsCollection.items.length === 1;
 
   // Configure slider based on content type
   return (
     <div ref={sliderRef} className={isTimelineSliderItemSlider ? 'mb-8' : ''}>
       <GenericSlider
-        sliderData={sliderData}
+        sliderData={slider!}
         current={current}
         api={api}
         solutionUrls={solutionUrls}

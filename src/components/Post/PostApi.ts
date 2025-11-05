@@ -177,14 +177,7 @@ export async function getAllPosts(preview = false): Promise<PostResponse> {
     const enrichmentPromises = posts.map(async (post) => {
       if (post.sys?.id) {
         try {
-          console.log('getAllPosts: Enriching Post', post.sys.id);
           const enrichedPost = await getPostById(post.sys.id, preview);
-          console.log('getAllPosts: Post enrichment result:', {
-            id: post.sys.id,
-            hasEnrichedData: !!enrichedPost,
-            hasTitle: !!enrichedPost?.title,
-            hasSlug: !!enrichedPost?.slug
-          });
           return enrichedPost || post;
         } catch (error) {
           console.warn(`Failed to enrich Post ${post.sys.id} in getAllPosts:`, error);

@@ -148,7 +148,7 @@ export function Page(props: PageProps) {
                     return <Slider key={key} {...(content as any)} />;
 
                   case 'RegionsMap':
-                    return <RegionsMap key={key} {...(content as any)} />;
+                    return <RegionsMap key={key} />;
 
                   case 'RegionStats':
                     return <RegionStats key={key} {...(content as any)} />;

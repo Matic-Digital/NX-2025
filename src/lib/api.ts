@@ -5,6 +5,7 @@
 
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 import { memoizedFetchGraphQL } from '@/lib/api-cache';
+import { enhancedMemoizedFetchGraphQL } from '@/lib/enhanced-api-cache';
 
 import type { GraphQLResponse } from '@/types';
 
@@ -74,13 +75,7 @@ export async function fetchGraphQL<T>(
     const requestBody = { query, variables: sanitizedVariables };
     const url = `https://graphql.contentful.com/content/v1/spaces/${spaceId}/environments/${environment}`;
     
-    console.log('Contentful API Request:', {
-      url,
-      hasAccessToken: !!accessToken,
-      environment,
-      queryLength: query.length,
-      variables: sanitizedVariables
-    });
+    // Debug logging removed
 
     const response = await fetch(url, {
       method: 'POST',
@@ -183,7 +178,7 @@ export async function fetchGraphQLMemoized<T>(
   preview = false,
   cacheConfig?: { next: { revalidate?: number; tags?: string[] } }
 ): Promise<GraphQLResponse<T>> {
-  return memoizedFetchGraphQL(
+  return enhancedMemoizedFetchGraphQL(
     (q, v, p) => fetchGraphQL<T>(q, v, p, cacheConfig),
     query,
     variables,

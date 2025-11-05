@@ -39,20 +39,7 @@ function AccordionInternal(props: AccordionAllProps) {
     ? (props as AccordionType).itemsCollection?.items as AccordionItemType[] | undefined
     : undefined;
   
-  // Debug: Log Accordion data to verify server-side enrichment
-  console.log('Accordion: Component data', {
-    id: sys.id,
-    hasFullData,
-    hasServerItems: !!serverItems,
-    serverItemsCount: serverItems?.length || 0,
-    serverItemsSample: serverItems?.[0] ? {
-      id: serverItems[0].sys?.id,
-      hasTitle: !!serverItems[0].title,
-      hasDescription: !!serverItems[0].description,
-      hasVariant: !!serverItems[0].variant,
-      keysCount: Object.keys(serverItems[0]).length
-    } : null
-  });
+  // Debug: Log Accordion data to verify server-side enrichment removed
   
   // Data layer - pass server-side items if available
   const { accordionItems, loading, error } = useAccordionData(sys.id, serverItems);

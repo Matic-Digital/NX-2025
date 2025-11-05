@@ -10,7 +10,7 @@ import type { Slider } from '@/components/Slider/SliderSchema';
 export const SLIDER_GRAPHQL_FIELDS_SIMPLE = `
   ${SYS_FIELDS}
   title
-  itemsCollection {
+  itemsCollection(limit: 50) {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }
@@ -23,7 +23,7 @@ export const SLIDER_MINIMAL_FIELDS = `
   title
   autoplay
   delay
-  itemsCollection {
+  itemsCollection(limit: 50) {
     items {
       __typename
       ... on Entry {
@@ -44,7 +44,7 @@ export const SLIDER_GRAPHQL_FIELDS = `
   title
   autoplay
   delay
-  itemsCollection {
+  itemsCollection(limit: 50) {
     items {
       ${SLIDERITEM_GRAPHQL_FIELDS_SIMPLE}
     }
@@ -105,18 +105,21 @@ export async function getSlidersByIds(sliderIds: string[], preview = false): Pro
 }
 
 /**
- * Fetches a single Slider by ID from Contentful
- * @param id - The ID of the Slider to fetch
- * @param preview - Whether to fetch draft content
- * @returns Promise resolving to Slider or null if not found
- */
-/**
  * Fetches a Slider with server-side lazy loading to avoid GraphQL complexity
  * Step 1: Fetch minimal structure with only sys.id for items
  * Step 2: Enrich items in parallel with individual API calls
  * Step 3: Return complete enriched Slider
  */
 export async function getSliderById(id: string, preview = false): Promise<Slider | null> {
+  
+  // Special logging for the problematic sliders
+  if (id === '3lmVR58xdwWUd25156sE30' || id === '2bcswg6bRsdQ4dCEqpJeJe') {
+    console.warn('Slider API: *** FOUND PROBLEMATIC SLIDER ***', {
+      id,
+      isTeamSlider: id === '3lmVR58xdwWUd25156sE30',
+      isTimelineSlider: id === '2bcswg6bRsdQ4dCEqpJeJe'
+    });
+  }
   try {
     // Step 1: Fetch minimal slider structure
     const response = await fetchGraphQL(
@@ -146,152 +149,84 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
 
     // Step 2: Enrich slider items in parallel (server-side lazy loading)
     if (slider.itemsCollection?.items?.length > 0) {
-      console.log(
-        'Slider API: Starting enrichment for',
-        slider.itemsCollection.items.length,
-        'slider items'
-      );
+      // Starting enrichment for slider items
+      
       const enrichmentPromises = slider.itemsCollection.items.map(async (item: any) => {
-        console.log('Slider API: Processing slider item:', item.__typename, item.sys?.id);
+        // Processing slider item
         if (!item.sys?.id || !item.__typename) {
-          console.log('Slider API: Skipping item without proper structure:', item);
+          console.warn('Slider API: Skipping item without proper structure:', item);
           return item; // Skip items without proper structure
         }
 
         try {
           // Enrich each item type individually to avoid GraphQL complexity
+          // Only enrich types defined in SliderSchema union
           switch (item.__typename) {
             case 'Post': {
-              // Import and use Post API
+              // Import and use Post API (PostSliderItemSchema)
               const { getPostById } = await import('@/components/Post/PostApi');
               const enrichedPost = await getPostById(item.sys.id, preview);
               return enrichedPost || item;
             }
 
             case 'Image': {
-              // Import and use Image API
+              // Import and use Image API (ImageSchema)
               const { getImageById } = await import('@/components/Image/ImageApi');
-              console.log('Slider API: Enriching Image', item.sys.id);
               const enrichedImage = await getImageById(item.sys.id, preview);
-              console.log('Slider API: Image enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedImage,
-                hasTitle: !!enrichedImage?.title,
-                hasLink: !!enrichedImage?.link,
-                keysCount: enrichedImage ? Object.keys(enrichedImage).length : 0
-              });
               return enrichedImage || item;
             }
 
             case 'Solution': {
-              // Import and use Solution API
+              // Import and use Solution API (SolutionSchema)
               const { getSolutionById } = await import('@/components/Solution/SolutionApi');
               const enrichedSolution = await getSolutionById(item.sys.id, preview);
               return enrichedSolution || item;
             }
 
             case 'TeamMember': {
-              // Import and use TeamMember API
+              // Import and use TeamMember API (TeamMemberSchema)
               const { getTeamMemberById } = await import('@/components/TeamMember/TeamMemberApi');
               const enrichedTeamMember = await getTeamMemberById(item.sys.id, preview);
               return enrichedTeamMember || item;
             }
 
             case 'SliderItem': {
-              // Import and use SliderItem API
+              // Import and use SliderItem API (SliderItemSchema)
               const { getSliderItemById } = await import('@/components/Slider/SliderItemApi');
-              console.log('Slider API: Enriching SliderItem', item.sys.id);
               const enrichedSliderItem = await getSliderItemById(item.sys.id, preview);
-              console.log('Slider API: SliderItem enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedSliderItem,
-                keysCount: enrichedSliderItem ? Object.keys(enrichedSliderItem).length : 0
-              });
               return enrichedSliderItem || item;
             }
 
-            case 'CtaGrid': {
-              // Import and use CtaGrid API
-              const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
-              console.log('Slider API: Enriching CtaGrid', item.sys.id);
-              const enrichedResult = await getCtaGridById(item.sys.id, preview);
-              const enrichedItem = enrichedResult?.item;
-              console.log('Slider API: CtaGrid enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedItem,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
-              });
-              return enrichedItem || item;
-            }
-
-            case 'Profile': {
-              // Import and use Profile API
-              const { getProfileById } = await import('@/components/Profile/ProfileApi');
-              console.log('Slider API: Enriching Profile', item.sys.id);
-              const enrichedItem = await getProfileById(item.sys.id, preview);
-              console.log('Slider API: Profile enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedItem,
-                hasName: !!enrichedItem?.name,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
-              });
-              return enrichedItem || item;
-            }
-
-            case 'Accordion': {
-              // Import and use Accordion API
-              const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
-              console.log('Slider API: Enriching Accordion', item.sys.id);
-              const enrichedItem = await getAccordionById(item.sys.id, preview);
-              console.log('Slider API: Accordion enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedItem,
-                hasItemsCollection: !!enrichedItem?.itemsCollection,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
-              });
-              return enrichedItem || item;
-            }
-
-            case 'ContentGridItem': {
-              // Import and use ContentGridItem API
-              const { getContentGridItemById } = await import(
-                '@/components/ContentGrid/ContentGridApi'
-              );
-              console.log('Slider API: Enriching ContentGridItem', item.sys.id);
-              const enrichedItem = await getContentGridItemById(item.sys.id, preview);
-              console.log('Slider API: ContentGridItem enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedItem,
-                hasTitle: !!enrichedItem?.title,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
-              });
-              return enrichedItem || item;
-            }
-
             case 'ContentSliderItem': {
-              // Import and use ContentSliderItem API
+              // Import and use ContentSliderItem API (ContentSliderItemSchema)
               const { getContentSliderItemById } = await import(
                 '@/components/Slider/components/ContentSliderItemApi'
               );
-              console.log('Slider API: Enriching ContentSliderItem', item.sys.id);
               const enrichedItem = await getContentSliderItemById(item.sys.id, preview);
-              console.log('Slider API: ContentSliderItem enriched:', {
-                id: item.sys.id,
-                hasEnrichedData: !!enrichedItem,
-                hasTitle: !!enrichedItem?.title,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
-              });
+              return enrichedItem || item;
+            }
+
+            case 'TestimonialItem': {
+              // Import and use TestimonialItem API (TestimonialItemSchema)
+              const { getTestimonialItemById } = await import('@/components/Testimonials/TestimonialsApi');
+              const enrichedItem = await getTestimonialItemById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+
+            case 'TimelineSliderItem': {
+              // Import and use TimelineSliderItem API (TimelineSliderItemSchema)
+              const { getTimelineSliderItemById } = await import('@/components/TimelineSlider/TimelineSliderItemApi');
+              const enrichedItem = await getTimelineSliderItemById(item.sys.id, preview);
               return enrichedItem || item;
             }
 
             default:
               // For other types, return minimal structure
-              console.log('Slider API: Unknown item type, returning as-is:', item.__typename);
               return item;
           }
         } catch (error) {
-          console.warn(`Failed to enrich ${item.__typename} item ${item.sys.id}:`, error);
-          return item; // Return original item on error
+          console.warn(`Failed to enrich slider item ${item.sys.id}:`, error);
+          return item; // Return original item if enrichment fails
         }
       });
 

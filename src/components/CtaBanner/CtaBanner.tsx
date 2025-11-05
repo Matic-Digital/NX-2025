@@ -7,7 +7,7 @@ import {
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
 import { staticRoutingService } from '@/lib/static-routing';
-import { cn } from '@/lib/utils';
+import { cn as _cn } from '@/lib/utils';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -29,7 +29,7 @@ export function CtaBanner(props: CtaBanner) {
 
   const [primaryCtaUrl, setPrimaryCtaUrl] = useState<string>('#');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, _setError] = useState<string | null>(null);
 
   // Fetch nested URL for primary CTA if it has an internal link
   // PageList Nesting Integration: Dynamically resolve CTA URLs to respect nesting hierarchy

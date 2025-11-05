@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
-import { ASSET_FIELDS } from '@/lib/contentful-api/graphql-fields';
+import { ASSET_FIELDS as _ASSET_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
 import type { Region, RegionResponse, RegionsMap } from '@/components/Region/RegionSchema';

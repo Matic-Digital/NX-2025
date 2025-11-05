@@ -54,13 +54,19 @@ export const contentRenderers = {
     <Accordion key={item.sys?.id ?? context.index} {...item} />
   ),
 
-  renderContactCard: (item: ContactCardType, context: RenderContext) => (
-    <ContactCard
-      key={item.sys?.id ?? context.index}
-      {...item}
-      contactCardId={item.sys?.id ?? `contact-card-${context.index}`}
-    />
-  ),
+  renderContactCard: (item: ContactCardType, context: RenderContext) => {
+    // Check if we have enriched data (title indicates full data)
+    const hasEnrichedData = Boolean(item.title);
+    
+    return (
+      <ContactCard
+        key={item.sys?.id ?? context.index}
+        {...item}
+        // Only pass contactCardId if we don't have enriched data
+        {...(!hasEnrichedData && { contactCardId: item.sys?.id ?? `contact-card-${context.index}` })}
+      />
+    );
+  },
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
     // Show skeleton immediately if we have sys.id but not full data
@@ -160,13 +166,12 @@ export const contentRenderers = {
   },
 
   renderSlider: (item: SliderType, context: RenderContext) => {
-    console.log('ContentGrid Renderers: Rendering Slider', {
+    console.warn('ContentGrid: Rendering Slider component:', {
       id: item.sys?.id,
-      hasTitle: !!item.title,
-      hasItemsCollection: !!item.itemsCollection,
-      itemsCount: item.itemsCollection?.items?.length || 0,
-      keysCount: Object.keys(item).length,
-      contextIndex: context.index
+      hasItemsCollection: 'itemsCollection' in item,
+      itemsLength: item.itemsCollection?.items?.length || 0,
+      itemTypes: item.itemsCollection?.items?.map(i => i.__typename) || [],
+      sliderData: item
     });
     return <Slider key={item.sys?.id ?? context.index} {...item} />;
   },
@@ -175,9 +180,9 @@ export const contentRenderers = {
     <SolutionCard key={item.sys?.id ?? context.index} {...item} index={context.index} />
   ),
 
-  renderTestimonials: (item: TestimonialsType, context: RenderContext) => (
-    <Testimonials key={item.sys?.id ?? context.index} sys={item.sys} />
-  ),
+  renderTestimonials: (item: TestimonialsType, context: RenderContext) => {
+    return <Testimonials key={item.sys?.id ?? context.index} {...item} />;
+  },
 
   renderVideo: (item: VideoType, context: RenderContext) => (
     <MuxVideoPlayer key={item.sys?.id ?? context.index} {...item} />

@@ -7,7 +7,6 @@ import {
 } from '@contentful/live-preview/react';
 import Link from 'next/link';
 
-import { getCurrentLocale } from '@/lib/contentful-locale';
 
 import { Article, Box, Container, Text } from '@/components/global/matic-ds';
 
@@ -18,7 +17,6 @@ import { AirImage } from '@/components/Image/AirImage';
 import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapper';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
-import { getPostById } from '@/components/Post/PostApi';
 import { PostCard } from '@/components/Post/PostCard';
 
 import type { Post } from '@/components/Post/PostSchema';
@@ -30,93 +28,43 @@ interface PostDetailProps {
 export function PostDetail({ post: initialPost }: PostDetailProps) {
   const post = useContentfulLiveUpdates(initialPost);
   const inspectorProps = useContentfulInspectorMode({ entryId: post.sys.id });
-  const [fullPostData, setFullPostData] = useState<Post | null>(null);
+  
+  // Check if we have server-enriched data (should always be true for PostDetail)
+  const hasServerData = post.content && post.pageLayout;
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([]);
 
-  // Fetch full post data on component mount (like ContentGridItem does)
-  // Only fetch if we don't have complete post data already
+  // Fetch related posts only - PostDetail should always receive complete server data
   useEffect(() => {
-    const fetchFullPostData = async () => {
-      if (!post.sys?.id) {
+    const fetchRelatedPosts = async () => {
+      if (!post.sys?.id || !hasServerData) {
         return;
       }
 
-      // Skip fetching if we already have the main content fields AND optional fields
-      // This prevents overriding live preview data, but ensures we have complete data
-      const hasCompleteData = post.content && post.pageLayout && 
-        // Check if we have the optional fields that might be missing in preview
-        (post.postCtaForm !== undefined || post.ctaBanner !== undefined || post.gatedContentForm !== undefined || post.testimonial !== undefined);
       
-      if (hasCompleteData) {
-        // We have enough data, just fetch related posts if needed
-        if (post.categories && post.categories.length > 0) {
-          try {
-            // Use API route to get server-side enriched related posts
-            const params = new URLSearchParams({
-              categories: post.categories.join(','),
-              excludeId: post.sys.id,
-              limit: '3'
-            });
-            const response = await fetch(`/api/components/Post/related?${params}`);
-            if (response.ok) {
-              const data = await response.json();
-              setRelatedPosts(data.relatedPosts?.items ?? []);
-            } else {
-              throw new Error('Failed to fetch related posts from API');
-            }
-          } catch (error) {
-        console.warn('Error in catch block:', error);
-      }
-        }
-        return;
-      }
-
       try {
-        // Get current locale from URL or localStorage
-        const currentLocale = getCurrentLocale();
-
-        const fullData = await getPostById(post.sys.id, true, currentLocale);
-        if (fullData) {
-          setFullPostData(fullData);
-
-          // Fetch related posts if we have categories
-          if (fullData.categories && fullData.categories.length > 0) {
-            try {
-              // Use API route to get server-side enriched related posts
-              const params = new URLSearchParams({
-                categories: fullData.categories.join(','),
-                excludeId: post.sys.id,
-                limit: '3'
-              });
-              const response = await fetch(`/api/components/Post/related?${params}`);
-              if (response.ok) {
-                const data = await response.json();
-                setRelatedPosts(data.relatedPosts?.items ?? []);
-              } else {
-                throw new Error('Failed to fetch related posts from API');
-              }
-            } catch (error) {
-        console.warn('Error in catch block:', error);
-      }
-          }
+        // Use API route to get server-side enriched related posts
+        const params = new URLSearchParams({
+          categories: post.categories.join(','),
+          excludeId: post.sys.id,
+          limit: '3'
+        });
+        const response = await fetch(`/api/components/Post/related?${params}`);
+        if (response.ok) {
+          const data = await response.json();
+          setRelatedPosts(data.relatedPosts?.items ?? []);
+        } else {
+          throw new Error('Failed to fetch related posts from API');
         }
       } catch (error) {
-        console.warn('Error in catch block:', error);
+        console.warn('PostDetail: Error fetching related posts:', error);
       }
     };
 
-    void fetchFullPostData();
-  }, [post.sys.id, post.content, post.pageLayout, post.categories, post.ctaBanner, post.gatedContentForm, post.postCtaForm, post.testimonial]); // Re-run when essential data changes
+    void fetchRelatedPosts();
+  }, [post.sys.id, hasServerData, post.categories]);
 
-  // In live preview mode, prioritize the live-updated post data
-  // Only use fullPostData for missing fields that aren't in the live data
-  const displayPost = {
-    ...fullPostData,
-    ...post,
-    // Ensure we have the full data structure but live updates override
-    postCtaForm: post.postCtaForm ?? fullPostData?.postCtaForm,
-    ctaBanner: post.ctaBanner ?? fullPostData?.ctaBanner
-  };
+  // Use the server-enriched post data directly (no client-side fetching needed)
+  const displayPost = post;
 
   const _formatDate = (dateString?: string) => {
     if (!dateString) return '';

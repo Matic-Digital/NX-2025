@@ -22,7 +22,7 @@ import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapp
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
+// Import removed - using API route instead
 import { PostCard } from '@/components/Post/PostCard';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { Slider } from '@/components/Slider/Slider';
@@ -47,12 +47,17 @@ function NewsPosts() {
     const fetchNewsPosts = async () => {
       try {
         setLoading(true);
-        // Get all posts with minimal fields to avoid complexity issues
-        const allPosts = await getAllPostsMinimal();
+        // Use API route to get server-side enriched Posts
+        const response = await fetch('/api/components/Post/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts from API');
+        }
+        const data = await response.json();
+        const allPosts = data.posts;
 
         // Filter for "Press Release" or "In The News" categories (using correct enum values)
-        const newsPosts = allPosts.items
-          .filter((post) =>
+        const newsPosts = (allPosts?.items ?? [])
+          .filter((post: Post) =>
             post.categories?.some(
               (category) => category === 'Press Release' || category === 'In The News'
             )
@@ -99,18 +104,30 @@ interface EventPostCategoriesProps {
   maxPostsPerCategory: number;
   title?: string;
   description?: string;
+  preloadedPostsByCategory?: Record<string, Post[]>;
 }
 
 function EventPostCategories({
   categories,
   maxPostsPerCategory,
   title,
-  description
+  description,
+  preloadedPostsByCategory
 }: EventPostCategoriesProps) {
-  const [postsByCategory, setPostsByCategory] = useState<Record<string, Post[]>>({});
-  const [loading, setLoading] = useState(true);
+  const [postsByCategory, setPostsByCategory] = useState<Record<string, Post[]>>(preloadedPostsByCategory || {});
+  const [loading, setLoading] = useState(!preloadedPostsByCategory);
 
   useEffect(() => {
+    // If we have preloaded data, use it and skip client-side fetching
+    if (preloadedPostsByCategory) {
+      console.log('EventPostCategories: Using preloaded server-side data');
+      setPostsByCategory(preloadedPostsByCategory);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to client-side fetching only if no preloaded data
+    console.warn('EventPostCategories: No preloaded data, falling back to client-side fetch');
     const fetchPostsByCategories = async () => {
       try {
         setLoading(true);
@@ -128,7 +145,7 @@ function EventPostCategories({
     } else {
       setLoading(false);
     }
-  }, [categories, maxPostsPerCategory]);
+  }, [categories, maxPostsPerCategory, preloadedPostsByCategory]);
 
   if (loading) {
     return (
@@ -549,6 +566,7 @@ export function EventDetail({
                   maxPostsPerCategory={event.maxPostsPerCategory ?? 3}
                   title="Downloads"
                   description="Please browse and download datasheets, case studies, and whitepapers of interest."
+                  preloadedPostsByCategory={(event as any).preloadedPostsByCategory}
                 />
               </div>
             )}
@@ -920,7 +938,7 @@ export function EventDetail({
                           key={contactCard.sys.id}
                           className="[&_.bg-subtle]:!bg-white [&_.bg-subtle]:!text-black [&_button]:!bg-white [&_button]:!text-black [&_button]:!border-gray-300 [&_button:hover]:!bg-gray-50"
                         >
-                          <ContactCard contactCardId={contactCard.sys.id} />
+                          <ContactCard {...contactCard} />
                         </div>
                       ))}
                     </div>

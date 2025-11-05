@@ -17,8 +17,8 @@ import { Box } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import {
-  getContentGridItemById,
-  getContentGridItemLink
+  getContentGridItemById as _getContentGridItemById,
+  getContentGridItemLink as _getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
 import { AirImage } from '@/components/Image/AirImage';
 import { ServiceCard } from '@/components/Service/ServiceCard';

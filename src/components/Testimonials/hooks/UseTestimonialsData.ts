@@ -9,13 +9,21 @@ import type { Testimonials as TestimonialsType } from '@/components/Testimonials
 /**
  * Custom hook for fetching testimonials data
  * Handles lazy loading of testimonials by ID
+ * Supports server-side enriched data to avoid client-side fetching
  */
-export const useTestimonialsData = (sysId: string) => {
-  const [testimonials, setTestimonials] = useState<TestimonialsType | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useTestimonialsData = (sysId: string, serverData?: TestimonialsType) => {
+  const [testimonials, setTestimonials] = useState<TestimonialsType | null>(serverData || null);
+  const [loading, setLoading] = useState(!serverData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // If we have server-side data, don't fetch client-side
+    if (serverData) {
+      setTestimonials(serverData);
+      setLoading(false);
+      return;
+    }
+
     async function fetchTestimonialsData() {
       try {
         setLoading(true);
@@ -36,7 +44,7 @@ export const useTestimonialsData = (sysId: string) => {
     }
 
     void fetchTestimonialsData();
-  }, [sysId]);
+  }, [sysId, serverData]);
 
   return { testimonials, loading, error };
 };

@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { getPostById } from '@/components/Post/PostApi';
+import { getPostById as _getPostById } from '@/components/Post/PostApi';
 import { getPostLinkProps, shouldOpenExternally } from '@/components/Post/PostLinkUtils';
 
 import type { Post, PostSliderItem } from '@/components/Post/PostSchema';
@@ -49,7 +49,7 @@ interface PostSliderCardProps {
 export function PostSliderCard({ item, index, current, context = 'default' }: PostSliderCardProps) {
   // Check if we have full post data (server-side enriched) or just reference (client-side)
   const hasFullData = 'title' in item && 'slug' in item;
-  const [postData, setPostData] = useState<Post | null>(hasFullData ? (item as Post) : null);
+  const [postData, _setPostData] = useState<Post | null>(hasFullData ? (item as Post) : null);
   const [loading, setLoading] = useState(!hasFullData);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
     const itemId = (item as any).sys?.id || 'unknown';
     console.warn('PostSliderCard missing server-side data - showing skeleton. ID:', itemId);
     setLoading(false); // Stop loading to show the skeleton
-  }, [hasFullData, (item as any).sys?.id]);
+  }, [hasFullData, item]);
 
   const post = useContentfulLiveUpdates(postData);
   const inspectorProps = useContentfulInspectorMode({ entryId: post?.sys?.id });

@@ -108,16 +108,22 @@ export async function getAccordionById(
 
     // Step 2: Enrich accordion items with full data (server-side lazy loading)
     if (accordion.itemsCollection?.items?.length > 0) {
-      console.log('Accordion API: Enriching', accordion.itemsCollection.items.length, 'accordion items');
+      console.log(`[AccordionAPI] Starting enrichment for ${accordion.itemsCollection.items.length} items`);
+    console.log(`[AccordionAPI] Initial items structure:`, accordion.itemsCollection.items.map((item: any) => ({
+      id: item.sys?.id,
+      hasTitle: !!item.title,
+      keys: Object.keys(item)
+    })));
+      
       const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
         if (item.sys?.id) {
           try {
-            console.log('Accordion API: Enriching AccordionItem', item.sys.id);
+            console.log(`[AccordionAPI] Enriching item ${item.sys.id}`);
             const enrichedItem = await getAccordionItemById(item.sys.id, preview);
-            console.log('Accordion API: AccordionItem enriched:', {
-              id: item.sys.id,
-              hasEnrichedData: !!enrichedItem,
-              hasTitle: !!enrichedItem?.title
+            console.log(`[AccordionAPI] Enriched item ${item.sys.id}:`, {
+              hasTitle: !!enrichedItem?.title,
+              hasDescription: !!enrichedItem?.description,
+              hasImage: !!enrichedItem?.image
             });
             return enrichedItem || item;
           } catch (error) {
@@ -130,6 +136,8 @@ export async function getAccordionById(
 
       const enrichedItems = await Promise.all(enrichmentPromises);
       accordion.itemsCollection.items = enrichedItems.filter(item => item !== null);
+      
+      console.log(`[AccordionAPI] Enrichment complete. Final item count: ${accordion.itemsCollection.items.length}`);
     }
 
     return accordion;
@@ -188,7 +196,6 @@ export async function getAccordionsByIds(
     const enrichedAccordions = await Promise.all(
       accordions.map(async (accordion: any) => {
         if (accordion.itemsCollection?.items?.length > 0) {
-          console.log('Accordion Collection API: Enriching', accordion.itemsCollection.items.length, 'accordion items for', accordion.sys.id);
           const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
             if (item.sys?.id) {
               try {

@@ -14,7 +14,7 @@ import { cn, formatDate } from '@/lib/utils';
 import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { getPostById } from '@/components/Post/PostApi';
+import { getPostById as _getPostById } from '@/components/Post/PostApi';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { getPostLinkProps, shouldOpenExternally } from '@/components/Post/PostLinkUtils';
 

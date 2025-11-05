@@ -67,10 +67,10 @@ export async function getAllCollections(preview = false): Promise<CollectionResp
 }
 
 /**
- * Fetches a single Collection by ID from Contentful
+ * Fetches a single Collection by ID from Contentful with server-side Post enrichment
  * @param id - The ID of the Collection to fetch
  * @param preview - Whether to fetch draft content
- * @returns Promise resolving to Collection or null if not found
+ * @returns Promise resolving to Collection with enriched Posts or null if not found
  */
 export async function getCollectionById(id: string, preview = false): Promise<Collection | null> {
   try {
@@ -97,7 +97,22 @@ export async function getCollectionById(id: string, preview = false): Promise<Co
       return null;
     }
 
-    return data.collection;
+    const collection = data.collection;
+
+    // Step 2: Server-side enrichment for Post collections (same pattern as ContentGrid/Page)
+    if (collection.contentType?.includes('Post')) {
+      try {
+        const { getAllPosts } = await import('@/components/Post/PostApi');
+        const enrichedPosts = await getAllPosts(preview);
+        
+        // Add enriched posts to collection for server-side rendering
+        (collection as any).enrichedPosts = enrichedPosts?.items || [];
+      } catch (error) {
+        console.warn(`Collection API: Failed to enrich Posts for Collection ${id}:`, error);
+      }
+    }
+
+    return collection;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;

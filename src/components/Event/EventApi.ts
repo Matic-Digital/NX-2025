@@ -15,7 +15,7 @@ import { VIDEO_GRAPHQL_FIELDS } from '@/components/Video/VideoApi';
 import type { Event, EventResponse } from '@/components/Event/EventSchema';
 import type { Post } from '@/components/Post/PostSchema';
 
-// Post fields for event post categories (includes gatedContentForm for Case Study filtering)
+// Post fields for event post categories (simplified to avoid GraphQL complexity)
 const EVENT_POST_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
@@ -23,7 +23,10 @@ const EVENT_POST_GRAPHQL_FIELDS = `
   datePublished
   externalLink
   mainImage {
-    ${IMAGE_GRAPHQL_FIELDS}
+    ${SYS_FIELDS}
+    title
+    link
+    altText
   }
   categories
   gatedContentForm {
@@ -198,7 +201,104 @@ export async function getEventBySlug(slug: string, preview = false): Promise<Eve
       return null;
     }
 
-    return data.eventCollection.items[0]!;
+    const event = data.eventCollection.items[0]!;
+
+    // Step 2: Enrich Post items in Event (server-side lazy loading) - Same as getEventById
+    if (event.referencedPostsCollection?.items?.length && event.referencedPostsCollection.items.length > 0) {
+      console.log(`Event Detail: Enriching ${event.referencedPostsCollection.items.length} referenced posts for event ${event.slug}`);
+      
+      const enrichmentPromises = event.referencedPostsCollection.items.map(async (item: any) => {
+        if (item.__typename === 'Post' && item.sys?.id) {
+          try {
+            console.log(`Event Detail: Enriching Post ${item.sys.id}`);
+            // Dynamically import Post API to avoid circular dependency
+            const { getPostById } = await import('@/components/Post/PostApi');
+            const enrichedPost = await getPostById(item.sys.id, preview);
+            console.log(`Event Detail: Post ${item.sys.id} enriched successfully:`, { hasTitle: !!enrichedPost?.title });
+            return enrichedPost || item;
+          } catch (error) {
+            console.warn(`Failed to enrich Post ${item.sys.id} in Event:`, error);
+            return item; // Return original item on error
+          }
+        }
+        return item;
+      });
+
+      // Wait for all enrichments to complete
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      if (event.referencedPostsCollection) {
+        event.referencedPostsCollection.items = enrichedItems;
+      }
+      
+      console.log(`Event Detail: Completed enrichment of ${enrichedItems.length} posts`);
+    }
+
+    // Step 3: Enrich Slider if present
+    if (event.slider && event.slider.sys?.id) {
+      const sliderId = event.slider.sys.id;
+      try {
+        console.log(`Event Detail: Enriching Slider ${sliderId}`);
+        const { getSliderById } = await import('@/components/Slider/SliderApi');
+        const enrichedSlider = await getSliderById(sliderId, preview);
+        if (enrichedSlider) {
+          event.slider = enrichedSlider as any;
+          console.log(`Event Detail: Slider enriched successfully`);
+        }
+      } catch (error) {
+        console.warn(`Failed to enrich Slider ${sliderId} in Event:`, error);
+      }
+    }
+
+    // Step 4: Pre-fetch post categories data for EventDetail (server-side)
+    if (event.postCategories && event.postCategories.length > 0) {
+      try {
+        console.log(`Event Detail: Pre-fetching posts for categories:`, event.postCategories);
+        const postsByCategory = await getPostsByCategories(
+          event.postCategories, 
+          event.maxPostsPerCategory ?? 3, 
+          preview
+        );
+        // Attach the pre-fetched data to the event object for EventDetail to use
+        (event as any).preloadedPostsByCategory = postsByCategory;
+        console.log(`Event Detail: Pre-fetched posts for ${Object.keys(postsByCategory).length} categories`);
+      } catch (error) {
+        console.warn(`Failed to pre-fetch post categories for Event:`, error);
+      }
+    }
+
+    // Step 5: Enrich ContactCard items if present
+    if (event.contactCardsCollection?.items?.length && event.contactCardsCollection.items.length > 0) {
+      try {
+        console.log(`Event Detail: Enriching ${event.contactCardsCollection.items.length} contact cards`);
+        
+        const enrichmentPromises = event.contactCardsCollection.items.map(async (item: any) => {
+          if (item.__typename === 'ContactCard' && item.sys?.id) {
+            try {
+              console.log(`Event Detail: Enriching ContactCard ${item.sys.id}`);
+              const { getContactCardById } = await import('@/components/ContactCard/ContactCardApi');
+              const enrichedContactCard = await getContactCardById(item.sys.id, preview);
+              console.log(`Event Detail: ContactCard ${item.sys.id} enriched successfully:`, { hasTitle: !!enrichedContactCard?.title });
+              return enrichedContactCard || item;
+            } catch (error) {
+              console.warn(`Failed to enrich ContactCard ${item.sys.id} in Event:`, error);
+              return item;
+            }
+          }
+          return item;
+        });
+
+        const enrichedContactCards = await Promise.all(enrichmentPromises);
+        if (event.contactCardsCollection) {
+          event.contactCardsCollection.items = enrichedContactCards;
+        }
+        
+        console.log(`Event Detail: Completed enrichment of ${enrichedContactCards.length} contact cards`);
+      } catch (error) {
+        console.warn(`Failed to enrich contact cards for Event:`, error);
+      }
+    }
+
+    return event;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;
@@ -269,6 +369,71 @@ export async function getEventById(id: string, preview = false): Promise<Event |
       }
     }
 
+    // Step 3: Enrich Slider if present (same as getEventBySlug)
+    if (event.slider && event.slider.sys?.id) {
+      const sliderId = event.slider.sys.id;
+      try {
+        console.log(`Event Preview: Enriching Slider ${sliderId}`);
+        const { getSliderById } = await import('@/components/Slider/SliderApi');
+        const enrichedSlider = await getSliderById(sliderId, preview);
+        if (enrichedSlider) {
+          event.slider = enrichedSlider as any;
+          console.log(`Event Preview: Slider enriched successfully`);
+        }
+      } catch (error) {
+        console.warn(`Failed to enrich Slider ${sliderId} in Event:`, error);
+      }
+    }
+
+    // Step 4: Pre-fetch post categories data for EventDetail (same as getEventBySlug)
+    if (event.postCategories && event.postCategories.length > 0) {
+      try {
+        console.log(`Event Preview: Pre-fetching posts for categories:`, event.postCategories);
+        const postsByCategory = await getPostsByCategories(
+          event.postCategories, 
+          event.maxPostsPerCategory ?? 3, 
+          preview
+        );
+        // Attach the pre-fetched data to the event object for EventDetail to use
+        (event as any).preloadedPostsByCategory = postsByCategory;
+        console.log(`Event Preview: Pre-fetched posts for ${Object.keys(postsByCategory).length} categories`);
+      } catch (error) {
+        console.warn(`Failed to pre-fetch post categories for Event:`, error);
+      }
+    }
+
+    // Step 5: Enrich ContactCard items if present (same as getEventBySlug)
+    if (event.contactCardsCollection?.items?.length && event.contactCardsCollection.items.length > 0) {
+      try {
+        console.log(`Event Preview: Enriching ${event.contactCardsCollection.items.length} contact cards`);
+        
+        const enrichmentPromises = event.contactCardsCollection.items.map(async (item: any) => {
+          if (item.__typename === 'ContactCard' && item.sys?.id) {
+            try {
+              console.log(`Event Preview: Enriching ContactCard ${item.sys.id}`);
+              const { getContactCardById } = await import('@/components/ContactCard/ContactCardApi');
+              const enrichedContactCard = await getContactCardById(item.sys.id, preview);
+              console.log(`Event Preview: ContactCard ${item.sys.id} enriched successfully:`, { hasTitle: !!enrichedContactCard?.title });
+              return enrichedContactCard || item;
+            } catch (error) {
+              console.warn(`Failed to enrich ContactCard ${item.sys.id} in Event:`, error);
+              return item;
+            }
+          }
+          return item;
+        });
+
+        const enrichedContactCards = await Promise.all(enrichmentPromises);
+        if (event.contactCardsCollection) {
+          event.contactCardsCollection.items = enrichedContactCards;
+        }
+        
+        console.log(`Event Preview: Completed enrichment of ${enrichedContactCards.length} contact cards`);
+      } catch (error) {
+        console.warn(`Failed to enrich contact cards for Event:`, error);
+      }
+    }
+
     return event;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
@@ -308,6 +473,7 @@ export async function getPostsByCategories(
   preview = false
 ): Promise<Record<string, Post[]>> {
   try {
+    console.log('Event API: getPostsByCategories called with:', { categories, maxPerCategory, preview });
     const postsByCategory: Record<string, Post[]> = {};
 
     // Fetch posts for each category

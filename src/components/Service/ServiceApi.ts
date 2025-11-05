@@ -25,8 +25,10 @@ export const SERVICE_GRAPHQL_FIELDS = `
   itemsCollection(limit: 10) {
     items {
       __typename
-      sys {
-        id
+      ... on Entry {
+        sys {
+          id
+        }
       }
     }
   }
@@ -75,9 +77,36 @@ async function fetchComponentById(id: string, typename: string, preview = false)
     case 'Content': {
       // Import Content API dynamically to avoid circular dependencies
       const { getContentById } = await import('@/components/Content/ContentApi');
-      return await getContentById(id, preview);
+      const result = await getContentById(id, preview);
+      return result?.item || null;
+    }
+    case 'Collection': {
+      // Import Collection API dynamically to avoid circular dependencies
+      const { getCollectionById } = await import('@/components/Collection/CollectionApi');
+      return await getCollectionById(id, preview);
+    }
+    case 'Post': {
+      // Import Post API dynamically to avoid circular dependencies
+      const { getPostById } = await import('@/components/Post/PostApi');
+      return await getPostById(id, preview);
+    }
+    case 'Profile': {
+      // Import Profile API dynamically to avoid circular dependencies
+      const { getProfileById } = await import('@/components/Profile/ProfileApi');
+      return await getProfileById(id, preview);
+    }
+    case 'Testimonials': {
+      // Import Testimonials API dynamically to avoid circular dependencies
+      const { getTestimonialsById } = await import('@/components/Testimonials/TestimonialsApi');
+      return await getTestimonialsById(id, preview);
+    }
+    case 'Event': {
+      // Import Event API dynamically to avoid circular dependencies
+      const { getEventById } = await import('@/components/Event/EventApi');
+      return await getEventById(id, preview);
     }
     default:
+      console.warn(`Service API: Unknown component type ${typename}, returning minimal data`);
       return null;
   }
 
@@ -199,18 +228,18 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
 
     // Step 3: Enrich itemsCollection components with full data (server-side lazy loading)
     if (service.itemsCollection?.items?.length && service.itemsCollection.items.length > 0) {
-      console.log('Service API: Starting enrichment for', service.itemsCollection.items.length, 'items');
+      console.warn('Service API: Starting enrichment for', service.itemsCollection.items.length, 'items');
       const enrichedItems = await Promise.all(
         service.itemsCollection.items.map(async (item, index) => {
           if (!item?.sys?.id || !item.__typename) {
-            console.log(`Service API: Skipping item ${index} - missing sys.id or __typename`);
+            console.warn(`Service API: Skipping item ${index} - missing sys.id or __typename`);
             return item;
           }
 
           try {
-            console.log(`Service API: Enriching item ${index}:`, item.__typename, item.sys.id);
+            console.warn(`Service API: Enriching item ${index}:`, item.__typename, item.sys.id);
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
-            console.log(`Service API: Enrichment result for ${item.__typename}:`, {
+            console.warn(`Service API: Enrichment result for ${item.__typename}:`, {
               id: item.sys.id,
               hasEnrichedData: !!fullComponent,
               keysCount: fullComponent ? Object.keys(fullComponent).length : 0
@@ -223,7 +252,7 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
         })
       );
 
-      console.log('Service API: Enrichment completed for', enrichedItems.length, 'items');
+      console.warn('Service API: Enrichment completed for', enrichedItems.length, 'items');
       service.itemsCollection.items = enrichedItems as typeof service.itemsCollection.items;
     }
 
@@ -317,18 +346,18 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
 
     // Step 3: Enrich itemsCollection components with full data (server-side lazy loading)
     if (service.itemsCollection?.items?.length && service.itemsCollection.items.length > 0) {
-      console.log('Service API: Starting enrichment for', service.itemsCollection.items.length, 'items');
+      console.warn('Service API: Starting enrichment for', service.itemsCollection.items.length, 'items');
       const enrichedItems = await Promise.all(
         service.itemsCollection.items.map(async (item, index) => {
           if (!item?.sys?.id || !item.__typename) {
-            console.log(`Service API: Skipping item ${index} - missing sys.id or __typename`);
+            console.warn(`Service API: Skipping item ${index} - missing sys.id or __typename`);
             return item;
           }
 
           try {
-            console.log(`Service API: Enriching item ${index}:`, item.__typename, item.sys.id);
+            console.warn(`Service API: Enriching item ${index}:`, item.__typename, item.sys.id);
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
-            console.log(`Service API: Enrichment result for ${item.__typename}:`, {
+            console.warn(`Service API: Enrichment result for ${item.__typename}:`, {
               id: item.sys.id,
               hasEnrichedData: !!fullComponent,
               keysCount: fullComponent ? Object.keys(fullComponent).length : 0
@@ -341,7 +370,7 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
         })
       );
 
-      console.log('Service API: Enrichment completed for', enrichedItems.length, 'items');
+      console.warn('Service API: Enrichment completed for', enrichedItems.length, 'items');
       service.itemsCollection.items = enrichedItems as typeof service.itemsCollection.items;
     }
 

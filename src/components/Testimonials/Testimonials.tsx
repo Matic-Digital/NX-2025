@@ -13,18 +13,34 @@ import { useTestimonialsData } from '@/components/Testimonials/hooks/UseTestimon
 
 import type { Testimonials as TestimonialsType } from '@/components/Testimonials/TestimonialsSchema';
 
-// Types
+// Types - Support both minimal sys data and full Testimonials data
+type TestimonialsAllProps = TestimonialsProps | (TestimonialsType & { className?: string });
+
 interface TestimonialsProps {
   sys: TestimonialsType['sys'];
+  className?: string;
 }
 
 /**
  * Main Testimonials component - orchestrates all layers
  * Pure composition of data and presentation layers
+ * Supports both server-side enriched data and client-side fetching
  */
-export function Testimonials({ sys }: TestimonialsProps) {
-  // Data layer
-  const { testimonials, loading, error } = useTestimonialsData(sys.id);
+export function Testimonials(props: TestimonialsAllProps) {
+  // Check if we have full Testimonials data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'title' in props && props.title !== undefined;
+  const sys = props.sys;
+  
+  // Debug logging removed
+  
+  // Data layer - only use hook if we don't have server-side data
+  const { testimonials: clientTestimonials, loading, error } = useTestimonialsData(
+    sys.id, 
+    hasFullData ? (props as TestimonialsType) : undefined
+  );
+  
+  // Use server-side data if available, otherwise use client-side data
+  const testimonials = hasFullData ? (props as TestimonialsType) : clientTestimonials;
 
   // Loading state
   if (loading) {

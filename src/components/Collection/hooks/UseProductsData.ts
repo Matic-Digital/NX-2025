@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getAllProducts } from '@/components/Product/ProductApi';
+// Import removed - using API route instead
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Product } from '@/components/Product/ProductSchema';
@@ -16,24 +16,41 @@ export function useProductsData({ collection, collectionData }: UseProductsDataP
 
   const finalCollection = collection ?? collectionData;
 
-  // Fetch products when collection content type is "Product"
+  // Check if we have server-enriched collection data
+  const hasServerData = finalCollection && Object.keys(finalCollection).length > 3;
+
+  // Fetch products when collection content type is "Product" - but only if we have server-enriched Collection config
   useEffect(() => {
+    if (!hasServerData) {
+      console.warn('Collection missing server-side data - showing skeleton. Collection ID:', finalCollection?.sys?.id);
+      setIsLoading(false);
+      return;
+    }
+
     if (finalCollection?.contentType?.includes('Product')) {
       const fetchProducts = async () => {
         try {
           setIsLoading(true);
-          const productsResponse = await getAllProducts();
-          setProducts(productsResponse ?? []);
+          // Use API route to get server-side enriched Products
+          const response = await fetch('/api/components/Product/all');
+          if (response.ok) {
+            const data = await response.json();
+            setProducts(data.products ?? []);
+          } else {
+            throw new Error('Failed to fetch products from API');
+          }
         } catch (error) {
-        console.warn('Error in catch block:', error);
-      } finally {
+          console.warn('Collection: Error fetching products:', error);
+        } finally {
           setIsLoading(false);
         }
       };
 
       void fetchProducts();
+    } else {
+      setIsLoading(false);
     }
-  }, [finalCollection]);
+  }, [finalCollection, hasServerData]);
 
   return {
     products,

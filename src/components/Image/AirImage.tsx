@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { getImageById } from '@/components/Image/ImageApi';
+// Import removed - using API route instead
 import { ImageSkeleton } from '@/components/Image/ImageSkeleton';
 import { shouldPreloadImage as _shouldPreloadImage } from '@/components/Image/utils/imageOptimization';
 
@@ -383,7 +383,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
     };
 
     void fetchFullImageData();
-  }, [sys?.id, link]);
+  }, [sys?.id, link, isLoading]);
 
   if (!link) {
     if (isLoading) {
