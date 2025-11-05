@@ -43,7 +43,7 @@ export function RequestAQuoteModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto z-[9999]">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto z-9999 mt-6 lg:mt-12">
         <DialogHeader>
           <DialogTitle>{modalTitle}</DialogTitle>
           <DialogDescription>{modalDescription}</DialogDescription>
