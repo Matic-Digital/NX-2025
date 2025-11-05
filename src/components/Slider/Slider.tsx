@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -389,6 +389,7 @@ interface GenericSliderProps {
   showAltNavigation?: boolean;
   isFullWidth?: boolean;
   onTeamMemberClick?: (teamMember: TeamMember) => void;
+  onNavigationClick?: () => void;
   context?: 'ImageBetween' | 'ContentGrid' | 'default';
 }
 
@@ -403,6 +404,7 @@ const GenericSlider = ({
   showAltNavigation = false,
   isFullWidth = true,
   onTeamMemberClick,
+  onNavigationClick,
   context = 'default'
 }: GenericSliderProps) => {
   const isContentSlider = sliderData.itemsCollection.items[0]?.__typename === 'ContentSliderItem';
@@ -562,11 +564,13 @@ const GenericSlider = ({
                   className="absolute top-2/3 left-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Previous slide"
+                  onNavigationClick={onNavigationClick}
                 />
                 <CarouselNext
                   className="absolute top-2/3 right-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Next slide"
+                  onNavigationClick={onNavigationClick}
                 />
                 {/* Desktop Navigation */}
                 <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
@@ -574,11 +578,13 @@ const GenericSlider = ({
                     className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                     variant="outline"
                     aria-label="Previous slide"
+                    onNavigationClick={onNavigationClick}
                   />
                   <CarouselNext
                     className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                     variant="outline"
                     aria-label="Next slide"
+                    onNavigationClick={onNavigationClick}
                   />
                 </div>
               </>
@@ -903,6 +909,7 @@ function SliderComponent(props: SliderSys | Slider) {
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [autoplayTimer, setAutoplayTimer] = useState<NodeJS.Timeout | null>(null);
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
     root: null,
@@ -922,60 +929,27 @@ function SliderComponent(props: SliderSys | Slider) {
     }
   };
 
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-
-    // Initialize post sliders at the middle set for infinite loop
-    if (slider && slider.itemsCollection?.items?.length > 1) {
-      const isPostSlider = slider.itemsCollection.items[0]?.__typename === 'Post';
-      if (isPostSlider) {
-        const originalItemCount = slider.itemsCollection.items.length;
-        api.scrollTo(originalItemCount, false); // Start at the middle set without animation
-      }
-    }
-  }, [api, slider]);
-
-  // Global keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isInView || !api) return;
-
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        api.scrollPrev();
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        api.scrollNext();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [api, isInView]);
-
-  // Autoplay functionality
-  useEffect(() => {
-    // Default autoplay to true if not explicitly set to false
-    const shouldAutoplay = slider?.autoplay !== false;
+  // Function to start autoplay timer
+  const startAutoplayTimer = useCallback(() => {
+    if (!api || !slider || !isInView) return;
+    
+    // Check if autoplay is explicitly enabled (not just undefined)
+    const shouldAutoplay = slider.autoplay === true;
+    if (!shouldAutoplay) return;
 
     // Don't autoplay if there's only one slide
-    const hasMultipleSlides = slider && slider.itemsCollection?.items?.length > 1;
+    const hasMultipleSlides = slider.itemsCollection?.items?.length > 1;
+    if (!hasMultipleSlides) return;
 
-    if (!api || !shouldAutoplay || !slider || !hasMultipleSlides || !isInView) {
-      return;
+    // Clear existing timer
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
     }
 
-    const delay = slider.delay ?? 5000; // Default to 5 seconds if no delay specified
+    // Use delay from schema, default to 5000ms if not specified
+    const delay = slider.delay ?? 5000;
 
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       const currentSlide = api.selectedScrollSnap();
       const totalSlides = api.scrollSnapList().length;
       const originalItemCount = slider.itemsCollection?.items?.length || 0;
@@ -983,15 +957,11 @@ function SliderComponent(props: SliderSys | Slider) {
 
       // For post sliders with infinite loop
       if (isPostSlider && originalItemCount > 1) {
-        // Check if we're at the last slide of the second set
         if (currentSlide === originalItemCount * 2 - 1) {
-          // Jump to the beginning of the second set to continue the loop
-          api.scrollTo(originalItemCount, false); // Jump without animation
+          api.scrollTo(originalItemCount, false);
         } else if (currentSlide >= originalItemCount * 2) {
-          // If somehow we're beyond the second set, jump back to second set
           api.scrollTo(originalItemCount, false);
         } else {
-          // Normal forward movement
           api.scrollNext();
         }
       } else {
@@ -1004,10 +974,79 @@ function SliderComponent(props: SliderSys | Slider) {
       }
     }, delay);
 
-    return () => {
-      clearInterval(interval);
+    setAutoplayTimer(timer);
+  }, [api, slider, isInView, autoplayTimer]);
+
+  // Function to stop autoplay timer
+  const stopAutoplayTimer = useCallback(() => {
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
+      setAutoplayTimer(null);
+    }
+  }, [autoplayTimer]);
+
+  // Function to reset autoplay timer (for user interactions)
+  const resetAutoplayTimer = useCallback(() => {
+    stopAutoplayTimer();
+    startAutoplayTimer();
+  }, [stopAutoplayTimer, startAutoplayTimer]);
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+      // Reset autoplay timer when slide changes (including user interactions)
+      resetAutoplayTimer();
+    });
+
+    // Initialize post sliders at the middle set for infinite loop
+    if (slider && slider.itemsCollection?.items?.length > 1) {
+      const isPostSlider = slider.itemsCollection.items[0]?.__typename === 'Post';
+      if (isPostSlider) {
+        const originalItemCount = slider.itemsCollection.items.length;
+        api.scrollTo(originalItemCount, false); // Start at the middle set without animation
+      }
+    }
+  }, [api, slider, resetAutoplayTimer]);
+
+  // Global keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isInView || !api) return;
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        api.scrollPrev();
+        resetAutoplayTimer(); // Reset timer on user interaction
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        api.scrollNext();
+        resetAutoplayTimer(); // Reset timer on user interaction
+      }
     };
-  }, [api, slider, isInView]);
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [api, isInView, resetAutoplayTimer]);
+
+  // Autoplay functionality - start timer when in view and conditions are met
+  useEffect(() => {
+    if (isInView) {
+      startAutoplayTimer();
+    } else {
+      stopAutoplayTimer();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      stopAutoplayTimer();
+    };
+  }, [isInView, startAutoplayTimer, stopAutoplayTimer]);
 
   // No client-side fetching needed - ContentGrid pattern
   // Server-side enrichment should provide all data
@@ -1106,6 +1145,7 @@ function SliderComponent(props: SliderSys | Slider) {
         showAltIndicators={
           !hasOnlyOneItem &&
           (isSliderItemSlider ||
+            isTimelineSliderItemSlider ||
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||
@@ -1135,6 +1175,7 @@ function SliderComponent(props: SliderSys | Slider) {
         }
         isFullWidth={false}
         onTeamMemberClick={handleTeamMemberClick}
+        onNavigationClick={resetAutoplayTimer}
         context={('context' in props) ? props.context : undefined}
       />
 
