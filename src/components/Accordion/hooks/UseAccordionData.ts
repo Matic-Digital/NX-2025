@@ -2,51 +2,32 @@
 
 import { useEffect, useState } from 'react';
 
-import { getAccordionItemById, getAccordionsByIds } from '@/components/Accordion/AccordionApi';
+import { getAccordionItemById as _getAccordionItemById, getAccordionsByIds as _getAccordionsByIds } from '@/components/Accordion/AccordionApi';
 
 import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
 /**
- * Custom hook for fetching accordion data
- * Handles the two-step fetching pattern to avoid GraphQL complexity limits
+ * Custom hook for accordion data - now expects server-side enriched data
+ * Client-side fetching is disabled to use server-side enrichment
  */
-export const useAccordionData = (sysId: string) => {
-  const [accordionItems, setAccordionItems] = useState<AccordionItemType[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useAccordionData = (sysId: string, serverData?: AccordionItemType[]) => {
+  const [accordionItems, setAccordionItems] = useState<AccordionItemType[]>(serverData || []);
+  const [loading, setLoading] = useState(!serverData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchAccordionData() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Step 1: Fetch accordion with just sys fields for items
-        const data = await getAccordionsByIds([sysId]);
-
-        if (data.length > 0 && data[0]) {
-          const accordion = data[0];
-
-          // Step 2: Fetch full data for each accordion item
-          const itemIds = accordion.itemsCollection.items.map((item) => item.sys.id);
-          const itemPromises = itemIds.map((id) => getAccordionItemById(id));
-          const items = await Promise.all(itemPromises);
-
-          // Filter out any null results
-          const validItems = items.filter((item): item is AccordionItemType => item !== null);
-          setAccordionItems(validItems);
-        } else {
-          setError('No accordion data found');
-        }
-      } catch {
-        setError('Failed to load accordion data');
-      } finally {
-        setLoading(false);
-      }
+    // COMPLETELY DISABLE client-side fetching - only use server-side data
+    if (serverData && serverData.length > 0) {
+      setAccordionItems(serverData);
+      setLoading(false);
+      return; // Already have server-side data
     }
 
-    void fetchAccordionData();
-  }, [sysId]);
+    // If we don't have server data, show error state
+    console.warn('Accordion missing server-side data - showing error state. ID:', sysId);
+    setError('Accordion data not provided by server-side enrichment');
+    setLoading(false);
+  }, [sysId, serverData]);
 
   return { accordionItems, loading, error };
 };

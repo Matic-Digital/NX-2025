@@ -10,9 +10,9 @@ let generatedRedirects: Array<{ source: string; destination: string; permanent: 
 try {
    
   generatedRedirects = require('./route-redirects.json');
-} catch {
-  // Ignore errors when loading route redirects file
-}
+} catch (error) {
+        console.warn('Error in catch block:', error);
+      }
 
 interface RedirectMapping {
   from: string;
@@ -42,7 +42,7 @@ class RouteRedirectsService {
     this.initialized = true;
 
     if (this.redirects.length > 0) {
-      // Redirects loaded successfully
+      console.warn('Route redirects loaded:', this.redirects.length, 'redirects');
     }
   }
 

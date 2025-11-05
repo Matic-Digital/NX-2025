@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
+// Import removed - using API route instead
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 import type { Post as PostType } from '@/components/Post/PostSchema';
@@ -15,25 +15,53 @@ export function usePostsData({ collection, collectionData }: UsePostsDataProps) 
   const [isLoading, setIsLoading] = useState(false);
 
   const finalCollection = collection ?? collectionData;
+  
+  // Check if we have server-enriched collection data
+  const hasServerData = finalCollection && Object.keys(finalCollection).length > 3;
+  
+  // Check if we have server-enriched posts (from Collection API)
+  const hasServerEnrichedPosts = finalCollection && 'enrichedPosts' in finalCollection && Array.isArray((finalCollection as any).enrichedPosts);
 
-  // Fetch posts when collection content type is "Post"
+  // Use server-enriched posts or fetch client-side as fallback
   useEffect(() => {
+    if (!hasServerData) {
+      console.warn('Collection missing server-side data - showing skeleton. Collection ID:', finalCollection?.sys?.id);
+      setIsLoading(false);
+      return;
+    }
+
     if (finalCollection?.contentType?.includes('Post')) {
+      // Use server-enriched posts if available (preferred)
+      if (hasServerEnrichedPosts) {
+        setPosts((finalCollection as any).enrichedPosts);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fallback to client-side API call if no server-enriched posts
       const fetchPosts = async () => {
         try {
           setIsLoading(true);
-          const postsResponse = await getAllPostsMinimal();
-          setPosts(postsResponse.items ?? []);
+          // Use API route to get server-side enriched Posts
+          const response = await fetch('/api/components/Post/all');
+          if (response.ok) {
+            const data = await response.json();
+            setPosts(data.posts?.items ?? []);
+          } else {
+            throw new Error('Failed to fetch posts from API');
+          }
         } catch (error) {
-          console.error('Failed to fetch posts:', error);
+          console.warn('Collection: Error fetching posts:', error);
         } finally {
           setIsLoading(false);
         }
       };
 
       void fetchPosts();
+    } else {
+      setIsLoading(false);
     }
-  }, [finalCollection]);
+  }, [finalCollection, hasServerData, hasServerEnrichedPosts]);
 
   return {
     posts,

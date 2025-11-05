@@ -11,10 +11,6 @@ import { LocaleDropdown } from '@/components/LocaleDropdown/LocaleDropdown';
 import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { MegaMenuCard } from '@/components/MegaMenu/MegaMenuCard';
 import { MenuItem } from '@/components/MenuItem/MenuItem';
-import {
-  getRecentPostsForMegaMenu,
-  getRecentPostsForMegaMenuByCategory
-} from '@/components/Post/PostApi';
 
 import type { Menu as MenuType } from '@/components/Menu/MenuSchema';
 import type { Post } from '@/components/Post/PostSchema';
@@ -54,16 +50,26 @@ export function Menu({ menu, variant = 'default', megaMenuTags, locales }: MenuP
 
       // Debug logging to match Collection component
 
-      const fetchFunction = category
-        ? () => getRecentPostsForMegaMenuByCategory(category, 1)
-        : () => getRecentPostsForMegaMenu(1);
-
-      fetchFunction()
-        .then((response) => setRecentPosts(response.items))
-        .catch(() => {
-          // Error fetching posts
-        })
-        .finally(() => setPostsLoading(false));
+      const fetchRecentPosts = async () => {
+        try {
+          const params = new URLSearchParams({ limit: '1' });
+          if (category) {
+            params.append('category', category);
+          }
+          
+          const response = await fetch(`/api/components/Post/recent?${params}`);
+          if (response.ok) {
+            const data = await response.json();
+            setRecentPosts(data.posts.items);
+          }
+        } catch (error) {
+          console.warn('Error fetching recent posts:', error);
+        } finally {
+          setPostsLoading(false);
+        }
+      };
+      
+      void fetchRecentPosts();
     }
   }, [variant, megaMenuTags]);
 

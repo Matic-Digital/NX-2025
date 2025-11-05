@@ -15,19 +15,34 @@ import {
 import { useAccordionData } from '@/components/Accordion/hooks/UseAccordionData';
 import { useAccordionState } from '@/components/Accordion/hooks/UseAccordionState';
 
-import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
+import type { Accordion as AccordionType, AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
 // Types
 interface AccordionProps {
   sys: AccordionType['sys'];
 }
 
+// Support both minimal sys data and full Accordion data
+type AccordionAllProps = AccordionProps | AccordionType;
+
 /**
  * Internal Accordion component that uses context
  */
-function AccordionInternal({ sys }: AccordionProps) {
-  // Data layer
-  const { accordionItems, loading, error } = useAccordionData(sys.id);
+function AccordionInternal(props: AccordionAllProps) {
+  // Check if we have full Accordion data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'itemsCollection' in props;
+  const sys = 'sys' in props ? props.sys : (props as AccordionType).sys;
+  
+  // When server-side enriched, the items are fully enriched AccordionItem objects
+  // Type assertion is safe because getAccordionById enriches all accordion items
+  const serverItems = hasFullData 
+    ? (props as AccordionType).itemsCollection?.items as AccordionItemType[] | undefined
+    : undefined;
+  
+  // Debug: Log Accordion data to verify server-side enrichment removed
+  
+  // Data layer - pass server-side items if available
+  const { accordionItems, loading, error } = useAccordionData(sys.id, serverItems);
 
   // Context layer
   const { activeItemId, setActiveItemId, lastHoveredItemId: _lastHoveredItemId, setLastHoveredItemId } = useAccordion();
@@ -87,10 +102,10 @@ function AccordionInternal({ sys }: AccordionProps) {
 /**
  * Main Accordion component with provider wrapper
  */
-export function Accordion({ sys }: AccordionProps) {
+export function Accordion(props: AccordionAllProps) {
   return (
     <AccordionProvider>
-      <AccordionInternal sys={sys} />
+      <AccordionInternal {...props} />
     </AccordionProvider>
   );
 }

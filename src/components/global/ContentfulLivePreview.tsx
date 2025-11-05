@@ -24,6 +24,11 @@ export function ContentfulPreviewProvider({
   const [showStatus, setShowStatus] = useState(true);
   const [liveUpdatesEnabled, setLiveUpdatesEnabled] = useState(false);
   const [inspectorMode, setInspectorMode] = useState(false);
+  const [_contentfulConfig, setContentfulConfig] = useState<{
+    spaceId: string;
+    previewToken: string;
+    environment: string;
+  } | null>(null);
 
   // Check if we're in preview mode by examining URL parameters
   const [isContentfulPreview, setIsContentfulPreview] = useState(false);
@@ -43,37 +48,54 @@ export function ContentfulPreviewProvider({
       const isPreview = hasPreviewParam && hasSpaceId && hasPreviewToken;
       setIsContentfulPreview(isPreview);
 
-      // Initialize the SDK if in preview mode
-      if (!ContentfulLivePreview.initialized) {
+      // Fetch Contentful configuration from server for Live Preview
+      const fetchContentfulConfig = async () => {
         try {
-          // Get space ID and preview token from URL
-          const _spaceId =
-            url.searchParams.get('space_id') ?? process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID;
-          const _previewToken =
-            url.searchParams.get('preview_access_token') ??
-            process.env.NEXT_PUBLIC_CONTENTFUL_PREVIEW_ACCESS_TOKEN;
+          const response = await fetch('/api/contentful-config');
+          if (response.ok) {
+            const config = await response.json();
+            setContentfulConfig(config);
+            return config;
+          }
+        } catch (error) {
+          console.warn('Failed to fetch Contentful config:', error);
+        }
+        return null;
+      };
 
-          // Initialize the SDK with all required parameters
-          // Use an async IIFE to avoid unbound method issues
-          void (async () => {
-            try {
+      // Initialize the SDK if in preview mode
+      if (!ContentfulLivePreview.initialized && isPreview) {
+        void (async () => {
+          try {
+            // Get configuration from server or URL parameters
+            let config = await fetchContentfulConfig();
+            
+            // Fallback to URL parameters if server config fails
+            if (!config) {
+              const spaceIdFromUrl = url.searchParams.get('space_id');
+              const previewTokenFromUrl = url.searchParams.get('preview_access_token');
+              
+              if (spaceIdFromUrl && previewTokenFromUrl) {
+                config = {
+                  spaceId: spaceIdFromUrl,
+                  previewToken: previewTokenFromUrl,
+                  environment: 'development'
+                };
+              }
+            }
+
+            if (config) {
               await ContentfulLivePreview.init({
                 locale: 'en-US',
                 enableInspectorMode: true,
                 enableLiveUpdates: true,
                 debugMode: true
               });
-
-              // Log the space and token for debugging
-            } catch {
-              // Ignore errors when initializing live preview
             }
-          })();
-
-          // Log the space and token for debugging
-        } catch {
-          // Ignore errors when setting up preview environment
-        }
+          } catch (error) {
+            console.warn('Error initializing Contentful Live Preview:', error);
+          }
+        })();
       }
     }
   }, []);

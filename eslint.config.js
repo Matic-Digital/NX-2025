@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
-import importPlugin from 'eslint-plugin-import';
 import security from 'eslint-plugin-security';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -9,86 +8,33 @@ import reactHooks from 'eslint-plugin-react-hooks';
 export default [
   js.configs.recommended,
   
-  // Ignore patterns (migrated from .eslintignore)
+  // Ignore patterns
   {
     ignores: [
-      // Dependencies
       'node_modules/**',
-      '.pnpm-store/**',
-      
-      // Build outputs
       '.next/**',
       'out/**',
       'dist/**',
       'build/**',
       '.vercel/**',
-      
-      // Coverage reports
-      'coverage/**',
-      '.nyc_output/**',
-      
-      // Environment files
       '.env*',
-      
-      // Cache directories
-      '.cache/**',
-      '.parcel-cache/**',
-      
-      // OS generated files
-      '.DS_Store',
-      '.DS_Store?',
-      '._*',
-      '.Spotlight-V100',
-      '.Trashes',
-      'ehthumbs.db',
-      'Thumbs.db',
-      
-      // IDE files
-      '.vscode/**',
-      '.idea/**',
-      '*.swp',
-      '*.swo',
-      
-      // Logs
-      'logs/**',
-      '*.log',
-      'npm-debug.log*',
-      'yarn-debug.log*',
-      'yarn-error.log*',
-      
-      // Runtime data
-      'pids/**',
-      '*.pid',
-      '*.seed',
-      '*.pid.lock',
-      
-      // Generated files (but keep src and types .d.ts files)
-      '*.d.ts',
-      '!src/**/*.d.ts',
-      '!types/**/*.d.ts',
-      
-      // Temporary files
-      'tmp/**',
-      'temp/**',
-      
-      // Test files and scripts
-      'security-tests/**',
-      'scripts/**',
-      
-      // Config files
       '*.config.js',
       '*.config.ts',
-      
-      // Public assets
       'public/**',
-      
-      // Additional patterns
+      'coverage/**',
+      '.nyc_output/**',
+      'temp/**',
+      'tmp/**',
       '**/*.min.js',
       'vendor/**',
+      'lib/**/*.d.ts',
+      'types/**/*.d.ts',
       '**/*.generated.*',
       'storybook-static/**',
       '.storybook/**',
-      'docs/**'
+      'docs/**',
+      '*.log',
+      'logs/**'
     ]
   },
 
@@ -138,7 +84,6 @@ export default [
     },
     plugins: {
       '@typescript-eslint': typescript,
-      'import': importPlugin,
       'security': security,
       'react': react,
       'react-hooks': reactHooks
@@ -178,11 +123,8 @@ export default [
 
       // Security rules - set to warn in main config
       'security/detect-object-injection': 'warn',
-      'security/detect-non-literal-regexp': 'warn',
+      'security/detect-non-literal-regexp': 'warn', 
       'security/detect-unsafe-regex': 'warn',
-      
-      // Import rules
-      'import/no-dynamic-require': 'warn',
       
       // React rules
       'react/no-danger': 'warn',
@@ -201,7 +143,8 @@ export default [
       'no-useless-catch': 'warn', // Downgrade to warning
       'no-control-regex': 'warn', // Downgrade to warning
       
-      // Next.js specific rules (may not be available without next plugin)
+      // Disable rules that don't exist or are problematic
+      'import/no-dynamic-require': 'off',
       '@next/next/no-img-element': 'off'
     }
   },

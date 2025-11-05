@@ -33,13 +33,16 @@ export const BannerHeroContent = ({
       {...inspectorProps}
     >
       {/* Background Image */}
-      <div {...inspectorProps({ fieldId: 'backgroundImage' })}>
-        <AirImage
-          link={bannerHero.backgroundImage.link}
-          altText={bannerHero.backgroundImage.altText}
-          className={bannerHeroStyles.getBackgroundImageClasses(isImageBetween)}
-        />
-      </div>
+      {bannerHero.backgroundImage && (
+        <div {...inspectorProps({ fieldId: 'backgroundImage' })}>
+          <AirImage
+            link={bannerHero.backgroundImage.link}
+            altText={bannerHero.backgroundImage.altText}
+            className={`${bannerHeroStyles.getBackgroundImageClasses(isImageBetween)} lcp-image`}
+            priority={true}
+          />
+        </div>
+      )}
 
       {/* Gradient Overlay for Light Images */}
       {isImageLight && (
@@ -49,11 +52,12 @@ export const BannerHeroContent = ({
       {/* Content Overlay */}
       <div className={bannerHeroStyles.getOverlayClasses()}>
         <div className={`${bannerHeroStyles.getContentClasses()} banner-hero-content`}>
-          <div className="section-heading-container">
+          <div className={`section-heading-container ${isImageBetween ? 'py-24 mb-20 md:py-28 lg:py-32' : ''}`}>
             <SectionHeading
               sectionHeadingId={bannerHero.heading.sys.id}
               variant={bannerHero.heading.variant}
               componentType="banner-hero"
+              isImageBetween={isImageBetween}
             />
           </div>
         </div>

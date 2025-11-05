@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { getImageById } from '@/components/Image/ImageApi';
+// Import removed - using API route instead
 import { ImageSkeleton } from '@/components/Image/ImageSkeleton';
 import { shouldPreloadImage as _shouldPreloadImage } from '@/components/Image/utils/imageOptimization';
 
@@ -31,8 +31,8 @@ const extractDimensionsFromAirUrl = (url: string): { width: number; height: numb
       };
     }
   } catch (error) {
-    console.warn('Failed to parse image dimensions:', error);
-  }
+        console.warn('Error in catch block:', error);
+      }
 
   return null;
 };
@@ -57,17 +57,17 @@ const optimizeAirImage = (
 
   try {
     const urlObj = new URL(url);
-    
+
     // Optimize for better compression and performance
     if (width) urlObj.searchParams.set('w', width.toString());
     if (height) urlObj.searchParams.set('h', height.toString());
-    
+
     // Enhanced compression settings
     urlObj.searchParams.set('auto', 'compress,format'); // Auto-optimize format and compression
     urlObj.searchParams.set('q', quality.toString()); // Aggressive compression for mobile
     urlObj.searchParams.set('fit', 'crop'); // Better cropping for responsive images
     urlObj.searchParams.set('crop', 'smart'); // Smart cropping to focus on important content
-    
+
     return urlObj.toString();
   } catch {
     return url;
@@ -110,10 +110,16 @@ const optimizeContentfulImage = (
  * @param className - CSS classes to determine optimal sizes
  * @returns srcset string for responsive images
  */
-const generateSrcSet = (baseUrl: string, width: number, height: number, className?: string): string => {
+const generateSrcSet = (
+  baseUrl: string,
+  width: number,
+  height: number,
+  className?: string
+): string => {
   const isAirImage = baseUrl.includes('air-prod.imgix.net');
-  const isContentfulImage = baseUrl.includes('images.ctfassets.net') ?? baseUrl.includes('assets.ctfassets.net');
-  
+  const isContentfulImage =
+    baseUrl.includes('images.ctfassets.net') ?? baseUrl.includes('assets.ctfassets.net');
+
   if (!isAirImage && !isContentfulImage) {
     return '';
   }
@@ -121,18 +127,18 @@ const generateSrcSet = (baseUrl: string, width: number, height: number, classNam
   // Generate sizes based on actual render dimensions, not fixed breakpoints
   const hasFullWidth = className?.includes('w-full');
   const isHero = className?.includes('hero') ?? className?.includes('banner');
-  
+
   let sizes: { w: number; descriptor: string }[];
-  
+
   if (hasFullWidth || isHero) {
     // Full-width images: generate sizes for common viewport widths
     sizes = [
-      { w: 480, descriptor: '480w' },   // Mobile
-      { w: 768, descriptor: '768w' },   // Tablet
+      { w: 480, descriptor: '480w' }, // Mobile
+      { w: 768, descriptor: '768w' }, // Tablet
       { w: 1024, descriptor: '1024w' }, // Small desktop
       { w: 1280, descriptor: '1280w' }, // Medium desktop
       { w: 1440, descriptor: '1440w' }, // Large desktop
-      { w: 1920, descriptor: '1920w' }  // Extra large
+      { w: 1920, descriptor: '1920w' } // Extra large
     ];
   } else {
     // Content images: generate sizes based on actual dimensions
@@ -148,7 +154,7 @@ const generateSrcSet = (baseUrl: string, width: number, height: number, classNam
 
   // Filter out duplicate sizes and sort
   const uniqueSizes = sizes
-    .filter((size, index, arr) => arr.findIndex(s => s.w === size.w) === index)
+    .filter((size, index, arr) => arr.findIndex((s) => s.w === size.w) === index)
     .sort((a, b) => a.w - b.w);
 
   return uniqueSizes
@@ -156,7 +162,7 @@ const generateSrcSet = (baseUrl: string, width: number, height: number, classNam
       const h = Math.round((height * w) / width);
       // Use higher quality for smaller images, lower for larger
       const quality = w <= 768 ? 85 : w <= 1280 ? 75 : 65;
-      const optimizedUrl = isAirImage 
+      const optimizedUrl = isAirImage
         ? optimizeAirImage(baseUrl, w, h, quality)
         : optimizeContentfulImage(baseUrl, w, h, quality);
       return `${optimizedUrl} ${descriptor}`;
@@ -177,7 +183,7 @@ const calculateIntrinsicDimensions = (
   className?: string
 ): { width: number; height: number } => {
   const aspectRatio = originalWidth / originalHeight;
-  
+
   // Parse specific height constraints from Tailwind classes
   const heightMatch = className?.match(/h-\[([0-9.]+)rem\]/);
   if (heightMatch?.[1]) {
@@ -191,11 +197,11 @@ const calculateIntrinsicDimensions = (
 
   // Check for fixed height classes
   const fixedHeightMap: Record<string, number> = {
-    'h-64': 256,   // 16rem
-    'h-72': 288,   // 18rem
-    'h-80': 320,   // 20rem
-    'h-96': 384,   // 24rem
-    'h-full': 800, // Assume reasonable default for h-full
+    'h-64': 256, // 16rem
+    'h-72': 288, // 18rem
+    'h-80': 320, // 20rem
+    'h-96': 384, // 24rem
+    'h-full': 800 // Assume reasonable default for h-full
   };
 
   // Also check for max-height classes that might constrain the image
@@ -223,12 +229,12 @@ const calculateIntrinsicDimensions = (
   const hasFullWidth = className?.includes('w-full');
   const isAbsolute = className?.includes('absolute');
   const isInset = className?.includes('inset-0');
-  
+
   if (hasFullWidth || (isAbsolute && isInset)) {
     // Assume container max-width of 1440px for full-width images
     const containerWidth = 1440;
     const containerHeight = Math.round(containerWidth / aspectRatio);
-    
+
     // Cap at reasonable dimensions to avoid oversized images
     return {
       width: Math.min(containerWidth, originalWidth),
@@ -310,13 +316,13 @@ const generateSizes = (className?: string, priority?: boolean, intrinsicWidth?: 
  */
 const shouldBePriority = (className?: string, priority?: boolean): boolean => {
   if (priority !== undefined) return priority;
-  
+
   // Auto-detect priority images based on common patterns
   const hasFullWidth = className?.includes('w-full');
   const hasFullHeight = className?.includes('h-full');
   const isAbsolute = className?.includes('absolute');
   const isHero = className?.includes('hero') ?? className?.includes('banner');
-  
+
   // Full-size images that are likely above the fold
   return Boolean(hasFullWidth && hasFullHeight && (isAbsolute ?? isHero));
 };
@@ -363,12 +369,14 @@ export const AirImage: React.FC<AirImageType> = (props) => {
 
       setIsLoading(true);
       try {
-        const fullData = await getImageById(sys.id);
-        if (fullData) {
-          setFullImageData(fullData);
+        // Use internal API route instead of direct Contentful call
+        const response = await fetch(`/api/components/Image/${sys.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFullImageData(data.image);
         }
       } catch (error) {
-        console.error('Failed to fetch full image data:', error);
+        console.warn('Error in catch block:', error);
       } finally {
         setIsLoading(false);
       }
@@ -389,11 +397,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
       );
       return (
         <div className="relative" style={{ width: skeletonWidth, height: skeletonHeight }}>
-          <ImageSkeleton
-            width={skeletonWidth}
-            height={skeletonHeight}
-            className={className}
-          />
+          <ImageSkeleton width={skeletonWidth} height={skeletonHeight} className={className} />
         </div>
       );
     }
@@ -433,6 +437,7 @@ export const AirImage: React.FC<AirImageType> = (props) => {
     <Image
       src={optimizedSrc}
       alt={altText ?? ''}
+      title={altText ?? ''}
       className={combinedClassName}
       width={intrinsicWidth}
       height={intrinsicHeight}

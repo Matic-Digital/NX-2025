@@ -26,8 +26,8 @@ export const ProductCard = (props: ProductSys) => {
         if (products.length > 0 && products[0]) {
           setProductData(products[0]);
         }
-      } catch {
-        // Ignore errors when fetching product data
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }

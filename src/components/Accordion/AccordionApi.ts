@@ -1,4 +1,4 @@
-import { fetchGraphQL } from '@/lib/api';
+import { fetchGraphQLMemoized } from '@/lib/api';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -42,7 +42,7 @@ export async function getAccordionItemById(
   preview = false
 ): Promise<AccordionItem | null> {
   try {
-    const response = await fetchGraphQL<AccordionItem>(
+    const response = await fetchGraphQLMemoized<AccordionItem>(
       `query GetAccordionItemById($id: String!, $preview: Boolean!) {
         accordionItem(id: $id, preview: $preview) {
           ${ACCORDION_ITEM_GRAPHQL_FIELDS}
@@ -79,7 +79,7 @@ export async function getAccordionById(
   preview = false
 ): Promise<Accordion | null> {
   try {
-    const response = await fetchGraphQL<Accordion>(
+    const response = await fetchGraphQLMemoized<Accordion>(
       `query GetAccordionById($id: String!, $preview: Boolean!) {
         accordionCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
           items {
@@ -101,7 +101,49 @@ export async function getAccordionById(
       return null;
     }
 
-    return data.accordionCollection.items[0] ?? null;
+    const accordion = data.accordionCollection.items[0];
+    if (!accordion) {
+      return null;
+    }
+
+    // Step 2: Enrich accordion items with full data (server-side lazy loading)
+    if (accordion.itemsCollection?.items?.length > 0) {
+      console.warn(`[AccordionAPI] Starting enrichment for ${accordion.itemsCollection.items.length} items`);
+      console.warn(`[AccordionAPI] Initial items structure:`, accordion.itemsCollection.items.map((item: any) => ({
+        id: item.sys?.id,
+        hasTitle: !!item.title,
+      })));
+      
+      const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
+        if (item.sys?.id) {
+          try {
+            console.warn(`[AccordionAPI] Enriching accordion item ${item.sys?.id}`);
+            const enrichedItem = await getAccordionItemById(item.sys.id, preview);
+            console.warn(`[AccordionAPI] Enriched item:`, {
+              id: enrichedItem?.sys?.id,
+              title: enrichedItem?.title,
+              hasDescription: !!enrichedItem?.description
+            });
+            return enrichedItem || item;
+          } catch (error) {
+            console.warn(`Failed to enrich AccordionItem ${item.sys.id}:`, error);
+            return item;
+          }
+        }
+        return item;
+      });
+
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      accordion.itemsCollection.items = enrichedItems.filter(item => item !== null);
+      
+      console.warn('[AccordionAPI] Accordion enrichment completed:', {
+        accordionId: accordion.sys?.id,
+        enrichedItemCount: enrichedItems.length,
+        firstItemEnriched: enrichedItems[0]?.title ? true : false
+      });
+    }
+
+    return accordion;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;
@@ -132,7 +174,7 @@ export async function getAccordionsByIds(
   `;
 
   try {
-    const response = await fetchGraphQL(query, {
+    const response = await fetchGraphQLMemoized(query, {
       ids: accordionIds,
       preview
     });
@@ -151,7 +193,41 @@ export async function getAccordionsByIds(
       throw new ContentfulError('Failed to fetch Accordions from Contentful');
     }
 
-    return data.accordionCollection.items;
+    const accordions = data.accordionCollection.items;
+
+    // Step 2: Enrich accordion items in all accordions (server-side lazy loading)
+    const firstAccordion = accordions[0];
+    if (firstAccordion) {
+      console.warn('[AccordionApi] Starting accordion enrichment:', {
+        accordionId: firstAccordion.sys?.id,
+        hasItems: !!firstAccordion.itemsCollection?.items,
+        itemCount: firstAccordion.itemsCollection?.items?.length || 0
+      });
+    }
+    const enrichedAccordions = await Promise.all(
+      accordions.map(async (accordion: any) => {
+        if (accordion.itemsCollection?.items?.length > 0) {
+          const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
+            if (item.sys?.id) {
+              try {
+                const enrichedItem = await getAccordionItemById(item.sys.id, preview);
+                return enrichedItem || item;
+              } catch (error) {
+                console.warn(`Failed to enrich AccordionItem ${item.sys.id}:`, error);
+                return item;
+              }
+            }
+            return item;
+          });
+
+          const enrichedItems = await Promise.all(enrichmentPromises);
+          accordion.itemsCollection.items = enrichedItems.filter(item => item !== null);
+        }
+        return accordion;
+      })
+    );
+
+    return enrichedAccordions;
   } catch (_error) {
     if (_error instanceof ContentfulError) {
       throw _error;

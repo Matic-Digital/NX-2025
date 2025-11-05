@@ -7,457 +7,49 @@
 
  
 
-'use client';
+import { Suspense as _Suspense } from 'react';
+import { ContentfulPreviewProvider } from '@/components/global/ContentfulLivePreview';
+import { PreviewContentRenderer } from './PreviewContentRenderer';
 
-import { Suspense, useEffect, useState } from 'react';
-import {
-  ContentfulLivePreviewProvider,
-  useContentfulInspectorMode,
-  useContentfulLiveUpdates
-} from '@contentful/live-preview/react';
-import { useSearchParams } from 'next/navigation';
-
-import { Accordion } from '@/components/Accordion/Accordion';
-// Component imports
+// API function imports only (no component imports)
 import { getAccordionById, getAccordionItemById } from '@/components/Accordion/AccordionApi';
-import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
-// Skeleton imports
-import { AccordionSkeleton } from '@/components/Accordion/components/AccordionSkeleton';
-import { AccordionItemPreview } from '@/components/Accordion/preview/AccordionItemPreview';
-import { AccordionPreview } from '@/components/Accordion/preview/AccordionPreview';
-import { BannerHero } from '@/components/BannerHero/BannerHero';
 import { getBannerHero } from '@/components/BannerHero/BannerHeroApi';
-import { BannerHeroSkeleton } from '@/components/BannerHero/components/BannerHeroSkeleton';
-import { BannerHeroPreview } from '@/components/BannerHero/preview/BannerHeroPreview';
 import { getButtonById } from '@/components/Button/ButtonApi';
-import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-import { ButtonPreview } from '@/components/Button/preview/ButtonPreview';
-import { Collection } from '@/components/Collection/Collection';
 import { getCollectionById } from '@/components/Collection/CollectionApi';
-import { CollectionPreview } from '@/components/Collection/preview/CollectionPreview';
-import { ContactCardSkeleton } from '@/components/ContactCard/components/ContactCardSkeleton';
-import { ContactCard } from '@/components/ContactCard/ContactCard';
 import { getContactCardById } from '@/components/ContactCard/ContactCardApi';
-import { ContactCardPreview } from '@/components/ContactCard/preview/ContactCardPreview';
-import { Content } from '@/components/Content/Content';
 import { getContentById } from '@/components/Content/ContentApi';
-import { ContentSkeleton } from '@/components/Content/ContentSkeleton';
-import { ContentPreview } from '@/components/Content/preview/ContentPreview';
-import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
-import {
-  getContentGridById,
-  getContentGridItemById
-} from '@/components/ContentGrid/ContentGridApi';
-import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
-import { ContentGridItemPreview } from '@/components/ContentGrid/preview/ContentGridItemPreview';
-import { ContentGridPreview } from '@/components/ContentGrid/preview/ContentGridPreview';
-import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
+import { getContentGridById, getContentGridItemById } from '@/components/ContentGrid/ContentGridApi';
 import { getCtaBannerById } from '@/components/CtaBanner/CtaBannerApi';
-import { CtaBannerSkeleton } from '@/components/CtaBanner/CtaBannerSkeleton';
-import { CtaBannerPreview } from '@/components/CtaBanner/preview/CtaBannerPreview';
-import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
-import { CtaGridPreview } from '@/components/CtaGrid/preview/CtaGridPreview';
-import { EventSkeleton } from '@/components/Event/components/EventSkeleton';
 import { getEventById } from '@/components/Event/EventApi';
-import { EventDetail } from '@/components/Event/EventDetail';
-import { EventDetailPreview } from '@/components/Event/preview';
-import { EventPreview } from '@/components/Event/preview/EventPreview';
-import { Footer } from '@/components/Footer/Footer';
 import { getFooterById } from '@/components/Footer/FooterApi';
-import { FooterPreview } from '@/components/Footer/preview/FooterPreview';
-import { HubspotForm } from '@/components/Forms/HubspotForm/HubspotForm';
 import { getHubspotFormById } from '@/components/Forms/HubspotForm/HubspotFormApi';
-import { HubspotFormPreview } from '@/components/Forms/HubspotForm/preview/HubspotFormPreview';
-import { Header } from '@/components/Header/Header';
 import { getHeaderById } from '@/components/Header/HeaderApi';
-import { HeaderSkeleton } from '@/components/Header/HeaderSkeleton';
-import { HeaderPreview } from '@/components/Header/preview/HeaderPreview';
-import { AirImage } from '@/components/Image/AirImage';
 import { getImageById } from '@/components/Image/ImageApi';
-import { ImagePreview } from '@/components/Image/preview/ImagePreview';
-import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
 import { getImageBetweenById } from '@/components/ImageBetween/ImageBetweenApi';
-import { ImageBetweenPreview } from '@/components/ImageBetween/preview/ImageBetweenPreview';
-import { MegaMenu } from '@/components/MegaMenu/MegaMenu';
 import { getMegaMenuById } from '@/components/MegaMenu/MegaMenuApi';
-import { MegaMenuPreview } from '@/components/MegaMenu/preview/MegaMenuPreview';
-import { Menu } from '@/components/Menu/Menu';
 import { getMenuById } from '@/components/Menu/MenuApi';
-import { MenuPreview } from '@/components/Menu/preview/MenuPreview';
-import { MenuItem } from '@/components/MenuItem/MenuItem';
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
-import { MenuItemPreview } from '@/components/MenuItem/preview/MenuItemPreview';
 import { getModalById } from '@/components/Modals/ModalApi';
-import { ModalPreview } from '@/components/Modals/preview/ModalPreview';
-import { RequestAQuoteModal } from '@/components/Modals/RequestAQuoteModal';
-import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
-import { OfficeLocationPreview } from '@/components/OfficeLocation/preview/OfficeLocationPreview';
-import { Page } from '@/components/Page/Page';
-import { getPageById } from '@/components/Page/PageApi';
-import { PageLayout } from '@/components/PageLayout/PageLayout';
-import { PageList } from '@/components/PageList/PageList';
 import { getPageListById } from '@/components/PageList/PageListApi';
+import { getPageById } from '@/components/Page/PageApi';
 import { getPostById } from '@/components/Post/PostApi';
-import { PostCard } from '@/components/Post/PostCard';
-import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
-import { PostPreview } from '@/components/Post/preview/PostPreview';
-import { ProductPreview } from '@/components/Product/preview/ProductPreview';
 import { getProductById } from '@/components/Product/ProductApi';
-import { RegionsMapPreview } from '@/components/Region/preview/RegionsMapPreview';
 import { getRegionsMapById } from '@/components/Region/RegionApi';
-import { RegionsMap } from '@/components/Region/RegionsMap';
-import { RegionStatItemPreview } from '@/components/RegionStats/preview/RegionStatItemPreview';
-import { RegionStatsPreview } from '@/components/RegionStats/preview/RegionStatsPreview';
-import { RegionStatItem } from '@/components/RegionStats/RegionStatItem/RegionStatItem';
-import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
-import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { getRegionStatsById } from '@/components/RegionStats/RegionStatsApi';
-import { RichContentPreview } from '@/components/RichContent/preview/RichContentPreview';
-import { RichContent } from '@/components/RichContent/RichContent';
+import { getRegionStatItemById } from '@/components/RegionStats/RegionStatItem/RegionStatItemApi';
 import { getRichContentById } from '@/components/RichContent/RichContentApi';
-import { SectionHeadingPreview } from '@/components/SectionHeading/preview/SectionHeadingPreview';
-import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
-import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
-import { ServicePreview } from '@/components/Service/preview/ServicePreview';
 import { getServiceById } from '@/components/Service/ServiceApi';
-import { Slider } from '@/components/Slider/Slider';
 import { getSliderById } from '@/components/Slider/SliderApi';
-import { SocialPreview } from '@/components/Social/preview/SocialPreview';
-import { Social } from '@/components/Social/Social';
 import { getSocialById } from '@/components/Social/SocialApi';
-import { SolutionPreview } from '@/components/Solution/preview/SolutionPreview';
 import { getSolutionById } from '@/components/Solution/SolutionApi';
-import { SolutionCard } from '@/components/Solution/SolutionCard';
-import { TeamMemberPreview } from '@/components/TeamMember/preview/TeamMemberPreview';
 import { getTeamMemberById } from '@/components/TeamMember/TeamMemberApi';
-import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
-import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
-import { TestimonialItemPreview } from '@/components/Testimonials/preview/TestimonialItemPreview';
-import { TestimonialsPreview } from '@/components/Testimonials/preview/TestimonialsPreview';
-import { Testimonials } from '@/components/Testimonials/Testimonials';
-import {
-  getTestimonialItemById,
-  getTestimonialsById
-} from '@/components/Testimonials/TestimonialsApi';
-import { TimelineSliderItemPreview } from '@/components/TimelineSlider/preview/TimelineSliderItemPreview';
-import { TimelineSliderItem } from '@/components/TimelineSlider/TimelineSliderItem';
+import { getTestimonialsById, getTestimonialItemById } from '@/components/Testimonials/TestimonialsApi';
 import { getTimelineSliderItemById } from '@/components/TimelineSlider/TimelineSliderItemApi';
-import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
-import { VideoPreview } from '@/components/Video/preview/VideoPreview';
 import { getVideoById } from '@/components/Video/VideoApi';
-
-// Content type configuration
-interface ContentTypeConfig {
-  fetchFn: (id: string, preview: boolean) => Promise<unknown>;
-  component: React.ComponentType<any>;
-  previewComponent?: React.ComponentType<any>; // Optional dedicated preview component
-  skeletonComponent?: React.ComponentType<any>; // Skeleton for instant loading
-  entityName: string;
-  containerClass: string;
-  usePageLayout?: boolean;
-}
-
-const contentTypeConfig: Record<string, ContentTypeConfig> = {
-  accordion: {
-    fetchFn: getAccordionById,
-    component: Accordion,
-    previewComponent: AccordionPreview,
-    skeletonComponent: AccordionSkeleton,
-    entityName: 'Accordion',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'accordion-item': {
-    fetchFn: getAccordionItemById,
-    component: AccordionItem,
-    previewComponent: AccordionItemPreview,
-    entityName: 'AccordionItem',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'banner-hero': {
-    fetchFn: getBannerHero,
-    component: BannerHero,
-    previewComponent: BannerHeroPreview,
-    skeletonComponent: BannerHeroSkeleton,
-    entityName: 'BannerHero',
-    containerClass: 'min-h-screen' // Full height for hero sections
-  },
-  button: {
-    fetchFn: getButtonById,
-    component: ModalCtaButton,
-    previewComponent: ButtonPreview,
-    entityName: 'Button',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  collection: {
-    fetchFn: getCollectionById,
-    component: Collection,
-    previewComponent: CollectionPreview,
-    entityName: 'Collection',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'contact-card': {
-    fetchFn: getContactCardById,
-    component: ContactCard,
-    previewComponent: ContactCardPreview,
-    skeletonComponent: ContactCardSkeleton,
-    entityName: 'ContactCard',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  content: {
-    fetchFn: getContentById,
-    component: Content,
-    previewComponent: ContentPreview,
-    skeletonComponent: ContentSkeleton,
-    entityName: 'Content',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'content-grid': {
-    fetchFn: getContentGridById,
-    component: ContentGrid,
-    previewComponent: ContentGridPreview,
-    entityName: 'ContentGrid',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'content-grid-item': {
-    fetchFn: getContentGridItemById,
-    component: ContentGridItem,
-    previewComponent: ContentGridItemPreview,
-    entityName: 'ContentGridItem',
-    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
-  'cta-banner': {
-    fetchFn: getCtaBannerById,
-    component: CtaBanner,
-    previewComponent: CtaBannerPreview,
-    skeletonComponent: CtaBannerSkeleton,
-    entityName: 'CtaBanner',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'cta-grid': {
-    fetchFn: getCtaGridById,
-    component: CtaGrid,
-    previewComponent: CtaGridPreview,
-    entityName: 'CtaGrid',
-    containerClass: 'min-h-screen bg-white'
-  },
-  event: {
-    fetchFn: getEventById,
-    component: EventDetail,
-    previewComponent: EventPreview,
-    skeletonComponent: EventSkeleton,
-    entityName: 'Event',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'event-detail': {
-    fetchFn: getEventById,
-    component: EventDetail,
-    previewComponent: EventDetailPreview,
-    entityName: 'Event Detail',
-    containerClass: 'min-h-screen bg-white'
-  },
-  footer: {
-    fetchFn: getFooterById,
-    component: Footer,
-    previewComponent: FooterPreview,
-    entityName: 'Footer',
-    containerClass: 'bg-white text-white'
-  },
-  header: {
-    fetchFn: getHeaderById,
-    component: Header,
-    previewComponent: HeaderPreview,
-    skeletonComponent: HeaderSkeleton,
-    entityName: 'Header',
-    containerClass: 'bg-white shadow-sm'
-  },
-  'hubspot-form': {
-    fetchFn: getHubspotFormById,
-    component: HubspotForm,
-    previewComponent: HubspotFormPreview,
-    entityName: 'HubspotForm',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  image: {
-    fetchFn: getImageById,
-    component: AirImage,
-    previewComponent: ImagePreview,
-    entityName: 'Image',
-    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
-  'image-between': {
-    fetchFn: getImageBetweenById,
-    component: ImageBetween,
-    previewComponent: ImageBetweenPreview,
-    entityName: 'ImageBetween',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'mega-menu': {
-    fetchFn: getMegaMenuById,
-    component: MegaMenu,
-    previewComponent: MegaMenuPreview,
-    entityName: 'MegaMenu',
-    containerClass: 'min-h-screen bg-white'
-  },
-  menu: {
-    fetchFn: getMenuById,
-    component: Menu,
-    previewComponent: MenuPreview,
-    entityName: 'Menu',
-    containerClass: 'min-h-screen bg-gray-50 p-8'
-  },
-  'menu-item': {
-    fetchFn: getMenuItemById,
-    component: MenuItem,
-    previewComponent: MenuItemPreview,
-    entityName: 'MenuItem',
-    containerClass: 'flex min-h-screen items-center justify-center bg-gray-50 p-8'
-  },
-  modal: {
-    fetchFn: getModalById,
-    component: RequestAQuoteModal,
-    previewComponent: ModalPreview,
-    entityName: 'Modal',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'office-location': {
-    fetchFn: getLocationById,
-    component: Location,
-    previewComponent: OfficeLocationPreview,
-    entityName: 'OfficeLocation',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  page: {
-    fetchFn: getPageById,
-    component: Page,
-    entityName: 'Page',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  'page-list': {
-    fetchFn: getPageListById,
-    component: PageList,
-    entityName: 'PageList',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  post: {
-    fetchFn: getPostById,
-    component: PostCard,
-    previewComponent: PostPreview,
-    skeletonComponent: PostCardSkeleton,
-    entityName: 'Post',
-    containerClass: 'min-h-screen bg-white'
-  },
-  product: {
-    fetchFn: getProductById,
-    component: ProductAsPage,
-    previewComponent: ProductPreview,
-    entityName: 'Product',
-    containerClass: 'min-h-screen',
-    usePageLayout: true
-  },
-  'regions-map': {
-    fetchFn: getRegionsMapById,
-    component: RegionsMap,
-    previewComponent: RegionsMapPreview,
-    entityName: 'Region',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'region-stats': {
-    fetchFn: getRegionStatsById,
-    component: RegionStats,
-    previewComponent: RegionStatsPreview,
-    entityName: 'RegionStats',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'region-stat-item': {
-    fetchFn: getRegionStatItemById,
-    component: RegionStatItem,
-    previewComponent: RegionStatItemPreview,
-    entityName: 'RegionStatItem',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'rich-text': {
-    fetchFn: getRichContentById,
-    component: RichContent,
-    previewComponent: RichContentPreview,
-    entityName: 'RichText',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'section-heading': {
-    fetchFn: getSectionHeadingById,
-    component: SectionHeading,
-    previewComponent: SectionHeadingPreview,
-    skeletonComponent: SectionHeadingSkeleton,
-    entityName: 'SectionHeading',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  service: {
-    fetchFn: getServiceById,
-    component: ServicePreview,
-    previewComponent: ServicePreview,
-    entityName: 'Service',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  slider: {
-    fetchFn: getSliderById,
-    component: Slider,
-    entityName: 'Slider',
-    containerClass: 'min-h-screen bg-white'
-  },
-  social: {
-    fetchFn: getSocialById,
-    component: Social,
-    previewComponent: SocialPreview,
-    entityName: 'Social',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  solution: {
-    fetchFn: getSolutionById,
-    component: SolutionCard,
-    previewComponent: SolutionPreview,
-    entityName: 'Solution',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'team-member': {
-    fetchFn: getTeamMemberById,
-    component: TeamMemberModal,
-    previewComponent: TeamMemberPreview,
-    entityName: 'TeamMember',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  testimonials: {
-    fetchFn: getTestimonialsById,
-    component: Testimonials,
-    previewComponent: TestimonialsPreview,
-    entityName: 'Testimonials',
-    containerClass: 'min-h-screen bg-white'
-  },
-  'testimonial-item': {
-    fetchFn: getTestimonialItemById,
-    component: TestimonialItem,
-    previewComponent: TestimonialItemPreview,
-    entityName: 'TestimonialItem',
-    containerClass: 'min-h-screen bg-gray-50'
-  },
-  'timeline-slider-item': {
-    fetchFn: getTimelineSliderItemById,
-    component: TimelineSliderItem,
-    previewComponent: TimelineSliderItemPreview,
-    entityName: 'TimelineSliderItem',
-    containerClass: 'min-h-screen bg-white'
-  },
-  video: {
-    fetchFn: getVideoById,
-    component: MuxVideoPlayer,
-    previewComponent: VideoPreview,
-    entityName: 'Video',
-    containerClass: 'min-h-screen bg-white'
-  }
-};
+// All component imports removed - components are now handled in PreviewContentRenderer.tsx
 
 interface ContentfulContent {
   sys: { id: string };
@@ -468,131 +60,195 @@ interface ContentfulContent {
   [key: string]: unknown;
 }
 
-interface PreviewContentProps {
-  contentType: string;
+// PreviewContentProps interface removed - no longer needed
+
+// ProductAsPage component moved to PreviewContentRenderer.tsx where Page component is imported
+
+// Helper function to get API component name
+function _getApiComponentName(contentType: string): string {
+  switch (contentType) {
+    case 'page-list':
+      return 'PageList';
+    case 'hubspot-form':
+      return 'HubspotForm';
+    default:
+      return contentType.charAt(0).toUpperCase() + contentType.slice(1);
+  }
 }
 
-// Lightweight wrapper to render a Product using the Page component API
-// Maps Product.itemsCollection -> Page.pageContentCollection
-interface ProductLikeForPreview {
-  itemsCollection?: unknown;
-  pageContentCollection?: unknown;
-  [key: string]: unknown;
+// Helper function to get fetch function for content type without importing components
+function getFetchFunction(contentType: string): ((id: string, preview: boolean) => Promise<unknown>) | null {
+  switch (contentType) {
+    case 'accordion':
+      return getAccordionById;
+    case 'accordion-item':
+      return getAccordionItemById;
+    case 'banner-hero':
+      return getBannerHero;
+    case 'button':
+      return getButtonById;
+    case 'collection':
+      return getCollectionById;
+    case 'contact-card':
+      return getContactCardById;
+    case 'content':
+      return getContentById;
+    case 'content-grid':
+      return getContentGridById;
+    case 'content-grid-item':
+      return getContentGridItemById;
+    case 'cta-banner':
+      return getCtaBannerById;
+    case 'cta-grid':
+      return getCtaGridById;
+    case 'event':
+    case 'event-detail':
+      return getEventById;
+    case 'footer':
+      return getFooterById;
+    case 'hubspot-form':
+      return getHubspotFormById;
+    case 'header':
+      return getHeaderById;
+    case 'image':
+      return getImageById;
+    case 'image-between':
+      return getImageBetweenById;
+    case 'mega-menu':
+      return getMegaMenuById;
+    case 'menu':
+      return getMenuById;
+    case 'menu-item':
+      return getMenuItemById;
+    case 'modal':
+      return getModalById;
+    case 'office-location':
+      return getLocationById;
+    case 'page':
+      return getPageById;
+    case 'page-list':
+      return getPageListById;
+    case 'post':
+      return getPostById;
+    case 'product':
+      return getProductById;
+    case 'regions-map':
+      return getRegionsMapById;
+    case 'region-stats':
+      return getRegionStatsById;
+    case 'region-stat-item':
+      return getRegionStatItemById;
+    case 'rich-text':
+      return getRichContentById;
+    case 'section-heading':
+      return getSectionHeadingById;
+    case 'service':
+      return getServiceById;
+    case 'slider':
+      return getSliderById;
+    case 'social':
+      return getSocialById;
+    case 'solution':
+      return getSolutionById;
+    case 'team-member':
+      return getTeamMemberById;
+    case 'testimonials':
+      return getTestimonialsById;
+    case 'testimonial-item':
+      return getTestimonialItemById;
+    case 'timeline-slider-item':
+      return getTimelineSliderItemById;
+    case 'video':
+      return getVideoById;
+    default:
+      return null;
+  }
 }
 
-function ProductAsPage(props: ProductLikeForPreview) {
-  const pageContentCollection = props.itemsCollection ?? props.pageContentCollection;
-  const mapped: ProductLikeForPreview = {
-    ...props,
-    pageContentCollection
-  };
-  // Page expects specific fields like sys; cast to any to avoid TS prop mismatch in preview adapter
-  return <Page {...(mapped as any)} />;
+// PreviewContentRenderer moved to separate client component file
+
+// Legacy component removed - now using server-side data fetching with separate client component
+
+function _LoadingFallback() {
+  return <div className="min-h-screen">{/* No spinner - just empty space while routing */}</div>;
 }
 
-function PreviewContent({ contentType }: PreviewContentProps) {
-  const searchParams = useSearchParams();
-  const id = searchParams?.get('id') ?? '';
-  const [content, setContent] = useState<ContentfulContent | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+interface PreviewPageProps {
+  params: Promise<{ contentType: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-  // Always call hooks at the top level
-  const liveContent = useContentfulLiveUpdates(content);
-  const inspectorProps = useContentfulInspectorMode({
-    entryId: liveContent?.sys?.id
-  });
+export default async function PreviewPage({ params, searchParams }: PreviewPageProps) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const { contentType } = resolvedParams;
+  const id = Array.isArray(resolvedSearchParams.id) ? resolvedSearchParams.id[0] : resolvedSearchParams.id;
 
-  // Validate content type after hooks
-  // eslint-disable-next-line security/detect-object-injection
-  const config = contentTypeConfig[contentType];
+  if (!id) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600">Missing ID</h1>
+          <p className="text-gray-600">No ID provided for {contentType} preview</p>
+        </div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    async function fetchContent() {
-      if (!id) {
-        setIsLoading(false);
-        setError(new Error(`No ${config?.entityName ?? 'Content'} ID provided`));
-        return;
-      }
-
-      if (!config) {
-        setIsLoading(false);
-        setError(new Error(`Unsupported content type: ${contentType}`));
-        return;
-      }
-
-      try {
-        setIsLoading(true);
-        const fetchedContent = await config.fetchFn(id, true);
-        setContent(fetchedContent as ContentfulContent);
-        setIsLoading(false);
-      } catch (_err) {
-        // For HubSpot forms, try fallback to published content if preview fails
-        if (
-          contentType === 'hubspot-form' &&
-          _err instanceof Error &&
-          (_err.message.includes('Authentication failed') ||
-            _err.message.includes('access token') ||
-            _err.message.includes('invalid token'))
-        ) {
-          try {
-            // Try fallback to published content
-            const fallbackContent = await config.fetchFn(id, false);
-            setContent(fallbackContent as ContentfulContent);
-            setIsLoading(false);
-            return;
-          } catch {
-            // Fallback failed, continue to show error
-          }
-        }
-
-        setError(_err instanceof Error ? _err : new Error(`Failed to fetch ${config.entityName}`));
-        setIsLoading(false);
-      }
-    }
-
-    void fetchContent();
-  }, [id, config, contentType]);
-
-  if (!config) {
+  // Get the fetch function for this content type without importing components
+  const fetchFn = getFetchFunction(contentType);
+  
+  if (!fetchFn) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Unsupported Content Type</h1>
-          <p className="text-gray-600">
-            Content type &quot;{contentType}&quot; is not supported for preview
-          </p>
+          <p className="text-gray-600">Content type "{contentType}" is not supported for preview</p>
         </div>
       </div>
     );
   }
 
-  const {
-    component: Component,
-    previewComponent: PreviewComponent,
-    skeletonComponent: SkeletonComponent,
-    entityName,
-    usePageLayout,
-    containerClass
-  } = config;
+  // Server-side data fetching using server-side credentials
+  let content: ContentfulContent | null = null;
+  let error: string | null = null;
 
-  // Use PreviewComponent if available, otherwise fall back to regular Component
-  const ComponentToRender = PreviewComponent ?? Component;
-
-  // Show skeleton immediately while loading for instant feedback
-  if (isLoading && SkeletonComponent) {
-    return (
-      <div className={containerClass}>
-        <div className="transition-opacity duration-300">
-          <SkeletonComponent />
-        </div>
-      </div>
-    );
-  }
-
-  // For components without skeletons, show minimal loading or nothing
-  if (isLoading) {
-    return <div className={containerClass}>{/* No spinner - just wait for content to load */}</div>;
+  try {
+    // Fetch data server-side using the fetchFn with preview=true
+    console.warn(`[Preview] Fetching ${contentType} with ID: ${id}`);
+    const fetchedContent = await fetchFn(id, true);
+    
+    // Debug logging for accordion enrichment
+    if (contentType === 'accordion' && fetchedContent) {
+      const accordion = fetchedContent as any;
+      console.warn(`[Preview] Accordion fetched:`, {
+        id: accordion.sys?.id,
+        title: accordion.title,
+        hasItems: !!accordion.itemsCollection?.items,
+        itemCount: accordion.itemsCollection?.items?.length || 0,
+        firstItemHasData: accordion.itemsCollection?.items?.[0]?.title ? true : false
+      });
+    }
+    
+    content = fetchedContent as ContentfulContent;
+  } catch (err) {
+    // For HubSpot forms, try fallback to published content if preview fails
+    if (
+      contentType === 'hubspot-form' &&
+      err instanceof Error &&
+      (err.message.includes('Authentication failed') ||
+        err.message.includes('access token') ||
+        err.message.includes('invalid token'))
+    ) {
+      try {
+        const fallbackContent = await fetchFn(id, false);
+        content = fallbackContent as ContentfulContent;
+      } catch {
+        error = err.message;
+      }
+    } else {
+      error = err instanceof Error ? err.message : `Failed to fetch ${contentType}`;
+    }
   }
 
   if (error) {
@@ -600,91 +256,30 @@ function PreviewContent({ contentType }: PreviewContentProps) {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center max-w-md">
           <h1 className="text-2xl font-bold text-red-600">Error</h1>
-          <p className="text-gray-600 mb-4">
-            Error fetching {entityName}: {error.message}
-          </p>
+          <p className="text-gray-600 mb-4">Error fetching {contentType}: {error}</p>
           <p className="mt-2 text-sm text-gray-500">ID: {id}</p>
-
-          {contentType === 'hubspot-form' && (
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-left">
-              <h3 className="font-semibold text-yellow-800 mb-2">Possible Issues:</h3>
-              <ul className="text-sm text-yellow-700 space-y-1">
-                <li>• HubSpot Form content type may not exist in this Contentful environment</li>
-                <li>• The entry ID may not exist or may be in a different environment</li>
-                <li>• Preview access token may not have permissions for this content type</li>
-              </ul>
-            </div>
-          )}
         </div>
       </div>
     );
   }
 
-  if (!content || !liveContent) {
+  if (!content) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">{entityName} Not Found</h1>
-          <p className="text-gray-600">
-            No {entityName} found with ID: {id}
-          </p>
+          <h1 className="text-2xl font-bold">{contentType} Not Found</h1>
+          <p className="text-gray-600">No {contentType} found with ID: {id}</p>
         </div>
       </div>
     );
   }
 
-  // For Page and PageList content types, use PageLayout wrapper like production
-  if (usePageLayout && liveContent?.pageLayout) {
-    const pageLayout = liveContent.pageLayout;
-    const pageHeader = pageLayout?.header as any;
-    const pageFooter = pageLayout?.footer as any;
-
-    return (
-      <div className="animate-in fade-in duration-500">
-        <PageLayout header={pageHeader} footer={pageFooter}>
-          <div {...inspectorProps}>
-            <ComponentToRender {...(liveContent as any)} />
-          </div>
-        </PageLayout>
-      </div>
-    );
-  }
-
   return (
-    <div className="animate-in fade-in duration-500" {...inspectorProps}>
-      <ComponentToRender {...(liveContent as any)} />
-    </div>
-  );
-}
-
-function LoadingFallback() {
-  return <div className="min-h-screen">{/* No spinner - just empty space while routing */}</div>;
-}
-
-interface PreviewPageProps {
-  params: Promise<{ contentType: string }>;
-}
-
-export default function PreviewPage({ params }: PreviewPageProps) {
-  const [contentType, setContentType] = useState<string>('');
-
-  useEffect(() => {
-    async function resolveParams() {
-      const resolvedParams = await params;
-      setContentType(resolvedParams.contentType);
-    }
-    void resolveParams();
-  }, [params]);
-
-  if (!contentType) {
-    return <LoadingFallback />;
-  }
-
-  return (
-    <ContentfulLivePreviewProvider locale="en-US">
-      <Suspense fallback={<LoadingFallback />}>
-        <PreviewContent contentType={contentType} />
-      </Suspense>
-    </ContentfulLivePreviewProvider>
+    <ContentfulPreviewProvider isPreviewMode={true}>
+      <PreviewContentRenderer 
+        contentType={contentType}
+        content={content}
+      />
+    </ContentfulPreviewProvider>
   );
 }

@@ -37,6 +37,7 @@ export const AccordionItem = ({
   onHover,
   inspectorProps
 }: AccordionItemProps) => {
+  // Debug: Log AccordionItem data to verify server-side enrichment removed
   const itemValue = `item-${index}`;
 
   const HorizontalAccordionItem = () => {

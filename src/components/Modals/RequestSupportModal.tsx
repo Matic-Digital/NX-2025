@@ -23,8 +23,12 @@ export function RequestSupportModal({
   description,
   formId
 }: RequestSupportModalProps) {
-  const defaultFormId = '1d392e69-b470-4703-afa6-19b01f490b84';
-  const hubspotFormId = formId ?? defaultFormId;
+  // Use formId from Contentful - no hardcoded fallback
+  if (!formId) {
+    console.warn('RequestSupportModal: No formId provided from Contentful. Make sure the modal button has a form configured.');
+    return null;
+  }
+  const hubspotFormId = formId;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -38,6 +42,7 @@ export function RequestSupportModal({
             formId={hubspotFormId}
             onSubmit={() => onOpenChange(false)}
             className="w-full"
+            theme="light"
           />
         </div>
       </DialogContent>

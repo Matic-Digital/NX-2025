@@ -109,6 +109,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           throw new Error('Failed to fetch form data');
         }
         const data = (await response.json()) as HubSpotFormData;
+        console.warn('HubSpot Form Data for ID:', formId, data);
+        console.warn('Is Multi-Step:', data.metadata.isMultiStep);
+        console.warn('Total Steps:', data.metadata.totalSteps);
+        console.warn('Steps:', data.steps);
         setFormData(data);
       } catch (_err) {
         setError(_err instanceof Error ? _err.message : 'Failed to load form');

@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
 
+import { staticRoutingService } from '@/lib/static-routing';
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -16,8 +17,8 @@ import { Box } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
 import {
-  getContentGridItemById,
-  getContentGridItemLink
+  getContentGridItemById as _getContentGridItemById,
+  getContentGridItemLink as _getContentGridItemLink
 } from '@/components/ContentGrid/ContentGridApi';
 import { AirImage } from '@/components/Image/AirImage';
 import { ServiceCard } from '@/components/Service/ServiceCard';
@@ -49,45 +50,44 @@ export function ContentGridItem(props: ContentGridItemProps) {
       }
 
       try {
-        // Fetch full content data
-        const fullData = await getContentGridItemById(sys.id);
-        if (fullData) {
-          setFullContentData(fullData);
+        // Fetch full content data using internal API route
+        const contentResponse = await fetch(`/api/components/ContentGrid/${sys.id}`);
+        if (contentResponse.ok) {
+          const contentData = await contentResponse.json();
+          setFullContentData(contentData.contentGridItem);
         }
 
-        // Fetch link details for ContentGridItem
-        const linkData = await getContentGridItemLink(sys.id);
-        if (linkData?.link?.slug) {
-          // Default to flat URL structure
-          let href = `/${linkData.link.slug}`;
+        // Fetch link details for ContentGridItem using internal API route
+        const linkResponse = await fetch(`/api/components/ContentGrid/${sys.id}/link`);
+        if (linkResponse.ok) {
+          const linkResponseData = await linkResponse.json();
+          const linkData = linkResponseData.linkData;
 
-          // PageList Nesting Integration: Check if the linked PageList has a parent
-          // This ensures URLs like /products/trackers instead of just /trackers
-          if (linkData.link.__typename === 'PageList') {
-            try {
-              // Query the check-page-parent API to detect nesting relationships
-              const response = await fetch(`/api/check-page-parent?slug=${linkData.link.slug}`);
+          if (linkData?.link?.slug) {
+            // Default to flat URL structure
+            let href = `/${linkData.link.slug}`;
 
-              if (response.ok) {
-                const data = (await response.json()) as {
-                  parentPageList?: unknown;
-                  fullPath?: string;
-                };
+            // PageList Nesting Integration: Check if the linked PageList has a parent
+            // This ensures URLs like /products/trackers instead of just /trackers
+            if (linkData.link.__typename === 'PageList') {
+              // Use static routing service to get route metadata (replaces API call)
+              const routeMetadata = staticRoutingService.getRoute(`/${linkData.link.slug}`);
 
-                if (data.parentPageList) {
-                  // Construct proper nested URL: /parent-pagelist/child-pagelist
-                  href = `/${(data.parentPageList as { slug?: string }).slug}/${linkData.link.slug}`;
-                }
+              if (
+                routeMetadata &&
+                routeMetadata.isNested &&
+                routeMetadata.parentPageLists.length > 0
+              ) {
+                // Use the full nested path from routing metadata
+                href = routeMetadata.path;
               }
-            } catch {
-              // Failed to check parent PageList
+            } else if (props.parentPageListSlug) {
+              // For content items (Pages, Products, etc.) with known parent context
+              // Use the parent PageList slug to construct nested URLs
+              href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
             }
-          } else if (props.parentPageListSlug) {
-            // For content items (Pages, Products, etc.) with known parent context
-            // Use the parent PageList slug to construct nested URLs
-            href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
+            setLinkHref(href);
           }
-          setLinkHref(href);
         }
       } catch {
         // Error fetching content data
@@ -193,7 +193,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
             {ctaCollection?.items?.[0]?.text && (
               <div className="mt-auto">
-                <Link href={getHref()} className="inline-block w-full md:w-auto">
+                <Link
+                  href={`/${ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}`}
+                  className="inline-block w-full md:w-auto"
+                >
                   <Button
                     variant="outlineTrasparentWhite"
                     className="hover:bg-background hover:text-foreground w-full transition-colors"
@@ -294,14 +297,17 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 </p>
               )}
             </Box>
-            <Link href={getHref()}>
-              <Button
-                variant="outline"
-                className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
-              >
-                See Details
-              </Button>
-            </Link>
+
+            {ctaCollection?.items?.[0]?.text && (
+              <Link href={ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}>
+                <Button
+                  variant="whiteOutline"
+                  className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
+                >
+                  {ctaCollection?.items?.[0]?.text}
+                </Button>
+              </Link>
+            )}
           </Box>
         </Box>
       </div>

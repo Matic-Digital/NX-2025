@@ -31,6 +31,12 @@ export const SECTION_HEADING_GRAPHQL_FIELDS = `
         sys { id }
         title
         description
+        form {
+          sys { id }
+          title
+          description
+          formId
+        }
       }
       icon
     }

@@ -11,12 +11,12 @@ import {
 } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { BANNERHERO_GRAPHQL_FIELDS as _BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENTGRID_GRAPHQL_FIELDS as _CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS as _CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS as _IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
@@ -210,9 +210,7 @@ export async function getPageListBySlug(
   preview = false
 ): Promise<PageListWithHeaderFooter | null> {
   try {
-    // Log the request for debugging
-
-    // First, fetch the basic PageList data with references
+    // Fetch PageList with minimal pageContentCollection fields (like Page API)
     const response = await fetchGraphQL<PageListBySlugResponse>(
       `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
         pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
@@ -291,64 +289,38 @@ export async function getPageListBySlug(
                 }
               }
             }
-          }
-        }
-      }`,
-      { slug, preview },
-      preview
-    );
-
-    // Check if we have any results
-    if (!response.data?.pageListCollection?.items?.length) {
-      return null;
-    }
-
-    const pageListData = response.data.pageListCollection.items[0]! as unknown as PageListWithRefs;
-
-    // Type assertion for pageLayout to avoid 'any' type
-    const pageLayout = (pageListData as unknown as { pageLayout?: PageLayoutType }).pageLayout;
-
-    // Fetch header data if referenced
-    let header = null;
-    if (pageLayout?.header) {
-      // Type assertion for header reference
-      const headerRef = pageLayout.header as { sys: { id: string } };
-      if (headerRef.sys?.id) {
-        header = await getHeaderById(headerRef.sys.id, preview);
-      }
-    }
-
-    // Fetch footer data if referenced
-    let footer = null;
-    if (pageLayout?.footer) {
-      // Type assertion for footer reference
-      const footerRef = pageLayout.footer as { sys: { id: string } };
-      if (footerRef.sys?.id) {
-        footer = await getFooterById(footerRef.sys.id, preview);
-      }
-    }
-
-    // Fetch page content separately with simplified fields
-    const pageContentResponse = await fetchGraphQL(
-      `query GetPageListContent($slug: String!, $preview: Boolean!) {
-        pageListCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
-          items {
-            pageContentCollection(limit: 10) {
+            pageContentCollection(limit: 20) {
               items {
+                __typename
+                ... on Entry {
+                  sys {
+                    id
+                  }
+                }
                 ... on BannerHero {
-                  ${BANNERHERO_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on Content {
-                  ${SYS_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ContentGrid {
-                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on CtaBanner {
-                  ${CTABANNER_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ImageBetween {
-                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
               }
             }
@@ -359,38 +331,174 @@ export async function getPageListBySlug(
       preview
     );
 
-    // Safely extract page content with proper error checking
-    let pageContent:
-      | {
-          items: Array<{
-            sys: { id: string };
-            title?: string;
-            description?: string;
-            __typename?: string;
-          }>;
-        }
-      | undefined = undefined;
-    try {
-      const items = pageContentResponse.data?.pageListCollection?.items;
-      if (items && items.length > 0 && items[0]) {
-        // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as {
-          pageContentCollection?: {
-            items: Array<{
-              sys: { id: string };
-              title?: string;
-              description?: string;
-              __typename?: string;
-            }>;
-          };
-        };
-        pageContent = pageListItem.pageContentCollection;
-      }
-    } catch {
-      pageContent = undefined;
+    if (!response.data?.pageListCollection?.items?.length) {
+      return null;
     }
 
-    // Combine all the data
+    const pageListData = response.data.pageListCollection.items[0]! as unknown as PageListWithRefs;
+    const pageLayout = (pageListData as unknown as { pageLayout?: PageLayoutType }).pageLayout;
+
+    // Fetch header and footer in parallel
+    const [header, footer] = await Promise.all([
+      pageLayout?.header?.sys?.id ? getHeaderById(pageLayout.header.sys.id, preview) : null,
+      pageLayout?.footer?.sys?.id ? getFooterById(pageLayout.footer.sys.id, preview) : null
+    ]);
+
+    // Server-side enrichment for pageContentCollection (same as Page API)
+    let pageContent: any = null;
+    try {
+      const rawPageContent = (pageListData as any).pageContentCollection;
+      if (rawPageContent?.items?.length) {
+        pageContent = rawPageContent;
+      }
+    } catch {
+      pageContent = null;
+    }
+
+    // Post-process to enrich components (SAME AS PAGE API)
+    console.warn('PageList API: Starting server-side enrichment for pageContent:', pageContent);
+    if (pageContent?.items) {
+      console.warn('PageList API: Found', pageContent.items.length, 'items to process');
+      const enrichmentPromises = pageContent.items.map(async (item: any) => {
+        console.warn('PageList API: Processing item:', item.__typename, item.sys?.id);
+        if (!item.sys?.id || !item.__typename) {
+          return item;
+        }
+        
+        try {
+          switch (item.__typename) {
+            case 'BannerHero': {
+              const { getBannerHero } = await import('@/components/BannerHero/BannerHeroApi');
+              const enrichedItem = await getBannerHero(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Content': {
+              const { getContentById } = await import('@/components/Content/ContentApi');
+              const enrichedItem = await getContentById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'ContentGrid': {
+              const { getContentGridById } = await import('@/components/ContentGrid/ContentGridApi');
+              console.warn(`PageList: Enriching ContentGrid ${item.sys.id}`);
+              const enrichedItem = await getContentGridById(item.sys.id, preview);
+              console.warn(`PageList: ContentGrid ${item.sys.id} enriched:`, {
+                success: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                hasVariant: !!enrichedItem?.variant,
+                hasItemsCollection: !!enrichedItem?.itemsCollection,
+                itemsCount: enrichedItem?.itemsCollection?.items?.length || 0,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'CtaBanner': {
+              const { getCtaBannerById } = await import('@/components/CtaBanner/CtaBannerApi');
+              const enrichedItem = await getCtaBannerById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'ImageBetween': {
+              const { getImageBetweenById } = await import('@/components/ImageBetween/ImageBetweenApi');
+              const enrichedItem = await getImageBetweenById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Slider': {
+              const { getSliderById } = await import('@/components/Slider/SliderApi');
+              console.warn(`PageList: Enriching Slider ${item.sys.id}`);
+              const enrichedItem = await getSliderById(item.sys.id, preview);
+              console.warn(`PageList: Slider ${item.sys.id} enriched:`, {
+                success: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                hasItemsCollection: !!enrichedItem?.itemsCollection,
+                itemsCount: enrichedItem?.itemsCollection?.items?.length || 0,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'CtaGrid': {
+              const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
+              console.warn(`PageList: Enriching CtaGrid ${item.sys.id}`);
+              const enrichedResult = await getCtaGridById(item.sys.id, preview);
+              const enrichedItem = enrichedResult?.item;
+              console.warn(`PageList: CtaGrid ${item.sys.id} enriched:`, {
+                success: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                hasItemsCollection: !!enrichedItem?.itemsCollection,
+                itemsCount: enrichedItem?.itemsCollection?.items?.length || 0,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'Profile': {
+              const { getProfileById } = await import('@/components/Profile/ProfileApi');
+              console.warn(`PageList: Enriching Profile ${item.sys.id}`);
+              const enrichedItem = await getProfileById(item.sys.id, preview);
+              console.warn(`PageList: Profile ${item.sys.id} enriched:`, {
+                success: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                hasName: !!enrichedItem?.name,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'Accordion': {
+              const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
+              console.warn(`PageList: Enriching Accordion ${item.sys.id}`);
+              const enrichedItem = await getAccordionById(item.sys.id, preview);
+              console.warn(`PageList: Accordion ${item.sys.id} enriched:`, {
+                id: item.sys.id,
+                hasEnrichedData: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'Product': {
+              const { getProductById } = await import('@/components/Product/ProductApi');
+              const enrichedItem = await getProductById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Solution': {
+              const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+              const enrichedItem = await getSolutionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Service': {
+              const { getServiceById } = await import('@/components/Service/ServiceApi');
+              const enrichedItem = await getServiceById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            default:
+              return item;
+          }
+        } catch (error) {
+          console.warn(`PageList: Failed to enrich ${item.__typename} item ${item.sys.id}:`, error);
+          return item;
+        }
+      });
+      
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      pageContent = { items: enrichedItems };
+      console.warn('PageList API: Server-side enrichment completed');
+      console.warn('PageList API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
+        __typename: item.__typename,
+        id: item.sys?.id,
+        hasTitle: !!item.title,
+        hasVariant: !!item.variant,
+        keysCount: Object.keys(item).length
+      })));
+    }
+
     const result: PageListWithHeaderFooter = {
       ...(pageListData as unknown as PageList),
       header,
@@ -418,72 +526,44 @@ export async function getPageListById(
   preview = false
 ): Promise<PageListWithHeaderFooter | null> {
   try {
-    // Log the request for debugging
-
-    // First, fetch the basic PageList data with references
+    // Fetch PageList with minimal pageContentCollection fields (like Page API)
     const response = await fetchGraphQL<PageListWithRefs>(
       `query GetPageListById($id: String!, $preview: Boolean!) {
         pageListCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
           items {
             ${PAGELIST_WITH_REFS_FIELDS}
-          }
-        }
-      }`,
-      { id, preview },
-      preview
-    );
-
-    // Check if we have any results
-    if (!response.data?.pageListCollection?.items?.length) {
-      return null;
-    }
-
-    const pageListData = response.data.pageListCollection.items[0]!;
-
-    // Type assertion for pageLayout to avoid 'any' type
-    const pageLayout = pageListData.pageLayout as PageLayoutType | undefined;
-
-    // Fetch header data if referenced
-    let header = null;
-    if (pageLayout?.header) {
-      // Type assertion for header reference
-      const headerRef = pageLayout.header as { sys: { id: string } };
-      if (headerRef.sys?.id) {
-        header = await getHeaderById(headerRef.sys.id, preview);
-      }
-    }
-
-    // Fetch footer data if referenced
-    let footer = null;
-    if (pageLayout?.footer) {
-      // Type assertion for footer reference
-      const footerRef = pageLayout.footer as { sys: { id: string } };
-      if (footerRef.sys?.id) {
-        footer = await getFooterById(footerRef.sys.id, preview);
-      }
-    }
-
-    // Fetch page content separately
-    const pageContentResponse = await fetchGraphQL(
-      `query GetPageListContentById($id: String!, $preview: Boolean!) {
-        pageListCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
-          items {
-            pageContentCollection {
+            pageContentCollection(limit: 20) {
               items {
+                __typename
+                ... on Entry {
+                  sys {
+                    id
+                  }
+                }
                 ... on BannerHero {
-                  ${BANNERHERO_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on Content {
-                  ${SYS_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ContentGrid {
-                  ${CONTENTGRID_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on CtaBanner {
-                  ${CTABANNER_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
                 ... on ImageBetween {
-                  ${IMAGEBETWEEN_GRAPHQL_FIELDS}
+                  sys {
+                    id
+                  }
                 }
               }
             }
@@ -494,38 +574,148 @@ export async function getPageListById(
       preview
     );
 
-    // Safely extract page content with proper error checking
-    let pageContent:
-      | {
-          items: Array<{
-            sys: { id: string };
-            title?: string;
-            description?: string;
-            __typename?: string;
-          }>;
-        }
-      | undefined = undefined;
-    try {
-      const items = pageContentResponse.data?.pageListCollection?.items;
-      if (items && items.length > 0 && items[0]) {
-        // Type assertion is safe here since we know the GraphQL query structure
-        const pageListItem = items[0] as {
-          pageContentCollection?: {
-            items: Array<{
-              sys: { id: string };
-              title?: string;
-              description?: string;
-              __typename?: string;
-            }>;
-          };
-        };
-        pageContent = pageListItem.pageContentCollection;
-      }
-    } catch {
-      pageContent = undefined;
+    if (!response.data?.pageListCollection?.items?.length) {
+      return null;
     }
 
-    // Combine all the data
+    const pageListData = response.data.pageListCollection.items[0]!;
+    const pageLayout = pageListData.pageLayout as PageLayoutType | undefined;
+
+    // Fetch header and footer in parallel
+    const [header, footer] = await Promise.all([
+      pageLayout?.header?.sys?.id ? getHeaderById(pageLayout.header.sys.id, preview) : null,
+      pageLayout?.footer?.sys?.id ? getFooterById(pageLayout.footer.sys.id, preview) : null
+    ]);
+
+    // Server-side enrichment for pageContentCollection (same as Page API)
+    let pageContent: any = null;
+    try {
+      const rawPageContent = (pageListData as any).pageContentCollection;
+      if (rawPageContent?.items?.length) {
+        pageContent = rawPageContent;
+      }
+    } catch {
+      pageContent = null;
+    }
+
+    // Post-process to enrich components (SAME AS PAGE API)
+    console.warn('PageListById API: Starting server-side enrichment for pageContent:', pageContent);
+    if (pageContent?.items) {
+      console.warn('PageListById API: Found', pageContent.items.length, 'items to process');
+      const enrichmentPromises = pageContent.items.map(async (item: any) => {
+        console.warn('PageListById API: Processing item:', item.__typename, item.sys?.id);
+        if (!item.sys?.id || !item.__typename) {
+          return item;
+        }
+        
+        try {
+          switch (item.__typename) {
+            case 'BannerHero': {
+              const { getBannerHero } = await import('@/components/BannerHero/BannerHeroApi');
+              const enrichedItem = await getBannerHero(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Content': {
+              const { getContentById } = await import('@/components/Content/ContentApi');
+              const enrichedItem = await getContentById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'ContentGrid': {
+              const { getContentGridById } = await import('@/components/ContentGrid/ContentGridApi');
+              console.warn(`PageListById: Enriching ContentGrid ${item.sys.id}`);
+              const enrichedItem = await getContentGridById(item.sys.id, preview);
+              console.warn(`PageListById: ContentGrid ${item.sys.id} enriched:`, {
+                success: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title,
+                hasVariant: !!enrichedItem?.variant,
+                hasItemsCollection: !!enrichedItem?.itemsCollection,
+                itemsCount: enrichedItem?.itemsCollection?.items?.length || 0,
+                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              });
+              return enrichedItem || item;
+            }
+            
+            case 'CtaBanner': {
+              const { getCtaBannerById } = await import('@/components/CtaBanner/CtaBannerApi');
+              const enrichedItem = await getCtaBannerById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'ImageBetween': {
+              const { getImageBetweenById } = await import('@/components/ImageBetween/ImageBetweenApi');
+              const enrichedItem = await getImageBetweenById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Slider': {
+              const { getSliderById } = await import('@/components/Slider/SliderApi');
+              const enrichedItem = await getSliderById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'CtaGrid': {
+              const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
+              console.warn(`PageListById: Enriching CtaGrid ${item.sys.id}`);
+              const enrichedResult = await getCtaGridById(item.sys.id, preview);
+              const enrichedItem = enrichedResult?.item;
+              return enrichedItem || item;
+            }
+            
+            case 'Profile': {
+              const { getProfileById } = await import('@/components/Profile/ProfileApi');
+              console.warn(`PageListById: Enriching Profile ${item.sys.id}`);
+              const enrichedItem = await getProfileById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Accordion': {
+              const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
+              console.warn(`PageListById: Enriching Accordion ${item.sys.id}`);
+              const enrichedItem = await getAccordionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Product': {
+              const { getProductById } = await import('@/components/Product/ProductApi');
+              const enrichedItem = await getProductById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Solution': {
+              const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+              const enrichedItem = await getSolutionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Service': {
+              const { getServiceById } = await import('@/components/Service/ServiceApi');
+              const enrichedItem = await getServiceById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            default:
+              return item;
+          }
+        } catch (error) {
+          console.warn(`PageListById: Failed to enrich ${item.__typename} item ${item.sys.id}:`, error);
+          return item;
+        }
+      });
+      
+      const enrichedItems = await Promise.all(enrichmentPromises);
+      pageContent = { items: enrichedItems };
+      console.warn('PageListById API: Server-side enrichment completed');
+      console.warn('PageListById API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
+        __typename: item.__typename,
+        id: item.sys?.id,
+        hasTitle: !!item.title,
+        hasVariant: !!item.variant,
+        keysCount: Object.keys(item).length
+      })));
+    }
+
     const result: PageListWithHeaderFooter = {
       ...(pageListData as unknown as PageList),
       header,

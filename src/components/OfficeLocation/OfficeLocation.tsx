@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+// Import removed - using API route instead
 import { OfficeLocationSkeleton } from '@/components/OfficeLocation/OfficeLocationSkeleton';
 
 import type { OfficeLocation } from '@/components/OfficeLocation/OfficeLocationSchema';
@@ -27,11 +27,16 @@ export const Location: React.FC<LocationProps> = ({ sys, variant }: LocationProp
       const fetchLocation = async () => {
         try {
           setIsLoading(true);
-          const fetchedLocation = await getLocationById(sys.id);
-          setLocation(fetchedLocation);
-        } catch {
-          // Ignore errors when parsing office location data
-        } finally {
+          const response = await fetch(`/api/components/OfficeLocation/${sys.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setLocation(data.officeLocation);
+          } else {
+            throw new Error('Failed to fetch office location data');
+          }
+        } catch (error) {
+        console.warn('Error in catch block:', error);
+      } finally {
           setIsLoading(false);
         }
       };

@@ -54,9 +54,9 @@ export async function generateStaticParams() {
       });
 
       allParams.push(...localeParams);
-    } catch {
-      // Ignore errors when fetching locale-specific posts
-    }
+    } catch (error) {
+        console.warn('Error in catch block:', error);
+      }
   }
 
   return allParams;

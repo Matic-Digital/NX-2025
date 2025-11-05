@@ -13,7 +13,7 @@ import { Box } from '@/components/global/matic-ds/box';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { shouldPreloadImage, ImageContext as _ImageContext } from '@/components/Image/utils/imageOptimization';
-import { getServiceById } from '@/components/Service/ServiceApi';
+// Import removed - using API route instead
 
 import type { Service } from '@/components/Service/ServiceSchema';
 
@@ -46,10 +46,15 @@ export function ServiceCard(props: ServiceCardProps) {
 
       try {
         setLoading(true);
-        const data = await getServiceById(serviceId, false);
-        setFetchedData(data);
-      } catch {
-        // Ignore errors when fetching service data
+        const response = await fetch(`/api/components/Service/${serviceId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFetchedData(data.service);
+        } else {
+          throw new Error('Failed to fetch service data');
+        }
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       } finally {
         setLoading(false);
       }

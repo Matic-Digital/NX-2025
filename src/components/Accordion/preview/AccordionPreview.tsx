@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -9,8 +8,6 @@ import {
 import { Accordion as AccordionPrimitive } from '@/components/ui/accordion';
 
 import { Box } from '@/components/global/matic-ds';
-
-import { getAccordionItemById } from '@/components/Accordion/AccordionApi';
 import { AccordionItem } from '@/components/Accordion/components/AccordionItem';
 import { useAccordionLogic } from '@/components/Accordion/hooks/UseAccordionLogic';
 import { accordionFields } from '@/components/Accordion/preview/AccordionPreviewFields';
@@ -25,78 +22,30 @@ import type {
  * Accordion Preview Component
  *
  * This component is used in Contentful Live Preview to display Accordion components
- * with a live preview and field breakdown.
+ * with a live preview and field breakdown. It receives server-enriched data and uses
+ * Live Preview only for real-time updates.
  */
 export function AccordionPreview(props: Partial<AccordionType>) {
-  const [accordionItems, setAccordionItems] = useState<AccordionItemType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Unwrap the item property if it exists (API returns {item: Accordion})
+  const accordionData = 'item' in props && props.item ? props.item : props;
 
-  // Contentful Live Preview integration
-  const liveAccordion = useContentfulLiveUpdates(props);
+  // Contentful Live Preview integration - only for real-time updates
+  const liveAccordion = useContentfulLiveUpdates(accordionData) as AccordionType;
   const inspectorProps = useContentfulInspectorMode({ entryId: liveAccordion?.sys?.id });
 
-  // Business logic layer - use stable reference to avoid hook order changes
-  // Use the initial items from props to ensure consistent hook calls
-  const stableItems = liveAccordion?.itemsCollection?.items ?? props.itemsCollection?.items ?? [];
-  const { handleHover, handleMouseLeave, getItemDisplayState } = useAccordionLogic(
-    accordionItems.length > 0
-      ? accordionItems
-      : stableItems.map((item, index) => ({
-          sys: item.sys,
-          title: `Loading item ${index + 1}...`,
-          description: 'Loading...',
-          variant: 'ContentLeft' as const,
-          image: { sys: { id: 'loading' } },
-          tags: [],
-          overline: '',
-          __typename: 'AccordionItem'
-        }))
-  );
+  // Use the live accordion items directly (already enriched by server)
+  const accordionItems = (liveAccordion?.itemsCollection?.items ?? []) as AccordionItemType[];
+  
+  // Business logic layer
+  const { handleHover, handleMouseLeave, getItemDisplayState } = useAccordionLogic(accordionItems);
 
-  // Note: Cannot create inspector props for each item here due to React hooks rules
-  // Inspector props for individual items will be handled in the rendering section
-
-  // Fetch accordion items when the component mounts or itemsCollection changes
-  useEffect(() => {
-    async function fetchAccordionItems() {
-      if (!props.itemsCollection?.items?.length) {
-        setAccordionItems([]);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Fetch full data for each accordion item
-        const itemIds = props.itemsCollection.items.map((item) => item.sys.id);
-        const itemPromises = itemIds.map((id) => getAccordionItemById(id, true)); // Use preview mode
-        const items = await Promise.all(itemPromises);
-
-        // Filter out any null results and ensure proper defaults
-        const validItems = items
-          .filter((item): item is AccordionItemType => item !== null)
-          .map((item) => ({
-            ...item,
-            backgroundImage: item.backgroundImage ?? {
-              sys: { id: 'default-bg' },
-              link: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmM2Y0ZjYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU3ZWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0idXJsKCNnKSIvPjwvc3ZnPg=='
-            },
-            tags: item.tags ?? [],
-            overline: item.overline ?? ''
-          }));
-
-        setAccordionItems(validItems);
-      } catch {
-        setError('Failed to load accordion items');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void fetchAccordionItems();
-  }, [props.itemsCollection]);
+  // Debug logging for accordion items
+  console.warn('AccordionPreview received data:', {
+    id: liveAccordion?.sys?.id,
+    title: liveAccordion?.title,
+    hasItems: !!liveAccordion?.itemsCollection?.items,
+    itemCount: liveAccordion?.itemsCollection?.items?.length || 0
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -111,25 +60,9 @@ export function AccordionPreview(props: Partial<AccordionType>) {
             <div className="overflow-hidden">
               {(() => {
                 // Check if we have all required fields for a valid Accordion
-                const hasRequiredFields = props.sys && props.itemsCollection?.items?.length;
+                const hasRequiredFields = (liveAccordion as AccordionType)?.sys && accordionItems.length > 0;
 
-                if (loading) {
-                  return (
-                    <div className="p-8 text-center text-gray-500">
-                      <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600 mx-auto"></div>
-                    </div>
-                  );
-                }
-
-                if (error) {
-                  return (
-                    <div className="p-8 text-center text-red-500">
-                      <p>Error loading accordion: {error}</p>
-                    </div>
-                  );
-                }
-
-                if (hasRequiredFields && accordionItems.length > 0) {
+                if (hasRequiredFields) {
                   // Render the accordion with fetched items
                   return (
                     <div className="p-4">
@@ -146,7 +79,7 @@ export function AccordionPreview(props: Partial<AccordionType>) {
                                     {...inspectorProps({ fieldId: `itemsCollection.${index}` })}
                                   >
                                     <AccordionItem
-                                      item={item}
+                                      item={item as AccordionItemType}
                                       index={index}
                                       isHovered={displayState.isHovered}
                                       shouldShowExpanded={displayState.shouldShowExpanded}
@@ -169,8 +102,8 @@ export function AccordionPreview(props: Partial<AccordionType>) {
                   <div className="p-8 text-center text-gray-500">
                     <p>Preview will appear when all required fields are configured:</p>
                     <ul className="mt-2 text-sm">
-                      {!props.title && <li>• Title is required</li>}
-                      {!props.itemsCollection?.items?.length && (
+                      {!(liveAccordion as AccordionType)?.title && <li>• Title is required</li>}
+                      {!accordionItems.length && (
                         <li>• At least one accordion item is required</li>
                       )}
                     </ul>

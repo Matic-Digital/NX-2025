@@ -8,9 +8,9 @@ import '@/styles/layout.css';
 import { Box, Main } from '@/components/global/matic-ds';
 
 import { Footer } from '@/components/Footer/Footer';
-import { getFooterById } from '@/components/Footer/FooterApi';
+// Import removed - using API route instead
 import { Header } from '@/components/Header/Header';
-import { getHeaderById } from '@/components/Header/HeaderApi';
+// Import removed - using API route instead
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
@@ -36,18 +36,22 @@ export function PageLayout({ header, footer, children }: PageLayoutProps) {
   useEffect(() => {
     async function fetchHeaderFooter() {
       try {
-        // Only fetch if we have IDs
         if (header?.sys?.id) {
-          const headerData = await getHeaderById(header.sys.id);
-          setFullHeader(headerData);
+          const response = await fetch(`/api/components/Header/${header.sys.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setFullHeader(data.header);
+          }
         }
-
         if (footer?.sys?.id) {
-          const footerData = await getFooterById(footer.sys.id);
-          setFullFooter(footerData);
+          const response = await fetch(`/api/components/Footer/${footer.sys.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setFullFooter(data.footer);
+          }
         }
-      } catch {
-        // Ignore errors when fetching header/footer data
+      } catch (error) {
+        console.warn('Error in catch block:', error);
       }
     }
 

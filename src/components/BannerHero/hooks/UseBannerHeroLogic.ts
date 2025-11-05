@@ -13,7 +13,7 @@ interface BannerHeroProps extends BannerHero {
  */
 export const useBannerHeroLogic = (props: BannerHeroProps, bannerHero: BannerHero | null) => {
   // Layout logic based on variant and content type
-  const isCenteredSectionHeading = bannerHero?.heading.variant === 'Centered';
+  const isCenteredSectionHeading = bannerHero?.heading?.variant === 'Centered';
   const isImageBetween = props.contentType === 'ImageBetween';
 
   return {

@@ -54,7 +54,7 @@ export function PostCollection({
         ) : (
           currentPosts.map((post) => (
             <div key={post.sys.id}>
-              <PostCard sys={post.sys} />
+              <PostCard {...post} />
             </div>
           ))
         )}

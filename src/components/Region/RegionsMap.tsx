@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
@@ -9,98 +9,36 @@ import { cn } from '@/lib/utils';
 
 import { Box } from '@/components/global/matic-ds';
 
-import { getRegionsMapById } from '@/components/Region/RegionApi';
 import { RegionsMapImageInteractive } from '@/components/Region/RegionsMapImageInteractive';
 
-import type { Region, RegionsMap } from '@/components/Region/RegionSchema';
+// Static hardcoded regions data since the map is SVG-based
+const STATIC_REGIONS = [
+  { name: 'North America', slug: 'north-america' },
+  { name: 'Europe', slug: 'europe' },
+  { name: 'Asia Pacific', slug: 'asia-pacific' },
+  { name: 'Latin America', slug: 'latin-america' },
+  { name: 'Middle East & Africa', slug: 'middle-east-africa' }
+];
 
-export function RegionsMap(props: RegionsMap) {
-  const [content, setContent] = useState<RegionsMap | null>(props);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function RegionsMap() {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        setLoading(true);
-        const response = await getRegionsMapById(props.sys.id);
-
-        if (!response) {
-          setError('No region data found');
-          return;
-        }
-
-        setContent(response);
-      } catch {
-        setError('Failed to load region data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchContent();
-  }, [props.sys.id]);
-
-  // Provide default values to prevent destructuring errors
-  const { title = '', overline = '', regionsCollection = { items: [] } } = content ?? {};
-
-  const regions = regionsCollection?.items ?? [];
 
   // Map region names to their corresponding SVG IDs
   const regionToSvgId: Record<string, string> = {
     'North America': 'northAmerica',
-    Europe: 'europe',
+    'Europe': 'europe',
+    'Asia Pacific': 'australiaPacific',
     'Latin America': 'latinAmerica',
-    'Australia Pacific': 'australiaPacific',
-    'Middle East, India, & North Africa': 'middleEastIndiaAfrica'
+    'Middle East & Africa': 'middleEastIndiaAfrica'
   };
-
-  // Group regions by their name using Map for security
-  const regionMap = new Map<string, Region[]>();
-  regions.forEach((region) => {
-    const regionName = region.region;
-    const existingRegions = regionMap.get(regionName) ?? [];
-    regionMap.set(regionName, [...existingRegions, region]);
-  });
-  
-  // Convert Map to object for compatibility
-  const regionsByRegion = Object.fromEntries(regionMap);
-
-  // Get region names, sorted to match the desired order
-  const regionNames = Object.keys(regionsByRegion).sort((a, b) => {
-    const order = Object.keys(regionToSvgId);
-    return order.indexOf(a) - order.indexOf(b);
-  });
-
-  // Handle loading and error states
-  if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">Loading regions...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-16 text-center text-red-500">
-        <p>Error loading regions: {error}</p>
-      </div>
-    );
-  }
-
-  if (regions.length === 0) {
-    return <div className="py-16 text-center text-gray-500">No regions available</div>;
-  }
 
   return (
     <div className="container mx-auto px-6 sm:px-6 md:px-9">
       <Box direction="col" gap={12} className="bg-subtle p-4 md:p-16">
         {/* Header */}
         <Box direction="col" gap={2} className="text-center">
-          <p className="text-body-sm text-gray-700 uppercase">{overline}</p>
-          <h2 className="text-headline-md lg:text-headline-lg leading-14">{title}</h2>
+          <p className="text-body-sm text-gray-700 uppercase">Global Presence</p>
+          <h2 className="text-headline-md lg:text-headline-lg leading-14">Our Regions</h2>
         </Box>
 
         {/* World Map SVG */}
@@ -125,96 +63,46 @@ export function RegionsMap(props: RegionsMap) {
             xl: 5
           }}
         >
-          {regionNames.map((regionName) => {
-             
-            const regionLocations = Object.prototype.hasOwnProperty.call(
-              regionsByRegion,
-              regionName
-            )
-              ? // eslint-disable-next-line security/detect-object-injection
-                (regionsByRegion[regionName] ?? [])
-              : [];
-
+          {STATIC_REGIONS.map((region) => {
+            const svgId = regionToSvgId[region.name];
+            
             return (
-              <React.Fragment key={regionName}>
-                <div
+              <div
+                key={region.name}
+                className={cn(
+                  'group transition-all duration-200',
+                  hoveredRegion === svgId ? 'scale-105 transform' : ''
+                )}
+                onMouseEnter={() => setHoveredRegion(svgId ?? null)}
+                onMouseLeave={() => setHoveredRegion(null)}
+              >
+                <Link
+                  href={`/regions/${region.slug}`}
                   className={cn(
-                    'group transition-all duration-200',
-                     
-                    hoveredRegion ===
-                      (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
-                        ? // eslint-disable-next-line security/detect-object-injection
-                          (regionToSvgId[regionName] ?? regionName)
-                        : regionName)
-                      ? 'scale-105 transform'
-                      : ''
+                    'transition-colors',
+                    hoveredRegion === svgId ? 'text-primary' : 'text-surface-invert'
                   )}
-                   
-                  onMouseEnter={() =>
-                    setHoveredRegion(
-                      Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
-                        ? // eslint-disable-next-line security/detect-object-injection
-                          (regionToSvgId[regionName] ?? regionName)
-                        : regionName
-                    )
-                  }
-                  onMouseLeave={() => setHoveredRegion(null)}
                 >
-                  {regionLocations.length > 0 ? (
-                    <>
-                      {regionLocations.map((region) => (
-                        <Link
-                          key={region.sys.id}
-                          href={`/${region.slug}`}
-                          className={cn(
-                            'transition-colors',
-                             
-                            hoveredRegion ===
-                              (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
-                                ? // eslint-disable-next-line security/detect-object-injection
-                                  (regionToSvgId[regionName] ?? regionName)
-                                : regionName)
-                              ? 'text-primary'
-                              : 'text-surface-invert'
-                          )}
-                        >
-                          <Box
-                            direction="row"
-                            gap={2}
-                            className="items-center justify-between lg:items-start"
-                          >
-                            <Box direction="col" gap={0}>
-                              <h3 className={cn('text-title-lg')}>{regionName}</h3>
-
-                              <p
-                                className={cn(
-                                  '!text-body-xxs',
-                                   
-                                  hoveredRegion ===
-                                    (Object.prototype.hasOwnProperty.call(regionToSvgId, regionName)
-                                      ? // eslint-disable-next-line security/detect-object-injection
-                                        (regionToSvgId[regionName] ?? regionName)
-                                      : regionName)
-                                    ? 'text-primary transition-colors'
-                                    : 'text-surface-invert'
-                                )}
-                              >
-                                {region.street}, {region.city}, {region.country}
-                              </p>
-                            </Box>
-                            <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-100 transition-all group-hover:translate-x-1 group-hover:opacity-100 xl:opacity-0">
-                              <ArrowUpRight className="size-8 stroke-1" />
-                            </span>
-                          </Box>
-                        </Link>
-                      ))}
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-600">No locations</p>
-                  )}
-                </div>
-                <div className="border-border border-b last-of-type:hidden md:hidden"></div>
-              </React.Fragment>
+                  <Box
+                    direction="row"
+                    gap={2}
+                    className="items-center justify-between lg:items-start"
+                  >
+                    <Box direction="col" gap={0}>
+                      <h3 className={cn('text-title-lg')}>{region.name}</h3>
+                      <p className={cn(
+                        '!text-body-xxs',
+                        hoveredRegion === svgId ? 'text-primary transition-colors' : 'text-surface-invert'
+                      )}>
+                        Explore {region.name}
+                      </p>
+                    </Box>
+                    <span className="text-muted-foreground group-hover:text-primary mt-1 opacity-100 transition-all group-hover:translate-x-1 group-hover:opacity-100 xl:opacity-0">
+                      <ArrowUpRight className="size-8 stroke-1" />
+                    </span>
+                  </Box>
+                </Link>
+              </div>
             );
           })}
         </Box>

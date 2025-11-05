@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -27,7 +27,7 @@ import { Box, Container } from '@/components/global/matic-ds';
 import { AirImage } from '@/components/Image/AirImage';
 import { PostSliderCard } from '@/components/Post/PostSliderCard';
 import { ContentSliderItem } from '@/components/Slider/components/ContentSliderItem';
-import { getSlidersByIds } from '@/components/Slider/SliderApi';
+// Import removed - using server-enriched data only
 import { SliderSkeleton } from '@/components/Slider/SliderItemSkeleton';
 import { TeamMemberModal } from '@/components/TeamMember/TeamMemberModal';
 import { TestimonialItem } from '@/components/Testimonials/components/TestimonialItem';
@@ -389,6 +389,7 @@ interface GenericSliderProps {
   showAltNavigation?: boolean;
   isFullWidth?: boolean;
   onTeamMemberClick?: (teamMember: TeamMember) => void;
+  onNavigationClick?: () => void;
   context?: 'ImageBetween' | 'ContentGrid' | 'default';
 }
 
@@ -403,6 +404,7 @@ const GenericSlider = ({
   showAltNavigation = false,
   isFullWidth = true,
   onTeamMemberClick,
+  onNavigationClick,
   context = 'default'
 }: GenericSliderProps) => {
   const isContentSlider = sliderData.itemsCollection.items[0]?.__typename === 'ContentSliderItem';
@@ -562,11 +564,13 @@ const GenericSlider = ({
                   className="absolute top-2/3 left-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Previous slide"
+                  onNavigationClick={onNavigationClick}
                 />
                 <CarouselNext
                   className="absolute top-2/3 right-0 z-50 size-10 -translate-y-1/2 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900 lg:hidden"
                   variant="outline"
                   aria-label="Next slide"
+                  onNavigationClick={onNavigationClick}
                 />
                 {/* Desktop Navigation */}
                 <div className="absolute top-3/4 left-8 z-50 hidden -translate-y-2/3 flex-row gap-4 lg:flex">
@@ -574,11 +578,13 @@ const GenericSlider = ({
                     className="relative left-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                     variant="outline"
                     aria-label="Previous slide"
+                    onNavigationClick={onNavigationClick}
                   />
                   <CarouselNext
                     className="relative right-0 size-8 rounded border border-gray-300 bg-white/90 text-gray-700 shadow-sm hover:bg-white hover:text-gray-900"
                     variant="outline"
                     aria-label="Next slide"
+                    onNavigationClick={onNavigationClick}
                   />
                 </div>
               </>
@@ -879,14 +885,31 @@ const GenericSlider = ({
   );
 };
 
-export function Slider(props: SliderSys) {
-  const [sliderData, setSliderData] = useState<Slider | null>(null);
-  const [loading, setLoading] = useState(true);
+function SliderComponent(props: SliderSys | Slider) {
+  // Use server-enriched data directly (same pattern as ContentGrid)
+  const sliderData = useContentfulLiveUpdates(props);
+  
+  // Check if we have full slider data (server-side rendered) or just reference (client-side)
+  const hasFullData = 'itemsCollection' in sliderData && sliderData.itemsCollection?.items?.length > 0;
+  
+  // Type assertion for full slider data when we know it exists
+  const slider = hasFullData ? (sliderData as Slider) : null;
+  
+  // Debug logging to see what data Slider component receives
+  console.warn('Slider Component: Data received:', {
+    id: sliderData.sys?.id,
+    hasItemsCollection: 'itemsCollection' in sliderData,
+    itemsLength: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.length || 0 : 0,
+    hasFullData,
+    itemTypes: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.map(item => item.__typename) || [] : [],
+    sliderData: sliderData
+  });
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [autoplayTimer, setAutoplayTimer] = useState<NodeJS.Timeout | null>(null);
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
     root: null,
@@ -906,76 +929,39 @@ export function Slider(props: SliderSys) {
     }
   };
 
-  useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setCurrent(api.selectedScrollSnap() + 1);
-
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-
-    // Initialize post sliders at the middle set for infinite loop
-    if (sliderData && sliderData.itemsCollection.items.length > 1) {
-      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
-      if (isPostSlider) {
-        const originalItemCount = sliderData.itemsCollection.items.length;
-        api.scrollTo(originalItemCount, false); // Start at the middle set without animation
-      }
-    }
-  }, [api, sliderData]);
-
-  // Global keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isInView || !api) return;
-
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        api.scrollPrev();
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        api.scrollNext();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [api, isInView]);
-
-  // Autoplay functionality
-  useEffect(() => {
-    // Default autoplay to true if not explicitly set to false
-    const shouldAutoplay = sliderData?.autoplay !== false;
+  // Function to start autoplay timer
+  const startAutoplayTimer = useCallback(() => {
+    if (!api || !slider || !isInView) return;
+    
+    // Check if autoplay is explicitly enabled (not just undefined)
+    const shouldAutoplay = slider.autoplay === true;
+    if (!shouldAutoplay) return;
 
     // Don't autoplay if there's only one slide
-    const hasMultipleSlides = sliderData && sliderData.itemsCollection.items.length > 1;
+    const hasMultipleSlides = slider.itemsCollection?.items?.length > 1;
+    if (!hasMultipleSlides) return;
 
-    if (!api || !shouldAutoplay || !sliderData || !hasMultipleSlides || !isInView) {
-      return;
+    // Clear existing timer
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
     }
 
-    const delay = sliderData.delay ?? 5000; // Default to 5 seconds if no delay specified
+    // Use delay from schema, default to 5000ms if not specified
+    const delay = slider.delay ?? 5000;
 
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       const currentSlide = api.selectedScrollSnap();
       const totalSlides = api.scrollSnapList().length;
-      const originalItemCount = sliderData.itemsCollection.items.length;
-      const isPostSlider = sliderData.itemsCollection.items[0]?.__typename === 'Post';
+      const originalItemCount = slider.itemsCollection?.items?.length || 0;
+      const isPostSlider = slider.itemsCollection?.items?.[0]?.__typename === 'Post';
 
       // For post sliders with infinite loop
       if (isPostSlider && originalItemCount > 1) {
-        // Check if we're at the last slide of the second set
         if (currentSlide === originalItemCount * 2 - 1) {
-          // Jump to the beginning of the second set to continue the loop
-          api.scrollTo(originalItemCount, false); // Jump without animation
+          api.scrollTo(originalItemCount, false);
         } else if (currentSlide >= originalItemCount * 2) {
-          // If somehow we're beyond the second set, jump back to second set
           api.scrollTo(originalItemCount, false);
         } else {
-          // Normal forward movement
           api.scrollNext();
         }
       } else {
@@ -988,70 +974,96 @@ export function Slider(props: SliderSys) {
       }
     }, delay);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [api, sliderData, isInView]);
+    setAutoplayTimer(timer);
+  }, [api, slider, isInView, autoplayTimer]);
+
+  // Function to stop autoplay timer
+  const stopAutoplayTimer = useCallback(() => {
+    if (autoplayTimer) {
+      clearTimeout(autoplayTimer);
+      setAutoplayTimer(null);
+    }
+  }, [autoplayTimer]);
+
+  // Function to reset autoplay timer (for user interactions)
+  const resetAutoplayTimer = useCallback(() => {
+    stopAutoplayTimer();
+    startAutoplayTimer();
+  }, [stopAutoplayTimer, startAutoplayTimer]);
 
   useEffect(() => {
-    async function fetchSliderData() {
-      try {
-        setLoading(true);
-        const data = await getSlidersByIds([props.sys.id]);
-        if (data.length > 0 && data[0]) {
-          const sliderData = data[0];
-
-          // Randomize team member order if this is a team member slider
-          if (sliderData.itemsCollection.items[0]?.__typename === 'TeamMember') {
-            // Fisher-Yates shuffle for equal distribution
-            const shuffledItems = [...sliderData.itemsCollection.items];
-            for (let i = shuffledItems.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              if (j < shuffledItems.length && i < shuffledItems.length) {
-                // eslint-disable-next-line security/detect-object-injection
-                const temp = shuffledItems[i]!;
-                // eslint-disable-next-line security/detect-object-injection
-                const jItem = shuffledItems[j]!;
-                // eslint-disable-next-line security/detect-object-injection
-                shuffledItems[i] = jItem;
-                // eslint-disable-next-line security/detect-object-injection
-                shuffledItems[j] = temp;
-              }
-            }
-            setSliderData({
-              ...sliderData,
-              itemsCollection: {
-                ...sliderData.itemsCollection,
-                items: shuffledItems
-              }
-            });
-          } else {
-            setSliderData(sliderData);
-          }
-        }
-      } catch {
-        // Ignore errors when fetching slider data
-      } finally {
-        setLoading(false);
-      }
+    if (!api) {
+      return;
     }
 
-    void fetchSliderData();
-  }, [props.sys.id]);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+      // Reset autoplay timer when slide changes (including user interactions)
+      resetAutoplayTimer();
+    });
+
+    // Initialize post sliders at the middle set for infinite loop
+    if (slider && slider.itemsCollection?.items?.length > 1) {
+      const isPostSlider = slider.itemsCollection.items[0]?.__typename === 'Post';
+      if (isPostSlider) {
+        const originalItemCount = slider.itemsCollection.items.length;
+        api.scrollTo(originalItemCount, false); // Start at the middle set without animation
+      }
+    }
+  }, [api, slider, resetAutoplayTimer]);
+
+  // Global keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isInView || !api) return;
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        api.scrollPrev();
+        resetAutoplayTimer(); // Reset timer on user interaction
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        api.scrollNext();
+        resetAutoplayTimer(); // Reset timer on user interaction
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [api, isInView, resetAutoplayTimer]);
+
+  // Autoplay functionality - start timer when in view and conditions are met
+  useEffect(() => {
+    if (isInView) {
+      startAutoplayTimer();
+    } else {
+      stopAutoplayTimer();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      stopAutoplayTimer();
+    };
+  }, [isInView, startAutoplayTimer, stopAutoplayTimer]);
+
+  // No client-side fetching needed - ContentGrid pattern
+  // Server-side enrichment should provide all data
 
   // Generate correct URLs for Solutions by looking up their parent PageList
   // PageList Nesting Integration: Dynamically resolve all Solution URLs to respect nesting hierarchy
   // This ensures all Solution slider items link to proper nested URLs when parent PageLists exist
   useEffect(() => {
     const fetchNestedUrls = async () => {
-      if (!sliderData?.itemsCollection?.items) return;
+      if (!slider?.itemsCollection?.items) return;
 
       // Filter only Solution items and extract their CTA links
-      const allSolutions = sliderData.itemsCollection.items
-        .filter((item) => item.__typename === 'Solution')
-        .map((item) => item as Solution);
+      const allSolutions = slider.itemsCollection.items
+        .filter((item: any) => item.__typename === 'Solution')
+        .map((item: any) => item as Solution);
 
-      const solutionItems = allSolutions.filter((solution) => solution.cta);
+      const solutionItems = allSolutions.filter((solution: Solution) => solution.cta);
 
       const urlMap = await resolveNestedUrls(solutionItems, (solution) => ({
         sys: solution.cta!.sys,
@@ -1065,13 +1077,31 @@ export function Slider(props: SliderSys) {
     };
 
     void fetchNestedUrls();
-  }, [sliderData?.itemsCollection?.items]);
+  }, [slider?.itemsCollection?.items]);
 
-  if (loading) {
-    return <SliderSkeleton itemCount={3} />;
+  if (!hasFullData) {
+    console.warn('Slider missing server-side data - showing skeleton. ID:', sliderData.sys?.id);
+    return (
+      <div className="w-full">
+        <SliderSkeleton />
+      </div>
+    );
   }
 
-  if (!sliderData?.itemsCollection?.items?.length) {
+  // Server-side lazy loading should provide enriched items
+  // If items are still minimal, the server enrichment failed - show skeleton
+  if (slider!.itemsCollection?.items?.length > 0 && 
+      slider!.itemsCollection.items[0] && 
+      Object.keys(slider!.itemsCollection.items[0]).length <= 3) {
+    // Items only have sys.id and __typename (server enrichment failed)
+    return (
+      <div className="w-full">
+        <SliderSkeleton />
+      </div>
+    );
+  }
+
+  if (!slider!.itemsCollection?.items?.length) {
     return (
       <div className="flex h-[669px] items-center justify-center">
         <div className="text-lg">No slider items found</div>
@@ -1080,7 +1110,7 @@ export function Slider(props: SliderSys) {
   }
 
   // Determine slider configuration based on the first item's type
-  const firstItem = sliderData.itemsCollection.items[0];
+  const firstItem = slider!.itemsCollection.items[0];
   if (!firstItem) {
     return (
       <div className="flex h-[669px] items-center justify-center">
@@ -1100,13 +1130,13 @@ export function Slider(props: SliderSys) {
   const isTestimonialSlider = firstItem.__typename === 'TestimonialItem';
 
   // Check if there's only one item to hide navigation
-  const hasOnlyOneItem = sliderData.itemsCollection.items.length === 1;
+  const hasOnlyOneItem = slider!.itemsCollection.items.length === 1;
 
   // Configure slider based on content type
   return (
     <div ref={sliderRef} className={isTimelineSliderItemSlider ? 'mb-8' : ''}>
       <GenericSlider
-        sliderData={sliderData}
+        sliderData={slider!}
         current={current}
         api={api}
         solutionUrls={solutionUrls}
@@ -1115,6 +1145,7 @@ export function Slider(props: SliderSys) {
         showAltIndicators={
           !hasOnlyOneItem &&
           (isSliderItemSlider ||
+            isTimelineSliderItemSlider ||
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||
@@ -1144,7 +1175,8 @@ export function Slider(props: SliderSys) {
         }
         isFullWidth={false}
         onTeamMemberClick={handleTeamMemberClick}
-        context={props.context}
+        onNavigationClick={resetAutoplayTimer}
+        context={('context' in props) ? props.context : undefined}
       />
 
       {/* Team Member Modal */}
@@ -1158,3 +1190,16 @@ export function Slider(props: SliderSys) {
     </div>
   );
 }
+
+// Memoize the Slider component to prevent unnecessary re-renders
+const MemoizedSlider = memo(SliderComponent, (prevProps, nextProps) => {
+  // Compare sys.id to determine if re-render is needed
+  const prevId = (prevProps as any).sys?.id;
+  const nextId = (nextProps as any).sys?.id;
+  
+  // Only re-render if the ID changes
+  return prevId === nextId;
+});
+
+// Export with proper name
+export { MemoizedSlider as Slider };
