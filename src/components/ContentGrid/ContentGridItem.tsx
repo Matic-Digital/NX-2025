@@ -543,15 +543,19 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   const DefaultItem = () => {
     return (
-      <Box direction="col" gap={4} className="group">
-        <Box className="group-hover:bg-primary w-fit bg-black p-[0.38rem] transition-colors">
-          {icon?.url && (
-            <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
-          )}
-        </Box>
-        <Box direction="col" gap={2}>
-          <h3 className="text-headline-sm group-hover:text-primary transition-colors">{heading}</h3>
-          <p className="text-body-sm group-hover:text-primary transition-colors">{description}</p>
+      <Box direction="col" className="group flex flex-col">
+        <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
+          <Box className="h-fit min-h-14 w-fit min-w-14 bg-black p-[0.38rem]">
+            {icon?.url && (
+              <Image src={icon.url} alt={heading} width={60} height={60} loading="lazy" />
+            )}
+          </Box>
+          <Box direction="col" gap={2}>
+            <Box direction="row" gap={2} className="items-center">
+              <h3 className="text-headline-sm">{heading}</h3>
+            </Box>
+            <p className="text-body-sm">{description}</p>
+          </Box>
         </Box>
       </Box>
     );
