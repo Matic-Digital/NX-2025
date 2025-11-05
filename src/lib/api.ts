@@ -5,6 +5,7 @@
 
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 import { memoizedFetchGraphQL } from '@/lib/api-cache';
+import { enhancedMemoizedFetchGraphQL } from '@/lib/enhanced-api-cache';
 
 import type { GraphQLResponse } from '@/types';
 
@@ -177,7 +178,7 @@ export async function fetchGraphQLMemoized<T>(
   preview = false,
   cacheConfig?: { next: { revalidate?: number; tags?: string[] } }
 ): Promise<GraphQLResponse<T>> {
-  return memoizedFetchGraphQL(
+  return enhancedMemoizedFetchGraphQL(
     (q, v, p) => fetchGraphQL<T>(q, v, p, cacheConfig),
     query,
     variables,
