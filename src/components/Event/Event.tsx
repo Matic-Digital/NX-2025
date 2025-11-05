@@ -38,7 +38,7 @@ export function Event(props: EventProps) {
   const [error, setError] = useState<string | null>(null);
 
   // Debug logging for Event data
-  console.log('[Event] Component rendering:', {
+  console.warn('[Event] Component rendering:', {
     hasEventId: !!eventId,
     hasServerData,
     eventDataKeys: eventData ? Object.keys(eventData) : [],
@@ -52,7 +52,7 @@ export function Event(props: EventProps) {
   useEffect(() => {
     // If we have server-enriched data, don't fetch client-side
     if (hasServerData) {
-      console.log('[Event] Using server-provided data, skipping client fetch');
+      console.warn('[Event] Using server-provided data, skipping client fetch');
       setLoading(false);
       return;
     }
@@ -62,7 +62,7 @@ export function Event(props: EventProps) {
       return;
     }
 
-    console.log('[Event] Server data insufficient, fetching client-side for eventId:', eventId);
+    console.warn('[Event] Server data insufficient, fetching client-side for eventId:', eventId);
 
     async function fetchEventData() {
       try {
@@ -73,7 +73,7 @@ export function Event(props: EventProps) {
         if (response.ok) {
           const responseData = await response.json();
           const data = responseData.event;
-          console.log('[Event] Client fetch successful:', { hasTitle: !!data?.title });
+          console.warn('[Event] Client fetch successful:', { hasTitle: !!data?.title });
           setFetchedData(data);
         } else {
           throw new Error('Failed to fetch event from API');
@@ -94,21 +94,21 @@ export function Event(props: EventProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: event?.sys?.id });
 
   if (loading) {
-    console.log('[Event] Showing loading state');
+    console.warn('[Event] Showing loading state');
     return <LoadingState />;
   }
 
   if (error) {
-    console.log('[Event] Showing error state:', error);
+    console.warn('[Event] Showing error state:', error);
     return <ErrorState message={error} />;
   }
 
   if (!event) {
-    console.log('[Event] No event data, showing empty state');
+    console.warn('[Event] No event data, showing empty state');
     return <EmptyState />;
   }
 
-  console.log('[Event] Rendering event:', { title: event.title, slug: event.slug });
+  console.warn('[Event] Rendering event:', { title: event.title, slug: event.slug });
 
   return (
     <Link href={`/events/${event.slug ?? ''}`} className="block w-full">

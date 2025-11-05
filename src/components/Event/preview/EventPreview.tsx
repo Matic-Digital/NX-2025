@@ -35,7 +35,7 @@ export function EventPreview(props: Partial<EventType>) {
   const footer = (liveEvent as any)?.layout?.footer || null;
 
   // Debug logging for event data
-  console.log('[EventPreview] Rendering with data:', {
+  console.warn('[EventPreview] Rendering with data:', {
     hasEvent: !!liveEvent,
     hasTitle: !!liveEvent?.title,
     hasLayout: !!(liveEvent as any)?.layout,

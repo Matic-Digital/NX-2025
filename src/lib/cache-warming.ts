@@ -96,12 +96,12 @@ class CacheWarmer {
    */
   async warmupCache(): Promise<void> {
     if (this.isWarming) {
-      console.log('[Cache Warmer] Already warming up, skipping...');
+      console.warn('[Cache Warmer] Already warming up, skipping...');
       return;
     }
 
     this.isWarming = true;
-    console.log('[Cache Warmer] Starting cache warmup...');
+    console.warn('[Cache Warmer] Starting cache warmup...');
 
     try {
       // Sort queries by priority
@@ -115,7 +115,7 @@ class CacheWarmer {
           batch.map(async ({ query, variables }) => {
             try {
               await fetchGraphQLMemoized(query, variables, false);
-              console.log(`[Cache Warmer] Warmed up query: ${query.split('{')[0]?.trim() ?? 'unknown'}`);
+              console.warn(`[Cache Warmer] Warmed up query: ${query.split('{')[0]?.trim() ?? 'unknown'}`);
             } catch (error) {
               console.warn(`[Cache Warmer] Failed to warm up query:`, error);
             }
@@ -128,7 +128,7 @@ class CacheWarmer {
         }
       }
 
-      console.log('[Cache Warmer] Cache warmup completed');
+      console.warn('[Cache Warmer] Cache warmup completed');
     } catch (error) {
       console.error('[Cache Warmer] Cache warmup failed:', error);
     } finally {

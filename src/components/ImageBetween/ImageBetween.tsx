@@ -37,7 +37,7 @@ export function ImageBetween(props: ImageBetween) {
 
   // Check if the slider contains Post items (only if it's actually a Slider)
   const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
-  const isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
+  const _isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
 
   return (
     <ErrorBoundary>
@@ -57,34 +57,33 @@ export function ImageBetween(props: ImageBetween) {
           )}
         </div>
         <Section
-          className={cn('dark bg-background relative h-full w-full', isBannerHero && '!py-0')}
+          className={cn('dark bg-background relative h-full w-full', isBannerHero && '!py-0 !pt-0 !pb-0')}
           {...inspectorProps}
         >
           {/* Dark Top Section */}
           <Box
             direction="col"
-            gap={8}
+            gap={isBannerHero ? 0 : 8}
             className={cn(
               'mb-0 pb-8',
-              // Image assets get large bottom margin
-              imageBetween.asset?.__typename === 'Image' &&
+              // BannerHero gets no margin since gap is included within the component
+              isBannerHero && 'mb-0 pb-0',
+              // Image assets get large bottom margin (only when not BannerHero)
+              !isBannerHero && imageBetween.asset?.__typename === 'Image' &&
                 'mb-24 lg:mb-56 xl:mb-96',
-              // Non-image assets default to large margin, but with specific overrides
-              imageBetween.asset && 
+              // Non-image assets default to large margin (only when not BannerHero)
+              !isBannerHero && imageBetween.asset && 
                 imageBetween.asset.__typename !== 'Image' && 
                 imageBetween.asset.__typename !== 'ContentGrid' &&
                 imageBetween.asset.__typename !== 'Slider' &&
                 'mb-72',
-              // ContentGrid assets get no margin
-              imageBetween.asset?.__typename === 'ContentGrid' && 'mb-0',
-              // Slider assets get different margins based on contentTop
-              imageBetween.asset?.__typename === 'Slider' && 
+              // ContentGrid assets get no margin (only when not BannerHero)
+              !isBannerHero && imageBetween.asset?.__typename === 'ContentGrid' && 'mb-0',
+              // Slider assets get different margins based on contentTop (only when not BannerHero)
+              !isBannerHero && imageBetween.asset?.__typename === 'Slider' && 
                 (imageBetween.contentTop?.__typename !== 'ContentGrid') && 'mb-72',
-              imageBetween.asset?.__typename === 'Slider' && 
-                imageBetween.contentTop?.__typename === 'ContentGrid' && 'mb-8',
-              // Banner hero specific overrides
-              isBannerHero && isPostSlider && 'mb-0 pb-16',
-              isBannerHero && isImageSlider && 'mb-14 pb-14'
+              !isBannerHero && imageBetween.asset?.__typename === 'Slider' && 
+                imageBetween.contentTop?.__typename === 'ContentGrid' && 'mb-8'
             )}
           >
             {/* Top Content Grid */}
@@ -112,23 +111,12 @@ export function ImageBetween(props: ImageBetween) {
                   </>
                 )}
                 {imageBetween.contentTop?.__typename === 'BannerHero' && contentTopData && (
-                  <>
-                    {isPostSlider ? (
-                      <div className="pb-16 -mb-16" {...inspectorProps({ fieldId: 'contentTop' })}>
-                        <BannerHero
-                          {...(contentTopData as BannerHeroType)}
-                          contentType={imageBetween.__typename}
-                        />
-                      </div>
-                    ) : (
-                      <div {...inspectorProps({ fieldId: 'contentTop' })}>
-                        <BannerHero
-                          {...(contentTopData as BannerHeroType)}
-                          contentType={imageBetween.__typename}
-                        />
-                      </div>
-                    )}
-                  </>
+                  <div {...inspectorProps({ fieldId: 'contentTop' })}>
+                    <BannerHero
+                      {...(contentTopData as BannerHeroType)}
+                      contentType={imageBetween.__typename}
+                    />
+                  </div>
                 )}
               </>
             )}
@@ -204,11 +192,13 @@ export function ImageBetween(props: ImageBetween) {
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (
-                <ContentGrid
-                  {...contentBottomData}
-                  componentType={imageBetween.__typename}
-                  isInsideImageBetween={true}
-                />
+                <div className="pt-16 md:pt-20 lg:pt-24">
+                  <ContentGrid
+                    {...contentBottomData}
+                    componentType={imageBetween.__typename}
+                    isInsideImageBetween={true}
+                  />
+                </div>
               )}
             </Box>
           </div>

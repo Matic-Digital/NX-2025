@@ -80,11 +80,11 @@ export async function getImageBetweenById(
     // Enrich contentTop
     if (imageBetween.contentTop?.sys?.id) {
       if (imageBetween.contentTop.__typename === 'ContentGrid') {
-        console.log(`ImageBetween: Enriching ContentGrid contentTop ${imageBetween.contentTop.sys.id}`);
+        console.warn(`ImageBetween: Enriching ContentGrid contentTop ${imageBetween.contentTop.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.contentTop.sys.id, preview)
             .then(data => {
-              console.log(`ImageBetween: ContentGrid contentTop enriched successfully:`, {
+              console.warn(`ImageBetween: ContentGrid contentTop enriched successfully:`, {
                 id: imageBetween.contentTop.sys.id,
                 hasData: !!data,
                 hasItems: !!data?.itemsCollection?.items?.length,
@@ -114,11 +114,11 @@ export async function getImageBetweenById(
             })
         );
       } else if (imageBetween.asset.__typename === 'ContentGrid') {
-        console.log(`ImageBetween: Enriching ContentGrid asset ${imageBetween.asset.sys.id}`);
+        console.warn(`ImageBetween: Enriching ContentGrid asset ${imageBetween.asset.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.asset.sys.id, preview)
             .then(data => {
-              console.log(`ImageBetween: ContentGrid asset enriched successfully:`, {
+              console.warn(`ImageBetween: ContentGrid asset enriched successfully:`, {
                 id: imageBetween.asset?.sys?.id,
                 hasData: !!data,
                 hasItems: !!data?.itemsCollection?.items?.length,

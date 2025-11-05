@@ -107,6 +107,16 @@ export function ModalCtaButton({
           formId={cta.modal?.form?.formId}
         />
       )}
+      
+      {/* Debug logging */}
+      {console.warn('ModalCtaButton Debug:', {
+        selectedModalState,
+        modalType,
+        ctaModal: cta.modal,
+        formId: cta.modal?.form?.formId,
+        isModalOpenState,
+        fullCta: cta
+      })}
     </>
   );
 }

@@ -13,14 +13,16 @@ export const bannerHeroStyles = {
     return cn(
       // Layout and positioning
       'relative flex',
-      // Height management
-      isImageBetween ? 'h-[789px]' : 'max-h-[100vh] h-[789px]',
+      // Height management - increased height for ImageBetween to prevent asset cutoff
+      isImageBetween ? 'h-[900px] md:h-[1000px] lg:h-[1200px]' : 'max-h-[100vh] h-[789px]',
       // Content alignment
       isCenteredSectionHeading || isImageBetween ? 'items-center justify-center' : 'items-end',
       // Overflow handling - hide overflow to prevent image bleeding
       'overflow-hidden',
       // Theme
-      'dark'
+      'dark',
+      // ImageBetween spacing - small bottom margin to create gap to contentBottom
+      isImageBetween && 'mb-8 md:mb-12 lg:mb-16'
     );
   },
 
@@ -37,13 +39,13 @@ export const bannerHeroStyles = {
   getBackgroundImageClasses: (isImageBetween?: boolean) => {
     return cn(
       // Position and size
-      'absolute inset-0 w-full h-full',
+      'absolute inset-0 w-full',
       // Image behavior - cover ensures image fills container while maintaining aspect ratio
       'object-cover object-center',
       // Responsive sizing - ensure image covers on all devices
       'min-w-full min-h-full',
-      // Specific height for ImageBetween variant
-      isImageBetween ? 'h-[calc(789px+4rem)]' : 'h-full'
+      // Height management for ImageBetween - match increased container height
+      isImageBetween ? 'h-[900px] md:h-[1000px] lg:h-[1200px]' : 'h-full'
     );
   },
 

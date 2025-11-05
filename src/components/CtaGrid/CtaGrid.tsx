@@ -186,78 +186,89 @@ export function CtaGrid(props: CtaGrid) {
               </div>
             )}
 
-            {/* Mobile: Image overlay layout, Desktop: CSS Grid layout */}
+            {/* Mobile: Conditional layout based on CTA presence */}
             <div className="xl:hidden">
-              {/* Mobile Image and Content Container */}
-              <div className="relative min-h-[43.6rem]">
-                {/* Background Image - Full container on mobile */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <AirImage
-                    link={liveCtaGrid.asset?.link}
-                    altText={liveCtaGrid.asset?.altText}
-                    className="h-full w-full object-cover"
-                    priority
-                  />
-                </div>
+              {(() => {
+                const hasValidCta = liveCtaGrid.ctaCollection?.items?.some(cta => 
+                  cta && (cta.internalLink || cta.externalLink || cta.text || cta.internalText)
+                ) ?? false;
+                return hasValidCta;
+              })() ? (
+                /* With CTA: Image overlay layout */
+                <div className="relative min-h-[43.6rem]">
+                  {/* Background Image - Full container on mobile */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <AirImage
+                      link={liveCtaGrid.asset?.link}
+                      altText={liveCtaGrid.asset?.altText}
+                      className="h-full w-full object-cover"
+                      priority
+                    />
+                  </div>
 
-                {/* Content Overlay - Mobile: conditional styling based on CTA presence */}
-                <div
-                  className={`absolute inset-0 flex ${
-                    (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                      ? 'items-end px-6 sm:px-6 md:px-9'
-                      : 'items-end'
-                  }`}
-                >
-                  <div
-                    className={`w-full ${(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 ? 'pb-4' : ''}`}
-                  >
-                    <Box
-                      direction="col"
-                      gap={(liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0 ? 4 : 6}
-                      className="w-full"
-                    >
+                  {/* Content Overlay - Mobile: overlay styling when CTA present */}
+                  <div className="absolute inset-0 flex items-end px-6 sm:px-6 md:px-9">
+                    <div className="w-full pb-4">
+                      <Box direction="col" gap={4} className="w-full">
+                        {/* Content Grid Items */}
+                        {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
+                          <div
+                            key={item.sys?.id || index}
+                            className="space-y-3 p-6 backdrop-blur-[14px]"
+                            style={{
+                              background:
+                                'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
+                            }}
+                          >
+                            <h3
+                              className="leading-[130%] text-text-on-invert"
+                              style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
+                            >
+                              {item.heading}
+                            </h3>
+                            <div className="h-px w-full bg-white/30"></div>
+                            <p className="text-body-xxs text-text-on-invert leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+                        ))}
+                      </Box>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Without CTA: Image above, content below */
+                <div>
+                  {/* Image Section */}
+                  <div className="h-full md:min-h-[43.6rem] overflow-hidden">
+                    <AirImage
+                      link={liveCtaGrid.asset?.link}
+                      altText={liveCtaGrid.asset?.altText}
+                      className="h-full w-full object-cover"
+                      priority
+                    />
+                  </div>
+                  {/* Content Section - Below image */}
+                  <div>
+                    <Box direction="col" gap={0} className="w-full">
                       {/* Content Grid Items */}
                       {liveCtaGrid.itemsCollection?.items?.map((item, index) => (
                         <div
                           key={item.sys?.id || index}
-                          className={`space-y-3 ${
-                            (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                              ? 'p-6 backdrop-blur-[14px]'
-                              : 'bg-subtle p-10'
+                          className={`space-y-3 py-6 bg-subtle px-6 sm:px-6 md:px-9 ${
+                            index === 0 ? 'pt-10' : 'pt-6'
+                          } ${
+                            index === (liveCtaGrid.itemsCollection?.items?.length ?? 1) - 1 ? 'pb-10' : 'pb-6'
                           }`}
-                          style={
-                            (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                              ? {
-                                  background:
-                                    'linear-gradient(198deg, rgba(8, 8, 15, 0.16) -1.13%, rgba(8, 8, 15, 0.52) 99.2%), linear-gradient(198deg, rgba(8, 8, 15, 0.06) -1.13%, rgba(8, 8, 15, 0.20) 99.2%)'
-                                }
-                              : {}
-                          }
                         >
                           <h3
-                            className={`leading-[130%] ${
-                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                                ? 'text-text-on-invert'
-                                : ''
-                            }`}
+                            className="leading-[130%]"
                             style={{ fontSize: '1.75rem', fontStyle: 'normal', fontWeight: 400 }}
                           >
                             {item.heading}
                           </h3>
-                          <div
-                            className={`h-px w-full ${
-                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                                ? 'bg-white/30'
-                                : 'bg-border'
-                            }`}
-                          ></div>
-                          <p
-                            className={`leading-relaxed ${
-                              (liveCtaGrid.ctaCollection?.items?.length ?? 0) > 0
-                                ? 'text-body-xxs text-text-on-invert'
-                                : 'text-body-sm text-text-subtle'
-                            }`}
-                          >
+                          <div className="h-px w-full bg-border"></div>
+                          <p className="text-body-sm text-text-subtle leading-relaxed">
                             {item.description}
                           </p>
                         </div>
@@ -265,7 +276,7 @@ export function CtaGrid(props: CtaGrid) {
                     </Box>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Desktop: Original CSS Grid Layout */}

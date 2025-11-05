@@ -116,7 +116,7 @@ class EnhancedApiCache {
     // Remove oldest 20% of entries
     const toRemove = Math.ceil(entries.length * 0.2);
     for (let i = 0; i < toRemove && i < entries.length; i++) {
-      const entry = entries[i];
+      const entry = entries.at(i);
       if (entry) {
         this.cache.delete(entry[0]);
       }
@@ -139,7 +139,7 @@ class EnhancedApiCache {
     expiredKeys.forEach(key => this.cache.delete(key));
     
     if (expiredKeys.length > 0) {
-      console.log(`[Cache] Cleaned up ${expiredKeys.length} expired entries`);
+      console.warn(`[Cache] Cleaned up ${expiredKeys.length} expired entries`);
     }
   }
 
@@ -184,13 +184,13 @@ class EnhancedApiCache {
         
         const toRemove = Math.ceil(entries.length * 0.5);
         for (let i = 0; i < toRemove && i < entries.length; i++) {
-          const entry = entries[i];
+          const entry = entries.at(i);
           if (entry) {
             this.cache.delete(entry[0]);
           }
         }
         
-        console.log(`[Cache] Emergency cleanup: removed ${toRemove} entries`);
+        console.warn(`[Cache] Emergency cleanup: removed ${toRemove} entries`);
       }
     }, this.config.cleanupIntervalMs);
   }

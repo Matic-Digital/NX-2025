@@ -99,7 +99,7 @@ interface ContentfulContent {
   [key: string]: unknown;
 }
 
-interface ContentTypeConfig {
+interface _ContentTypeConfig {
   fetchFn: (id: string, preview: boolean) => Promise<unknown>;
   component: React.ComponentType<any>;
   previewComponent?: React.ComponentType<any>;
@@ -182,8 +182,10 @@ export function PreviewContentRenderer({ contentType, content }: PreviewContentR
     entryId: liveContent?.sys?.id
   });
 
-  // Get component configuration from client-side map
-  const clientConfig = componentMap[contentType];
+  // Get component configuration from client-side map using secure property access
+  const clientConfig = Object.prototype.hasOwnProperty.call(componentMap, contentType) 
+    ? componentMap[contentType as keyof typeof componentMap]
+    : undefined;
   if (!clientConfig) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -198,7 +200,7 @@ export function PreviewContentRenderer({ contentType, content }: PreviewContentR
   const {
     component: Component,
     previewComponent: PreviewComponent,
-    skeletonComponent: SkeletonComponent,
+    skeletonComponent: _SkeletonComponent,
     usePageLayout
   } = clientConfig;
 

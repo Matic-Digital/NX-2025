@@ -36,6 +36,14 @@ export const BUTTON_GRAPHQL_FIELDS = `
     }
     title
     description
+    form {
+      sys {
+        id
+      }
+      title
+      description
+      formId
+    }
   }
   icon
 `;

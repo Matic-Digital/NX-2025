@@ -4,7 +4,7 @@
  */
 
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
-import { memoizedFetchGraphQL } from '@/lib/api-cache';
+import { memoizedFetchGraphQL as _memoizedFetchGraphQL } from '@/lib/api-cache';
 import { enhancedMemoizedFetchGraphQL } from '@/lib/enhanced-api-cache';
 
 import type { GraphQLResponse } from '@/types';
