@@ -54,7 +54,7 @@ import type { Header as HeaderType } from '@/components/Header/HeaderSchema';
 import type { Page } from '@/components/Page/PageSchema';
 import type { PageLayout as PageLayoutType } from '@/components/PageLayout/PageLayoutSchema';
 import type {
-  PageListContent,
+  PageListContent as _PageListContent,
   PageList as PageListType
 } from '@/components/PageList/PageListSchema';
 import type { Metadata } from 'next';

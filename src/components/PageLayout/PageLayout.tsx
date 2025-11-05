@@ -8,9 +8,9 @@ import '@/styles/layout.css';
 import { Box, Main } from '@/components/global/matic-ds';
 
 import { Footer } from '@/components/Footer/Footer';
-import { getFooterById } from '@/components/Footer/FooterApi';
+// Import removed - using API route instead
 import { Header } from '@/components/Header/Header';
-import { getHeaderById } from '@/components/Header/HeaderApi';
+// Import removed - using API route instead
 
 import type { Footer as FooterType } from '@/components/Footer/FooterSchema';
 import type { Header as HeaderType } from '@/components/Header/HeaderSchema';

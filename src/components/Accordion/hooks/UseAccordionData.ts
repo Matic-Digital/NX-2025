@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { getAccordionItemById, getAccordionsByIds } from '@/components/Accordion/AccordionApi';
+import { getAccordionItemById as _getAccordionItemById, getAccordionsByIds as _getAccordionsByIds } from '@/components/Accordion/AccordionApi';
 
 import type { AccordionItem as AccordionItemType } from '@/components/Accordion/AccordionSchema';
 
@@ -18,7 +18,6 @@ export const useAccordionData = (sysId: string, serverData?: AccordionItemType[]
   useEffect(() => {
     // COMPLETELY DISABLE client-side fetching - only use server-side data
     if (serverData && serverData.length > 0) {
-      console.log('Accordion: Using server-side enriched data');
       setAccordionItems(serverData);
       setLoading(false);
       return; // Already have server-side data

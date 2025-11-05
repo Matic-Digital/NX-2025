@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container } from '@/components/global/matic-ds';
 
-import { getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
+import { getCtaGridById as _getCtaGridById } from '@/components/CtaGrid/CtaGridApi';
 import { AirImage } from '@/components/Image/AirImage';
 
 import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
@@ -22,7 +22,7 @@ import type { CtaGrid } from '@/components/CtaGrid/CtaGridSchema';
 export function CtaGrid(props: CtaGrid) {
   // Check if we have full CtaGrid data (server-side rendered) or just reference (client-side)
   const hasFullData = 'title' in props && props.title !== undefined;
-  const [ctaGrid, setCtaGrid] = useState<CtaGrid>(hasFullData ? props : props);
+  const [ctaGrid, _setCtaGrid] = useState<CtaGrid>(hasFullData ? props : props);
   const liveCtaGrid = useContentfulLiveUpdates(ctaGrid);
   const [loading, setLoading] = useState(!hasFullData);
   const [productUrls, setProductUrls] = useState<Record<string, string>>({});
@@ -32,7 +32,6 @@ export function CtaGrid(props: CtaGrid) {
   useEffect(() => {
     // COMPLETELY DISABLE client-side fetching - only use server-side data
     if (hasFullData) {
-      console.log('CtaGrid: Using server-side enriched data');
       setLoading(false);
       return; // Already have server-side data
     }

@@ -132,10 +132,12 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       fields = BANNERHERO_GRAPHQL_FIELDS;
       query = `bannerHero(id: "${id}", preview: ${preview}) { ${fields} }`;
       break;
-    case 'Content':
-      fields = SYS_FIELDS;
-      query = `content(id: "${id}", preview: ${preview}) { ${fields} }`;
-      break;
+    case 'Content': {
+      // Import Content API dynamically to avoid circular dependencies
+      const { getContentById } = await import('@/components/Content/ContentApi');
+      const result = await getContentById(id, preview);
+      return result?.item || null;
+    }
     case 'ContentGrid': {
       // Import ContentGrid API dynamically to avoid circular dependencies
       const { getContentGridItemById } = await import('@/components/ContentGrid/ContentGridApi');
@@ -163,7 +165,33 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       // Use the Slider API directly instead of raw GraphQL to get server-side enrichment
       return await getSliderById(id, preview);
     }
+    case 'Collection': {
+      // Import Collection API dynamically to avoid circular dependencies
+      const { getCollectionById } = await import('@/components/Collection/CollectionApi');
+      return await getCollectionById(id, preview);
+    }
+    case 'Post': {
+      // Import Post API dynamically to avoid circular dependencies
+      const { getPostById } = await import('@/components/Post/PostApi');
+      return await getPostById(id, preview);
+    }
+    case 'Profile': {
+      // Import Profile API dynamically to avoid circular dependencies
+      const { getProfileById } = await import('@/components/Profile/ProfileApi');
+      return await getProfileById(id, preview);
+    }
+    case 'Testimonials': {
+      // Import Testimonials API dynamically to avoid circular dependencies
+      const { getTestimonialsById } = await import('@/components/Testimonials/TestimonialsApi');
+      return await getTestimonialsById(id, preview);
+    }
+    case 'Event': {
+      // Import Event API dynamically to avoid circular dependencies
+      const { getEventById } = await import('@/components/Event/EventApi');
+      return await getEventById(id, preview);
+    }
     default:
+      console.warn(`Product API: Unknown component type ${typename}, returning minimal data`);
       return null;
   }
 

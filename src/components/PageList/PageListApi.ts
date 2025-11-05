@@ -11,12 +11,12 @@ import {
 } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
-import { BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
-import { CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
-import { CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
+import { BANNERHERO_GRAPHQL_FIELDS as _BANNERHERO_GRAPHQL_FIELDS } from '@/components/BannerHero/BannerHeroApi';
+import { CONTENTGRID_GRAPHQL_FIELDS as _CONTENTGRID_GRAPHQL_FIELDS } from '@/components/ContentGrid/ContentGridApi';
+import { CTABANNER_GRAPHQL_FIELDS as _CTABANNER_GRAPHQL_FIELDS } from '@/components/CtaBanner/CtaBannerApi';
 import { getFooterById } from '@/components/Footer/FooterApi';
 import { getHeaderById } from '@/components/Header/HeaderApi';
-import { IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
+import { IMAGEBETWEEN_GRAPHQL_FIELDS as _IMAGEBETWEEN_GRAPHQL_FIELDS } from '@/components/ImageBetween/ImageBetweenApi';
 
 import type { Footer } from '@/components/Footer/FooterSchema';
 import type { Header } from '@/components/Header/HeaderSchema';
@@ -356,11 +356,11 @@ export async function getPageListBySlug(
     }
 
     // Post-process to enrich components (SAME AS PAGE API)
-    console.log('PageList API: Starting server-side enrichment for pageContent:', pageContent);
+    console.warn('PageList API: Starting server-side enrichment for pageContent:', pageContent);
     if (pageContent?.items) {
-      console.log('PageList API: Found', pageContent.items.length, 'items to process');
+      console.warn('PageList API: Found', pageContent.items.length, 'items to process');
       const enrichmentPromises = pageContent.items.map(async (item: any) => {
-        console.log('PageList API: Processing item:', item.__typename, item.sys?.id);
+        console.warn('PageList API: Processing item:', item.__typename, item.sys?.id);
         if (!item.sys?.id || !item.__typename) {
           return item;
         }
@@ -381,9 +381,9 @@ export async function getPageListBySlug(
             
             case 'ContentGrid': {
               const { getContentGridById } = await import('@/components/ContentGrid/ContentGridApi');
-              console.log(`PageList: Enriching ContentGrid ${item.sys.id}`);
+              console.warn(`PageList: Enriching ContentGrid ${item.sys.id}`);
               const enrichedItem = await getContentGridById(item.sys.id, preview);
-              console.log(`PageList: ContentGrid ${item.sys.id} enriched:`, {
+              console.warn(`PageList: ContentGrid ${item.sys.id} enriched:`, {
                 success: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
                 hasVariant: !!enrichedItem?.variant,
@@ -408,9 +408,9 @@ export async function getPageListBySlug(
             
             case 'Slider': {
               const { getSliderById } = await import('@/components/Slider/SliderApi');
-              console.log(`PageList: Enriching Slider ${item.sys.id}`);
+              console.warn(`PageList: Enriching Slider ${item.sys.id}`);
               const enrichedItem = await getSliderById(item.sys.id, preview);
-              console.log(`PageList: Slider ${item.sys.id} enriched:`, {
+              console.warn(`PageList: Slider ${item.sys.id} enriched:`, {
                 success: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
                 hasItemsCollection: !!enrichedItem?.itemsCollection,
@@ -422,10 +422,10 @@ export async function getPageListBySlug(
             
             case 'CtaGrid': {
               const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
-              console.log(`PageList: Enriching CtaGrid ${item.sys.id}`);
+              console.warn(`PageList: Enriching CtaGrid ${item.sys.id}`);
               const enrichedResult = await getCtaGridById(item.sys.id, preview);
               const enrichedItem = enrichedResult?.item;
-              console.log(`PageList: CtaGrid ${item.sys.id} enriched:`, {
+              console.warn(`PageList: CtaGrid ${item.sys.id} enriched:`, {
                 success: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
                 hasItemsCollection: !!enrichedItem?.itemsCollection,
@@ -437,9 +437,9 @@ export async function getPageListBySlug(
             
             case 'Profile': {
               const { getProfileById } = await import('@/components/Profile/ProfileApi');
-              console.log(`PageList: Enriching Profile ${item.sys.id}`);
+              console.warn(`PageList: Enriching Profile ${item.sys.id}`);
               const enrichedItem = await getProfileById(item.sys.id, preview);
-              console.log(`PageList: Profile ${item.sys.id} enriched:`, {
+              console.warn(`PageList: Profile ${item.sys.id} enriched:`, {
                 success: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
                 hasName: !!enrichedItem?.name,
@@ -450,15 +450,31 @@ export async function getPageListBySlug(
             
             case 'Accordion': {
               const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
-              console.log(`PageList: Enriching Accordion ${item.sys.id}`);
+              console.warn(`PageList: Enriching Accordion ${item.sys.id}`);
               const enrichedItem = await getAccordionById(item.sys.id, preview);
-              console.log(`PageList: Accordion ${item.sys.id} enriched:`, {
-                success: !!enrichedItem,
-                hasTitle: !!enrichedItem?.title,
-                hasItemsCollection: !!enrichedItem?.itemsCollection,
-                itemsCount: enrichedItem?.itemsCollection?.items?.length || 0,
-                keysCount: enrichedItem ? Object.keys(enrichedItem).length : 0
+              console.warn(`PageList: Accordion ${item.sys.id} enriched:`, {
+                id: item.sys.id,
+                hasEnrichedData: !!enrichedItem,
+                hasTitle: !!enrichedItem?.title
               });
+              return enrichedItem || item;
+            }
+            
+            case 'Product': {
+              const { getProductById } = await import('@/components/Product/ProductApi');
+              const enrichedItem = await getProductById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Solution': {
+              const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+              const enrichedItem = await getSolutionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Service': {
+              const { getServiceById } = await import('@/components/Service/ServiceApi');
+              const enrichedItem = await getServiceById(item.sys.id, preview);
               return enrichedItem || item;
             }
             
@@ -473,8 +489,8 @@ export async function getPageListBySlug(
       
       const enrichedItems = await Promise.all(enrichmentPromises);
       pageContent = { items: enrichedItems };
-      console.log('PageList API: Server-side enrichment completed');
-      console.log('PageList API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
+      console.warn('PageList API: Server-side enrichment completed');
+      console.warn('PageList API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
         __typename: item.__typename,
         id: item.sys?.id,
         hasTitle: !!item.title,
@@ -583,11 +599,11 @@ export async function getPageListById(
     }
 
     // Post-process to enrich components (SAME AS PAGE API)
-    console.log('PageListById API: Starting server-side enrichment for pageContent:', pageContent);
+    console.warn('PageListById API: Starting server-side enrichment for pageContent:', pageContent);
     if (pageContent?.items) {
-      console.log('PageListById API: Found', pageContent.items.length, 'items to process');
+      console.warn('PageListById API: Found', pageContent.items.length, 'items to process');
       const enrichmentPromises = pageContent.items.map(async (item: any) => {
-        console.log('PageListById API: Processing item:', item.__typename, item.sys?.id);
+        console.warn('PageListById API: Processing item:', item.__typename, item.sys?.id);
         if (!item.sys?.id || !item.__typename) {
           return item;
         }
@@ -608,9 +624,9 @@ export async function getPageListById(
             
             case 'ContentGrid': {
               const { getContentGridById } = await import('@/components/ContentGrid/ContentGridApi');
-              console.log(`PageListById: Enriching ContentGrid ${item.sys.id}`);
+              console.warn(`PageListById: Enriching ContentGrid ${item.sys.id}`);
               const enrichedItem = await getContentGridById(item.sys.id, preview);
-              console.log(`PageListById: ContentGrid ${item.sys.id} enriched:`, {
+              console.warn(`PageListById: ContentGrid ${item.sys.id} enriched:`, {
                 success: !!enrichedItem,
                 hasTitle: !!enrichedItem?.title,
                 hasVariant: !!enrichedItem?.variant,
@@ -641,7 +657,7 @@ export async function getPageListById(
             
             case 'CtaGrid': {
               const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
-              console.log(`PageListById: Enriching CtaGrid ${item.sys.id}`);
+              console.warn(`PageListById: Enriching CtaGrid ${item.sys.id}`);
               const enrichedResult = await getCtaGridById(item.sys.id, preview);
               const enrichedItem = enrichedResult?.item;
               return enrichedItem || item;
@@ -649,15 +665,33 @@ export async function getPageListById(
             
             case 'Profile': {
               const { getProfileById } = await import('@/components/Profile/ProfileApi');
-              console.log(`PageListById: Enriching Profile ${item.sys.id}`);
+              console.warn(`PageListById: Enriching Profile ${item.sys.id}`);
               const enrichedItem = await getProfileById(item.sys.id, preview);
               return enrichedItem || item;
             }
             
             case 'Accordion': {
               const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
-              console.log(`PageListById: Enriching Accordion ${item.sys.id}`);
+              console.warn(`PageListById: Enriching Accordion ${item.sys.id}`);
               const enrichedItem = await getAccordionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Product': {
+              const { getProductById } = await import('@/components/Product/ProductApi');
+              const enrichedItem = await getProductById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Solution': {
+              const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+              const enrichedItem = await getSolutionById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Service': {
+              const { getServiceById } = await import('@/components/Service/ServiceApi');
+              const enrichedItem = await getServiceById(item.sys.id, preview);
               return enrichedItem || item;
             }
             
@@ -672,8 +706,8 @@ export async function getPageListById(
       
       const enrichedItems = await Promise.all(enrichmentPromises);
       pageContent = { items: enrichedItems };
-      console.log('PageListById API: Server-side enrichment completed');
-      console.log('PageListById API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
+      console.warn('PageListById API: Server-side enrichment completed');
+      console.warn('PageListById API: Enriched items sample:', enrichedItems.slice(0, 2).map(item => ({
         __typename: item.__typename,
         id: item.sys?.id,
         hasTitle: !!item.title,

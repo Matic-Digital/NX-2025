@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useContentfulLiveUpdates } from '@contentful/live-preview/react';
 
-import { getCollectionById } from '@/components/Collection/CollectionApi';
+// Import removed - using API route instead
 
 import type { Collection } from '@/components/Collection/CollectionSchema';
 
@@ -25,15 +25,32 @@ export function useCollectionData({
   // Contentful Live Preview integration
   const updatedCollection = useContentfulLiveUpdates(collection);
 
-  // Fetch collection data if not provided but sys.id is available
+  // Check if we have server-enriched collection data
+  const hasServerData = collectionData && Object.keys(collectionData).length > 3;
+
+  // Use server-enriched Collection data when available, otherwise fetch
   useEffect(() => {
+    if (hasServerData) {
+      setCollection(collectionData);
+      setIsLoading(false);
+      return;
+    }
+
+    // If no server data but we have an ID, fetch the Collection config
     if (!collectionData && sys?.id) {
       const fetchCollection = async () => {
         try {
           setIsLoading(true);
           setError(null);
-          const fetchedCollection = await getCollectionById(sys.id, preview);
-          setCollection(fetchedCollection);
+          // Use API route to get server-side enriched Collection
+          const response = await fetch(`/api/components/Collection/${sys.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            const fetchedCollection = data.collection;
+            setCollection(fetchedCollection);
+          } else {
+            throw new Error('Failed to fetch collection from API');
+          }
         } catch {
           setError('Failed to load collection');
         } finally {
@@ -42,8 +59,10 @@ export function useCollectionData({
       };
 
       void fetchCollection();
+    } else {
+      setIsLoading(false);
     }
-  }, [collectionData, sys?.id, preview]);
+  }, [collectionData, sys?.id, hasServerData, preview]);
 
   const finalCollection = updatedCollection ?? collection;
 

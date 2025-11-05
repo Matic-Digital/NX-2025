@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@/components/global/matic-ds';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+// Import removed - using API route instead
 import { OfficeLocationSkeleton } from '@/components/OfficeLocation/OfficeLocationSkeleton';
 
 import type { OfficeLocation } from '@/components/OfficeLocation/OfficeLocationSchema';

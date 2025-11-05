@@ -1,5 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
-import { getCacheConfig } from '@/lib/cache-tags';
+import { getCacheConfig as _getCacheConfig } from '@/lib/cache-tags';
 import { getPAGE_WITH_REFS_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -232,16 +232,16 @@ export async function getPageBySlug(
     }
 
     // Post-process to enrich ImageBetween and ContentGrid components (PARALLEL)
-    console.log('Page API: Starting PARALLEL server-side enrichment for pageContent:', pageContent);
+    console.warn('Page API: Starting PARALLEL server-side enrichment for pageContent:', pageContent);
     if (pageContent?.items) {
-      console.log('Page API: Found', pageContent.items.length, 'items to process in PARALLEL');
+      console.warn('Page API: Found', pageContent.items.length, 'items to process in PARALLEL');
       const enrichmentPromises = pageContent.items.map(async (item: any) => {
-        console.log('Page API: Processing item in PARALLEL:', item.__typename, item.sys?.id);
+        console.warn('Page API: Processing item in PARALLEL:', item.__typename, item.sys?.id);
         if (item.__typename === 'ImageBetween' && item.sys?.id) {
           try {
             const enrichedImageBetween = await getImageBetweenById(item.sys.id, preview);
             return enrichedImageBetween || item;
-          } catch (error) {
+          } catch {
             return item;
           }
         } else if (item.__typename === 'ContentGrid' && item.itemsCollection?.items?.length > 0) {
@@ -257,9 +257,9 @@ export async function getPageBySlug(
               try {
                 const { getCollectionIdsFromContentGrid } = await import('@/components/ContentGrid/ContentGridApi');
                 collectionIds = await getCollectionIdsFromContentGrid(item.sys.id);
-                console.log('Page ContentGrid: Found Collection IDs:', collectionIds);
-              } catch (error) {
-                console.warn('Failed to get Collection IDs for ContentGrid:', error);
+                console.warn('Page ContentGrid: Found Collection IDs:', collectionIds);
+              } catch {
+                console.warn('Failed to get Collection IDs for ContentGrid');
               }
             }
             
@@ -272,16 +272,16 @@ export async function getPageBySlug(
                 if (collectionId) {
                   try {
                     const { getCollectionById } = await import('@/components/Collection/CollectionApi');
-                    console.log('Page ContentGrid: Enriching Collection (empty object)', collectionId);
+                    console.warn('Page ContentGrid: Enriching Collection (empty object)', collectionId);
                     const enrichedCollection = await getCollectionById(collectionId, preview);
-                    console.log('Page ContentGrid: Collection enrichment result:', {
+                    console.warn('Page ContentGrid: Collection enrichment result:', {
                       id: collectionId,
                       hasEnrichedData: !!enrichedCollection,
                       hasTitle: !!enrichedCollection?.title
                     });
                     return enrichedCollection || { sys: { id: collectionId }, __typename: 'Collection' };
-                  } catch (error) {
-                    console.warn(`Failed to enrich Collection ${collectionId} in Page ContentGrid:`, error);
+                  } catch {
+                    console.warn(`Failed to enrich Collection ${collectionId} in Page ContentGrid`);
                     return { sys: { id: collectionId }, __typename: 'Collection' };
                   }
                 } else {
@@ -292,49 +292,84 @@ export async function getPageBySlug(
                 try {
                   // Dynamically import Post API to avoid circular dependency
                   const { getPostById } = await import('@/components/Post/PostApi');
-                  console.log('Page ContentGrid: Enriching Post', gridItem.sys.id);
+                  console.warn('Page ContentGrid: Enriching Post', gridItem.sys.id);
                   const enrichedPost = await getPostById(gridItem.sys.id, preview);
-                  console.log('Page ContentGrid: Post enrichment result:', {
+                  console.warn('Page ContentGrid: Post enrichment result:', {
                     id: gridItem.sys.id,
                     hasEnrichedData: !!enrichedPost,
                     hasTitle: !!enrichedPost?.title,
                     hasSlug: !!enrichedPost?.slug
                   });
                   return enrichedPost || gridItem;
-                } catch (error) {
-                  console.warn(`Failed to enrich Post ${gridItem.sys.id} in Page ContentGrid:`, error);
+                } catch {
+                  console.warn(`Failed to enrich Post ${gridItem.sys.id} in Page ContentGrid`);
                   return gridItem;
                 }
               } else if (gridItem.__typename === 'Collection' && gridItem.sys?.id) {
                 try {
                   // Dynamically import Collection API to avoid circular dependency
                   const { getCollectionById } = await import('@/components/Collection/CollectionApi');
-                  console.log('Page ContentGrid: Enriching Collection', gridItem.sys.id);
+                  console.warn('Page ContentGrid: Enriching Collection', gridItem.sys.id);
                   const enrichedCollection = await getCollectionById(gridItem.sys.id, preview);
-                  console.log('Page ContentGrid: Collection enrichment result:', {
+                  console.warn('Page ContentGrid: Collection enrichment result:', {
                     id: gridItem.sys.id,
                     hasEnrichedData: !!enrichedCollection,
                     hasTitle: !!enrichedCollection?.title
                   });
                   return enrichedCollection || gridItem;
-                } catch (error) {
-                  console.warn(`Failed to enrich Collection ${gridItem.sys.id} in Page ContentGrid:`, error);
+                } catch {
+                  console.warn(`Failed to enrich Collection ${gridItem.sys.id} in Page ContentGrid`);
                   return gridItem;
                 }
               } else if (gridItem.__typename === 'Accordion' && gridItem.sys?.id) {
                 try {
                   // Dynamically import Accordion API to avoid circular dependency
                   const { getAccordionById } = await import('@/components/Accordion/AccordionApi');
-                  console.log('Page ContentGrid: Enriching Accordion', gridItem.sys.id);
+                  console.warn('Page ContentGrid: Enriching Accordion', gridItem.sys.id);
                   const enrichedAccordion = await getAccordionById(gridItem.sys.id, preview);
-                  console.log('Page ContentGrid: Accordion enrichment result:', {
+                  console.warn('Page ContentGrid: Accordion enrichment result:', {
                     id: gridItem.sys.id,
                     hasEnrichedData: !!enrichedAccordion,
                     hasTitle: !!enrichedAccordion?.title
                   });
                   return enrichedAccordion || gridItem;
-                } catch (error) {
-                  console.warn(`Failed to enrich Accordion ${gridItem.sys.id} in Page ContentGrid:`, error);
+                } catch {
+                  console.warn(`Failed to enrich Accordion ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Testimonials' && gridItem.sys?.id) {
+                try {
+                  // Dynamically import Testimonials API to avoid circular dependency
+                  const { getTestimonialsById } = await import('@/components/Testimonials/TestimonialsApi');
+                  console.warn('Page ContentGrid: Enriching Testimonials', gridItem.sys.id);
+                  const enrichedTestimonials = await getTestimonialsById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Testimonials enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedTestimonials,
+                    hasTitle: !!enrichedTestimonials?.title,
+                    hasItemsCollection: !!enrichedTestimonials?.itemsCollection
+                  });
+                  return enrichedTestimonials || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Testimonials ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Slider' && gridItem.sys?.id) {
+                try {
+                  // Dynamically import Slider API to avoid circular dependency
+                  const { getSliderById } = await import('@/components/Slider/SliderApi');
+                  console.warn('Page ContentGrid: Enriching Slider', gridItem.sys.id);
+                  const enrichedSlider = await getSliderById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Slider enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedSlider,
+                    hasTitle: !!enrichedSlider?.title,
+                    hasItemsCollection: !!enrichedSlider?.itemsCollection,
+                    itemsCount: enrichedSlider?.itemsCollection?.items?.length || 0
+                  });
+                  return enrichedSlider || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Slider ${gridItem.sys.id} in Page ContentGrid`);
                   return gridItem;
                 }
               }
@@ -349,8 +384,8 @@ export async function getPageBySlug(
                 items: enrichedGridItems
               }
             };
-          } catch (error) {
-            console.warn('Failed to enrich ContentGrid in Page:', error);
+          } catch {
+            console.warn('Failed to enrich ContentGrid in Page');
             return item;
           }
         }
@@ -492,7 +527,7 @@ export async function getPageById(
           try {
             const enrichedImageBetween = await getImageBetweenById(item.sys.id, preview);
             return enrichedImageBetween || item;
-          } catch (error) {
+          } catch {
             return item;
           }
         }

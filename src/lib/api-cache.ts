@@ -26,12 +26,10 @@ export async function memoizedFetchGraphQL<T>(
   
   // Return cached result if available
   if (apiCache.has(cacheKey)) {
-    console.log('API Cache: Hit for', cacheKey.substring(0, 50) + '...');
     return apiCache.get(cacheKey);
   }
   
   // Fetch and cache the result
-  console.log('API Cache: Miss for', cacheKey.substring(0, 50) + '...');
   const result = await fetchGraphQL(query, variables, preview);
   apiCache.set(cacheKey, result);
   
@@ -43,7 +41,6 @@ export async function memoizedFetchGraphQL<T>(
  */
 export function clearApiCache(): void {
   apiCache.clear();
-  console.log('API Cache: Cleared');
 }
 
 /**

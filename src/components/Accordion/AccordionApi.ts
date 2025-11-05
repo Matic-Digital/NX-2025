@@ -108,17 +108,11 @@ export async function getAccordionById(
 
     // Step 2: Enrich accordion items with full data (server-side lazy loading)
     if (accordion.itemsCollection?.items?.length > 0) {
-      console.log('Accordion API: Enriching', accordion.itemsCollection.items.length, 'accordion items');
       const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
         if (item.sys?.id) {
           try {
-            console.log('Accordion API: Enriching AccordionItem', item.sys.id);
             const enrichedItem = await getAccordionItemById(item.sys.id, preview);
-            console.log('Accordion API: AccordionItem enriched:', {
-              id: item.sys.id,
-              hasEnrichedData: !!enrichedItem,
-              hasTitle: !!enrichedItem?.title
-            });
+            // Debug logging removed
             return enrichedItem || item;
           } catch (error) {
             console.warn(`Failed to enrich AccordionItem ${item.sys.id}:`, error);
@@ -188,7 +182,6 @@ export async function getAccordionsByIds(
     const enrichedAccordions = await Promise.all(
       accordions.map(async (accordion: any) => {
         if (accordion.itemsCollection?.items?.length > 0) {
-          console.log('Accordion Collection API: Enriching', accordion.itemsCollection.items.length, 'accordion items for', accordion.sys.id);
           const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
             if (item.sys?.id) {
               try {

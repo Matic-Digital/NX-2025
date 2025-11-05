@@ -22,7 +22,7 @@ import { ImageBetweenWrapper } from '@/components/ImageBetween/ImageBetweenWrapp
 import { Location } from '@/components/OfficeLocation/OfficeLocation';
 import { PageLayout } from '@/components/PageLayout/PageLayout';
 import { RichTextRenderer } from '@/components/Post/components/RichTextRenderer';
-import { getAllPostsMinimal } from '@/components/Post/PostApi';
+// Import removed - using API route instead
 import { PostCard } from '@/components/Post/PostCard';
 import { PostCardSkeleton } from '@/components/Post/PostCardSkeleton';
 import { Slider } from '@/components/Slider/Slider';
@@ -47,12 +47,17 @@ function NewsPosts() {
     const fetchNewsPosts = async () => {
       try {
         setLoading(true);
-        // Get all posts with minimal fields to avoid complexity issues
-        const allPosts = await getAllPostsMinimal();
+        // Use API route to get server-side enriched Posts
+        const response = await fetch('/api/components/Post/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts from API');
+        }
+        const data = await response.json();
+        const allPosts = data.posts;
 
         // Filter for "Press Release" or "In The News" categories (using correct enum values)
-        const newsPosts = allPosts.items
-          .filter((post) =>
+        const newsPosts = (allPosts?.items ?? [])
+          .filter((post: Post) =>
             post.categories?.some(
               (category) => category === 'Press Release' || category === 'In The News'
             )

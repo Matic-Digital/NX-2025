@@ -74,13 +74,7 @@ export async function fetchGraphQL<T>(
     const requestBody = { query, variables: sanitizedVariables };
     const url = `https://graphql.contentful.com/content/v1/spaces/${spaceId}/environments/${environment}`;
     
-    console.log('Contentful API Request:', {
-      url,
-      hasAccessToken: !!accessToken,
-      environment,
-      queryLength: query.length,
-      variables: sanitizedVariables
-    });
+    // Debug logging removed
 
     const response = await fetch(url, {
       method: 'POST',

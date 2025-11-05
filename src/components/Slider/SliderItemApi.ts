@@ -9,7 +9,7 @@ import { IMAGE_GRAPHQL_FIELDS } from '@/components/Image/ImageApi';
 import { getPOST_SLIDER_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { SOLUTION_GRAPHQL_FIELDS } from '@/components/Solution/SolutionApi';
 import { TEAM_MEMBER_GRAPHQL_FIELDS } from '@/components/TeamMember/TeamMemberApi';
-import { TESTIMONIALITEM_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
+import { TESTIMONIALITEM_GRAPHQL_FIELDS, TESTIMONIALS_GRAPHQL_FIELDS } from '@/components/Testimonials/TestimonialsApi';
 import { TIMELINE_SLIDERITEM_GRAPHQL_FIELDS } from '@/components/TimelineSlider/TimelineSliderItemApi';
 
 import type { SliderItem } from '@/components/Slider/SliderItemSchema';
@@ -53,6 +53,9 @@ export const SLIDERITEM_GRAPHQL_FIELDS_SIMPLE = `
   }
   ... on TestimonialItem {
     ${TESTIMONIALITEM_GRAPHQL_FIELDS}
+  }
+  ... on Testimonials {
+    ${TESTIMONIALS_GRAPHQL_FIELDS}
   }
 `;
 

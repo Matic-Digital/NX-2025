@@ -2,871 +2,871 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://localhost:3000</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://localhost:3000/resources</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/thank-you</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/search</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/newsroom</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/careers</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/showcase</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/contact</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/asia-pacific</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/about</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/traditional-piles</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/foundations-product</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/controls-product</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/digital-product</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/dual-land-use</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/ppa-partnerships</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/decarbonization-lever</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/cold-climates</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/speed-to-deploy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/desert-climates</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/ai-and-energy-transition</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/a-non-categorized-solution</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/bankability</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/enable-dual-value</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/maximizing-uptime</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solving-for-complex-terrain</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/optimizing-module-technology</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/localized-supply-chain</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/land-use-and-permitting</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/diverse-soil-conditions</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/blog/introducing-nextrackers-half-the-sun-class-of-2024-awardees</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/blog/truecapture-outperforms-modeled-energy-yield-projections-in-icf-engineering-report</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/video/california-dreaming-dr-torsten-brammer-speaks-with-howard-wenger-in-the-solar-journey-podcast</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/nextracker-alcanca-o-marco-de-10-gw-no-mercado-de-geracao-de-energia-solar-centralizada-no-brasil</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/nx-zero-emissions-case-study</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/video/dd-india-nextracker-selected-for-repeat-order-by-sterling-and-wilson-renewable-energy-limited</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/data-sheet/nx-anchor-datasheet</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/data-sheet/nx-horizon-hail-pro</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/data-sheet/ojjo-earth-truss-datasheet</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/nx-horizon-xtr-reducing-costs-and-complexity-for-solar-projects-on-challenging-terrain</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/foundations-case-study</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/data-sheet/nx-agripv</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/blog/honoring-service-beyond-the-battlefield-from-defending-freedom-to-powering-a-clean-energy-future</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-unimacts-dedicate-second-nevada-factory-to-serve-solar-power-demand</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/busting-the-myth-renewables-can-power-the-data-center-surge</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/blog/placeholder-post</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/case-study/nx-anchor-overcoming-cold-climate-through-innovation-and-collaboration</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-reports-q1-fy25-financial-results</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-unveils-nx-foundation-solutions-enabling-solar-anywhere</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-to-inaugurate-indias-rd-center-for-solar-excellence-in-hyderabad</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-releases-inaugural-sustainability-report</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-reports-q2-fy25-financial-results</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-delivers-first-100-domestic-content-solar-trackers-to-u-s-market</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-and-university-of-california-berkeley-engineering-partner-to-establish-the-calnext-center-for-solar-energy-research</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextrackers-truecapture-software-optimizing-solar-energy-production-with-advanced-technology</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/the-solar-industry-is-getting-smarter-about-storm-defense</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-expands-board-of-directors</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-reports-q2-fy25-financial-results-2</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-achieves-10-gw-solar-tracker-milestone-in-india</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-selected-for-landmark-european-solar-power-project</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/in-the-news/sterling-wilson-renewable-energy-selects-nextracker-nx-horizon-solar-trackers-for-nearly-two-gigawatts-in-india</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-announces-completion-of-its-separation-from-flex</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-extends-leadership-in-distributed-generation-dg-surpasses-5-gw-milestone-with-over-600-dg-projects-and-enters-into-new-strategic-agreements</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/in-the-news/the-economic-times-sterling-and-wilson-places-orders-with-nextracker-for-solar-trackers</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/acwa-power-and-larsen-toubro-select-nextrackers-all-terrain-solar-trackers-for-al-kahfah-solar-park</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-achieves-significant-milestone-in-the-middle-east-with-a-new-1-gw-project-win</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/recent-visit-to-india</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-celebrates-its-first-100-gw-milestone</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/jon-fortt-of-cnbc-interviews-nextracker-with-a-range-of-insightful-questions-spanning-drivers-in-growth-of-the-solar-industry</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-appoints-two-new-members-to-board-of-directors</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-announces-two-major-new-strategic-value-added-reseller-agreements</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/quarterly-earnings-video-series-q3-2023</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-journey-from-a-startup-to-an-independent-public-company</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-and-orrcon-steel-to-deliver-sovereign-capability-in-australia</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-announces-chuck-boynton-as-new-chief-financial-officer</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/through-decades-of-technological-innovation-solar-has-achieved-excellent-efficiency-and-cost-reduction-where-solar-is-the-lowest-cost-way-to-generate-electricity-at-many-places-in-the-world</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/in-the-news/pv-magazine-acwa-power-lt-select-nextracker-for-1-17-gw-solar-plant-in-saudi-arabia</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/in-the-news/renewables-now-nextracker-teams-up-with-orrcon-steel-for-australian-components</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-launches-industrys-first-low-carbon-solar-tracker-solution</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-and-jennmar-jm-steel-bolster-u-s-supply-chain-with-new-facility-expansion-to-triple-capacity-for-solar-energy-projects</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-reports-q4-and-fy24-financial-results</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-acquires-ojjo-to-expand-utility-scale-solar-tracker-foundations-business</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/mammoth-north-solar-project-celebrates-upcoming-commercial-operations</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/400-mw-mammoth-north-solar-project</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-agrivoltaics-a-win-win-for-all</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/californias-clean-energy-transformation-cec-chair-hochschilds-legacy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-acquires-ojjo-inc</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-goes-electric-with-forum-mobility-and-hight-logistics</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/shug-speaks/nextracker-launches-low-carbon-tracker-variant</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/post/press-release/nextracker-expands-solar-technology-platform-with-ebos-portfolio</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/services</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/services/design</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/services/deploy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/what-we-do</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/what-we-do/design</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/what-we-do/deploy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/what-we-do/operate</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/module-mounting</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/module-mounting/nx-frame</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/controls</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/controls/truecapture</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/controls/nx-spc-3-0</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/controls/nx-ncu-3-0</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/software</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/software/nx-one</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/software/nx-pulse</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/software/nx-navigator</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/ebos</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/ebos/nx-trunk-bus</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/ebos/nx-combiner</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/ebos/nx-string-harnesses</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/foundations</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/foundations/nx-anchor</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/foundations/nx-earth-truss</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company/americas</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company/europe</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company/latin-america</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company/australian-pacific</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/company/middle-east-africa-and-india</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/trackers</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/trackers/nx-horizon</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/trackers/nx-horizon-xtr</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/trackers/nx-horizon-low-carbon</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products/trackers/nx-horizon-hall-pro</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/energy-and-ai</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/energy-and-ai/behind-the-meter-energy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/mitigate-risk</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/mitigate-risk/high-winds</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/mitigate-risk/severe-hail</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/maximize-energy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/maximize-energy/harnessing-diffuse-light</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/accelerate-deployment</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/accelerate-deployment/design-optimization</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/accelerate-deployment/efficient-installation</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions/accelerate-deployment/challenging-terrain</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/services/design/placeholder-service</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>http://localhost:3000/products</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/legal</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/legal/global-data-protection-policy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/legal/cookie-policy</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/legal/legal-disclaimer</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://localhost:3000/solutions</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/investors</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:3000/useful-links</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

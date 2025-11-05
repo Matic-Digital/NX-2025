@@ -13,7 +13,7 @@ import { Box } from '@/components/global/matic-ds/box';
 
 import { AirImage } from '@/components/Image/AirImage';
 import { shouldPreloadImage, ImageContext as _ImageContext } from '@/components/Image/utils/imageOptimization';
-import { getServiceById } from '@/components/Service/ServiceApi';
+// Import removed - using API route instead
 
 import type { Service } from '@/components/Service/ServiceSchema';
 

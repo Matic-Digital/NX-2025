@@ -44,7 +44,7 @@ export function RegionsMapPreview(props: Partial<RegionsMapType>) {
                 if (hasRequiredFields) {
                   return (
                     <div className="overflow-hidden p-8" {...inspectorProps}>
-                      <RegionsMap {...(liveRegionsMap as RegionsMapType)} />
+                      <RegionsMap />
                     </div>
                   );
                 }

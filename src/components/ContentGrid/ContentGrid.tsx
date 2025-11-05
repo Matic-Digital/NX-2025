@@ -17,7 +17,7 @@ import { ServiceCardProvider } from '@/contexts/ServiceCardContext';
 import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box, Container, Section } from '@/components/global/matic-ds';
 
-import { getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
+import { getCollectionIdsFromContentGrid as _getCollectionIdsFromContentGrid } from '@/components/ContentGrid/ContentGridApi';
 import { ContentItemRenderer } from '@/components/ContentGrid/ContentItemRenderer';
 import { AirImage } from '@/components/Image/AirImage';
 import { SectionHeading } from '@/components/SectionHeading/SectionHeading';
@@ -49,16 +49,7 @@ export function ContentGrid(props: ContentGridProps) {
     }
 
     // Server-side enrichment provides complete data - use items directly
-    console.log('ContentGrid: Using server-enriched items:', rawItems);
-    console.log('ContentGrid: Item details:');
-    rawItems.forEach((item, index) => {
-      console.log(`Item ${index}:`, {
-        __typename: item?.__typename,
-        sys: item?.sys,
-        title: item?.title,
-        keys: Object.keys(item || {})
-      });
-    });
+    // Debug logging removed
     setEnhancedItems(rawItems);
     setIsLoadingCollections(false);
   }, [rawItems]);

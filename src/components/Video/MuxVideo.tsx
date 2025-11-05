@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import MuxVideo from '@mux/mux-video-react';
 
-import { getVideoById } from '@/components/Video/VideoApi';
+import { getVideoById as _getVideoById } from '@/components/Video/VideoApi';
 
 import type { Video, VideoSys } from '@/components/Video/VideoSchema';
 

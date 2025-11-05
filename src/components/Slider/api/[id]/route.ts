@@ -23,7 +23,7 @@ export async function GET(
     const hasAccessToken = !!process.env.CONTENTFUL_ACCESS_TOKEN;
     const hasPreviewToken = !!process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
     
-    console.log('API Route Environment Check:', {
+    console.warn('API Route Environment Check:', {
       hasSpaceId,
       hasAccessToken,
       hasPreviewToken,

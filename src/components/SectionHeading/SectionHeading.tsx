@@ -17,7 +17,7 @@ import { SvgIcon } from '@/components/ui/svg-icon';
 import { Box } from '@/components/global/matic-ds';
 
 import { ModalCtaButton } from '@/components/Button/ModalCtaButton';
-import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+// Import removed - using API route instead
 import { SectionHeadingSkeleton } from '@/components/SectionHeading/SectionHeadingSkeleton';
 import { SECTION_HEADING_VARIANTS } from '@/components/SectionHeading/SectionHeadingVariants';
 

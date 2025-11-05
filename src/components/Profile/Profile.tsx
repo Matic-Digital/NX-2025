@@ -7,7 +7,7 @@ import {
 } from '@contentful/live-preview/react';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { getProfileById } from '@/components/Profile/ProfileApi';
+// Import removed - using API route instead
 
 import { Box } from '@/components/global/matic-ds';
 
@@ -26,7 +26,7 @@ type ProfileAllProps = ProfileProps | (ProfileType & { className?: string });
 export function Profile(props: ProfileAllProps) {
   // Check if we have full Profile data (server-side rendered) or just reference (client-side)
   const hasFullData = 'title' in props || 'name' in props;
-  const [profileData, setProfileData] = useState<ProfileType | null>(hasFullData ? (props as ProfileType) : null);
+  const [profileData, _setProfileData] = useState<ProfileType | null>(hasFullData ? (props as ProfileType) : null);
   const [loading, setLoading] = useState(!hasFullData);
   const className = 'className' in props ? props.className : undefined;
   const sys = 'sys' in props ? props.sys : (props as ProfileType).sys;
@@ -34,7 +34,6 @@ export function Profile(props: ProfileAllProps) {
   useEffect(() => {
     // COMPLETELY DISABLE client-side fetching - only use server-side data
     if (hasFullData) {
-      console.log('Profile: Using server-side enriched data');
       setLoading(false);
       return; // Already have server-side data
     }
