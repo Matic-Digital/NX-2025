@@ -228,6 +228,7 @@ export async function getContentGridById(id: string, preview = false): Promise<C
       
       // Process all items in parallel, awaiting Collection IDs only when needed
       const enrichmentPromises = contentGrid.itemsCollection.items.map(async (item: any, index: number) => {
+        console.log(`ContentGrid: Processing item ${index}:`, { id: item.sys?.id, typename: item.__typename, keys: Object.keys(item) });
         // Handle empty objects (Collections) - await Collection IDs when needed
         if (item && typeof item === 'object' && Object.keys(item).length === 0) {
           try {
@@ -417,8 +418,18 @@ export async function getContentGridById(id: string, preview = false): Promise<C
           }
         } else if (item.__typename === 'Event' && item.sys?.id) {
           try {
+            console.log(`ContentGrid: Found Event to enrich: ${item.sys.id}`, item);
+            console.log(`ContentGrid: Calling getEventById for ${item.sys.id}`);
             const { getEventById } = await import('@/components/Event/EventApi');
             const enrichedItem = await getEventById(item.sys.id, preview);
+            console.log(`ContentGrid: Event enrichment result:`, {
+              id: item.sys.id,
+              hasEnrichedData: !!enrichedItem,
+              hasTitle: !!enrichedItem?.title,
+              hasSlug: !!enrichedItem?.slug,
+              enrichedEvent: enrichedItem
+            });
+            console.log(`ContentGrid: Returning enriched Event`);
             return enrichedItem || item;
           } catch (error) {
             console.warn(`Failed to enrich Event ${item.sys.id} in ContentGrid:`, error);
@@ -435,8 +446,10 @@ export async function getContentGridById(id: string, preview = false): Promise<C
           }
         } else if (item.__typename === 'ContactCard' && item.sys?.id) {
           try {
+            console.log(`ContentGrid: Enriching ContactCard ${item.sys.id}`);
             const { getContactCardById } = await import('@/components/ContactCard/ContactCardApi');
             const enrichedItem = await getContactCardById(item.sys.id, preview);
+            console.log(`ContentGrid: ContactCard ${item.sys.id} enriched successfully:`, { hasTitle: !!enrichedItem?.title });
             return enrichedItem || item;
           } catch (error) {
             console.warn(`Failed to enrich ContactCard ${item.sys.id} in ContentGrid:`, error);
@@ -484,6 +497,10 @@ export async function getContentGridById(id: string, preview = false): Promise<C
 
       // Wait for all enrichments to complete
       const enrichedItems = await Promise.all(enrichmentPromises);
+      console.log(`ContentGrid: Enrichment completed. Original items:`, contentGrid.itemsCollection?.items?.length);
+      console.log(`ContentGrid: Enriched items:`, enrichedItems.length);
+      console.log(`ContentGrid: Enriched ContactCards:`, enrichedItems.filter(item => item.__typename === 'ContactCard').map(item => ({ id: item.sys?.id, hasTitle: !!item.title })));
+      
       if (contentGrid.itemsCollection) {
         contentGrid.itemsCollection.items = enrichedItems;
       }
@@ -657,8 +674,18 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
               }
             } else if (item.__typename === 'Event' && item.sys?.id) {
               try {
+                console.log(`ContentGrid Collection: Found Event to enrich: ${item.sys.id}`, item);
+                console.log(`ContentGrid Collection: Calling getEventById for ${item.sys.id}`);
                 const { getEventById } = await import('@/components/Event/EventApi');
                 const enrichedItem = await getEventById(item.sys.id, preview);
+                console.log(`ContentGrid Collection: Event enrichment result:`, {
+                  id: item.sys.id,
+                  hasEnrichedData: !!enrichedItem,
+                  hasTitle: !!enrichedItem?.title,
+                  hasSlug: !!enrichedItem?.slug,
+                  enrichedEvent: enrichedItem
+                });
+                console.log(`ContentGrid Collection: Returning enriched Event`);
                 return enrichedItem || item;
               } catch (error) {
                 console.warn(`Failed to enrich Event ${item.sys.id} in ContentGrid collection:`, error);
@@ -666,8 +693,10 @@ export async function getAllContentGrids(preview = false): Promise<ContentGridRe
               }
             } else if (item.__typename === 'ContactCard' && item.sys?.id) {
               try {
+                console.log(`ContentGrid Collection: Enriching ContactCard ${item.sys.id}`);
                 const { getContactCardById } = await import('@/components/ContactCard/ContactCardApi');
                 const enrichedItem = await getContactCardById(item.sys.id, preview);
+                console.log(`ContentGrid Collection: ContactCard ${item.sys.id} enriched successfully:`, { hasTitle: !!enrichedItem?.title });
                 return enrichedItem || item;
               } catch (error) {
                 console.warn(`Failed to enrich ContactCard ${item.sys.id} in ContentGrid collection:`, error);

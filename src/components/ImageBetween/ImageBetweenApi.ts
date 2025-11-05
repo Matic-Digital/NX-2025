@@ -80,9 +80,18 @@ export async function getImageBetweenById(
     // Enrich contentTop
     if (imageBetween.contentTop?.sys?.id) {
       if (imageBetween.contentTop.__typename === 'ContentGrid') {
+        console.log(`ImageBetween: Enriching ContentGrid contentTop ${imageBetween.contentTop.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.contentTop.sys.id, preview)
-            .then(data => ({ type: 'contentTop', data }))
+            .then(data => {
+              console.log(`ImageBetween: ContentGrid contentTop enriched successfully:`, {
+                id: imageBetween.contentTop.sys.id,
+                hasData: !!data,
+                hasItems: !!data?.itemsCollection?.items?.length,
+                itemCount: data?.itemsCollection?.items?.length || 0
+              });
+              return { type: 'contentTop', data };
+            })
         );
       } else if (imageBetween.contentTop.__typename === 'BannerHero') {
         enrichmentPromises.push(
@@ -105,9 +114,22 @@ export async function getImageBetweenById(
             })
         );
       } else if (imageBetween.asset.__typename === 'ContentGrid') {
+        console.log(`ImageBetween: Enriching ContentGrid asset ${imageBetween.asset.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.asset.sys.id, preview)
-            .then(data => ({ type: 'asset', data }))
+            .then(data => {
+              console.log(`ImageBetween: ContentGrid asset enriched successfully:`, {
+                id: imageBetween.asset?.sys?.id,
+                hasData: !!data,
+                hasItems: !!data?.itemsCollection?.items?.length,
+                itemCount: data?.itemsCollection?.items?.length || 0
+              });
+              return { type: 'asset', data };
+            })
+            .catch(error => {
+              console.warn(`Failed to enrich ContentGrid asset ${imageBetween.asset?.sys?.id} in ImageBetween:`, error);
+              return { type: 'asset', data: null };
+            })
         );
       }
     }

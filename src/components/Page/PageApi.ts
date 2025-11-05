@@ -372,6 +372,191 @@ export async function getPageBySlug(
                   console.warn(`Failed to enrich Slider ${gridItem.sys.id} in Page ContentGrid`);
                   return gridItem;
                 }
+              } else if (gridItem.__typename === 'CtaGrid' && gridItem.sys?.id) {
+                try {
+                  // Dynamically import CtaGrid API to avoid circular dependency
+                  const { getCtaGridById } = await import('@/components/CtaGrid/CtaGridApi');
+                  console.warn('Page ContentGrid: Enriching CtaGrid', gridItem.sys.id);
+                  const enrichedResult = await getCtaGridById(gridItem.sys.id, preview);
+                  const enrichedCtaGrid = enrichedResult?.item;
+                  console.warn('Page ContentGrid: CtaGrid enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedCtaGrid,
+                    hasTitle: !!enrichedCtaGrid?.title
+                  });
+                  return enrichedCtaGrid || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich CtaGrid ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'ContactCard' && gridItem.sys?.id) {
+                try {
+                  // Dynamically import ContactCard API to avoid circular dependency
+                  const { getContactCardById } = await import('@/components/ContactCard/ContactCardApi');
+                  console.warn('Page ContentGrid: Enriching ContactCard', gridItem.sys.id);
+                  const enrichedContactCard = await getContactCardById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: ContactCard enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedContactCard,
+                    hasTitle: !!enrichedContactCard?.title
+                  });
+                  return enrichedContactCard || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich ContactCard ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Profile' && gridItem.sys?.id) {
+                try {
+                  const { getProfileById } = await import('@/components/Profile/ProfileApi');
+                  console.warn('Page ContentGrid: Enriching Profile', gridItem.sys.id);
+                  const enrichedProfile = await getProfileById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Profile enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedProfile,
+                    hasTitle: !!enrichedProfile?.title,
+                    hasName: !!enrichedProfile?.name
+                  });
+                  return enrichedProfile || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Profile ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'ContentSliderItem' && gridItem.sys?.id) {
+                try {
+                  const { getContentSliderItemById } = await import('@/components/Slider/components/ContentSliderItemApi');
+                  console.warn('Page ContentGrid: Enriching ContentSliderItem', gridItem.sys.id);
+                  const enrichedItem = await getContentSliderItemById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: ContentSliderItem enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedItem,
+                    hasTitle: !!enrichedItem?.title
+                  });
+                  return enrichedItem || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich ContentSliderItem ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Service' && gridItem.sys?.id) {
+                try {
+                  const { getServiceById } = await import('@/components/Service/ServiceApi');
+                  console.warn('Page ContentGrid: Enriching Service', gridItem.sys.id);
+                  const enrichedService = await getServiceById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Service enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedService,
+                    hasTitle: !!enrichedService?.title
+                  });
+                  return enrichedService || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Service ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Solution' && gridItem.sys?.id) {
+                try {
+                  const { getSolutionById } = await import('@/components/Solution/SolutionApi');
+                  console.warn('Page ContentGrid: Enriching Solution', gridItem.sys.id);
+                  const enrichedSolution = await getSolutionById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Solution enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedSolution,
+                    hasTitle: !!enrichedSolution?.title
+                  });
+                  return enrichedSolution || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Solution ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Event' && gridItem.sys?.id) {
+                try {
+                  const { getEventById } = await import('@/components/Event/EventApi');
+                  console.warn('Page ContentGrid: Enriching Event', gridItem.sys.id);
+                  const enrichedEvent = await getEventById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Event enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedEvent,
+                    hasTitle: !!enrichedEvent?.title,
+                    hasSlug: !!enrichedEvent?.slug
+                  });
+                  return enrichedEvent || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Event ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'ContentGridItem' && gridItem.sys?.id) {
+                try {
+                  const { getContentGridItemById } = await import('@/components/ContentGrid/ContentGridApi');
+                  console.warn('Page ContentGrid: Enriching ContentGridItem', gridItem.sys.id);
+                  const enrichedItem = await getContentGridItemById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: ContentGridItem enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedItem,
+                    hasTitle: !!enrichedItem?.title
+                  });
+                  return enrichedItem || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich ContentGridItem ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Image' && gridItem.sys?.id) {
+                try {
+                  const { getImageById } = await import('@/components/Image/ImageApi');
+                  console.warn('Page ContentGrid: Enriching Image', gridItem.sys.id);
+                  const enrichedImage = await getImageById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Image enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedImage,
+                    hasTitle: !!enrichedImage?.title
+                  });
+                  return enrichedImage || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Image ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'OfficeLocation' && gridItem.sys?.id) {
+                try {
+                  const { getLocationById } = await import('@/components/OfficeLocation/OfficeLocationApi');
+                  console.warn('Page ContentGrid: Enriching OfficeLocation', gridItem.sys.id);
+                  const enrichedLocation = await getLocationById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: OfficeLocation enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedLocation,
+                    hasTitle: !!enrichedLocation?.title
+                  });
+                  return enrichedLocation || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich OfficeLocation ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'PageList' && gridItem.sys?.id) {
+                try {
+                  const { getPageListById } = await import('@/components/PageList/PageListApi');
+                  console.warn('Page ContentGrid: Enriching PageList', gridItem.sys.id);
+                  const enrichedPageList = await getPageListById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: PageList enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedPageList,
+                    hasTitle: !!enrichedPageList?.title
+                  });
+                  return enrichedPageList || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich PageList ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
+              } else if (gridItem.__typename === 'Video' && gridItem.sys?.id) {
+                try {
+                  const { getVideoById } = await import('@/components/Video/VideoApi');
+                  console.warn('Page ContentGrid: Enriching Video', gridItem.sys.id);
+                  const enrichedVideo = await getVideoById(gridItem.sys.id, preview);
+                  console.warn('Page ContentGrid: Video enrichment result:', {
+                    id: gridItem.sys.id,
+                    hasEnrichedData: !!enrichedVideo,
+                    hasTitle: !!enrichedVideo?.title
+                  });
+                  return enrichedVideo || gridItem;
+                } catch {
+                  console.warn(`Failed to enrich Video ${gridItem.sys.id} in Page ContentGrid`);
+                  return gridItem;
+                }
               }
               return gridItem;
             });
