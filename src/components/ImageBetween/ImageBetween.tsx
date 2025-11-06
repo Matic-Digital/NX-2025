@@ -37,7 +37,7 @@ export function ImageBetween(props: ImageBetween) {
 
   // Check if the slider contains Post items (only if it's actually a Slider)
   const isPostSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Post';
-  const isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
+  const _isImageSlider = sliderData?.itemsCollection?.items?.[0]?.__typename === 'Image';
 
   return (
     <ErrorBoundary>
@@ -56,84 +56,79 @@ export function ImageBetween(props: ImageBetween) {
             />
           )}
         </div>
-        <Section
-          className={cn('dark bg-background relative h-full w-full', isBannerHero && '!py-0')}
-          {...inspectorProps}
-        >
-          {/* Dark Top Section */}
-          <Box
-            direction="col"
-            gap={8}
-            className={cn(
-              'mb-0 pb-8',
-              // Image assets get large bottom margin
-              imageBetween.asset?.__typename === 'Image' &&
-                'mb-24 lg:mb-56 xl:mb-96',
-              // Non-image assets default to large margin, but with specific overrides
-              imageBetween.asset && 
-                imageBetween.asset.__typename !== 'Image' && 
-                imageBetween.asset.__typename !== 'ContentGrid' &&
-                imageBetween.asset.__typename !== 'Slider' &&
-                'mb-72',
-              // ContentGrid assets get no margin
-              imageBetween.asset?.__typename === 'ContentGrid' && 'mb-0',
-              // Slider assets get different margins based on contentTop
-              imageBetween.asset?.__typename === 'Slider' && 
-                (imageBetween.contentTop?.__typename !== 'ContentGrid') && 'mb-72',
-              imageBetween.asset?.__typename === 'Slider' && 
-                imageBetween.contentTop?.__typename === 'ContentGrid' && 'mb-8',
-              // Banner hero specific overrides
-              isBannerHero && isPostSlider && 'mb-0 pb-16',
-              isBannerHero && isImageSlider && 'mb-14 pb-14'
-            )}
+        {isBannerHero ? (
+          /* BannerHero fills entire Section without Box wrapper */
+          <Section
+            className="dark bg-background relative h-full w-full !py-0 !pt-0 !pb-0"
+            {...inspectorProps}
           >
-            {/* Top Content Grid */}
-            {imageBetween.contentTop && (
-              <>
-                {imageBetween.contentTop?.__typename === 'ContentGrid' && contentTopData && (
-                  <>
-                    <div 
-                      className={cn(
-                        // Add bottom padding when ContentGrid has no items (only section heading)
-                        !(contentTopData as ContentGridType).itemsCollection?.items?.length && 'pb-[4rem]'
-                      )}
-                      {...inspectorProps({ fieldId: 'contentTop' })}
-                    >
-                      <ContentGrid
-                        {...(contentTopData as ContentGridType)}
-                        componentType={imageBetween.__typename}
-                        isInsideImageBetween={true}
-                      />
-                    </div>
-                    {/* Additional spacer when ContentGrid has no items */}
-                    {!(contentTopData as ContentGridType).itemsCollection?.items?.length && (
-                      <div className="h-48" />
-                    )}
-                  </>
-                )}
-                {imageBetween.contentTop?.__typename === 'BannerHero' && contentTopData && (
-                  <>
-                    {isPostSlider ? (
-                      <div className="pb-16 -mb-16" {...inspectorProps({ fieldId: 'contentTop' })}>
-                        <BannerHero
-                          {...(contentTopData as BannerHeroType)}
-                          contentType={imageBetween.__typename}
-                        />
-                      </div>
-                    ) : (
-                      <div {...inspectorProps({ fieldId: 'contentTop' })}>
-                        <BannerHero
-                          {...(contentTopData as BannerHeroType)}
-                          contentType={imageBetween.__typename}
-                        />
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
+            {imageBetween.contentTop?.__typename === 'BannerHero' && contentTopData && (
+              <div className="h-full" {...inspectorProps({ fieldId: 'contentTop' })}>
+                <BannerHero
+                  {...(contentTopData as BannerHeroType)}
+                  contentType={imageBetween.__typename}
+                />
+              </div>
             )}
-          </Box>
-        </Section>
+          </Section>
+        ) : (
+          /* Non-BannerHero content uses Box wrapper */
+          <Section
+            className="dark bg-background relative h-full w-full"
+            {...inspectorProps}
+          >
+            <Box
+              direction="col"
+              gap={8}
+              className={cn(
+                'mb-0 pb-8',
+                // Image assets get large bottom margin
+                imageBetween.asset?.__typename === 'Image' &&
+                  'mb-24 lg:mb-56 xl:mb-96',
+                // Non-image assets default to large margin
+                imageBetween.asset && 
+                  imageBetween.asset.__typename !== 'Image' && 
+                  imageBetween.asset.__typename !== 'ContentGrid' &&
+                  imageBetween.asset.__typename !== 'Slider' &&
+                  'mb-72',
+                // ContentGrid assets get no margin
+                imageBetween.asset?.__typename === 'ContentGrid' && 'mb-0',
+                // Slider assets get different margins based on contentTop
+                imageBetween.asset?.__typename === 'Slider' && 
+                  (imageBetween.contentTop?.__typename !== 'ContentGrid') && 'mb-72',
+                imageBetween.asset?.__typename === 'Slider' && 
+                  imageBetween.contentTop?.__typename === 'ContentGrid' && 'mb-8'
+              )}
+            >
+              {/* Top Content Grid */}
+              {imageBetween.contentTop && (
+                <>
+                  {imageBetween.contentTop?.__typename === 'ContentGrid' && contentTopData && (
+                    <>
+                      <div 
+                        className={cn(
+                          // Add bottom padding when ContentGrid has no items (only section heading)
+                          !(contentTopData as ContentGridType).itemsCollection?.items?.length && 'pb-[4rem]'
+                        )}
+                        {...inspectorProps({ fieldId: 'contentTop' })}
+                      >
+                        <ContentGrid
+                          {...(contentTopData as ContentGridType)}
+                          componentType={imageBetween.__typename}
+                          isInsideImageBetween={true}
+                        />
+                      </div>
+                      {/* Additional spacer when ContentGrid has no items */}
+                      {!(contentTopData as ContentGridType).itemsCollection?.items?.length && (
+                        <div className="h-48" />
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </Box>
+          </Section>
+        )}
 
         {/* Central Image */}
         {imageBetween.asset && (
@@ -204,11 +199,13 @@ export function ImageBetween(props: ImageBetween) {
             <Box direction="col" gap={8}>
               {/* Bottom Content Grid */}
               {imageBetween.contentBottom && contentBottomData && (
-                <ContentGrid
-                  {...contentBottomData}
-                  componentType={imageBetween.__typename}
-                  isInsideImageBetween={true}
-                />
+                <div className="pt-16 md:pt-20 lg:pt-24">
+                  <ContentGrid
+                    {...contentBottomData}
+                    componentType={imageBetween.__typename}
+                    isInsideImageBetween={true}
+                  />
+                </div>
               )}
             </Box>
           </div>

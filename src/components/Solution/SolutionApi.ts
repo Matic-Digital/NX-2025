@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -131,7 +132,6 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       return await getEventById(id, preview);
     }
     default:
-      console.warn(`Solution API: Unknown component type ${typename}, returning minimal data`);
       return null;
   }
 
@@ -209,6 +209,9 @@ export async function getSolutionById(id: string, preview = false): Promise<Solu
 
 export async function getSolutionBySlug(slug: string, preview = false): Promise<Solution | null> {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('Solution', { slug, id: undefined });
+    
     const response = await fetchGraphQL<Solution>(
       `query GetSolutionBySlug($slug: String!, $preview: Boolean!) {
         solutionCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
@@ -218,7 +221,8 @@ export async function getSolutionBySlug(slug: string, preview = false): Promise<
         }
       }`,
       { slug, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response?.data) {

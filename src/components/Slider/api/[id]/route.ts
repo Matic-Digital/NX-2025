@@ -23,13 +23,6 @@ export async function GET(
     const hasAccessToken = !!process.env.CONTENTFUL_ACCESS_TOKEN;
     const hasPreviewToken = !!process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
     
-    console.warn('API Route Environment Check:', {
-      hasSpaceId,
-      hasAccessToken,
-      hasPreviewToken,
-      environment: process.env.CONTENTFUL_ENVIRONMENT
-    });
-
     // Get preview mode from query params
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';

@@ -30,6 +30,7 @@ interface SectionHeadingProps extends Partial<SectionHeading> {
   componentType?: string;
   isDarkMode?: boolean;
   hasSolutionItems?: boolean;
+  isImageBetween?: boolean;
 }
 const getValidVariant = (variant: string | undefined): SectionHeadingVariant => {
   if (variant && SECTION_HEADING_VARIANTS.includes(variant as SectionHeadingVariant)) {
@@ -39,7 +40,7 @@ const getValidVariant = (variant: string | undefined): SectionHeadingVariant => 
 };
 
 export function SectionHeading(props: SectionHeadingProps) {
-  const { sectionHeadingId, componentType, hasSolutionItems, isDarkMode, ...restProps } = props;
+  const { sectionHeadingId, componentType, hasSolutionItems, isDarkMode, isImageBetween, ...restProps } = props;
   const [fetchedData, setFetchedData] = useState<SectionHeading | null>(null);
   const [loading, setLoading] = useState(!!sectionHeadingId);
   const [error, setError] = useState<string | null>(null);
@@ -121,12 +122,15 @@ export function SectionHeading(props: SectionHeadingProps) {
     const hasMarkdownContent =
       sectionHeading.description && hasMarkdown(sectionHeading.description);
 
+    // For banner hero in ImageBetween, always use bottom alignment
+    const shouldUseBottomAlignment = componentType === 'banner-hero' && isImageBetween;
+
     return (
       <Box
         gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
         direction={{ base: 'col', md: 'row' }}
         cols={{ base: 1, md: 2, xl: 3 }}
-        className={hasMarkdownContent ? 'items-start' : 'items-end'}
+        className={shouldUseBottomAlignment ? 'items-end' : (hasMarkdownContent ? 'items-start' : 'items-end')}
         {...inspectorProps({ fieldId: 'heading' })}
       >
         {/* overline and title */}
@@ -169,14 +173,20 @@ export function SectionHeading(props: SectionHeadingProps) {
             (hasMarkdown(sectionHeading.description) ? (
               <MarkdownRenderer
                 content={sectionHeading.description}
-                className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+                className={cn(
+                  "text-body-md lg:text-body-lg text-foreground w-full xl:text-right",
+                  componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+                )}
                 forceLeftAlign={true}
                 {...inspectorProps({ fieldId: 'description' })}
               />
             ) : (
               <p
                 {...inspectorProps({ fieldId: 'description' })}
-                className="text-body-md lg:text-body-lg text-foreground w-full xl:text-right"
+                className={cn(
+                  "text-body-md lg:text-body-lg text-foreground w-full xl:text-right",
+                  componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+                )}
               >
                 {sectionHeading.description}
               </p>
@@ -241,14 +251,20 @@ export function SectionHeading(props: SectionHeadingProps) {
           (hasMarkdown(sectionHeading.description) ? (
             <MarkdownRenderer
               content={sectionHeading.description}
-              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+              className={cn(
+                "text-body-md lg:text-body-lg text-foreground w-full max-w-2xl",
+                componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+              )}
               forceLeftAlign={true}
               {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
             <p
               {...inspectorProps({ fieldId: 'description' })}
-              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl"
+              className={cn(
+                "text-body-md lg:text-body-lg text-foreground w-full max-w-2xl",
+                componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+              )}
             >
               {sectionHeading.description}
             </p>
@@ -302,7 +318,7 @@ export function SectionHeading(props: SectionHeadingProps) {
       {/* title */}
       {componentType === 'banner-hero' ? (
         <h1
-          className="section-heading text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%] tracking-[-1.1px]"
+          className="section-heading text-foreground lg:text-display-md col-span-full w-full max-w-4xl text-center text-[56px] leading-[100%]tracking-[-1.1px]"
           {...inspectorProps({ fieldId: 'heading.title' })}
         >
           {sectionHeading.title}
@@ -327,14 +343,20 @@ export function SectionHeading(props: SectionHeadingProps) {
           (hasMarkdown(sectionHeading.description) ? (
             <MarkdownRenderer
               content={sectionHeading.description}
-              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+              className={cn(
+                "text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center",
+                componentType === 'banner-hero' && isImageBetween && "pb-32 md:pb-28 lg:pb-32"
+              )}
               forceLeftAlign={true}
               {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
             <p
               {...inspectorProps({ fieldId: 'description' })}
-              className="text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center"
+              className={cn(
+                "text-body-md lg:text-body-lg text-foreground w-full max-w-2xl text-center",
+                componentType === 'banner-hero' && isImageBetween && "pb-32 md:pb-28 lg:pb-32"
+              )}
             >
               {sectionHeading.description}
             </p>
@@ -409,12 +431,21 @@ export function SectionHeading(props: SectionHeadingProps) {
           (hasMarkdown(sectionHeading.description) ? (
             <MarkdownRenderer
               content={sectionHeading.description}
-              className="text-foreground"
+              className={cn(
+                "text-foreground",
+                componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+              )}
               forceLeftAlign={true}
               {...inspectorProps({ fieldId: 'description' })}
             />
           ) : (
-            <p className="text-foreground" {...inspectorProps({ fieldId: 'description' })}>
+            <p 
+              className={cn(
+                "text-foreground",
+                componentType === 'banner-hero' && isImageBetween && "pb-20 md:pb-16 lg:pb-20"
+              )}
+              {...inspectorProps({ fieldId: 'description' })}
+            >
               {sectionHeading.description}
             </p>
           ))}

@@ -7,7 +7,7 @@
 
  
 
-import { Suspense } from 'react';
+import { Suspense as _Suspense } from 'react';
 import { ContentfulPreviewProvider } from '@/components/global/ContentfulLivePreview';
 import { PreviewContentRenderer } from './PreviewContentRenderer';
 
@@ -65,7 +65,7 @@ interface ContentfulContent {
 // ProductAsPage component moved to PreviewContentRenderer.tsx where Page component is imported
 
 // Helper function to get API component name
-function getApiComponentName(contentType: string): string {
+function _getApiComponentName(contentType: string): string {
   switch (contentType) {
     case 'page-list':
       return 'PageList';
@@ -169,7 +169,7 @@ function getFetchFunction(contentType: string): ((id: string, preview: boolean) 
 
 // Legacy component removed - now using server-side data fetching with separate client component
 
-function LoadingFallback() {
+function _LoadingFallback() {
   return <div className="min-h-screen">{/* No spinner - just empty space while routing */}</div>;
 }
 
@@ -215,13 +215,13 @@ export default async function PreviewPage({ params, searchParams }: PreviewPageP
 
   try {
     // Fetch data server-side using the fetchFn with preview=true
-    console.log(`[Preview] Fetching ${contentType} with ID: ${id}`);
+    console.warn(`[Preview] Fetching ${contentType} with ID: ${id}`);
     const fetchedContent = await fetchFn(id, true);
     
     // Debug logging for accordion enrichment
     if (contentType === 'accordion' && fetchedContent) {
       const accordion = fetchedContent as any;
-      console.log(`[Preview] Accordion fetched:`, {
+      console.warn(`[Preview] Accordion fetched:`, {
         id: accordion.sys?.id,
         title: accordion.title,
         hasItems: !!accordion.itemsCollection?.items,

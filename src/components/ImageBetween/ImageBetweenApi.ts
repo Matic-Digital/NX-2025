@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -54,6 +55,7 @@ export async function getImageBetweenById(
   preview = false
 ): Promise<ImageBetween | null> {
   try {
+    const cacheConfig = getCacheConfig('ImageBetween', { id });
     // Step 1: Fetch minimal ImageBetween structure
     const response = await fetchGraphQL(
       `query GetImageBetweenById($id: String!, $preview: Boolean!) {
@@ -64,7 +66,8 @@ export async function getImageBetweenById(
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     const data = response.data as any;
@@ -80,11 +83,11 @@ export async function getImageBetweenById(
     // Enrich contentTop
     if (imageBetween.contentTop?.sys?.id) {
       if (imageBetween.contentTop.__typename === 'ContentGrid') {
-        console.log(`ImageBetween: Enriching ContentGrid contentTop ${imageBetween.contentTop.sys.id}`);
+        console.warn(`ImageBetween: Enriching ContentGrid contentTop ${imageBetween.contentTop.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.contentTop.sys.id, preview)
             .then(data => {
-              console.log(`ImageBetween: ContentGrid contentTop enriched successfully:`, {
+              console.warn(`ImageBetween: ContentGrid contentTop enriched successfully:`, {
                 id: imageBetween.contentTop.sys.id,
                 hasData: !!data,
                 hasItems: !!data?.itemsCollection?.items?.length,
@@ -114,11 +117,11 @@ export async function getImageBetweenById(
             })
         );
       } else if (imageBetween.asset.__typename === 'ContentGrid') {
-        console.log(`ImageBetween: Enriching ContentGrid asset ${imageBetween.asset.sys.id}`);
+        console.warn(`ImageBetween: Enriching ContentGrid asset ${imageBetween.asset.sys.id}`);
         enrichmentPromises.push(
           getContentGridById(imageBetween.asset.sys.id, preview)
             .then(data => {
-              console.log(`ImageBetween: ContentGrid asset enriched successfully:`, {
+              console.warn(`ImageBetween: ContentGrid asset enriched successfully:`, {
                 id: imageBetween.asset?.sys?.id,
                 hasData: !!data,
                 hasItems: !!data?.itemsCollection?.items?.length,

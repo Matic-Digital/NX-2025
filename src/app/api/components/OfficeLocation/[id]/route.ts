@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getLocationById } from '@/components/OfficeLocation/OfficeLocationApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching office location data by ID
@@ -22,8 +24,22 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    // Fetch office location data using server-side API
-    const officeLocation = await getLocationById(id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('OfficeLocation', { id });
+
+    // Create cached function with proper tags
+    const getCachedOfficeLocation = unstable_cache(
+      async (officeLocationId: string, isPreview: boolean) => {
+        return await getLocationById(officeLocationId, isPreview);
+      },
+      [`officelocation-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const officeLocation = await getCachedOfficeLocation(id, preview);
 
     if (!officeLocation) {
       return NextResponse.json({ error: 'Office Location not found' }, { status: 404 });

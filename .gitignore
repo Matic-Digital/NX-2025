@@ -58,3 +58,5 @@ src/lib/routing-cache.json
 
 # Security tests (keep local only)
 security-tests/
+
+bun.lock

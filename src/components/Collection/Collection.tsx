@@ -139,7 +139,7 @@ export function Collection({ collectionData, sys, isSearchContext = false }: Col
   );
 
   return (
-    <div {...inspectorProps}>
+    <div {...inspectorProps} data-collection-container>
       {/* Desktop: Search and Sort in horizontal flex layout */}
       <div className="hidden sm:flex gap-4 items-start sm:items-end mb-6">
         <div className="flex-1">

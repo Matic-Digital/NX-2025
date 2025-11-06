@@ -120,7 +120,7 @@ function EventPostCategories({
   useEffect(() => {
     // If we have preloaded data, use it and skip client-side fetching
     if (preloadedPostsByCategory) {
-      console.log('EventPostCategories: Using preloaded server-side data');
+      console.warn('EventPostCategories: Using preloaded server-side data');
       setPostsByCategory(preloadedPostsByCategory);
       setLoading(false);
       return;

@@ -34,11 +34,19 @@ interface RevalidationRequest {
 }
 
 export async function POST(request: NextRequest) {
+  // Force immediate log to test if logging works at all
+  // eslint-disable-next-line no-console
+  console.log('POST /api/revalidate called at:', new Date().toISOString());
+  
   try {
     // Enhanced security validation
     const authHeader = request.headers.get('authorization');
     const secretFromQuery = request.nextUrl.searchParams.get('secret');
-    const secretFromHeader = authHeader?.replace('Bearer ', '');
+    
+    // Handle both "Bearer token" and direct token formats
+    const secretFromHeader = authHeader?.startsWith('Bearer ') 
+      ? authHeader.replace('Bearer ', '')
+      : authHeader;
     
     const providedSecret = secretFromQuery ?? secretFromHeader;
     
@@ -61,22 +69,41 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Validate Content-Type for POST requests
+    // Strict Content-Type validation for security
     const requestContentType = request.headers.get('content-type');
-    if (!requestContentType?.includes('application/json')) {
+    
+    // Allow JSON content types from known webhook providers
+    // If no content-type header, allow it (some tools don't send it)
+    if (requestContentType && 
+        !requestContentType.includes('application/json') && 
+        !requestContentType.includes('application/vnd.contentful.management.v1+json')) {
+      console.error('Invalid Content-Type:', requestContentType);
       return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
+        { error: 'Content-Type must be application/json or application/vnd.contentful.management.v1+json' },
         { status: 400 }
       );
     }
 
-    const body: unknown = await request.json();
+    let body: unknown = {};
+    
+    try {
+      // Only parse JSON - no other formats for security
+      body = await request.json();
+    } catch (error) {
+      // If no body or invalid JSON, use empty object but log the attempt
+      console.warn('Could not parse JSON body, using empty object. This may be a manual trigger.', error);
+      body = {};
+    }
     // eslint-disable-next-line no-console
-    console.log('🔄 Revalidation request received:', {
+    console.log('=== REVALIDATION DEBUG START ===');
+    // eslint-disable-next-line no-console
+    console.log('Revalidation request received:', {
       contentType: (body as ContentfulWebhookPayload).sys?.contentType?.sys?.id,
       entryId: (body as ContentfulWebhookPayload).sys?.id,
       action: (body as ContentfulWebhookPayload).sys?.type
     });
+    // eslint-disable-next-line no-console
+    console.log('=== REVALIDATION DEBUG END ===');
 
     // Handle Contentful webhook payload
     const payload = body as ContentfulWebhookPayload;
@@ -85,13 +112,20 @@ export async function POST(request: NextRequest) {
     const slug = payload.fields?.slug?.['en-US'];
     const action = payload.sys?.type;
 
-    // Also handle direct API calls with query parameters
+    // Convert camelCase contentType from Contentful to PascalCase for cache tags
+    const normalizeContentType = (type: string | null | undefined): string | undefined => {
+      if (!type) return undefined;
+      // Convert camelCase to PascalCase (e.g., "sectionHeading" -> "SectionHeading")
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    };
+
+    // Determine content type and entry ID from webhook payload or query params
     const queryParams: RevalidationRequest = {
-      contentType: request.nextUrl.searchParams.get('contentType') ?? contentType,
-      slug: request.nextUrl.searchParams.get('slug') ?? slug,
-      entryId: request.nextUrl.searchParams.get('entryId') ?? entryId,
-      action: (request.nextUrl.searchParams.get('action') as 'publish' | 'unpublish' | 'delete') ?? 
-              (action === 'Entry' ? 'publish' : action as 'publish' | 'unpublish' | 'delete')
+      secret: secretFromQuery || secretFromHeader || undefined,
+      contentType: normalizeContentType(contentType) || normalizeContentType(request.nextUrl.searchParams.get('contentType')),
+      slug: slug || request.nextUrl.searchParams.get('slug') || undefined,
+      entryId: entryId || request.nextUrl.searchParams.get('entryId') || undefined,
+      action: (action as RevalidationRequest['action']) || (request.nextUrl.searchParams.get('action') as RevalidationRequest['action'])
     };
 
     const revalidatedPaths: string[] = [];
@@ -110,25 +144,28 @@ export async function POST(request: NextRequest) {
           revalidatePath(path);
           revalidatedPaths.push(path);
           // eslint-disable-next-line no-console
-          console.log(`✅ Revalidated path: ${path}`);
+          console.log(`Revalidated path: ${path}`);
         } catch (error) {
            
-          console.error(`❌ Failed to revalidate path ${path}:`, error);
+          console.error(`Failed to revalidate path ${path}:`, error);
         }
       }
     }
 
     // Revalidate by tags for broader cache invalidation
     const tagsToRevalidate = getTagsToRevalidate(queryParams.contentType, queryParams.entryId);
+    // eslint-disable-next-line no-console
+    console.log('Tags to revalidate:', tagsToRevalidate);
+    
     for (const tag of tagsToRevalidate) {
       try {
         revalidateTag(tag);
         revalidatedTags.push(tag);
         // eslint-disable-next-line no-console
-        console.log(`✅ Revalidated tag: ${tag}`);
+        console.log(`Revalidated tag: ${tag}`);
       } catch (error) {
          
-        console.error(`❌ Failed to revalidate tag ${tag}:`, error);
+        console.error(`Failed to revalidate tag ${tag}:`, error);
       }
     }
 
@@ -138,10 +175,10 @@ export async function POST(request: NextRequest) {
         revalidatePath('/');
         revalidatedPaths.push('/');
         // eslint-disable-next-line no-console
-        console.log('✅ Revalidated home page');
+        console.log('Revalidated home page');
       } catch (error) {
          
-        console.error('❌ Failed to revalidate home page:', error);
+        console.error('Failed to revalidate home page:', error);
       }
     }
 
@@ -156,12 +193,12 @@ export async function POST(request: NextRequest) {
     };
 
     // eslint-disable-next-line no-console
-    console.log('🎉 Revalidation completed:', response);
+    console.log('Revalidation completed:', response);
     return NextResponse.json(response);
 
   } catch (error) {
      
-    console.error('❌ Revalidation error:', error);
+    console.error('Revalidation error:', error);
     return NextResponse.json(
       { 
         message: 'Error revalidating', 
@@ -228,8 +265,22 @@ async function getPathsToRevalidate(
       paths.push('/[...segments]');
       break;
 
+    case 'SectionHeading':
+    case 'BannerHero':
+    case 'ContentGrid':
+    case 'CtaBanner':
+    case 'ImageBetween':
+    case 'Slider':
+    case 'Image':
+    case 'Video':
+    case 'Button':
+      // Component updates - revalidate home page and all dynamic routes
+      paths.push('/');
+      paths.push('/[...segments]');
+      break;
+
     default:
-      // For component updates, revalidate the catch-all route
+      // For other component updates, revalidate the catch-all route
       paths.push('/[...segments]');
       break;
   }
@@ -254,6 +305,25 @@ function getTagsToRevalidate(contentType?: string, entryId?: string): string[] {
   // Global tags for critical content
   if (['Header', 'Footer', 'PageLayout'].includes(contentType ?? '')) {
     tags.push('global-layout');
+  }
+
+  // Cross-component invalidation for nested content
+  // When these components change, also invalidate components that reference them
+  // Note: Using PascalCase to match normalized contentType from webhook
+  const crossComponentInvalidation: Record<string, string[]> = {
+    'SectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
+    'Image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
+    'ContentGridItem': ['contentType:ContentGrid'],
+    'SliderItem': ['contentType:Slider']
+  };
+
+  if (contentType && Object.prototype.hasOwnProperty.call(crossComponentInvalidation, contentType)) {
+    const additionalTags = crossComponentInvalidation[contentType as keyof typeof crossComponentInvalidation];
+    if (additionalTags) {
+      tags.push(...additionalTags);
+    }
   }
 
   return tags;

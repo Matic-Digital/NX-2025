@@ -52,11 +52,12 @@ export const BannerHeroContent = ({
       {/* Content Overlay */}
       <div className={bannerHeroStyles.getOverlayClasses()}>
         <div className={`${bannerHeroStyles.getContentClasses()} banner-hero-content`}>
-          <div className="section-heading-container">
+          <div className={`section-heading-container ${isImageBetween ? 'py-16 mb-12 sm:py-20 md:py-28 lg:py-32' : ''}`}>
             <SectionHeading
               sectionHeadingId={bannerHero.heading.sys.id}
               variant={bannerHero.heading.variant}
               componentType="banner-hero"
+              isImageBetween={isImageBetween}
             />
           </div>
         </div>

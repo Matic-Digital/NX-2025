@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import {
   ASSET_FIELDS,
   INTERNAL_LINK_FIELDS,
@@ -31,6 +32,12 @@ export const SECTION_HEADING_GRAPHQL_FIELDS = `
         sys { id }
         title
         description
+        form {
+          sys { id }
+          title
+          description
+          formId
+        }
       }
       icon
     }
@@ -42,6 +49,9 @@ export const getSectionHeadingById = async (
   preview: boolean
 ): Promise<SectionHeading | null> => {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('SectionHeading', { id, slug: undefined });
+    
     const response = await fetchGraphQL<SectionHeading>(
       `query GetSectionHeadingById($preview: Boolean!, $id: String!) {
                 sectionHeading(id: $id, preview: $preview) {
@@ -49,7 +59,8 @@ export const getSectionHeadingById = async (
                 }
             }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.sectionHeading) {

@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -34,6 +35,7 @@ export async function getAllBannerHeroes(
   skip = 0
 ): Promise<BannerHeroResponse> {
   try {
+    const cacheConfig = getCacheConfig('BannerHero', {});
     const response = await fetchGraphQL<BannerHero>(
       `query GetAllBannerHeroes($preview: Boolean!, $limit: Int!, $skip: Int!) {
         bannerHeroCollection(preview: $preview, limit: $limit, skip: $skip) {
@@ -44,7 +46,8 @@ export async function getAllBannerHeroes(
         }
       }`,
       { preview, limit, skip },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.bannerHeroCollection) {
@@ -74,6 +77,7 @@ export async function getAllBannerHeroes(
  */
 export async function getBannerHero(id: string, preview = true): Promise<BannerHero | null> {
   try {
+    const cacheConfig = getCacheConfig('BannerHero', { id });
     const response = await fetchGraphQL<BannerHero>(
       `query GetBannerHeroById($id: String!, $preview: Boolean!) {
         bannerHeroCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
@@ -83,7 +87,8 @@ export async function getBannerHero(id: string, preview = true): Promise<BannerH
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.bannerHeroCollection?.items?.length) {

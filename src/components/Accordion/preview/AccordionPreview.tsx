@@ -40,14 +40,11 @@ export function AccordionPreview(props: Partial<AccordionType>) {
   const { handleHover, handleMouseLeave, getItemDisplayState } = useAccordionLogic(accordionItems);
 
   // Debug logging for accordion items
-  console.log('[AccordionPreview] Rendering with items:', {
-    hasAccordion: !!liveAccordion,
-    itemCount: accordionItems.length,
-    firstItemTitle: (accordionItems[0] as AccordionItemType)?.title,
-    firstItemStructure: accordionItems[0] ? Object.keys(accordionItems[0]) : [],
-    rawProps: props,
-    accordionData: accordionData,
-    liveAccordionStructure: liveAccordion ? Object.keys(liveAccordion) : []
+  console.warn('AccordionPreview received data:', {
+    id: liveAccordion?.sys?.id,
+    title: liveAccordion?.title,
+    hasItems: !!liveAccordion?.itemsCollection?.items,
+    itemCount: liveAccordion?.itemsCollection?.items?.length || 0
   });
 
   return (

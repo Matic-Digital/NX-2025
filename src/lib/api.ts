@@ -4,7 +4,7 @@
  */
 
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
-import { memoizedFetchGraphQL } from '@/lib/api-cache';
+import { memoizedFetchGraphQL as _memoizedFetchGraphQL } from '@/lib/api-cache';
 import { enhancedMemoizedFetchGraphQL } from '@/lib/enhanced-api-cache';
 
 import type { GraphQLResponse } from '@/types';
@@ -61,6 +61,8 @@ export async function fetchGraphQL<T>(
       : cacheConfig?.next
         ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
+
+    // Cache tags are set via cacheConfig.next.tags in production
 
     const environment = process.env.CONTENTFUL_ENVIRONMENT ?? 'development';
     const spaceId = process.env.CONTENTFUL_SPACE_ID;

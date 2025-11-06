@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getImageById } from '@/components/Image/ImageApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching Image data by ID
@@ -19,7 +21,22 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    const image = await getImageById(id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('Image', { id });
+
+    // Create cached function with proper tags
+    const getCachedImage = unstable_cache(
+      async (imageId: string, isPreview: boolean) => {
+        return await getImageById(imageId, isPreview);
+      },
+      [`image-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const image = await getCachedImage(id, preview);
 
     if (!image) {
       return NextResponse.json({ error: 'Image not found' }, { status: 404 });

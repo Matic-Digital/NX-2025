@@ -108,22 +108,21 @@ export async function getAccordionById(
 
     // Step 2: Enrich accordion items with full data (server-side lazy loading)
     if (accordion.itemsCollection?.items?.length > 0) {
-      console.log(`[AccordionAPI] Starting enrichment for ${accordion.itemsCollection.items.length} items`);
-    console.log(`[AccordionAPI] Initial items structure:`, accordion.itemsCollection.items.map((item: any) => ({
-      id: item.sys?.id,
-      hasTitle: !!item.title,
-      keys: Object.keys(item)
-    })));
+      console.warn(`[AccordionAPI] Starting enrichment for ${accordion.itemsCollection.items.length} items`);
+      console.warn(`[AccordionAPI] Initial items structure:`, accordion.itemsCollection.items.map((item: any) => ({
+        id: item.sys?.id,
+        hasTitle: !!item.title,
+      })));
       
       const enrichmentPromises = accordion.itemsCollection.items.map(async (item: any) => {
         if (item.sys?.id) {
           try {
-            console.log(`[AccordionAPI] Enriching item ${item.sys.id}`);
+            console.warn(`[AccordionAPI] Enriching accordion item ${item.sys?.id}`);
             const enrichedItem = await getAccordionItemById(item.sys.id, preview);
-            console.log(`[AccordionAPI] Enriched item ${item.sys.id}:`, {
-              hasTitle: !!enrichedItem?.title,
-              hasDescription: !!enrichedItem?.description,
-              hasImage: !!enrichedItem?.image
+            console.warn(`[AccordionAPI] Enriched item:`, {
+              id: enrichedItem?.sys?.id,
+              title: enrichedItem?.title,
+              hasDescription: !!enrichedItem?.description
             });
             return enrichedItem || item;
           } catch (error) {
@@ -137,7 +136,11 @@ export async function getAccordionById(
       const enrichedItems = await Promise.all(enrichmentPromises);
       accordion.itemsCollection.items = enrichedItems.filter(item => item !== null);
       
-      console.log(`[AccordionAPI] Enrichment complete. Final item count: ${accordion.itemsCollection.items.length}`);
+      console.warn('[AccordionAPI] Accordion enrichment completed:', {
+        accordionId: accordion.sys?.id,
+        enrichedItemCount: enrichedItems.length,
+        firstItemEnriched: enrichedItems[0]?.title ? true : false
+      });
     }
 
     return accordion;
@@ -193,6 +196,14 @@ export async function getAccordionsByIds(
     const accordions = data.accordionCollection.items;
 
     // Step 2: Enrich accordion items in all accordions (server-side lazy loading)
+    const firstAccordion = accordions[0];
+    if (firstAccordion) {
+      console.warn('[AccordionApi] Starting accordion enrichment:', {
+        accordionId: firstAccordion.sys?.id,
+        hasItems: !!firstAccordion.itemsCollection?.items,
+        itemCount: firstAccordion.itemsCollection?.items?.length || 0
+      });
+    }
     const enrichedAccordions = await Promise.all(
       accordions.map(async (accordion: any) => {
         if (accordion.itemsCollection?.items?.length > 0) {

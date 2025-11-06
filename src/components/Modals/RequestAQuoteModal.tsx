@@ -25,9 +25,12 @@ export function RequestAQuoteModal({
   title,
   description
 }: RequestAQuoteModalProps) {
-  // Default HubSpot form ID for Request a Quote
-  const defaultFormId = '1d392e69-b470-4703-afa6-19b01f490b84';
-  const hubspotFormId = formId ?? defaultFormId;
+  // Use formId from Contentful - no hardcoded fallback
+  if (!formId) {
+    console.warn('RequestAQuoteModal: No formId provided from Contentful. Make sure the modal button has a form configured.');
+    return null;
+  }
+  const hubspotFormId = formId;
 
   const handleFormSubmit = (_data: Record<string, unknown>) => {
     // You can add additional logic here like tracking, notifications, etc.
@@ -50,7 +53,12 @@ export function RequestAQuoteModal({
         </DialogHeader>
 
         <div className="mt-4">
-          <HubspotForm formId={hubspotFormId} onSubmit={handleFormSubmit} className="w-full" />
+          <HubspotForm 
+            formId={hubspotFormId} 
+            onSubmit={handleFormSubmit} 
+            className="w-full" 
+            theme="light"
+          />
         </div>
       </DialogContent>
     </Dialog>

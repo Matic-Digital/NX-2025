@@ -60,8 +60,6 @@ export function PostSliderCard({ item, index, current, context = 'default' }: Po
 
     // If we don't have full data, show skeleton indefinitely
     // This prevents client-side API calls
-    const itemId = (item as any).sys?.id || 'unknown';
-    console.warn('PostSliderCard missing server-side data - showing skeleton. ID:', itemId);
     setLoading(false); // Stop loading to show the skeleton
   }, [hasFullData, item]);
 

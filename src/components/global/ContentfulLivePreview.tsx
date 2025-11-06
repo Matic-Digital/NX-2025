@@ -24,7 +24,7 @@ export function ContentfulPreviewProvider({
   const [showStatus, setShowStatus] = useState(true);
   const [liveUpdatesEnabled, setLiveUpdatesEnabled] = useState(false);
   const [inspectorMode, setInspectorMode] = useState(false);
-  const [contentfulConfig, setContentfulConfig] = useState<{
+  const [_contentfulConfig, setContentfulConfig] = useState<{
     spaceId: string;
     previewToken: string;
     environment: string;

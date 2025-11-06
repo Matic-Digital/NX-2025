@@ -15,12 +15,14 @@ export const TestimonialItem = ({ item }: TestimonialItemProps) => {
   return (
     <Box key={item.sys?.id} direction="row" className="w-full bg-subtle h-full min-h-[320px] flex items-stretch">
         {item.headshot && (
-      <Box className="bg-blue relative overflow-hidden aspect-square min-w-[7.125rem] w-20 flex-shrink-0 sm:w-24 md:w-28">
-          <AirImage
-            {...item.headshot}
-            altText={item.headshot?.altText ?? undefined}
-            className="w-full h-full object-cover"
-          />
+      <Box className="bg-blue relative overflow-hidden min-w-[7.125rem] w-20 flex-shrink-0 sm:w-24 md:w-32 lg:w-36 xl:w-40 flex">
+          <div className="w-full h-full">
+            <AirImage
+              {...item.headshot}
+              altText={item.headshot?.altText ?? undefined}
+              className="w-full h-full object-cover rounded-none"
+            />
+          </div>
       </Box>
         )}
       <Box direction="col" className="h-full justify-between p-[1.5rem] flex-1 flex flex-col">
