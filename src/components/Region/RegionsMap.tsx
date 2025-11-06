@@ -13,11 +13,11 @@ import { RegionsMapImageInteractive } from '@/components/Region/RegionsMapImageI
 
 // Static hardcoded regions data since the map is SVG-based
 const STATIC_REGIONS = [
-  { name: 'North America', slug: 'north-america' },
+  { name: 'North America', slug: 'americas' },
   { name: 'Europe', slug: 'europe' },
   { name: 'Asia Pacific', slug: 'asia-pacific' },
   { name: 'Latin America', slug: 'latin-america' },
-  { name: 'Middle East & Africa', slug: 'middle-east-africa' }
+  { name: 'Middle East & Africa', slug: 'middle-east-africa-and-india' }
 ];
 
 export function RegionsMap() {
@@ -77,7 +77,7 @@ export function RegionsMap() {
                 onMouseLeave={() => setHoveredRegion(null)}
               >
                 <Link
-                  href={`/regions/${region.slug}`}
+                  href={`/company/${region.slug}`}
                   className={cn(
                     'transition-colors',
                     hoveredRegion === svgId ? 'text-primary' : 'text-surface-invert'

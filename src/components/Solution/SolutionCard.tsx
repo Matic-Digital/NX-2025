@@ -118,7 +118,7 @@ export function SolutionCard(props: SolutionCardProps) {
                 </p>
               )}
             </Box>
-            <Link href={`/solutions/${slug}`}>
+            <Link href={slug?.startsWith('/') || slug?.startsWith('solutions/') ? `/${slug}` : `/solutions/${slug}`}>
               <Button
                 variant="outline"
                 className="lg:group-hover:bg-background lg:group-hover:text-foreground mt-auto lg:transition-colors lg:group-hover:border-transparent"
