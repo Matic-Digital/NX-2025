@@ -204,7 +204,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
             {ctaCollection?.items?.[0]?.text && (
               <div className="mt-auto">
                 <Link
-                  href={`/${ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}`}
+                  href={(() => {
+                    const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
+                    return slug?.startsWith('/') ? slug : `/${slug}`;
+                  })()}
                   className="inline-block w-full md:w-auto"
                 >
                   <Button
@@ -309,7 +312,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
             </Box>
 
             {ctaCollection?.items?.[0]?.text && (
-              <Link href={ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}>
+              <Link href={(() => {
+                const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
+                return slug?.startsWith('/') ? slug : `/${slug}`;
+              })()}>
                 <Button
                   variant="whiteOutline"
                   className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
