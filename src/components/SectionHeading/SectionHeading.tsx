@@ -7,6 +7,7 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import Image from 'next/image';
 
 // Utils
 import { cn } from '@/lib/utils';
@@ -302,14 +303,14 @@ export function SectionHeading(props: SectionHeadingProps) {
     >
       {sectionHeading.icon && (
         <div
-          className="bg-black p-2 w-[6rem] aspect-square items-center flex justify-center"
+          className="aspect-square items-center flex justify-center"
           {...inspectorProps({ fieldId: 'icon' })}
         >
-          <SvgIcon
+          <Image
             src={sectionHeading.icon.url}
-            alt={sectionHeading.title}
-            width={64}
-            height={64}
+            alt={sectionHeading.title ?? ''}
+            width={96}
+            height={96}
             className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
           />
         </div>
