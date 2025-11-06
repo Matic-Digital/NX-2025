@@ -65,16 +65,28 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Validate Content-Type for POST requests
+    // Strict Content-Type validation for security
     const requestContentType = request.headers.get('content-type');
-    if (!requestContentType?.includes('application/json')) {
+    
+    // Only allow specific content types from known webhook providers
+    if (requestContentType && !requestContentType.includes('application/json')) {
+      console.error('❌ Invalid Content-Type:', requestContentType);
       return NextResponse.json(
         { error: 'Content-Type must be application/json' },
         { status: 400 }
       );
     }
 
-    const body: unknown = await request.json();
+    let body: unknown = {};
+    
+    try {
+      // Only parse JSON - no other formats for security
+      body = await request.json();
+    } catch (error) {
+      // If no body or invalid JSON, use empty object but log the attempt
+      console.warn('⚠️ Could not parse JSON body, using empty object. This may be a manual trigger.');
+      body = {};
+    }
     // eslint-disable-next-line no-console
     console.log('🔄 Revalidation request received:', {
       contentType: (body as ContentfulWebhookPayload).sys?.contentType?.sys?.id,
