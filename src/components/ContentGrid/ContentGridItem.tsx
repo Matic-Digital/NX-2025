@@ -206,7 +206,16 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 <Link
                   href={(() => {
                     const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
-                    return slug?.startsWith('/') ? slug : `/${slug}`;
+                    // If it already starts with /, it's a full path
+                    if (slug.startsWith('/')) {
+                      return slug;
+                    }
+                    // If it contains a slash, it's likely a full relative path
+                    if (slug.includes('/')) {
+                      return `/${slug}`;
+                    }
+                    // Otherwise, it's just a simple slug that needs a leading slash
+                    return `/${slug}`;
                   })()}
                   className="inline-block w-full md:w-auto"
                 >
@@ -314,7 +323,16 @@ export function ContentGridItem(props: ContentGridItemProps) {
             {ctaCollection?.items?.[0]?.text && (
               <Link href={(() => {
                 const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
-                return slug?.startsWith('/') ? slug : `/${slug}`;
+                // If it already starts with /, it's a full path
+                if (slug.startsWith('/')) {
+                  return slug;
+                }
+                // If it contains a slash, it's likely a full relative path
+                if (slug.includes('/')) {
+                  return `/${slug}`;
+                }
+                // Otherwise, it's just a simple slug that needs a leading slash
+                return `/${slug}`;
               })()}>
                 <Button
                   variant="whiteOutline"
@@ -424,18 +442,21 @@ export function ContentGridItem(props: ContentGridItemProps) {
   );
 
   const PrimaryHoverSlideUp = () => {
-    // Extract slug from linkHref more reliably
-    const extractedSlug = linkHref.startsWith('/') ? linkHref.slice(1) : linkHref;
+    // Get the button's internal link slug if available
+    const buttonSlug = contentData.ctaCollection?.items?.[0]?.internalLink?.slug;
+    const cardButtonLink = buttonSlug ? (buttonSlug.startsWith('/') ? buttonSlug : `/${buttonSlug}`) : undefined;
 
     // Map ContentGridItem props to Service props
-    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean } = {
+    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean; cardButtonLink?: string } = {
       sys: contentData.sys,
       cardTitle: contentData.heading,
       cardTags: contentData.tags,
       cardButtonText: contentData.ctaCollection?.items?.[0]?.text ?? 'Learn More',
       cardImage: contentData.image,
-      slug: extractedSlug,
+      slug: buttonSlug || 'default',
       title: contentData.title,
+      // Pass the button's internal link as cardButtonLink
+      cardButtonLink: cardButtonLink,
       // Add cardId for active state management
       cardId: contentData.sys?.id,
       // Set first card as active by default

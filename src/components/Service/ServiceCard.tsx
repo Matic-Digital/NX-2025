@@ -64,7 +64,9 @@ export function ServiceCard(props: ServiceCardProps) {
   }, [serviceId]);
 
   // Use fetched data if available, otherwise use props data
+  // But preserve cardButtonLink from props since it's not part of the Service schema
   const service = useContentfulLiveUpdates(fetchedData ?? restProps);
+  const { cardButtonLink } = props;
 
   // Set first card as active on mount if no card is active (desktop only)
   useEffect(() => {
@@ -160,7 +162,7 @@ export function ServiceCard(props: ServiceCardProps) {
             ))}
             <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
               <Link 
-                href={service.slug?.startsWith('/') || service.slug?.startsWith('services/') ? `/${service.slug}` : `/services/${service.slug}`} 
+                href={cardButtonLink || (service.slug?.startsWith('/') || service.slug?.includes('/') ? (service.slug?.startsWith('/') ? service.slug : `/${service.slug}`) : `/services/${service.slug || ''}`)}
                 className="w-full"
               >
                 <Button variant="outlineTrasparentWhite" className="w-full">
