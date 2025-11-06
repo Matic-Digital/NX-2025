@@ -121,12 +121,15 @@ export function SectionHeading(props: SectionHeadingProps) {
     const hasMarkdownContent =
       sectionHeading.description && hasMarkdown(sectionHeading.description);
 
+    // For banner hero in ImageBetween, always use bottom alignment
+    const shouldUseBottomAlignment = componentType === 'banner-hero' && isImageBetween;
+
     return (
       <Box
         gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
         direction={{ base: 'col', md: 'row' }}
         cols={{ base: 1, md: 2, xl: 3 }}
-        className={hasMarkdownContent ? 'items-start' : 'items-end'}
+        className={shouldUseBottomAlignment ? 'items-end' : (hasMarkdownContent ? 'items-start' : 'items-end')}
         {...inspectorProps({ fieldId: 'heading' })}
       >
         {/* overline and title */}

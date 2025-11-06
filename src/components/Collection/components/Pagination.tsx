@@ -7,6 +7,50 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+  // Function to scroll to top of collection section
+  const scrollToCollection = () => {
+    // First try to find the collection container
+    const collectionElement = document.querySelector('[data-collection-container]');
+    
+    if (collectionElement) {
+      // Look for a parent Section element that contains the collection
+      const parentSection = collectionElement.closest('section') || 
+                           collectionElement.closest('[data-section]') ||
+                           collectionElement.closest('.section');
+      
+      // If we found a parent section, scroll to that; otherwise scroll to the collection itself
+      const targetElement = parentSection || collectionElement;
+      
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    } else {
+      // Fallback to other selectors
+      const fallbackElement = document.querySelector('.collection-container') ||
+                              document.querySelector('main') ||
+                              document.body;
+      
+      if (fallbackElement) {
+        fallbackElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      } else {
+        window.scrollTo({ 
+          top: 0, 
+          behavior: 'smooth' 
+        });
+      }
+    }
+  };
+
+  // Handle page change with scroll
+  const handlePageChange = (page: number) => {
+    onPageChange(page);
+    scrollToCollection();
+  };
+
   // Generate array of page numbers to display
   const getPageNumbers = () => {
     const pages = [];
@@ -47,9 +91,9 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
     <div className={collectionStyles.getPaginationClasses()}>
       {/* Previous Arrow */}
       <button
-        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
-        className={`${collectionStyles.getPaginationButtonClasses(currentPage === 1)} flex items-center justify-center w-10 h-10`}
+        className={`${collectionStyles.getPaginationButtonClasses(currentPage === 1)} flex items-center justify-center w-10 h-10 transition-all duration-200`}
         aria-label="Previous page"
       >
         <svg
@@ -78,10 +122,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
               <span className="px-3 py-2 text-sm text-gray-500">...</span>
             ) : (
               <button
-                onClick={() => onPageChange(page as number)}
-                className={`w-[3rem] aspect-square flex items-center justify-center text-sm font-medium rounded-none transition-colors ${
+                onClick={() => handlePageChange(page as number)}
+                className={`w-[3rem] aspect-square flex items-center justify-center text-sm font-medium rounded-none transition-all duration-200 ${
                   currentPage === page
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-white animate-pulse'
                     : 'bg-subtle text-black hover:bg-gray-100 hover:text-primary'
                 }`}
               >
@@ -94,9 +138,9 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
 
       {/* Next Arrow */}
       <button
-        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+        onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className={`${collectionStyles.getPaginationButtonClasses(currentPage === totalPages)} flex items-center justify-center w-10 h-10`}
+        className={`${collectionStyles.getPaginationButtonClasses(currentPage === totalPages)} flex items-center justify-center w-10 h-10 transition-all duration-200`}
         aria-label="Next page"
       >
         <svg

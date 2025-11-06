@@ -170,7 +170,11 @@ const config = {
     '2xl:grid-cols-12'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+    },
     container: {
       center: true,
       padding: '1rem'

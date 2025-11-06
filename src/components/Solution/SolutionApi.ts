@@ -132,7 +132,6 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       return await getEventById(id, preview);
     }
     default:
-      console.warn(`Solution API: Unknown component type ${typename}, returning minimal data`);
       return null;
   }
 
