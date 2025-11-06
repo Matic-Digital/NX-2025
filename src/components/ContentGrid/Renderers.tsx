@@ -8,6 +8,7 @@ import { Box } from '@/components/global/matic-ds';
 import { Accordion } from '@/components/Accordion/Accordion';
 import { Collection } from '@/components/Collection/Collection';
 import { ContactCard } from '@/components/ContactCard/ContactCard';
+import { Content } from '@/components/Content/Content';
 import { ContentGridItem } from '@/components/ContentGrid/ContentGridItem';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { Event } from '@/components/Event/Event';
@@ -24,6 +25,7 @@ import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
 import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
+import type { Content as ContentType } from '@/components/Content/ContentSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
 import type { Event as EventType } from '@/components/Event/EventSchema';
@@ -67,6 +69,10 @@ export const contentRenderers = {
       />
     );
   },
+
+  renderContent: (item: ContentType, context: RenderContext) => (
+    <Content key={item.sys?.id ?? context.index} {...item} />
+  ),
 
   renderCollection: (item: CollectionType, context: RenderContext) => {
     // Show skeleton immediately if we have sys.id but not full data

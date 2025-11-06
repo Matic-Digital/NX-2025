@@ -95,9 +95,16 @@ export function Content(props: ContentProps) {
   const [loading, setLoading] = useState(!!contentId);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch data if contentId is provided
+
+  // Fetch data if contentId is provided but we don't have full data in props
   useEffect(() => {
-    if (!contentId) return;
+    // Check if we already have the necessary data in props
+    const hasFullData = props.title && props.variant && (props.asset || props.item);
+    
+    if (!contentId || hasFullData) {
+      setLoading(false);
+      return;
+    }
 
     async function fetchContent() {
       try {
@@ -118,7 +125,7 @@ export function Content(props: ContentProps) {
     }
 
     void fetchContent();
-  }, [contentId]);
+  }, [contentId, props.title, props.variant, props.asset, props.item]);
 
   // ===== CONTENTFUL HOOKS =====
   const content = useContentfulLiveUpdates(fetchedData ?? restProps);

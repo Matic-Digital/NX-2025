@@ -80,7 +80,6 @@ export function PageList(props: PageListProps) {
     entryId: pageList?.sys?.id || ''
   });
 
-  // Remove console log since we confirmed content is being fetched
 
   return (
     <div className="page-component">
@@ -91,49 +90,60 @@ export function PageList(props: PageListProps) {
             <div className="page-content">
               {pageList.pageContentCollection.items.map((content, index) => {
                 const key = content.sys?.id || index;
+                
 
                 try {
-                  switch (content.__typename) {
+                  // Handle nested Content structure
+                  let actualContent = content;
+                  let actualTypename = content.__typename;
+                  
+                  // If __typename is undefined but we have an 'item' key, check if it's a Content block
+                  if (!actualTypename && (content as any).item && (content as any).item.__typename === 'Content') {
+                    actualContent = (content as any).item;
+                    actualTypename = 'Content';
+                  }
+
+                  switch (actualTypename) {
                     case 'BannerHero':
-                      return <BannerHero key={key} {...(content as any)} />;
+                      return <BannerHero key={key} {...(actualContent as any)} />;
 
                     case 'Content':
-                      return <Content key={key} {...(content as any)} />;
+                      return <Content key={key} {...(actualContent as any)} />;
 
                     case 'ContentGrid':
-                      return <ContentGrid key={key} {...(content as any)} />;
+                      return <ContentGrid key={key} {...(actualContent as any)} />;
 
                     case 'CtaBanner':
-                      return <CtaBanner key={key} {...(content as any)} />;
+                      return <CtaBanner key={key} {...(actualContent as any)} />;
 
                     case 'CtaGrid':
-                      return <CtaGrid key={key} {...(content as any)} />;
+                      return <CtaGrid key={key} {...(actualContent as any)} />;
 
                     case 'ImageBetween':
-                      return <ImageBetween key={key} {...(content as any)} />;
+                      return <ImageBetween key={key} {...(actualContent as any)} />;
 
                     case 'Slider':
-                      return <Slider key={key} {...(content as any)} />;
+                      return <Slider key={key} {...(actualContent as any)} />;
 
                     case 'RegionsMap':
                       return <RegionsMap key={key} />;
 
                     case 'RegionStats':
-                      return <RegionStats key={key} {...(content as any)} />;
+                      return <RegionStats key={key} {...(actualContent as any)} />;
 
                     default:
                       return (
                         <div key={key} className="mb-12">
                           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                             <p className="text-sm text-yellow-800">
-                              <strong>Unsupported Content Type:</strong> {content.__typename}
+                              <strong>Unsupported Content Type:</strong> {actualTypename || 'undefined'}
                             </p>
                             <details className="mt-2">
                               <summary className="cursor-pointer text-xs text-yellow-600">
                                 Debug Info
                               </summary>
                               <pre className="mt-1 text-xs text-yellow-600">
-                                {JSON.stringify(content, null, 2)}
+                                {JSON.stringify({ originalContent: content, actualContent, actualTypename }, null, 2)}
                               </pre>
                             </details>
                           </div>
