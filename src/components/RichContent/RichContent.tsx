@@ -178,12 +178,12 @@ const extractTocItems = (document: Document): TocItem[] => {
 const renderOptions = {
   renderMark: {
     [MARKS.BOLD]: (text: React.ReactNode) => (
-      <strong className="line-clamp-2 font-semibold">{text}</strong>
+      <strong className="line-clamp-2 font-semibold"><>{text}</></strong>
     ),
-    [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic">{text}</em>,
-    [MARKS.UNDERLINE]: (text: React.ReactNode) => <u className="underline">{text}</u>,
+    [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic"><>{text}</></em>,
+    [MARKS.UNDERLINE]: (text: React.ReactNode) => <u className="underline"><>{text}</></u>,
     [MARKS.CODE]: (text: React.ReactNode) => (
-      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">{text}</code>
+      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm"><>{text}</></code>
     )
   },
   renderNode: {
@@ -197,7 +197,7 @@ const renderOptions = {
           <span
             className={`text-secondary text-[1rem] leading-[160%] font-normal whitespace-pre-line ${paddingClass}`}
           >
-            {children}
+            <>{children}</>
           </span>
         );
       }
@@ -207,7 +207,7 @@ const renderOptions = {
         <p
           className="text-secondary my-[1.75rem] text-[1rem] leading-[160%] font-normal whitespace-pre-line"
         >
-          {children}
+          <>{children}</>
         </p>
       );
     },
@@ -220,7 +220,7 @@ const renderOptions = {
           id={id}
           className="mt-[2.5rem] scroll-mt-4 text-[1.5rem] leading-[120%] font-normal md:text-[2.25rem]"
         >
-          {children}
+          <>{children}</>
         </h2>
       );
     },
@@ -232,7 +232,7 @@ const renderOptions = {
           id={id}
           className="mt-[2.5rem] scroll-mt-4 pl-[2rem] text-[1.25rem] leading-[160%] font-normal md:text-[1.75rem]"
         >
-          {children}
+          <>{children}</>
         </h3>
       );
     },
@@ -244,21 +244,21 @@ const renderOptions = {
           id={id}
           className="mt-[1.25rem] scroll-mt-4 pl-[4rem] text-[1rem] leading-[160%] font-normal md:text-[1.55rem]"
         >
-          {children}
+          <>{children}</>
         </h4>
       );
     },
     [BLOCKS.HEADING_5]: (node: Block | Inline, children: React.ReactNode) => {
       return (
         <h5 className="mt-[1rem] scroll-mt-4 pl-[6rem] text-[1.125rem] leading-[160%] font-normal">
-          {children}
+          <>{children}</>
         </h5>
       );
     },
     [BLOCKS.HEADING_6]: (node: Block | Inline, children: React.ReactNode) => {
       return (
         <h6 className="mt-[1rem] scroll-mt-4 pl-[8rem] text-[1rem] leading-[160%] font-normal">
-          {children}
+          <>{children}</>
         </h6>
       );
     },
@@ -396,7 +396,7 @@ const renderOptions = {
           rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800"
         >
-          {children}
+          <>{children}</>
         </a>
       );
     }
