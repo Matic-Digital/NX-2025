@@ -349,32 +349,33 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'development' ? [
-              // Development CSP - Mux optimized + required domains
+              // Development CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
-              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
+              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
-              "frame-ancestors 'self' https://app.contentful.com https://vercel.live"
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
+              "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net"
             ].join('; ') : [
-              // Production CSP - Mux optimized + required domains
+              // Production CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
-              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
+              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
               "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'",
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net",
               "upgrade-insecure-requests",
               "report-uri /api/csp-report"
             ].join('; ')
