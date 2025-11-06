@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -54,6 +55,7 @@ export async function getImageBetweenById(
   preview = false
 ): Promise<ImageBetween | null> {
   try {
+    const cacheConfig = getCacheConfig('ImageBetween', { id });
     // Step 1: Fetch minimal ImageBetween structure
     const response = await fetchGraphQL(
       `query GetImageBetweenById($id: String!, $preview: Boolean!) {
@@ -64,7 +66,8 @@ export async function getImageBetweenById(
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     const data = response.data as any;

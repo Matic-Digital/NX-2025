@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -191,7 +192,6 @@ async function fetchComponentById(id: string, typename: string, preview = false)
       return await getEventById(id, preview);
     }
     default:
-      console.warn(`Product API: Unknown component type ${typename}, returning minimal data`);
       return null;
   }
 
@@ -211,6 +211,9 @@ async function fetchComponentById(id: string, typename: string, preview = false)
 
 export async function getProductBySlug(slug: string, preview = false): Promise<Product | null> {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('Product', { slug, id: undefined });
+    
     // Step 1: Fetch basic Product data
     const response = await fetchGraphQL(
       `query GetProductBySlug($slug: String!, $preview: Boolean!) {
@@ -221,7 +224,8 @@ export async function getProductBySlug(slug: string, preview = false): Promise<P
         }
       }`,
       { slug, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     // Check for valid response

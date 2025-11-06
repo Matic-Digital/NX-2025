@@ -166,13 +166,6 @@ export const contentRenderers = {
   },
 
   renderSlider: (item: SliderType, context: RenderContext) => {
-    console.warn('ContentGrid: Rendering Slider component:', {
-      id: item.sys?.id,
-      hasItemsCollection: 'itemsCollection' in item,
-      itemsLength: item.itemsCollection?.items?.length || 0,
-      itemTypes: item.itemsCollection?.items?.map(i => i.__typename) || [],
-      sliderData: item
-    });
     return <Slider key={item.sys?.id ?? context.index} {...item} />;
   },
 

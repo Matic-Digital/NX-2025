@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getVideoById } from '@/components/Video/VideoApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching Video data by ID
@@ -19,7 +21,22 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    const video = await getVideoById(id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('Video', { id });
+
+    // Create cached function with proper tags
+    const getCachedVideo = unstable_cache(
+      async (videoId: string, isPreview: boolean) => {
+        return await getVideoById(videoId, isPreview);
+      },
+      [`video-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const video = await getCachedVideo(id, preview);
 
     if (!video) {
       return NextResponse.json({ error: 'Video not found' }, { status: 404 });

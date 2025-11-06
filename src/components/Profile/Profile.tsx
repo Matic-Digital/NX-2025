@@ -40,7 +40,6 @@ export function Profile(props: ProfileAllProps) {
 
     // If we don't have full data, show skeleton indefinitely
     // This prevents client-side API calls that cause GraphQL errors
-    console.warn('Profile missing server-side data - showing skeleton. ID:', sys.id);
     setLoading(false); // Stop loading to show the minimal data skeleton
   }, [sys.id, hasFullData]);
 

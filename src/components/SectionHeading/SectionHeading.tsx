@@ -7,6 +7,7 @@ import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
 } from '@contentful/live-preview/react';
+import Image from 'next/image';
 
 // Utils
 import { cn } from '@/lib/utils';
@@ -121,12 +122,15 @@ export function SectionHeading(props: SectionHeadingProps) {
     const hasMarkdownContent =
       sectionHeading.description && hasMarkdown(sectionHeading.description);
 
+    // For banner hero in ImageBetween, always use bottom alignment
+    const shouldUseBottomAlignment = componentType === 'banner-hero' && isImageBetween;
+
     return (
       <Box
         gap={hasCtaCollection ? { base: 4, md: 12 } : 6}
         direction={{ base: 'col', md: 'row' }}
         cols={{ base: 1, md: 2, xl: 3 }}
-        className={hasMarkdownContent ? 'items-start' : 'items-end'}
+        className={shouldUseBottomAlignment ? 'items-end' : (hasMarkdownContent ? 'items-start' : 'items-end')}
         {...inspectorProps({ fieldId: 'heading' })}
       >
         {/* overline and title */}
@@ -299,14 +303,14 @@ export function SectionHeading(props: SectionHeadingProps) {
     >
       {sectionHeading.icon && (
         <div
-          className="bg-black p-2 w-[6rem] aspect-square items-center flex justify-center"
+          className="aspect-square items-center flex justify-center"
           {...inspectorProps({ fieldId: 'icon' })}
         >
-          <SvgIcon
+          <Image
             src={sectionHeading.icon.url}
-            alt={sectionHeading.title}
-            width={64}
-            height={64}
+            alt={sectionHeading.title ?? ''}
+            width={96}
+            height={96}
             className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
           />
         </div>

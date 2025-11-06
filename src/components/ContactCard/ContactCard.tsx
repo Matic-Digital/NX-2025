@@ -120,11 +120,12 @@ export function ContactCard(props: ContactCardProps) {
             variant="white"
             className="border-border-input text-body-sm text-text-body dark:text-background w-full justify-center border-1 [&_svg]:size-5"
           >
-            <Box direction="row" gap={2} className="items-center">
+            <Box direction="row" gap={2} className="items-center flex-wrap justify-center">
               <Phone />
               <Link
                 href={`tel:${contactCard.phone ?? ''}`}
                 {...inspectorProps({ fieldId: 'phone' })}
+                className="text-wrap"
               >
                 {contactCard.phone}
               </Link>

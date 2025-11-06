@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import {
   ASSET_FIELDS,
   INTERNAL_LINK_FIELDS,
@@ -139,6 +140,7 @@ export const CONTENTGRID_GRAPHQL_FIELDS = `
  */
 export async function getContentGridById(id: string, preview = false): Promise<ContentGrid | null> {
   try {
+    const cacheConfig = getCacheConfig('ContentGrid', { id });
     const response = await fetchGraphQL(
       `query GetContentGridById($id: String!, $preview: Boolean!) {
         contentGrid(id: $id, preview: $preview) {
@@ -146,7 +148,8 @@ export async function getContentGridById(id: string, preview = false): Promise<C
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     // Check for valid response

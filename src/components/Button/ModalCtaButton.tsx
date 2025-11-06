@@ -108,15 +108,6 @@ export function ModalCtaButton({
         />
       )}
       
-      {/* Debug logging */}
-      {console.warn('ModalCtaButton Debug:', {
-        selectedModalState,
-        modalType,
-        ctaModal: cta.modal,
-        formId: cta.modal?.form?.formId,
-        isModalOpenState,
-        fullCta: cta
-      })}
     </>
   );
 }

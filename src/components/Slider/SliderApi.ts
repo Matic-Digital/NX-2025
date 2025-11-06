@@ -112,14 +112,6 @@ export async function getSlidersByIds(sliderIds: string[], preview = false): Pro
  */
 export async function getSliderById(id: string, preview = false): Promise<Slider | null> {
   
-  // Special logging for the problematic sliders
-  if (id === '3lmVR58xdwWUd25156sE30' || id === '2bcswg6bRsdQ4dCEqpJeJe') {
-    console.warn('Slider API: *** FOUND PROBLEMATIC SLIDER ***', {
-      id,
-      isTeamSlider: id === '3lmVR58xdwWUd25156sE30',
-      isTimelineSlider: id === '2bcswg6bRsdQ4dCEqpJeJe'
-    });
-  }
   try {
     // Step 1: Fetch minimal slider structure
     const response = await fetchGraphQL(
@@ -154,7 +146,6 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
       const enrichmentPromises = slider.itemsCollection.items.map(async (item: any) => {
         // Processing slider item
         if (!item.sys?.id || !item.__typename) {
-          console.warn('Slider API: Skipping item without proper structure:', item);
           return item; // Skip items without proper structure
         }
 
@@ -225,7 +216,6 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               return item;
           }
         } catch (error) {
-          console.warn(`Failed to enrich slider item ${item.sys.id}:`, error);
           return item; // Return original item if enrichment fails
         }
       });

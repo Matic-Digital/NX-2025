@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { getHEADER_GRAPHQL_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 
@@ -89,6 +90,9 @@ export async function getHeaderByName(name: string, preview = false): Promise<He
  */
 export const getHeaderById = cache(async (id: string, preview = false): Promise<Header | null> => {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('Header', { id, slug: undefined });
+    
     const response = await fetchGraphQL<Header>(
       `query GetHeaderById($id: String!, $preview: Boolean!) {
         headerCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
@@ -98,7 +102,8 @@ export const getHeaderById = cache(async (id: string, preview = false): Promise<
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.headerCollection?.items?.length) {

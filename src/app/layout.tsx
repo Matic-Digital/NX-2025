@@ -116,7 +116,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             /* Critical above-the-fold styles for faster LCP */
             body {
               margin: 0;
-              font-family: var(--font-inter), system-ui, sans-serif;
               line-height: 1.6;
               -webkit-font-smoothing: antialiased;
             }

@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { ASSET_FIELDS, SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -33,16 +34,19 @@ export const CTABANNER_GRAPHQL_FIELDS = `
  */
 export async function getAllCtaBanners(preview = false): Promise<CtaBannerResponse> {
   try {
+    const cacheConfig = getCacheConfig('CtaBanner', {});
     const response = await fetchGraphQL<CtaBanner>(
       `query GetAllCtaBanners($preview: Boolean!) {
         ctaBannerCollection(preview: $preview) {
           items {
             ${CTABANNER_GRAPHQL_FIELDS}
           }
+          total
         }
       }`,
       { preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     // Check for valid response
@@ -74,6 +78,7 @@ export async function getAllCtaBanners(preview = false): Promise<CtaBannerRespon
 
 export async function getCtaBannerById(id: string, preview = false): Promise<CtaBanner | null> {
   try {
+    const cacheConfig = getCacheConfig('CtaBanner', { id });
     const response = await fetchGraphQL<CtaBanner>(
       `query GetCtaBannerById($id: String!, $preview: Boolean!) {
         ctaBanner(id: $id, preview: $preview) {
@@ -81,7 +86,8 @@ export async function getCtaBannerById(id: string, preview = false): Promise<Cta
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     // Check for valid response

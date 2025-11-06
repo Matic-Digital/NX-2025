@@ -6,6 +6,7 @@
 import { cache } from 'react';
 
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { getFOOTER_GRAPHQL_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, GraphQLError, NetworkError } from '@/lib/errors';
 
@@ -59,6 +60,9 @@ export async function getAllFooters(preview = true): Promise<FooterResponse> {
  */
 export const getFooterById = cache(async (id: string, preview = false): Promise<Footer | null> => {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('Footer', { id, slug: undefined });
+    
     const response = await fetchGraphQL<Footer>(
       `query GetFooterById($id: String!, $preview: Boolean!) {
         footerCollection(where: { sys: { id: $id } }, limit: 1, preview: $preview) {
@@ -68,7 +72,8 @@ export const getFooterById = cache(async (id: string, preview = false): Promise<
         }
       }`,
       { id, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.footerCollection?.items?.length) {

@@ -895,15 +895,6 @@ function SliderComponent(props: SliderSys | Slider) {
   // Type assertion for full slider data when we know it exists
   const slider = hasFullData ? (sliderData as Slider) : null;
   
-  // Debug logging to see what data Slider component receives
-  console.warn('Slider Component: Data received:', {
-    id: sliderData.sys?.id,
-    hasItemsCollection: 'itemsCollection' in sliderData,
-    itemsLength: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.length || 0 : 0,
-    hasFullData,
-    itemTypes: 'itemsCollection' in sliderData ? sliderData.itemsCollection?.items?.map(item => item.__typename) || [] : [],
-    sliderData: sliderData
-  });
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
@@ -1080,7 +1071,6 @@ function SliderComponent(props: SliderSys | Slider) {
   }, [slider?.itemsCollection?.items]);
 
   if (!hasFullData) {
-    console.warn('Slider missing server-side data - showing skeleton. ID:', sliderData.sys?.id);
     return (
       <div className="w-full">
         <SliderSkeleton />

@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getCollectionById } from '@/components/Collection/CollectionApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching Collection by ID with enrichment
@@ -14,7 +16,22 @@ export async function GET(
     const preview = searchParams.get('preview') === 'true';
     const resolvedParams = await params;
 
-    const collection = await getCollectionById(resolvedParams.id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('Collection', { id: resolvedParams.id });
+
+    // Create cached function with proper tags
+    const getCachedCollection = unstable_cache(
+      async (collectionId: string, isPreview: boolean) => {
+        return await getCollectionById(collectionId, isPreview);
+      },
+      [`collection-${resolvedParams.id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const collection = await getCachedCollection(resolvedParams.id, preview);
 
     if (!collection) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
