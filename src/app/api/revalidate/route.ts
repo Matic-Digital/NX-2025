@@ -288,13 +288,14 @@ function getTagsToRevalidate(contentType?: string, entryId?: string): string[] {
 
   // Cross-component invalidation for nested content
   // When these components change, also invalidate components that reference them
+  // Note: Contentful sends camelCase content type IDs (e.g., "sectionHeading")
   const crossComponentInvalidation: Record<string, string[]> = {
-    'SectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
-    'Image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
-    'Video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
-    'Button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
-    'ContentGridItem': ['contentType:ContentGrid'],
-    'SliderItem': ['contentType:Slider']
+    'sectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
+    'image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
+    'video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
+    'button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
+    'contentGridItem': ['contentType:ContentGrid'],
+    'sliderItem': ['contentType:Slider']
   };
 
   if (contentType && Object.prototype.hasOwnProperty.call(crossComponentInvalidation, contentType)) {
