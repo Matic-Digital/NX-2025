@@ -518,6 +518,7 @@ async function renderPageList(pageList: PageListType, slug: string) {
   const pageLayout = pageList.pageLayout as PageLayoutType | undefined;
   const pageHeader = pageLayout?.header as HeaderType | undefined;
   const pageFooter = pageLayout?.footer as FooterType | undefined;
+  
 
   // Generate connected schema (includes organization connections)
   const pageListSchema = contentfulSchemaMapper.mapContentToSchema(

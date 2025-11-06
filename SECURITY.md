@@ -97,7 +97,7 @@ These are flagged but don't fail the build:
 
 ## 🔧 Security Configuration Files
 
-### `.eslintrc.security.cjs`
+### `.eslintrc.security.mjs`
 Extended ESLint configuration with security-focused rules:
 - Object injection detection
 - Unsafe pattern identification

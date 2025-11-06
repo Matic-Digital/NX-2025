@@ -899,12 +899,18 @@ function SliderComponent(props: SliderSys | Slider) {
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [autoplayTimer, setAutoplayTimer] = useState<NodeJS.Timeout | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
     root: null,
     rootMargin: '0px'
   });
   const isInView = entry?.isIntersecting ?? false;
+
+  // Ensure autoplay only runs on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleTeamMemberClick = (teamMember: TeamMember) => {
     setSelectedTeamMember(teamMember);
@@ -920,7 +926,7 @@ function SliderComponent(props: SliderSys | Slider) {
 
   // Function to start autoplay timer
   const startAutoplayTimer = useCallback(() => {
-    if (!api || !slider || !isInView) return;
+    if (!api || !slider || !isInView || !isClient) return;
     
     // Check if autoplay is explicitly enabled (not just undefined)
     const shouldAutoplay = slider.autoplay === true;
@@ -964,7 +970,7 @@ function SliderComponent(props: SliderSys | Slider) {
     }, delay);
 
     setAutoplayTimer(timer);
-  }, [api, slider, isInView, autoplayTimer]);
+  }, [api, slider, isInView, autoplayTimer, isClient]);
 
   // Function to stop autoplay timer
   const stopAutoplayTimer = useCallback(() => {

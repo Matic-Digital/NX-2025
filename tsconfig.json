@@ -3,6 +3,7 @@
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "target": "es2022",
     "allowJs": true,
     "resolveJsonModule": true,
@@ -27,7 +28,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    
+    /* Explicitly control which types to include */
+    "types": ["node", "react", "react-dom"]
   },
   "include": [
     "next-env.d.ts",

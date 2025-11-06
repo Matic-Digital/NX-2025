@@ -33,6 +33,8 @@ import { ContentGrid } from '@/components/ContentGrid/ContentGrid';
 import { CtaBanner } from '@/components/CtaBanner/CtaBanner';
 import { CtaGrid } from '@/components/CtaGrid/CtaGrid';
 import { ImageBetween } from '@/components/ImageBetween/ImageBetween';
+import { RegionsMap } from '@/components/Region/RegionsMap';
+import { RegionStats } from '@/components/RegionStats/RegionStats';
 import { Slider } from '@/components/Slider/Slider';
 
 interface PageListProps {
@@ -78,6 +80,8 @@ export function PageList(props: PageListProps) {
     entryId: pageList?.sys?.id || ''
   });
 
+  // Remove console log since we confirmed content is being fetched
+
   return (
     <div className="page-component">
       {/* Render Page Content */}
@@ -110,6 +114,12 @@ export function PageList(props: PageListProps) {
 
                     case 'Slider':
                       return <Slider key={key} {...(content as any)} />;
+
+                    case 'RegionsMap':
+                      return <RegionsMap key={key} />;
+
+                    case 'RegionStats':
+                      return <RegionStats key={key} {...(content as any)} />;
 
                     default:
                       return (
@@ -147,6 +157,25 @@ export function PageList(props: PageListProps) {
               })}
             </div>
           )}
+        
+        {/* Debug message when no content is found */}
+        {(!pageList.pageContentCollection?.items || pageList.pageContentCollection.items.length === 0) && (
+          <div className="p-8 text-center">
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Debug:</strong> No pageContentCollection items found for PageList
+              </p>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs text-blue-600">
+                  PageList Data
+                </summary>
+                <pre className="mt-1 text-xs text-blue-600">
+                  {JSON.stringify(pageList, null, 2)}
+                </pre>
+              </details>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

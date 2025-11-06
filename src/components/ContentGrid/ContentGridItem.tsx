@@ -204,7 +204,19 @@ export function ContentGridItem(props: ContentGridItemProps) {
             {ctaCollection?.items?.[0]?.text && (
               <div className="mt-auto">
                 <Link
-                  href={`/${ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}`}
+                  href={(() => {
+                    const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
+                    // If it already starts with /, it's a full path
+                    if (slug.startsWith('/')) {
+                      return slug;
+                    }
+                    // If it contains a slash, it's likely a full relative path
+                    if (slug.includes('/')) {
+                      return `/${slug}`;
+                    }
+                    // Otherwise, it's just a simple slug that needs a leading slash
+                    return `/${slug}`;
+                  })()}
                   className="inline-block w-full md:w-auto"
                 >
                   <Button
@@ -309,7 +321,19 @@ export function ContentGridItem(props: ContentGridItemProps) {
             </Box>
 
             {ctaCollection?.items?.[0]?.text && (
-              <Link href={ctaCollection?.items?.[0]?.internalLink?.slug ?? ''}>
+              <Link href={(() => {
+                const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
+                // If it already starts with /, it's a full path
+                if (slug.startsWith('/')) {
+                  return slug;
+                }
+                // If it contains a slash, it's likely a full relative path
+                if (slug.includes('/')) {
+                  return `/${slug}`;
+                }
+                // Otherwise, it's just a simple slug that needs a leading slash
+                return `/${slug}`;
+              })()}>
                 <Button
                   variant="whiteOutline"
                   className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
@@ -418,22 +442,26 @@ export function ContentGridItem(props: ContentGridItemProps) {
   );
 
   const PrimaryHoverSlideUp = () => {
+    // Get the button's internal link slug if available
+    const buttonSlug = contentData.ctaCollection?.items?.[0]?.internalLink?.slug;
+    const cardButtonLink = buttonSlug ? (buttonSlug.startsWith('/') ? buttonSlug : `/${buttonSlug}`) : undefined;
+
     // Map ContentGridItem props to Service props
-    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean } = {
+    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean; cardButtonLink?: string } = {
       sys: contentData.sys,
       cardTitle: contentData.heading,
       cardTags: contentData.tags,
       cardButtonText: contentData.ctaCollection?.items?.[0]?.text ?? 'Learn More',
       cardImage: contentData.image,
-      slug: contentData.ctaCollection?.items?.[0]?.internalLink?.slug ?? '',
+      slug: buttonSlug || 'default',
       title: contentData.title,
+      // Pass the button's internal link as cardButtonLink
+      cardButtonLink: cardButtonLink,
       // Add cardId for active state management
       cardId: contentData.sys?.id,
       // Set first card as active by default
       isFirst: props.index === 0
     };
-
-    console.log('serviceProps', serviceProps);
 
     return <ServiceCard {...serviceProps} />;
   };
@@ -526,12 +554,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const LinkItem = () => {
-    console.log('ContentGridItem link data:', {
-      link: contentData.link,
-      linkHref,
-      fullContentData: fullContentData?.link,
-      getURL: _getContentGridItemLink(contentData.sys.id, false)
-    });
     return (
       <Link href={link ?? ''} className="group flex flex-col">
         <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">

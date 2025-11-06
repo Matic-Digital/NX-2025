@@ -224,6 +224,21 @@ export async function getPageListBySlug(
             }
             title
             slug
+            pageLayout {
+              sys {
+                id
+              }
+              header {
+                sys {
+                  id
+                }
+              }
+              footer {
+                sys {
+                  id
+                }
+              }
+            }
             pagesCollection(limit: 10) {
               items {
                 __typename
@@ -278,50 +293,10 @@ export async function getPageListBySlug(
                 }
               }
             }
-            pageLayout {
-              sys {
-                id
-              }
-              header {
-                sys {
-                  id
-                }
-              }
-              footer {
-                sys {
-                  id
-                }
-              }
-            }
             pageContentCollection(limit: 20) {
               items {
                 __typename
                 ... on Entry {
-                  sys {
-                    id
-                  }
-                }
-                ... on BannerHero {
-                  sys {
-                    id
-                  }
-                }
-                ... on Content {
-                  sys {
-                    id
-                  }
-                }
-                ... on ContentGrid {
-                  sys {
-                    id
-                  }
-                }
-                ... on CtaBanner {
-                  sys {
-                    id
-                  }
-                }
-                ... on ImageBetween {
                   sys {
                     id
                   }
@@ -405,6 +380,36 @@ export async function getPageListBySlug(
               return enrichedItem || item;
             }
             
+            case 'ImageBetween': {
+              const { getImageBetweenById } = await import('@/components/ImageBetween/ImageBetweenApi');
+              const enrichedItem = await getImageBetweenById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'CtaBanner': {
+              const { getCtaBannerById } = await import('@/components/CtaBanner/CtaBannerApi');
+              const enrichedItem = await getCtaBannerById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'ContentGrid': {
+              const { getContentGridById } = await import('@/components/ContentGrid/ContentGridApi');
+              const enrichedItem = await getContentGridById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'Slider': {
+              const { getSliderById } = await import('@/components/Slider/SliderApi');
+              const enrichedItem = await getSliderById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
+            case 'RegionStats': {
+              const { getRegionStatsById } = await import('@/components/RegionStats/RegionStatsApi');
+              const enrichedItem = await getRegionStatsById(item.sys.id, preview);
+              return enrichedItem || item;
+            }
+            
             default:
               return item;
           }
@@ -459,29 +464,20 @@ export async function getPageListById(
                   }
                 }
                 ... on BannerHero {
-                  sys {
-                    id
-                  }
+                  ${_BANNERHERO_GRAPHQL_FIELDS}
                 }
                 ... on Content {
-                  sys {
-                    id
-                  }
+                  sys { id }
+                  title
                 }
                 ... on ContentGrid {
-                  sys {
-                    id
-                  }
+                  ${_CONTENTGRID_GRAPHQL_FIELDS}
                 }
                 ... on CtaBanner {
-                  sys {
-                    id
-                  }
+                  ${_CTABANNER_GRAPHQL_FIELDS}
                 }
                 ... on ImageBetween {
-                  sys {
-                    id
-                  }
+                  ${_IMAGEBETWEEN_GRAPHQL_FIELDS}
                 }
               }
             }
