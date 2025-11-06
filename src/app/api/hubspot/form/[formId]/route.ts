@@ -687,7 +687,12 @@ function analyzeFormSteps(formData: HubSpotV3FormData): FormStep[] {
 async function getHubSpotV3FormData(formId: string): Promise<HubSpotV3FormData> {
   const apiKey = process.env.HUBSPOT_API_KEY;
   
+  // Debug logging
+  console.log('HubSpot API Key exists:', !!apiKey);
+  console.log('HubSpot API Key length:', apiKey?.length || 0);
+  
   if (!apiKey) {
+    console.error('HubSpot API key not found in environment variables');
     const error = new Error('HubSpot API key not configured') as Error & { status: number };
     error.status = 401;
     throw error;
@@ -701,6 +706,20 @@ async function getHubSpotV3FormData(formId: string): Promise<HubSpotV3FormData> 
   });
 
   if (!response.ok) {
+    console.error('HubSpot API Response Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url
+    });
+    
+    // Try to get error details from response
+    try {
+      const errorBody = await response.text();
+      console.error('HubSpot API Error Body:', errorBody);
+    } catch (e) {
+      console.error('Could not read error response body:', e);
+    }
+    
     const error = new Error(`HubSpot API error: ${response.status} ${response.statusText}`) as Error & { status: number };
     error.status = response.status === 404 ? 404 : response.status >= 400 && response.status < 500 ? 400 : 500;
     throw error;
@@ -747,7 +766,18 @@ export async function GET(
     try {
       formData = await getHubSpotV3FormData(formId);
       steps = analyzeFormSteps(formData);
-    } catch {
+    } catch (error) {
+      // Log the actual error for debugging
+      console.error('HubSpot API Error:', error);
+      
+      // If it's a 401, return the actual error instead of mock data
+      if (error instanceof Error && 'status' in error && error.status === 401) {
+        return NextResponse.json(
+          { error: 'HubSpot API authentication failed. Check API key configuration.' },
+          { status: 401 }
+        );
+      }
+      
       // Return mock form data when HubSpot API is not available
       const mockFormData: HubSpotV3FormData = {
         id: formId,
