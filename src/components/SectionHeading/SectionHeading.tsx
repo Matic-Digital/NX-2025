@@ -306,7 +306,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           {...inspectorProps({ fieldId: 'icon' })}
         >
           <Image
-            src={sectionHeading.icon.url}
+            src={sectionHeading.icon?.url || ''}
             alt={sectionHeading.title ?? ''}
             width={96}
             height={96}

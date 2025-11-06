@@ -353,8 +353,8 @@ const nextConfig = {
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com",
-              "frame-ancestors 'self' https://app.contentful.com"
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
+              "frame-ancestors 'self' https://app.contentful.com https://vercel.live"
             ].join('; ') : [
               // Production CSP - Mux optimized + required domains
               "default-src 'self'",
@@ -365,8 +365,8 @@ const nextConfig = {
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com",
-              "frame-ancestors 'self' https://app.contentful.com",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
+              "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
