@@ -22,7 +22,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
       // Horizontal layout: icon on left, text on right (top-aligned)
       <div className="group flex w-fit cursor-pointer items-start gap-[0.75rem] p-[0.75rem] hover:bg-[#FFFFFF14]">
         {icon && (
-          <div className="w-fit bg-white p-[0.25rem] flex-shrink-0">
+          <div className="w-fit bg-white p-[0.25rem]">
             <Image
               src={icon?.url || ''}
               alt={icon.title ?? title}
