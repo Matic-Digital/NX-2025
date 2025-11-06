@@ -34,6 +34,9 @@ interface RevalidationRequest {
 }
 
 export async function POST(request: NextRequest) {
+  // Force immediate log to test if logging works at all
+  console.log('POST /api/revalidate called at:', new Date().toISOString());
+  
   try {
     // Enhanced security validation
     const authHeader = request.headers.get('authorization');
@@ -69,10 +72,11 @@ export async function POST(request: NextRequest) {
     const requestContentType = request.headers.get('content-type');
     
     // Allow JSON content types from known webhook providers
+    // If no content-type header, allow it (some tools don't send it)
     if (requestContentType && 
         !requestContentType.includes('application/json') && 
         !requestContentType.includes('application/vnd.contentful.management.v1+json')) {
-      console.error('❌ Invalid Content-Type:', requestContentType);
+      console.error('Invalid Content-Type:', requestContentType);
       return NextResponse.json(
         { error: 'Content-Type must be application/json or application/vnd.contentful.management.v1+json' },
         { status: 400 }
@@ -90,11 +94,15 @@ export async function POST(request: NextRequest) {
       body = {};
     }
     // eslint-disable-next-line no-console
+    console.log('=== REVALIDATION DEBUG START ===');
+    // eslint-disable-next-line no-console
     console.log('Revalidation request received:', {
       contentType: (body as ContentfulWebhookPayload).sys?.contentType?.sys?.id,
       entryId: (body as ContentfulWebhookPayload).sys?.id,
       action: (body as ContentfulWebhookPayload).sys?.type
     });
+    // eslint-disable-next-line no-console
+    console.log('=== REVALIDATION DEBUG END ===');
 
     // Handle Contentful webhook payload
     const payload = body as ContentfulWebhookPayload;
