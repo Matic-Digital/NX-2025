@@ -64,7 +64,7 @@ export function MegaMenu({ megaMenu, megaMenuId, title, overflow }: MegaMenuProp
   const itemCount = menuItems.length;
   const rowsNeeded = Math.ceil(itemCount / 3); // 3 columns on xl screens
   const baseItemHeight = 110; // Height per item in pixels
-  const dynamicHeight = Math.max(rowsNeeded * baseItemHeight, 200); // Minimum 200px
+  //const dynamicHeight = Math.max(rowsNeeded * baseItemHeight, 200); // Minimum 200px
 
   const handleMouseEnter = () => {
     // Clear any pending close timeout immediately

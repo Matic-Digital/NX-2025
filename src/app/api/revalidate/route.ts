@@ -38,7 +38,11 @@ export async function POST(request: NextRequest) {
     // Enhanced security validation
     const authHeader = request.headers.get('authorization');
     const secretFromQuery = request.nextUrl.searchParams.get('secret');
-    const secretFromHeader = authHeader?.replace('Bearer ', '');
+    
+    // Handle both "Bearer token" and direct token formats
+    const secretFromHeader = authHeader?.startsWith('Bearer ') 
+      ? authHeader.replace('Bearer ', '')
+      : authHeader;
     
     const providedSecret = secretFromQuery ?? secretFromHeader;
     
