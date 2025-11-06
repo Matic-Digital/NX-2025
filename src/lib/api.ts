@@ -62,6 +62,8 @@ export async function fetchGraphQL<T>(
         ? { next: cacheConfig.next }
         : { cache: 'force-cache' as const };
 
+    // Cache tags are set via cacheConfig.next.tags in production
+
     const environment = process.env.CONTENTFUL_ENVIRONMENT ?? 'development';
     const spaceId = process.env.CONTENTFUL_SPACE_ID;
     const accessToken = preview 

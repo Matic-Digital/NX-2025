@@ -86,11 +86,11 @@ export async function POST(request: NextRequest) {
       body = await request.json();
     } catch (_error) {
       // If no body or invalid JSON, use empty object but log the attempt
-      console.warn('⚠️ Could not parse JSON body, using empty object. This may be a manual trigger.');
+      console.warn('Could not parse JSON body, using empty object. This may be a manual trigger.');
       body = {};
     }
     // eslint-disable-next-line no-console
-    console.log('🔄 Revalidation request received:', {
+    console.log('Revalidation request received:', {
       contentType: (body as ContentfulWebhookPayload).sys?.contentType?.sys?.id,
       entryId: (body as ContentfulWebhookPayload).sys?.id,
       action: (body as ContentfulWebhookPayload).sys?.type
@@ -128,25 +128,28 @@ export async function POST(request: NextRequest) {
           revalidatePath(path);
           revalidatedPaths.push(path);
           // eslint-disable-next-line no-console
-          console.log(`✅ Revalidated path: ${path}`);
+          console.log(`Revalidated path: ${path}`);
         } catch (error) {
            
-          console.error(`❌ Failed to revalidate path ${path}:`, error);
+          console.error(`Failed to revalidate path ${path}:`, error);
         }
       }
     }
 
     // Revalidate by tags for broader cache invalidation
     const tagsToRevalidate = getTagsToRevalidate(queryParams.contentType, queryParams.entryId);
+    // eslint-disable-next-line no-console
+    console.log('Tags to revalidate:', tagsToRevalidate);
+    
     for (const tag of tagsToRevalidate) {
       try {
         revalidateTag(tag);
         revalidatedTags.push(tag);
         // eslint-disable-next-line no-console
-        console.log(`✅ Revalidated tag: ${tag}`);
+        console.log(`Revalidated tag: ${tag}`);
       } catch (error) {
          
-        console.error(`❌ Failed to revalidate tag ${tag}:`, error);
+        console.error(`Failed to revalidate tag ${tag}:`, error);
       }
     }
 
@@ -156,10 +159,10 @@ export async function POST(request: NextRequest) {
         revalidatePath('/');
         revalidatedPaths.push('/');
         // eslint-disable-next-line no-console
-        console.log('✅ Revalidated home page');
+        console.log('Revalidated home page');
       } catch (error) {
          
-        console.error('❌ Failed to revalidate home page:', error);
+        console.error('Failed to revalidate home page:', error);
       }
     }
 
@@ -174,12 +177,12 @@ export async function POST(request: NextRequest) {
     };
 
     // eslint-disable-next-line no-console
-    console.log('🎉 Revalidation completed:', response);
+    console.log('Revalidation completed:', response);
     return NextResponse.json(response);
 
   } catch (error) {
      
-    console.error('❌ Revalidation error:', error);
+    console.error('Revalidation error:', error);
     return NextResponse.json(
       { 
         message: 'Error revalidating', 
