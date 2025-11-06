@@ -532,7 +532,7 @@ const GenericSlider = ({
                               : isSolutionSlider
                                 ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                                 : isTestimonialSlider
-                                  ? 'basis-full sm:basis-1/2 lg:basis-1/3'
+                                  ? 'basis-full sm:basis-1/2 lg:basis-1/2 xl:basis-1/2'
                                   : isContentSlider
                                     ? 'basis-[calc(100vw-3rem)] sm:basis-[411px]'
                                     : 'basis-full'
