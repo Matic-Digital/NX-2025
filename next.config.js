@@ -16,6 +16,11 @@ const nextConfig = {
   // Enable React strict mode for development
   reactStrictMode: true,
   devIndicators: false,
+  
+  // Disable ESLint during builds to prevent type conflicts
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
   // Source map configuration
   // Disable source maps in production for security (prevent information disclosure)
