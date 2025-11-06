@@ -68,11 +68,13 @@ export async function POST(request: NextRequest) {
     // Strict Content-Type validation for security
     const requestContentType = request.headers.get('content-type');
     
-    // Only allow specific content types from known webhook providers
-    if (requestContentType && !requestContentType.includes('application/json')) {
+    // Allow JSON content types from known webhook providers
+    if (requestContentType && 
+        !requestContentType.includes('application/json') && 
+        !requestContentType.includes('application/vnd.contentful.management.v1+json')) {
       console.error('❌ Invalid Content-Type:', requestContentType);
       return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
+        { error: 'Content-Type must be application/json or application/vnd.contentful.management.v1+json' },
         { status: 400 }
       );
     }
