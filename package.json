@@ -35,7 +35,7 @@
     "Security": "---------------------------------------------",
     "security": "npm run security:deps && npm run security:secrets",
     "security:audit": "npm audit --audit-level moderate",
-    "security:lint": "eslint src --config .eslintrc.security.cjs --quiet && echo '✅ Security check passed - no vulnerabilities detected'",
+    "security:lint": "eslint src --config eslint.security.config.mjs --quiet && echo '✅ Security check passed - no vulnerabilities detected'",
     "security:report": "node scripts/security-report.cjs",
     "security:audit-suppressions": "node scripts/security-suppression-audit.cjs",
     "security:deps": "npx better-npm-audit audit",

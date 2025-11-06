@@ -43,8 +43,10 @@
     "**/*.js.map", 
     "scripts/**/*", 
     "security-tests/**/*",
-    "eslint.config.js",
-    ".eslintrc.cjs",
-    "eslint.security.config.js"
+    "eslint*.js",
+    "eslint*.cjs", 
+    "eslint*.mjs",
+    ".eslintrc.*",
+    "**/eslint*"
   ]
 }
