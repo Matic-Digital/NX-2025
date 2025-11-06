@@ -265,8 +265,22 @@ async function getPathsToRevalidate(
       paths.push('/[...segments]');
       break;
 
+    case 'SectionHeading':
+    case 'BannerHero':
+    case 'ContentGrid':
+    case 'CtaBanner':
+    case 'ImageBetween':
+    case 'Slider':
+    case 'Image':
+    case 'Video':
+    case 'Button':
+      // Component updates - revalidate home page and all dynamic routes
+      paths.push('/');
+      paths.push('/[...segments]');
+      break;
+
     default:
-      // For component updates, revalidate the catch-all route
+      // For other component updates, revalidate the catch-all route
       paths.push('/[...segments]');
       break;
   }

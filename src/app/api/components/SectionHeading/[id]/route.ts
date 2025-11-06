@@ -24,6 +24,7 @@ export async function GET(
     // Get cache configuration for this content type and ID
     const cacheConfig = getCacheConfig('SectionHeading', { id });
 
+
     // Create cached function with proper tags
     const getCachedSectionHeading = unstable_cache(
       async (sectionHeadingId: string, isPreview: boolean) => {
