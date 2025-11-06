@@ -39,8 +39,18 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   // Use full content data if available, otherwise fall back to props
   const contentData = fullContentData ?? props;
-  const { sys, title, heading, subheading, description, variant, icon, image, ctaCollection } =
-    contentData;
+  const {
+    sys,
+    title,
+    heading,
+    subheading,
+    description,
+    variant,
+    icon,
+    image,
+    ctaCollection,
+    link
+  } = contentData;
 
   // Fetch full content data and link details on component mount
   useEffect(() => {
@@ -517,8 +527,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const LinkItem = () => {
+    console.log('ContentGridItem link data:', {
+      link: contentData.link,
+      linkHref,
+      fullContentData: fullContentData?.link,
+      getURL: _getContentGridItemLink(contentData.sys.id, false)
+    });
     return (
-      <Link href={getHref()} className="group flex flex-col">
+      <Link href={link ?? ''} className="group flex flex-col">
         <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
           <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
             {icon?.url && (
