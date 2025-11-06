@@ -66,7 +66,7 @@ export function useImageLuminance(imageUrl: string | undefined): ImageLuminanceR
 
   return {
     luminance,
-    isLight: luminance !== null ? isImageLight(luminance) : false,
+    isLight: luminance !== null ? isImageLight(luminance, 0.35) : false,
     description: luminance !== null ? getLuminanceDescription(luminance) : 'Unknown',
     isLoading,
     error

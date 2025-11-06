@@ -229,7 +229,7 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
     // Step 3: Enrich itemsCollection components with full data (server-side lazy loading)
     if (service.itemsCollection?.items?.length && service.itemsCollection.items.length > 0) {
       const enrichedItems = await Promise.all(
-        service.itemsCollection.items.map(async (item, index) => {
+        service.itemsCollection.items.map(async (item, _index) => {
           if (!item?.sys?.id || !item.__typename) {
             return item;
           }
@@ -237,7 +237,7 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
           try {
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
             return fullComponent ?? item;
-          } catch (error) {
+          } catch (_error) {
             return item;
           }
         })
@@ -341,7 +341,7 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
     // Step 3: Enrich itemsCollection components with full data (server-side lazy loading)
     if (service.itemsCollection?.items?.length && service.itemsCollection.items.length > 0) {
       const enrichedItems = await Promise.all(
-        service.itemsCollection.items.map(async (item, index) => {
+        service.itemsCollection.items.map(async (item, _index) => {
           if (!item?.sys?.id || !item.__typename) {
             return item;
           }
@@ -349,7 +349,7 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
           try {
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
             return fullComponent ?? item;
-          } catch (error) {
+          } catch (_error) {
             return item;
           }
         })

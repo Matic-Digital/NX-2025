@@ -30,7 +30,6 @@
     }
   },
   "include": [
-    ".eslintrc.cjs",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
@@ -38,5 +37,14 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "coverage", "**/*.js.map", "scripts/**/*", "security-tests/**/*"]
+  "exclude": [
+    "node_modules", 
+    "coverage", 
+    "**/*.js.map", 
+    "scripts/**/*", 
+    "security-tests/**/*",
+    "eslint.config.js",
+    ".eslintrc.cjs",
+    "eslint.security.config.js"
+  ]
 }

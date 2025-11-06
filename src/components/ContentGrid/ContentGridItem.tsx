@@ -527,12 +527,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const LinkItem = () => {
-    console.log('ContentGridItem link data:', {
-      link: contentData.link,
-      linkHref,
-      fullContentData: fullContentData?.link,
-      getURL: _getContentGridItemLink(contentData.sys.id, false)
-    });
     return (
       <Link href={link ?? ''} className="group flex flex-col">
         <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
