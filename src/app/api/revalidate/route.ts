@@ -112,13 +112,20 @@ export async function POST(request: NextRequest) {
     const slug = payload.fields?.slug?.['en-US'];
     const action = payload.sys?.type;
 
-    // Also handle direct API calls with query parameters
+    // Convert camelCase contentType from Contentful to PascalCase for cache tags
+    const normalizeContentType = (type: string | null | undefined): string | undefined => {
+      if (!type) return undefined;
+      // Convert camelCase to PascalCase (e.g., "sectionHeading" -> "SectionHeading")
+      return type.charAt(0).toUpperCase() + type.slice(1);
+    };
+
+    // Determine content type and entry ID from webhook payload or query params
     const queryParams: RevalidationRequest = {
-      contentType: request.nextUrl.searchParams.get('contentType') ?? contentType,
-      slug: request.nextUrl.searchParams.get('slug') ?? slug,
-      entryId: request.nextUrl.searchParams.get('entryId') ?? entryId,
-      action: (request.nextUrl.searchParams.get('action') as 'publish' | 'unpublish' | 'delete') ?? 
-              (action === 'Entry' ? 'publish' : action as 'publish' | 'unpublish' | 'delete')
+      secret: secretFromQuery || secretFromHeader || undefined,
+      contentType: normalizeContentType(contentType) || normalizeContentType(request.nextUrl.searchParams.get('contentType')),
+      slug: slug || request.nextUrl.searchParams.get('slug') || undefined,
+      entryId: entryId || request.nextUrl.searchParams.get('entryId') || undefined,
+      action: (action as RevalidationRequest['action']) || (request.nextUrl.searchParams.get('action') as RevalidationRequest['action'])
     };
 
     const revalidatedPaths: string[] = [];
@@ -288,14 +295,14 @@ function getTagsToRevalidate(contentType?: string, entryId?: string): string[] {
 
   // Cross-component invalidation for nested content
   // When these components change, also invalidate components that reference them
-  // Note: Contentful sends camelCase content type IDs (e.g., "sectionHeading")
+  // Note: Using PascalCase to match normalized contentType from webhook
   const crossComponentInvalidation: Record<string, string[]> = {
-    'sectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
-    'image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
-    'video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
-    'button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
-    'contentGridItem': ['contentType:ContentGrid'],
-    'sliderItem': ['contentType:Slider']
+    'SectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
+    'Image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
+    'ContentGridItem': ['contentType:ContentGrid'],
+    'SliderItem': ['contentType:Slider']
   };
 
   if (contentType && Object.prototype.hasOwnProperty.call(crossComponentInvalidation, contentType)) {
