@@ -923,111 +923,36 @@ export async function POST(
   try {
     const { formId } = await params;
     
+    // Debug logging for form submission
+    console.warn('Form submission received:', {
+      formId,
+      contentType: request.headers.get('content-type'),
+      method: request.method
+    });
+    
     // Validate formId
     if (!formId || !/^[a-zA-Z0-9-_]+$/.test(formId) || formId.length > 100) {
+      console.warn('Form ID validation failed:', formId);
       return NextResponse.json(
         { error: 'Invalid form ID' },
         { status: 400 }
       );
     }
 
-    // T9: Upload endpoint requires proper authentication
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
-    }
-    
-    const token = authHeader.substring(7);
-    const authResult = validateBearerToken(token);
-    
-    if (!authResult.valid) {
-      return NextResponse.json(
-        { error: 'Invalid authentication token' },
-        { status: 401 }
-      );
-    }
-
-    // Check for file upload attempts and validate them
+    // Get content type for processing
     const contentType = request.headers.get('content-type');
+    // Check for file uploads and reject them (not supported)
     if (contentType?.includes('multipart/form-data')) {
       const formData = await request.formData();
       
-      // Check for any file uploads and validate extensions
+      // Check for any file uploads
       for (const [_key, value] of formData.entries()) {
         if (value instanceof File) {
-          // Define dangerous file extensions
-          const dangerousExtensions = [
-            '.php', '.php3', '.php4', '.php5', '.phtml',
-            '.exe', '.bat', '.cmd', '.com', '.scr', '.msi',
-            '.sh', '.bash', '.zsh', '.csh', '.ksh',
-            '.js', '.vbs', '.ps1', '.jar'
-          ];
-          
-          // Get file extension
-          const fileName = value.name.toLowerCase();
-          const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-          
-          // Check for dangerous extensions
-          if (dangerousExtensions.some(ext => fileName.endsWith(ext))) {
-            return NextResponse.json(
-              { error: `File type '${fileExtension}' is not allowed for security reasons` },
-              { status: 403 }
-            );
-          }
-          
-          // Check for double extensions (e.g., .php.jpg)
-          const extensionPattern = /\.(php|exe|sh|bat|cmd|js|vbs|ps1)\.[\w]+$/i;
-          if (extensionPattern.test(fileName)) {
-            return NextResponse.json(
-              { error: 'Files with double extensions are not allowed' },
-              { status: 403 }
-            );
-          }
-          
-          // Check file size limits
-          if (value.size > 5 * 1024 * 1024) { // 5MB
-            return NextResponse.json(
-              { error: 'File size exceeds maximum limit of 5MB' },
-              { status: 413 }
-            );
-          }
-          
-          // Check for empty files
-          if (value.size === 0) {
-            return NextResponse.json(
-              { error: 'Empty files are not allowed' },
-              { status: 400 }
-            );
-          }
-          
-          // Check for problematic filenames
-          // JUSTIFICATION: Intentionally checking for control characters in filenames for security
-          const problematicChars = /[<>:"|?*\x00-\x1f]/; // eslint-disable-line no-control-regex
-          if (problematicChars.test(fileName) || fileName.includes('..')) {
-            return NextResponse.json(
-              { error: 'Invalid filename contains prohibited characters' },
-              { status: 400 }
-            );
-          }
-          
-          // After all validation, reject file uploads since functionality is not implemented
           return NextResponse.json(
-            { error: 'File uploads are not supported in this system' },
+            { error: 'File uploads are not supported' },
             { status: 415 }
           );
         }
-      }
-      
-      // Check for oversized payloads
-      const contentLength = request.headers.get('content-length');
-      if (contentLength && parseInt(contentLength) > 1024 * 1024) { // 1MB limit
-        return NextResponse.json(
-          { error: 'Request payload too large' },
-          { status: 413 }
-        );
       }
     }
 
@@ -1042,7 +967,10 @@ export async function POST(
       } else {
         formData = await request.json() as Record<string, unknown>;
       }
-    } catch {
+      
+      console.warn('Form data parsed successfully:', Object.keys(formData));
+    } catch (error) {
+      console.warn('Form data parsing failed:', error);
       return NextResponse.json(
         { error: 'Invalid request format' },
         { status: 400 }
@@ -1065,8 +993,9 @@ export async function POST(
       formId
     });
 
-  } catch {
-    // Don't expose internal error details
+  } catch (error) {
+    // Log error for debugging but don't expose internal details
+    console.error('Form submission error:', error);
     return NextResponse.json(
       { error: 'Form submission failed' },
       { status: 500 }
