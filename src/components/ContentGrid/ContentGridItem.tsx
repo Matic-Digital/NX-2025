@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
 
-import { staticRoutingService } from '@/lib/static-routing';
+// import { staticRoutingService } from '@/lib/static-routing'; // Unused import
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ interface ContentGridItemProps extends ContentGridItemType {
 
 export function ContentGridItem(props: ContentGridItemProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
-  const [linkHref, setLinkHref] = useState<string>('#');
+  const [linkHref, _setLinkHref] = useState<string>('#');
   const [fullContentData, setFullContentData] = useState<ContentGridItemType | null>(null);
 
   // Use full content data if available, otherwise fall back to props
@@ -69,7 +69,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         const contentResponse = await fetch(`/api/components/ContentGrid/${sys.id}`);
         if (contentResponse.ok) {
           const responseData = await contentResponse.json();
-          console.log('ContentGridItem client-side fetch (fallback):', responseData.contentGridItem);
+          console.warn('ContentGridItem client-side fetch (fallback):', responseData.contentGridItem);
           setFullContentData(responseData.contentGridItem);
         }
       } catch (error) {

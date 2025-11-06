@@ -688,8 +688,8 @@ async function getHubSpotV3FormData(formId: string): Promise<HubSpotV3FormData> 
   const apiKey = process.env.HUBSPOT_API_KEY;
   
   // Debug logging
-  console.log('HubSpot API Key exists:', !!apiKey);
-  console.log('HubSpot API Key length:', apiKey?.length || 0);
+  console.warn('HubSpot API Key exists:', !!apiKey);
+  console.warn('HubSpot API Key length:', apiKey?.length || 0);
   
   if (!apiKey) {
     console.error('HubSpot API key not found in environment variables');
@@ -735,12 +735,17 @@ export async function GET(
   try {
     const { formId } = await params;
     
-    // Debug environment variables
-    console.log('=== VERCEL DEBUG ===');
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
-    console.log('All env keys:', Object.keys(process.env).filter(key => key.includes('HUBSPOT')));
-    console.log('==================');
+    // Debug environment variables - this should show up in Vercel logs
+    console.warn('=== VERCEL DEBUG START ===');
+    console.warn('FormId received:', formId);
+    console.warn('NODE_ENV:', process.env.NODE_ENV);
+    console.warn('VERCEL_ENV:', process.env.VERCEL_ENV);
+    console.warn('HUBSPOT_API_KEY exists:', !!process.env.HUBSPOT_API_KEY);
+    console.warn('HUBSPOT_API_KEY length:', process.env.HUBSPOT_API_KEY?.length || 0);
+    console.warn('All HUBSPOT env keys:', Object.keys(process.env).filter(key => key.includes('HUBSPOT')));
+    console.warn('=== VERCEL DEBUG END ===');
+    
+    // Debug info logged above - continuing with normal flow
     
     // Enhanced input validation
     if (!formId) {
@@ -830,7 +835,7 @@ export async function GET(
       formData,
       steps,
       metadata: {
-        totalFields: formData.fieldGroups.reduce((total, group) => total + group.fields.length, 0) + 
+        totalFields: formData.fieldGroups.reduce((total: number, group: HubSpotV3FormFieldGroup) => total + group.fields.length, 0) + 
                     createLegalConsentFields(formData.legalConsentOptions).length,
         totalFieldGroups: formData.fieldGroups.length,
         totalSteps: steps.length,
