@@ -215,7 +215,7 @@ export async function getSliderById(id: string, preview = false): Promise<Slider
               // For other types, return minimal structure
               return item;
           }
-        } catch (error) {
+        } catch (_error) {
           return item; // Return original item if enrichment fails
         }
       });

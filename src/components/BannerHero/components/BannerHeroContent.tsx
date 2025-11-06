@@ -44,9 +44,14 @@ export const BannerHeroContent = ({
         </div>
       )}
 
-      {/* Gradient Overlay for Light Images */}
+      {/* Gradient Overlays for Light Images */}
       {isImageLight && (
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+        <>
+          {/* Bottom to top gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+          {/* Top to bottom gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none" />
+        </>
       )}
 
       {/* Content Overlay */}

@@ -12,7 +12,6 @@ import Image from 'next/image';
 // Utils
 import { cn } from '@/lib/utils';
 
-import { SvgIcon } from '@/components/ui/svg-icon';
 
 // Components
 import { Box } from '@/components/global/matic-ds';
@@ -307,7 +306,7 @@ export function SectionHeading(props: SectionHeadingProps) {
           {...inspectorProps({ fieldId: 'icon' })}
         >
           <Image
-            src={sectionHeading.icon.url}
+            src={sectionHeading.icon?.url || ''}
             alt={sectionHeading.title ?? ''}
             width={96}
             height={96}

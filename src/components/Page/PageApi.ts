@@ -253,6 +253,7 @@ export async function getPageBySlug(
                 const { getCollectionIdsFromContentGrid } = await import('@/components/ContentGrid/ContentGridApi');
                 collectionIds = await getCollectionIdsFromContentGrid(item.sys.id);
               } catch {
+                // Ignore errors when fetching collection IDs
               }
             }
             

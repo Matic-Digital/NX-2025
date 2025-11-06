@@ -28,7 +28,7 @@ export function Social({ social }: SocialProps) {
         style={{ width: '24px', height: '24px' }}
       >
         <SvgIcon
-          src={social.icon.url}
+          src={social.icon?.url || ''}
           alt={social.title}
           width={24}
           height={24}
