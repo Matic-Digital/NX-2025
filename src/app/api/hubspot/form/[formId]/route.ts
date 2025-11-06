@@ -735,6 +735,13 @@ export async function GET(
   try {
     const { formId } = await params;
     
+    // Debug environment variables
+    console.log('=== VERCEL DEBUG ===');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('VERCEL_ENV:', process.env.VERCEL_ENV);
+    console.log('All env keys:', Object.keys(process.env).filter(key => key.includes('HUBSPOT')));
+    console.log('==================');
+    
     // Enhanced input validation
     if (!formId) {
       return NextResponse.json(
