@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES, MARKS } from '@contentful/rich-text-types';
 import Image from 'next/image';
@@ -9,6 +10,31 @@ import { Container } from '@/components/global/matic-ds';
 
 import type { RichContent as RichContentType } from '@/components/RichContent/RichContentSchema';
 import type { Block, Document, Inline } from '@contentful/rich-text-types';
+
+// Helper function to safely render React children
+const safeRenderChildren = (children: React.ReactNode): React.ReactNode => {
+  if (children === null || children === undefined) {
+    return null;
+  }
+  
+  // If it's already a valid React element or string/number, return as is
+  if (typeof children === 'string' || typeof children === 'number') {
+    return children;
+  }
+  
+  // Handle arrays by ensuring each child has a key
+  if (Array.isArray(children)) {
+    return children.map((child, index) => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child, { key: child.key || index });
+      }
+      return child;
+    });
+  }
+  
+  // For React elements or other objects, wrap in fragment to ensure safe rendering
+  return <>{children}</>;
+};
 
 // Type definitions for Contentful rich text nodes
 interface ContentfulNode {
@@ -178,12 +204,12 @@ const extractTocItems = (document: Document): TocItem[] => {
 const renderOptions = {
   renderMark: {
     [MARKS.BOLD]: (text: React.ReactNode) => (
-      <strong className="line-clamp-2 font-semibold">{text}</strong>
+      <strong className="line-clamp-2 font-semibold">{safeRenderChildren(text)}</strong>
     ),
-    [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic">{text}</em>,
-    [MARKS.UNDERLINE]: (text: React.ReactNode) => <u className="underline">{text}</u>,
+    [MARKS.ITALIC]: (text: React.ReactNode) => <em className="italic">{safeRenderChildren(text)}</em>,
+    [MARKS.UNDERLINE]: (text: React.ReactNode) => <u className="underline">{safeRenderChildren(text)}</u>,
     [MARKS.CODE]: (text: React.ReactNode) => (
-      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">{text}</code>
+      <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm">{safeRenderChildren(text)}</code>
     )
   },
   renderNode: {
@@ -197,7 +223,7 @@ const renderOptions = {
           <span
             className={`text-secondary text-[1rem] leading-[160%] font-normal whitespace-pre-line ${paddingClass}`}
           >
-            {children}
+            {safeRenderChildren(children)}
           </span>
         );
       }
@@ -207,7 +233,7 @@ const renderOptions = {
         <p
           className="text-secondary my-[1.75rem] text-[1rem] leading-[160%] font-normal whitespace-pre-line"
         >
-          {children}
+          {safeRenderChildren(children)}
         </p>
       );
     },
@@ -220,7 +246,7 @@ const renderOptions = {
           id={id}
           className="mt-[2.5rem] scroll-mt-4 text-[1.5rem] leading-[120%] font-normal md:text-[2.25rem]"
         >
-          {children}
+          {safeRenderChildren(children)}
         </h2>
       );
     },
@@ -232,7 +258,7 @@ const renderOptions = {
           id={id}
           className="mt-[2.5rem] scroll-mt-4 pl-[2rem] text-[1.25rem] leading-[160%] font-normal md:text-[1.75rem]"
         >
-          {children}
+          {safeRenderChildren(children)}
         </h3>
       );
     },
@@ -244,28 +270,28 @@ const renderOptions = {
           id={id}
           className="mt-[1.25rem] scroll-mt-4 pl-[4rem] text-[1rem] leading-[160%] font-normal md:text-[1.55rem]"
         >
-          {children}
+          {safeRenderChildren(children)}
         </h4>
       );
     },
     [BLOCKS.HEADING_5]: (node: Block | Inline, children: React.ReactNode) => {
       return (
         <h5 className="mt-[1rem] scroll-mt-4 pl-[6rem] text-[1.125rem] leading-[160%] font-normal">
-          {children}
+          {safeRenderChildren(children)}
         </h5>
       );
     },
     [BLOCKS.HEADING_6]: (node: Block | Inline, children: React.ReactNode) => {
       return (
         <h6 className="mt-[1rem] scroll-mt-4 pl-[8rem] text-[1rem] leading-[160%] font-normal">
-          {children}
+          {safeRenderChildren(children)}
         </h6>
       );
     },
     [BLOCKS.UL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
       const contentfulNode = node as ContentfulNode;
       const paddingClass = contentfulNode.data?.paddingClass ?? '';
-      return <ul className={`ml-6 list-disc ${paddingClass}`}>{children}</ul>;
+      return <ul className={`ml-6 list-disc ${paddingClass}`}>{safeRenderChildren(children)}</ul>;
     },
     [BLOCKS.OL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
       // Check if this ordered list is within an appendix section by looking for parent h2 with "appendix"
@@ -290,7 +316,7 @@ const renderOptions = {
             listStyleType
           }}
         >
-          {children}
+          {safeRenderChildren(children)}
         </ol>
       );
     },
@@ -298,10 +324,10 @@ const renderOptions = {
       // Check if this list item is in an ordered list by checking parent context
       const contentfulNode = node as ContentfulNode;
       const isInOrderedList = contentfulNode.data?.isInOrderedList ?? false;
-      return <li className={isInOrderedList ? 'mb-3' : ''}>{children}</li>;
+      return <li className={isInOrderedList ? 'mb-3' : ''}>{safeRenderChildren(children)}</li>;
     },
     [BLOCKS.QUOTE]: (_node: Block | Inline, children: React.ReactNode) => (
-      <blockquote className="">{children}</blockquote>
+      <blockquote className="">{safeRenderChildren(children)}</blockquote>
     ),
     [BLOCKS.HR]: () => <hr className="" />,
     [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
@@ -396,7 +422,7 @@ const renderOptions = {
           rel="noopener noreferrer"
           className="text-blue-600 underline hover:text-blue-800"
         >
-          {children}
+          {safeRenderChildren(children)}
         </a>
       );
     }
@@ -524,6 +550,12 @@ export function RichContent({
   // All hooks must be at the top level
   const [activeSection, setActiveSection] = useState<string>('');
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  // Ensure component only renders on client to avoid SSR issues
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Memoized values - using content?.json to avoid conditional hooks
   const document = content?.json as Document | undefined;
@@ -616,6 +648,19 @@ export function RichContent({
     return null;
   }
 
+  // Prevent SSR rendering to avoid React child errors
+  if (!isClient) {
+    return (
+      <div className="my-[3rem]">
+        <Container>
+          <div className="flex items-center justify-center p-8">
+            <div className="text-gray-500">Loading content...</div>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
   // Reset appendix context for each render
   currentlyInAppendix = false;
 
@@ -633,7 +678,8 @@ export function RichContent({
         {isLegalVariant && legalContent?.json && (
           <div className="mb-[6rem]">
             <div className="flex flex-col lg:flex-row lg:items-stretch lg:gap-8">
-              {documentToReactComponents(legalContent.json as Document, {
+              <React.Fragment key="legal-content">
+                {documentToReactComponents(legalContent.json as Document, {
                 renderNode: {
                   table: (node: Block | Inline, children: React.ReactNode) => {
                     // Ensure proper table structure by wrapping content in tbody if no thead/tbody exists
@@ -661,31 +707,32 @@ export function RichContent({
                             <col />
                           </colgroup>
                           {hasTableStructure ? (
-                            <>{children}</>
+                            safeRenderChildren(children)
                           ) : (
-                            <tbody className="h-full">{children}</tbody>
+                            <tbody className="h-full">{safeRenderChildren(children)}</tbody>
                           )}
                         </table>
                       </div>
                     );
                   },
                   'table-header-cell': (_node: Block | Inline, children: React.ReactNode) => (
-                    <th className="pr-4 text-left align-top font-semibold">{children}</th>
+                    <th className="pr-4 text-left align-top font-semibold">{safeRenderChildren(children)}</th>
                   ),
                   'table-cell': (_node: Block | Inline, children: React.ReactNode) => (
-                    <td className="pr-4 align-top">{children}</td>
+                    <td className="pr-4 align-top">{safeRenderChildren(children)}</td>
                   ),
                   'table-row': (_node: Block | Inline, children: React.ReactNode) => (
-                    <tr>{children}</tr>
+                    <tr>{safeRenderChildren(children)}</tr>
                   ),
                   'table-head': (_node: Block | Inline, children: React.ReactNode) => (
-                    <thead>{children}</thead>
+                    <thead>{safeRenderChildren(children)}</thead>
                   ),
                   'table-body': (_node: Block | Inline, children: React.ReactNode) => (
-                    <tbody className="h-full">{children}</tbody>
+                    <tbody className="h-full">{safeRenderChildren(children)}</tbody>
                   )
                 }
               })}
+              </React.Fragment>
             </div>
           </div>
         )}
@@ -753,8 +800,11 @@ export function RichContent({
           )}
 
           <div className="rich-text-content flex-1">
-            {processedDocument &&
-              documentToReactComponents(processedDocument as Document, renderOptions)}
+            {processedDocument && (
+              <React.Fragment key="rich-content-main">
+                {documentToReactComponents(processedDocument as Document, renderOptions)}
+              </React.Fragment>
+            )}
           </div>
         </div>
 
