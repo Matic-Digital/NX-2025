@@ -661,7 +661,7 @@ export function RichContent({
                             <col />
                           </colgroup>
                           {hasTableStructure ? (
-                            children
+                            <>{children}</>
                           ) : (
                             <tbody className="h-full">{children}</tbody>
                           )}
