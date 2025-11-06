@@ -418,9 +418,6 @@ export function ContentGridItem(props: ContentGridItemProps) {
   );
 
   const PrimaryHoverSlideUp = () => {
-    // Extract slug from linkHref more reliably
-    const extractedSlug = linkHref.startsWith('/') ? linkHref.slice(1) : linkHref;
-
     // Map ContentGridItem props to Service props
     const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean } = {
       sys: contentData.sys,
@@ -428,13 +425,15 @@ export function ContentGridItem(props: ContentGridItemProps) {
       cardTags: contentData.tags,
       cardButtonText: contentData.ctaCollection?.items?.[0]?.text ?? 'Learn More',
       cardImage: contentData.image,
-      slug: extractedSlug,
+      slug: contentData.ctaCollection?.items?.[0]?.internalLink?.slug ?? '',
       title: contentData.title,
       // Add cardId for active state management
       cardId: contentData.sys?.id,
       // Set first card as active by default
       isFirst: props.index === 0
     };
+
+    console.log('serviceProps', serviceProps);
 
     return <ServiceCard {...serviceProps} />;
   };

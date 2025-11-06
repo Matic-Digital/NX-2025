@@ -12,7 +12,11 @@ import { ErrorBoundary } from '@/components/global/ErrorBoundary';
 import { Box } from '@/components/global/matic-ds/box';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { shouldPreloadImage, ImageContext as _ImageContext } from '@/components/Image/utils/imageOptimization';
+import {
+  ImageContext as _ImageContext,
+  shouldPreloadImage
+} from '@/components/Image/utils/imageOptimization';
+
 // Import removed - using API route instead
 
 import type { Service } from '@/components/Service/ServiceSchema';
@@ -74,7 +78,7 @@ export function ServiceCard(props: ServiceCardProps) {
   }, [isFirstCard, cardId, activeCardId, setActiveCardId]);
 
   const isActive = cardId ? activeCardId === cardId && window.innerWidth >= 768 : false;
-  
+
   // Determine if this image should be prioritized for LCP optimization
   const shouldPrioritize = shouldPreloadImage({
     index,
@@ -159,7 +163,7 @@ export function ServiceCard(props: ServiceCardProps) {
               </Fragment>
             ))}
             <Box direction="col" className="relative z-10 mt-6 pb-[2rem]">
-              <Link href={`/services/${service.slug}`} className="w-full">
+              <Link href={`${service.slug}`} className="w-full">
                 <Button variant="outlineTrasparentWhite" className="w-full">
                   {service.cardButtonText}
                 </Button>
