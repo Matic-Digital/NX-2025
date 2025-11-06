@@ -147,7 +147,7 @@ export function ContentGrid(props: ContentGridProps) {
             <Box className="absolute top-0 left-0 h-full w-full z-0">
               {contentGrid.backgroundAsset ? (
                 <Image
-                  src={contentGrid.backgroundAsset.url}
+                  src={contentGrid.backgroundAsset?.url || ''}
                   alt={
                     contentGrid.backgroundAsset.title ??
                     contentGrid.backgroundAsset.description ??

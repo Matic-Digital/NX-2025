@@ -31,7 +31,7 @@ export function RegionStats(props: RegionStats) {
       <Box direction={{ base: 'col', lg: 'row' }} gap={12}>
         <div className="basis-1/2 flex">
           <AirImage
-            link={image.url}
+            link={image?.url || ''}
             altText={image.description}
             width={image.width}
             height={image.height}

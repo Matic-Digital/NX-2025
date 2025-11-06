@@ -24,7 +24,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
         {icon && (
           <div className="w-fit bg-white p-[0.25rem] flex-shrink-0">
             <Image
-              src={icon.url}
+              src={icon?.url || ''}
               alt={icon.title ?? title}
               width={icon.width ?? 100}
               height={icon.height ?? 100}
@@ -45,7 +45,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
         {icon && (
           <div className="w-fit bg-white p-[0.25rem]">
             <Image
-              src={icon.url}
+              src={icon?.url || ''}
               alt={icon.title ?? title}
               width={icon.width ?? 100}
               height={icon.height ?? 100}

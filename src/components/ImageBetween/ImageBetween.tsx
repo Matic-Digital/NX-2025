@@ -46,7 +46,7 @@ export function ImageBetween(props: ImageBetween) {
           {/* Background Media */}
           {imageBetween.backgroundMedia && (
             <AirImage
-              link={imageBetween.backgroundMedia.url}
+              link={imageBetween.backgroundMedia?.url || ''}
               altText={
                 imageBetween.backgroundMedia.description ?? imageBetween.backgroundMedia.title ?? ''
               }

@@ -95,10 +95,10 @@ const nextConfig = {
       '@radix-ui/react-dropdown-menu',
       '@tanstack/react-query'
     ],
-    // Enable CSS optimization
-    optimizeCss: true,
-    // Enable aggressive CSS code splitting
-    cssChunking: 'strict',
+    // Disable CSS optimization to prevent MIME type issues
+    optimizeCss: false,
+    // Disable CSS chunking completely to prevent MIME type issues
+    cssChunking: false,
     // Enable critical CSS extraction
     optimizeServerReact: true,
   },
