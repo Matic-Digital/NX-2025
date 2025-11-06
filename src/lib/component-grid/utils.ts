@@ -1,6 +1,7 @@
 import type { Accordion as AccordionType } from '@/components/Accordion/AccordionSchema';
 import type { Collection as CollectionType } from '@/components/Collection/CollectionSchema';
 import type { ContactCard as ContactCardType } from '@/components/ContactCard/ContactCardSchema';
+import type { Content as ContentType } from '@/components/Content/ContentSchema';
 import type { ContentGridItem as ContentGridItemType } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { CtaGrid as CtaGridType } from '@/components/CtaGrid/CtaGridSchema';
 import type { Event as EventType } from '@/components/Event/EventSchema';
@@ -19,6 +20,7 @@ export type ContentGridItemUnion =
   | AirImageType
   | CollectionType
   | ContactCardType
+  | ContentType
   | ContentGridItemType
   | CtaGridType
   | EventType
@@ -43,6 +45,9 @@ export const contentTypeDetectors = {
 
   isCollection: (item: ContentGridItemUnion): item is CollectionType =>
     item?.__typename === 'Collection',
+
+  isContent: (item: ContentGridItemUnion): item is ContentType =>
+    item?.__typename === 'Content',
 
   isContentGridItem: (item: ContentGridItemUnion): item is ContentGridItemType =>
     item?.__typename === 'ContentGridItem',

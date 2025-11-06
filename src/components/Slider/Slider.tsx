@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, memo } from 'react';
+import { useEffect, useState, useCallback, memo, useRef } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -898,7 +898,7 @@ function SliderComponent(props: SliderSys | Slider) {
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [autoplayTimer, setAutoplayTimer] = useState<NodeJS.Timeout | null>(null);
+  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
@@ -937,8 +937,8 @@ function SliderComponent(props: SliderSys | Slider) {
     if (!hasMultipleSlides) return;
 
     // Clear existing timer
-    if (autoplayTimer) {
-      clearTimeout(autoplayTimer);
+    if (autoplayTimerRef.current) {
+      clearTimeout(autoplayTimerRef.current);
     }
 
     // Use delay from schema, default to 5000ms if not specified
@@ -969,16 +969,16 @@ function SliderComponent(props: SliderSys | Slider) {
       }
     }, delay);
 
-    setAutoplayTimer(timer);
-  }, [api, slider, isInView, autoplayTimer, isClient]);
+    autoplayTimerRef.current = timer;
+  }, [api, slider, isInView, isClient]);
 
   // Function to stop autoplay timer
   const stopAutoplayTimer = useCallback(() => {
-    if (autoplayTimer) {
-      clearTimeout(autoplayTimer);
-      setAutoplayTimer(null);
+    if (autoplayTimerRef.current) {
+      clearTimeout(autoplayTimerRef.current);
+      autoplayTimerRef.current = null;
     }
-  }, [autoplayTimer]);
+  }, []);
 
   // Function to reset autoplay timer (for user interactions)
   const resetAutoplayTimer = useCallback(() => {
@@ -1039,7 +1039,10 @@ function SliderComponent(props: SliderSys | Slider) {
 
     // Cleanup on unmount
     return () => {
-      stopAutoplayTimer();
+      if (autoplayTimerRef.current) {
+        clearTimeout(autoplayTimerRef.current);
+        autoplayTimerRef.current = null;
+      }
     };
   }, [isInView, startAutoplayTimer, stopAutoplayTimer]);
 
@@ -1139,7 +1142,6 @@ function SliderComponent(props: SliderSys | Slider) {
         showAltIndicators={
           !hasOnlyOneItem &&
           (isSliderItemSlider ||
-            isTimelineSliderItemSlider ||
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||
