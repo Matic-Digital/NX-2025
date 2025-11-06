@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getMenuItemById } from '@/components/MenuItem/MenuItemApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching MenuItem data by ID
@@ -22,8 +24,23 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('MenuItem', { id });
+
+    // Create cached function with proper tags
+    const getCachedMenuItem = unstable_cache(
+      async (menuItemId: string, isPreview: boolean) => {
+        return await getMenuItemById(menuItemId, isPreview);
+      },
+      [`menuitem-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
     // Fetch menu item data using server-side API
-    const menuItem = await getMenuItemById(id, preview);
+    const menuItem = await getCachedMenuItem(id, preview);
 
     if (!menuItem) {
       return NextResponse.json({ error: 'MenuItem not found' }, { status: 404 });

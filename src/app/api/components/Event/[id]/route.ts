@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getEventById } from '@/components/Event/EventApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching Event by ID with enrichment
@@ -14,7 +16,22 @@ export async function GET(
     const preview = searchParams.get('preview') === 'true';
     const resolvedParams = await params;
 
-    const event = await getEventById(resolvedParams.id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('Event', { id: resolvedParams.id });
+
+    // Create cached function with proper tags
+    const getCachedEvent = unstable_cache(
+      async (eventId: string, isPreview: boolean) => {
+        return await getEventById(eventId, isPreview);
+      },
+      [`event-${resolvedParams.id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const event = await getCachedEvent(resolvedParams.id, preview);
 
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });

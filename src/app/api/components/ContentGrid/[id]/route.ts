@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getContentGridItemById } from '@/components/ContentGrid/ContentGridApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching ContentGridItem data by ID
@@ -19,7 +21,22 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    const contentGridItem = await getContentGridItemById(id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('ContentGrid', { id });
+
+    // Create cached function with proper tags
+    const getCachedContentGridItem = unstable_cache(
+      async (contentGridId: string, isPreview: boolean) => {
+        return await getContentGridItemById(contentGridId, isPreview);
+      },
+      [`contentgrid-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const contentGridItem = await getCachedContentGridItem(id, preview);
 
     if (!contentGridItem) {
       return NextResponse.json({ error: 'ContentGridItem not found' }, { status: 404 });
