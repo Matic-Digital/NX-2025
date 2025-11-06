@@ -274,6 +274,21 @@ function getTagsToRevalidate(contentType?: string, entryId?: string): string[] {
     tags.push('global-layout');
   }
 
+  // Cross-component invalidation for nested content
+  // When these components change, also invalidate components that reference them
+  const crossComponentInvalidation: Record<string, string[]> = {
+    'SectionHeading': ['contentType:BannerHero', 'contentType:ContentGrid'],
+    'Image': ['contentType:BannerHero', 'contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Video': ['contentType:ImageBetween', 'contentType:ContentGrid'],
+    'Button': ['contentType:BannerHero', 'contentType:CtaBanner', 'contentType:ContentGrid'],
+    'ContentGridItem': ['contentType:ContentGrid'],
+    'SliderItem': ['contentType:Slider']
+  };
+
+  if (contentType && crossComponentInvalidation[contentType]) {
+    tags.push(...crossComponentInvalidation[contentType]);
+  }
+
   return tags;
 }
 
