@@ -79,22 +79,26 @@ export function CtaBanner(props: CtaBanner) {
     <ErrorBoundary>
       <Section className="relative w-full overflow-hidden ">
         {/* Background gradient image */}
-        <AirImage
-          link={ctaBanner.backgroundMedia?.link}
-          altText={ctaBanner.backgroundMedia?.altText}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        {ctaBanner.backgroundMedia?.link && (
+          <AirImage
+            link={ctaBanner.backgroundMedia.link}
+            altText={ctaBanner.backgroundMedia?.altText || ''}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
 
         {/* Background image with fade effect */}
-        <div className="absolute inset-0 z-10 [mask-image:linear-gradient(to_right,black_20%,transparent_70%)] [-webkit-mask-image:linear-gradient(to_right,black_20%,transparent_70%)]">
-          <Image
-            src={ctaBanner.backgroundImage?.url || ''}
-            alt={ctaBanner.backgroundImage?.description || ''}
-            fill
-            className="object-cover brightness-0 invert"
-            loading="lazy"
-          />
-        </div>
+        {ctaBanner.backgroundImage?.url && (
+          <div className="absolute inset-0 z-10 [mask-image:linear-gradient(to_right,black_20%,transparent_70%)] [-webkit-mask-image:linear-gradient(to_right,black_20%,transparent_70%)]">
+            <Image
+              src={ctaBanner.backgroundImage.url}
+              alt={ctaBanner.backgroundImage?.description || ''}
+              fill
+              className="object-cover brightness-0 invert"
+              loading="lazy"
+            />
+          </div>
+        )}
 
         <Container className="relative z-20 min-h-[335px] py-[11.75rem] md:py-0">
           <Box cols={{ base: 1, md: 4, lg: 5 }} className="h-[335px] items-center">

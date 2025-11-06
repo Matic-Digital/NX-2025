@@ -95,10 +95,10 @@ const nextConfig = {
       '@radix-ui/react-dropdown-menu',
       '@tanstack/react-query'
     ],
-    // Disable CSS optimization to prevent MIME type issues
-    optimizeCss: false,
-    // Disable CSS chunking completely to prevent MIME type issues
-    cssChunking: false,
+    // Enable CSS optimization
+    optimizeCss: true,
+    // Enable CSS chunking
+    cssChunking: 'strict',
     // Enable critical CSS extraction
     optimizeServerReact: true,
   },
@@ -231,35 +231,35 @@ const nextConfig = {
             reuseExistingChunk: true,
             enforce: true
           },
-          // Disable CSS splitting to prevent MIME type issues
-          // criticalStyles: {
-          //   name: 'critical-styles',
-          //   test: /\.(css|scss|sass)$/,
-          //   chunks: 'initial',
-          //   priority: 20,
-          //   enforce: true,
-          //   reuseExistingChunk: true,
-          //   // Only include critical CSS in initial chunk
-          //   minSize: 0,
-          //   maxSize: 20000 // Reduced to 20KB for faster critical CSS loading
-          // },
-          // asyncStyles: {
-          //   name: 'async-styles',
-          //   test: /\.(css|scss|sass)$/,
-          //   chunks: 'async',
-          //   priority: 5,
-          //   enforce: true,
-          //   reuseExistingChunk: true
-          // },
+          // Split CSS into critical and non-critical chunks
+          criticalStyles: {
+            name: 'critical-styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'initial',
+            priority: 20,
+            enforce: true,
+            reuseExistingChunk: true,
+            // Only include critical CSS in initial chunk
+            minSize: 0,
+            maxSize: 20000 // Reduced to 20KB for faster critical CSS loading
+          },
+          asyncStyles: {
+            name: 'async-styles',
+            test: /\.(css|scss|sass)$/,
+            chunks: 'async',
+            priority: 5,
+            enforce: true,
+            reuseExistingChunk: true
+          },
           // Split Tailwind CSS separately for better caching
-          // tailwindStyles: {
-          //   name: 'tailwind-styles',
-          //   test: /node_modules\/(tailwindcss|@tailwindcss)/,
-          //   chunks: 'all',
-          //   priority: 25,
-          //   enforce: true,
-          //   reuseExistingChunk: true
-          // }
+          tailwindStyles: {
+            name: 'tailwind-styles',
+            test: /node_modules\/(tailwindcss|@tailwindcss)/,
+            chunks: 'all',
+            priority: 25,
+            enforce: true,
+            reuseExistingChunk: true
+          }
         }
       };
 
