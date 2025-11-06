@@ -59,7 +59,7 @@ export type BoxProps = {
         xl?: number;
         '2xl'?: number;
       };
-};
+} & React.HTMLAttributes<HTMLDivElement>;
 
 export type ContainerProps = {
   children: React.ReactNode;

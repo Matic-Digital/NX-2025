@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -49,44 +49,44 @@ export function SearchCard(props: SearchCardProps) {
   const [loading, setLoading] = useState(!props.title);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchItemData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const fetchFunctions = {
+        Page: () => getPageById(props.sys.id),
+        PageList: () => getPageListById(props.sys.id),
+        Post: () => getPostById(props.sys.id),
+        Product: () => getProductById(props.sys.id),
+        Solution: () => getSolutionById(props.sys.id),
+        Service: () => getServiceById(props.sys.id)
+      };
+
+      const fetchFunction = fetchFunctions[props.contentType];
+      if (fetchFunction) {
+        const data = await fetchFunction();
+        if (data) {
+          setItemData(data);
+        } else {
+          setError(`${props.contentType} not found`);
+        }
+      } else {
+        setError(`Unknown content type: ${props.contentType}`);
+      }
+    } catch {
+      setError(`Failed to load ${props.contentType}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [props.sys.id, props.contentType]);
+
   useEffect(() => {
     // Only fetch if we don't have the required data
     if (!props.title) {
-      async function fetchItemData() {
-        try {
-          setLoading(true);
-          setError(null);
-
-          const fetchFunctions = {
-            Page: () => getPageById(props.sys.id),
-            PageList: () => getPageListById(props.sys.id),
-            Post: () => getPostById(props.sys.id),
-            Product: () => getProductById(props.sys.id),
-            Solution: () => getSolutionById(props.sys.id),
-            Service: () => getServiceById(props.sys.id)
-          };
-
-          const fetchFunction = fetchFunctions[props.contentType];
-          if (fetchFunction) {
-            const data = await fetchFunction();
-            if (data) {
-              setItemData(data);
-            } else {
-              setError(`${props.contentType} not found`);
-            }
-          } else {
-            setError(`Unknown content type: ${props.contentType}`);
-          }
-        } catch {
-          setError(`Failed to load ${props.contentType}`);
-        } finally {
-          setLoading(false);
-        }
-      }
-
       void fetchItemData();
     }
-  }, [props.sys.id, props.title, props.contentType]);
+  }, [props.title, fetchItemData]);
 
   // Use provided props data if available, otherwise use fetched data
   const item = useContentfulLiveUpdates(

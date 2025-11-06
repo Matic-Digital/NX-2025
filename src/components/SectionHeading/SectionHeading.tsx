@@ -12,7 +12,6 @@ import Image from 'next/image';
 // Utils
 import { cn } from '@/lib/utils';
 
-import { SvgIcon } from '@/components/ui/svg-icon';
 
 // Components
 import { Box } from '@/components/global/matic-ds';

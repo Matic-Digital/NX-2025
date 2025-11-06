@@ -19,9 +19,9 @@ export async function GET(
     }
 
     // Debug environment variables
-    const hasSpaceId = !!process.env.CONTENTFUL_SPACE_ID;
-    const hasAccessToken = !!process.env.CONTENTFUL_ACCESS_TOKEN;
-    const hasPreviewToken = !!process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
+    const _hasSpaceId = !!process.env.CONTENTFUL_SPACE_ID;
+    const _hasAccessToken = !!process.env.CONTENTFUL_ACCESS_TOKEN;
+    const _hasPreviewToken = !!process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN;
     
     // Get preview mode from query params
     const { searchParams } = new URL(request.url);

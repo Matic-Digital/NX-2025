@@ -261,6 +261,7 @@ const SliderCard = ({
         direction="col"
         gap={6}
         className="group/card cursor-pointer transition-all duration-300 hover:!opacity-100"
+        onClick={() => onTeamMemberClick?.(teamMember)}
       >
         <div className="relative aspect-square w-full overflow-hidden">
           <AirImage
@@ -271,12 +272,9 @@ const SliderCard = ({
           {/* Dark overlay that shows on non-hovered cards when any card is hovered */}
           <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover/card:!opacity-0" />
           {/* Orange plus icon that shows on hover */}
-          <button
-            onClick={() => onTeamMemberClick?.(teamMember)}
-            className="bg-background hover:bg-primary/90 group-hover/card:bg-primary absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-100 transition-all duration-300"
-          >
+          <div className="bg-background hover:bg-primary/90 group-hover/card:bg-primary absolute right-0 bottom-0 flex size-10 items-center justify-center opacity-100 transition-all duration-300">
             <Plus className="text-text-on-background group-hover/card:text-text-on-primary size-6" />
-          </button>
+          </div>
         </div>
         <div className="mt-4">
           <h3

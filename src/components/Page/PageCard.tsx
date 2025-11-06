@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -32,26 +32,26 @@ export function PageCard(props: PageCardProps) {
   const isFeaturedVariant = props.variant === 'featured';
   const isSearchVariant = props.variant === 'search';
 
+  const fetchPageData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getPageById(props.sys.id);
+      if (data) {
+        setPageData(data);
+      }
+    } catch (error) {
+      console.warn('Error in catch block:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [props.sys.id]);
+
   useEffect(() => {
     // Only fetch if we don't have the required data
     if (!props.title) {
-      async function fetchPageData() {
-        try {
-          setLoading(true);
-          const data = await getPageById(props.sys.id);
-          if (data) {
-            setPageData(data);
-          }
-        } catch (error) {
-        console.warn('Error in catch block:', error);
-      } finally {
-          setLoading(false);
-        }
-      }
-
       void fetchPageData();
     }
-  }, [props.sys.id, props.title]);
+  }, [props.title, fetchPageData]);
 
   // Use provided props data if available, otherwise use fetched data
   const page = useContentfulLiveUpdates(pageData ?? (props as Page));

@@ -43,7 +43,8 @@ export const Box = ({
   wrap = false,
   gap = 0,
   cols,
-  rows
+  rows,
+  ...htmlProps
 }: BoxProps) => {
   const directionClasses = {
     row: 'flex-row',
@@ -125,5 +126,5 @@ export const Box = ({
     className
   );
 
-  return <div className={stackClasses}>{children}</div>;
+  return <div className={stackClasses} {...htmlProps}>{children}</div>;
 };
