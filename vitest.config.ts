@@ -25,7 +25,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         // Config files in root folder
         '**/next.config.js',
-        '**/.eslintrc.cjs',
+        '**/.eslintrc.mjs',
         '**/postcss.config.js',
         '**/tailwind.config.ts',
         '**/prettier.config.js',

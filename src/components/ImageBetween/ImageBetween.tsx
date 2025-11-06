@@ -46,12 +46,12 @@ export function ImageBetween(props: ImageBetween) {
           {/* Background Media */}
           {imageBetween.backgroundMedia && (
             <AirImage
-              link={imageBetween.backgroundMedia.url}
+              link={imageBetween.backgroundMedia?.url || ''}
               altText={
-                imageBetween.backgroundMedia.description ?? imageBetween.backgroundMedia.title ?? ''
+                imageBetween.backgroundMedia?.description ?? imageBetween.backgroundMedia?.title ?? ''
               }
-              width={imageBetween.backgroundMedia.width}
-              height={imageBetween.backgroundMedia.height}
+              width={imageBetween.backgroundMedia?.width}
+              height={imageBetween.backgroundMedia?.height}
               className="absolute inset-0 h-full w-full"
             />
           )}
