@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { SYS_FIELDS } from '@/lib/contentful-api/graphql-fields';
 import { ContentfulError, NetworkError } from '@/lib/errors';
 
@@ -286,6 +287,9 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
  */
 export async function getServiceBySlug(slug: string, preview = false): Promise<Service | null> {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('Service', { slug, id: undefined });
+    
     const response = await fetchGraphQL<Service>(
       `query GetServiceBySlug($slug: String!, $preview: Boolean!) {
         serviceCollection(where: { slug: $slug }, limit: 1, preview: $preview) {
@@ -295,7 +299,8 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
         }
       }`,
       { slug, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     // Check for valid response

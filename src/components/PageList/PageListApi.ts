@@ -1,4 +1,5 @@
 import { fetchGraphQL } from '@/lib/api';
+import { getCacheConfig } from '@/lib/cache-tags';
 import { SYS_FIELDS } from '@/lib/contentful-api';
 import {
   getEXTERNAL_PAGE_FIELDS,
@@ -210,6 +211,9 @@ export async function getPageListBySlug(
   preview = false
 ): Promise<PageListWithHeaderFooter | null> {
   try {
+    // Generate cache configuration with proper tags
+    const cacheConfig = getCacheConfig('PageList', { slug, id: undefined });
+    
     // Fetch PageList with minimal pageContentCollection fields (like Page API)
     const response = await fetchGraphQL<PageListBySlugResponse>(
       `query GetPageListBySlug($slug: String!, $preview: Boolean!) {
@@ -328,7 +332,8 @@ export async function getPageListBySlug(
         }
       }`,
       { slug, preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.pageListCollection?.items?.length) {

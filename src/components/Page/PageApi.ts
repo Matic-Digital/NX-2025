@@ -31,6 +31,7 @@ interface PageWithHeaderFooter extends Page {
  */
 export async function getAllPagesMinimal(preview = false): Promise<PageResponse> {
   try {
+    const cacheConfig = _getCacheConfig('Page', {});
     const response = await fetchGraphQL<Page>(
       `query GetAllPagesMinimal($preview: Boolean!) {
         pageCollection(preview: $preview) {
@@ -54,7 +55,8 @@ export async function getAllPagesMinimal(preview = false): Promise<PageResponse>
         }
       }`,
       { preview },
-      preview
+      preview,
+      cacheConfig
     );
 
     if (!response.data?.pageCollection) {
@@ -129,13 +131,9 @@ export async function getPageBySlug(
   preview = true
 ): Promise<PageWithHeaderFooter | null> {
   try {
-    const cacheConfig = {
-      next: {
-        revalidate: preview ? 0 : 3600,
-        tags: [`page-${slug}`]
-      }
-    };
-
+    // Generate cache configuration with proper tags
+    const cacheConfig = _getCacheConfig('Page', { slug, id: undefined });
+    
     const response = await fetchGraphQL<PageWithRefs>(
       `query GetPageBySlug($slug: String!, $preview: Boolean!) {
         pageCollection(where: { slug: $slug }, limit: 1, preview: $preview) {

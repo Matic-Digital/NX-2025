@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     try {
       // Only parse JSON - no other formats for security
       body = await request.json();
-    } catch (error) {
+    } catch (_error) {
       // If no body or invalid JSON, use empty object but log the attempt
       console.warn('⚠️ Could not parse JSON body, using empty object. This may be a manual trigger.');
       body = {};
