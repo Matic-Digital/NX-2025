@@ -239,6 +239,60 @@ export async function getPageListBySlug(
                 }
               }
             }
+            pagesCollection(limit: 10) {
+              items {
+                __typename
+                ... on Page {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on ExternalPage {
+                  sys {
+                    id
+                  }
+                  title
+                  link
+                }
+                ... on Product {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Service {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Solution {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on Post {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+                ... on PageList {
+                  sys {
+                    id
+                  }
+                  title
+                  slug
+                }
+              }
+            }
             pageContentCollection(limit: 20) {
               items {
                 __typename
