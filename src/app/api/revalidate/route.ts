@@ -35,6 +35,7 @@ interface RevalidationRequest {
 
 export async function POST(request: NextRequest) {
   // Force immediate log to test if logging works at all
+  // eslint-disable-next-line no-console
   console.log('POST /api/revalidate called at:', new Date().toISOString());
   
   try {
@@ -88,9 +89,9 @@ export async function POST(request: NextRequest) {
     try {
       // Only parse JSON - no other formats for security
       body = await request.json();
-    } catch (_error) {
+    } catch (error) {
       // If no body or invalid JSON, use empty object but log the attempt
-      console.warn('Could not parse JSON body, using empty object. This may be a manual trigger.');
+      console.warn('Could not parse JSON body, using empty object. This may be a manual trigger.', error);
       body = {};
     }
     // eslint-disable-next-line no-console
@@ -296,8 +297,11 @@ function getTagsToRevalidate(contentType?: string, entryId?: string): string[] {
     'SliderItem': ['contentType:Slider']
   };
 
-  if (contentType && crossComponentInvalidation[contentType]) {
-    tags.push(...crossComponentInvalidation[contentType]);
+  if (contentType && Object.prototype.hasOwnProperty.call(crossComponentInvalidation, contentType)) {
+    const additionalTags = crossComponentInvalidation[contentType as keyof typeof crossComponentInvalidation];
+    if (additionalTags) {
+      tags.push(...additionalTags);
+    }
   }
 
   return tags;

@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 import { getSectionHeadingById } from '@/components/SectionHeading/SectionHeadingApi';
+import { getCacheConfig } from '@/lib/cache-tags';
 
 /**
  * Server-side API route for fetching SectionHeading data by ID
@@ -19,7 +21,22 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    const sectionHeading = await getSectionHeadingById(id, preview);
+    // Get cache configuration for this content type and ID
+    const cacheConfig = getCacheConfig('SectionHeading', { id });
+
+    // Create cached function with proper tags
+    const getCachedSectionHeading = unstable_cache(
+      async (sectionHeadingId: string, isPreview: boolean) => {
+        return await getSectionHeadingById(sectionHeadingId, isPreview);
+      },
+      [`sectionheading-${id}`],
+      {
+        tags: cacheConfig.next?.tags || [],
+        revalidate: cacheConfig.next?.revalidate || 3600
+      }
+    );
+
+    const sectionHeading = await getCachedSectionHeading(id, preview);
 
     if (!sectionHeading) {
       return NextResponse.json({ error: 'SectionHeading not found' }, { status: 404 });
