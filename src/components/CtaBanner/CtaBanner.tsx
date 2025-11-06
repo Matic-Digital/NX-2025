@@ -89,7 +89,7 @@ export function CtaBanner(props: CtaBanner) {
         <div className="absolute inset-0 z-10 [mask-image:linear-gradient(to_right,black_20%,transparent_70%)] [-webkit-mask-image:linear-gradient(to_right,black_20%,transparent_70%)]">
           <Image
             src={ctaBanner.backgroundImage?.url || ''}
-            alt={ctaBanner.backgroundImage.description}
+            alt={ctaBanner.backgroundImage?.description || ''}
             fill
             className="object-cover brightness-0 invert"
             loading="lazy"

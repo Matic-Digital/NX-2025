@@ -32,9 +32,9 @@ export function RegionStats(props: RegionStats) {
         <div className="basis-1/2 flex">
           <AirImage
             link={image?.url || ''}
-            altText={image.description}
-            width={image.width}
-            height={image.height}
+            altText={image?.description || ''}
+            width={image?.width}
+            height={image?.height}
             className="w-full h-full object-cover"
           />
         </div>
