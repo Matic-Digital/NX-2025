@@ -265,7 +265,7 @@ const renderOptions = {
     [BLOCKS.UL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
       const contentfulNode = node as ContentfulNode;
       const paddingClass = contentfulNode.data?.paddingClass ?? '';
-      return <ul className={`ml-6 list-disc ${paddingClass}`}>{children}</ul>;
+      return <ul className={`ml-6 list-disc ${paddingClass}`}><>{children}</></ul>;
     },
     [BLOCKS.OL_LIST]: (node: Block | Inline, children: React.ReactNode) => {
       // Check if this ordered list is within an appendix section by looking for parent h2 with "appendix"
@@ -290,7 +290,7 @@ const renderOptions = {
             listStyleType
           }}
         >
-          {children}
+          <>{children}</>
         </ol>
       );
     },
@@ -298,10 +298,10 @@ const renderOptions = {
       // Check if this list item is in an ordered list by checking parent context
       const contentfulNode = node as ContentfulNode;
       const isInOrderedList = contentfulNode.data?.isInOrderedList ?? false;
-      return <li className={isInOrderedList ? 'mb-3' : ''}>{children}</li>;
+      return <li className={isInOrderedList ? 'mb-3' : ''}><>{children}</></li>;
     },
     [BLOCKS.QUOTE]: (_node: Block | Inline, children: React.ReactNode) => (
-      <blockquote className="">{children}</blockquote>
+      <blockquote className=""><>{children}</></blockquote>
     ),
     [BLOCKS.HR]: () => <hr className="" />,
     [BLOCKS.EMBEDDED_ASSET]: (node: Block | Inline) => {
