@@ -30,8 +30,8 @@ const nextConfig = {
   // Enable compression
   compress: true,
 
-  // Optimize output
-  output: 'standalone',
+  // Optimize output - disable standalone for better asset handling
+  // output: 'standalone',
 
   // Performance optimizations for faster server response
   poweredByHeader: false, // Remove X-Powered-By header
