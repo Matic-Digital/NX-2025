@@ -510,6 +510,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               fill
               className="object-cover"
               priority={false}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
@@ -584,8 +585,37 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const LinkItem = () => {
+    // Use the same routing logic as other variants
+    const getItemHref = () => {
+      // First priority: ctaCollection with internal/external links
+      if (ctaCollection?.items?.[0]) {
+        const cta = ctaCollection.items[0];
+        if (cta.internalLink?.slug) {
+          const slug = cta.internalLink.slug;
+          return slug.startsWith('/') ? slug : `/${slug}`;
+        }
+        if (cta.externalLink) {
+          return cta.externalLink;
+        }
+      }
+      
+      // Second priority: direct link field (reference object with slug)
+      if (link && typeof link === 'object' && 'slug' in link && link.slug) {
+        const slug = link.slug;
+        return slug.startsWith('/') ? slug : `/${slug}`;
+      }
+      
+      // Third priority: direct link field as string (legacy support)
+      if (link && typeof link === 'string') {
+        return link.startsWith('/') ? link : `/${link}`;
+      }
+      
+      // Fallback
+      return '#';
+    };
+
     return (
-      <Link href={link ?? ''} className="group flex flex-col">
+      <Link href={getItemHref()} className="group flex flex-col">
         <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
           <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
             {icon?.url && (

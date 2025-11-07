@@ -35,7 +35,6 @@ export function TimelineSliderItem(props: TimelineSliderItemType) {
 
   // Check if it's a video and render as image instead
   const isVideo = updatedItem.asset.__typename === 'Video';
-  const isImage = updatedItem.asset.__typename === 'Image';
 
   // For videos, try to use poster image if available, otherwise show placeholder
   if (isVideo) {

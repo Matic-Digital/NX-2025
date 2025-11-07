@@ -83,19 +83,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
         {/* End Google Tag Manager */}
         
+        {/* Preconnect to Google Fonts for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
         {/* Preconnect to Contentful domains for faster loading */}
         <link rel="preconnect" href="https://images.ctfassets.net" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://graphql.contentful.com" />
         <link rel="dns-prefetch" href="https://images.ctfassets.net" />
         <link rel="dns-prefetch" href="https://graphql.contentful.com" />
-        
-        {/* Resource hints for critical assets */}
-        <link rel="preload" as="style" href="/_next/static/css/app/layout.css" />
-        <link rel="preload" as="font" href="/_next/static/media/inter-latin.woff2" type="font/woff2" crossOrigin="anonymous" />
-        
-        {/* Header priority resources */}
-        <link rel="preload" as="image" href="https://images.ctfassets.net/xtmkzygfmy4n/logo" type="image/svg+xml" />
-        <link rel="modulepreload" href="/_next/static/chunks/components_Header_Header.js" />
         
         {/* Critical CSS to prevent header layout shifts */}
         {/* eslint-disable-next-line react/no-danger -- Critical CSS injection required for layout shift prevention */}

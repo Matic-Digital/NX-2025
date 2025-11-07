@@ -237,7 +237,7 @@ export async function getServiceById(id: string, preview = false): Promise<Servi
           try {
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
             return fullComponent ?? item;
-          } catch (_error) {
+          } catch {
             return item;
           }
         })
@@ -349,7 +349,7 @@ export async function getServiceBySlug(slug: string, preview = false): Promise<S
           try {
             const fullComponent = await fetchComponentById(item.sys.id, item.__typename, preview);
             return fullComponent ?? item;
-          } catch (_error) {
+          } catch {
             return item;
           }
         })

@@ -413,7 +413,7 @@ export async function getPageListBySlug(
             default:
               return item;
           }
-        } catch (_error) {
+        } catch {
           return item;
         }
       });
@@ -597,7 +597,7 @@ export async function getPageListById(
             default:
               return item;
           }
-        } catch (_error) {
+        } catch {
           return item;
         }
       });

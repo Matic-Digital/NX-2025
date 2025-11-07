@@ -19,7 +19,13 @@ export const ContentGridItemSchema = z.object({
       items: z.array(ButtonSchema)
     })
     .optional(),
-  link: z.string().optional(),
+  link: z.union([
+    z.string(),
+    z.object({
+      slug: z.string(),
+      __typename: z.string().optional()
+    })
+  ]).optional(),
   description: z.string().optional(),
   icon: AssetSchema.optional(),
   image: ImageSchema.optional(),

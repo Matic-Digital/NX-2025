@@ -899,7 +899,7 @@ export async function GET(
   }
 }
 
-function validateBearerToken(token: string): { valid: boolean; userId?: string; role?: string } {
+function _validateBearerToken(token: string): { valid: boolean; userId?: string; role?: string } {
   const tokenMap = new Map([
     ['fake_user_token', { userId: 'user1', role: 'user' }],
     ['regular_user_token', { userId: 'user2', role: 'user' }],

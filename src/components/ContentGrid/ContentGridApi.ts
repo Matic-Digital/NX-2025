@@ -13,7 +13,7 @@ import { SLIDER_MINIMAL_FIELDS, getSliderById } from '@/components/Slider/Slider
 import type { ContentGridItem } from '@/components/ContentGrid/ContentGridItemSchema';
 import type { ContentGrid, ContentGridResponse } from '@/components/ContentGrid/ContentGridSchema';
 
-// ContentGridItem fields - minimal for initial load (no link field)
+// ContentGridItem fields - includes link field for Link variant
 export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   ${SYS_FIELDS}
   title
@@ -49,6 +49,9 @@ export const CONTENTGRIDITEM_GRAPHQL_FIELDS = `
   }
   image {
     ${IMAGE_GRAPHQL_FIELDS}
+  }
+  link {
+    ${INTERNAL_LINK_FIELDS}
   }
   variant
 `;

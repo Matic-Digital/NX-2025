@@ -1,19 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('=== DEBUG FORM TEST ===');
-    console.log('Headers:', Object.fromEntries(request.headers.entries()));
+    console.warn('=== DEBUG FORM TEST ===');
+    console.warn('Headers:', Object.fromEntries(request.headers.entries()));
     
     const body = await request.text();
-    console.log('Raw body:', body);
+    console.warn('Raw body:', body);
     
     let parsedBody;
     try {
       parsedBody = JSON.parse(body);
-      console.log('Parsed body:', parsedBody);
+      console.warn('Parsed body:', parsedBody);
     } catch (e) {
-      console.log('JSON parse error:', e);
+      console.warn('JSON parse error:', e);
     }
     
     return NextResponse.json({
