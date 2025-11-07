@@ -33,12 +33,87 @@ export function TimelineSliderItem(props: TimelineSliderItemType) {
     asset: updatedItem.asset
   });
 
-  // Force all assets to be treated as images for timeline slider
+  // Check if it's a video and render as image instead
+  const isVideo = updatedItem.asset.__typename === 'Video';
+  const isImage = updatedItem.asset.__typename === 'Image';
+
+  // For videos, try to use poster image if available, otherwise show placeholder
+  if (isVideo) {
+    const videoAsset = updatedItem.asset as any;
+    const posterImage = videoAsset.posterImage;
+    
+    if (posterImage?.link) {
+      console.warn('Using poster image for video:', posterImage);
+      return (
+        <div {...inspectorProps} className="relative h-[669px] bg-white pb-32 lg:pb-16">
+          <div className="absolute inset-0 z-0">
+            <AirImage
+              {...posterImage}
+              className="h-full w-full object-cover"
+              priority
+            />
+          </div>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          {/* Content overlay */}
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 lg:p-16">
+            <div className="max-w-2xl">
+              <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
+                <span className="text-lg font-semibold text-white">{updatedItem.year}</span>
+              </div>
+              <p className="text-lg leading-relaxed text-white lg:text-xl">{updatedItem.description}</p>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      // No poster image available for video
+      return (
+        <div {...inspectorProps} className="relative h-[669px] bg-gray-200 pb-32 lg:pb-16">
+          <div className="absolute inset-0 z-0 flex items-center justify-center">
+            <p className="text-gray-500">Video asset - no poster image available</p>
+          </div>
+          {/* Content overlay */}
+          <div className="relative z-20 flex h-full flex-col justify-end p-8 lg:p-16">
+            <div className="max-w-2xl">
+              <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
+                <span className="text-lg font-semibold text-black">{updatedItem.year}</span>
+              </div>
+              <p className="text-lg leading-relaxed text-black lg:text-xl">{updatedItem.description}</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  // For images, render normally but add fallback if no link
+  const imageAsset = updatedItem.asset as ImageType;
+  if (!imageAsset.link && !imageAsset.sys?.id) {
+    return (
+      <div {...inspectorProps} className="relative h-[669px] bg-gray-200 pb-32 lg:pb-16">
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <p className="text-gray-500">Image asset - no link or ID available</p>
+        </div>
+        {/* Content overlay */}
+        <div className="relative z-20 flex h-full flex-col justify-end p-8 lg:p-16">
+          <div className="max-w-2xl">
+            <div className="mb-4 inline-block rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
+              <span className="text-lg font-semibold text-black">{updatedItem.year}</span>
+            </div>
+            <p className="text-lg leading-relaxed text-black lg:text-xl">{updatedItem.description}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render image normally
   return (
     <div {...inspectorProps} className="relative h-[669px] bg-white pb-32 lg:pb-16">
       <div className="absolute inset-0 z-0">
         <AirImage
-          {...(updatedItem.asset as ImageType)}
+          {...imageAsset}
           className="h-full w-full object-cover"
           priority
         />
