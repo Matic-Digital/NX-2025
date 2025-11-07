@@ -28,7 +28,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
               alt={icon.title ?? title}
               width={icon.width ?? 100}
               height={icon.height ?? 100}
-              className="brightness-0 w-[1rem] h-[1rem]"
+              className="brightness-0 size-8"
             />
           </div>
         )}
@@ -49,7 +49,7 @@ export function MenuItem({ menuItem, layout = 'vertical' }: MenuItemProps) {
               alt={icon.title ?? title}
               width={icon.width ?? 100}
               height={icon.height ?? 100}
-              className="brightness-0 w-[1rem] h-[1rem]"
+              className="brightness-0 size-8"
             />
           </div>
         )}
