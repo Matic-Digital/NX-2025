@@ -96,7 +96,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           configuredRedirectUrl ??
           '/thank-you'; // Fallback to thank-you page
 
-        window.location.href = redirectUrl;
+        // Open redirect URL in a new tab instead of same window
+        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
       } catch (_err) {
         setError(_err instanceof Error ? _err.message : 'Failed to submit form');
       } finally {
