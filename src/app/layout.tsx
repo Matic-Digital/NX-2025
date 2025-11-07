@@ -187,6 +187,68 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         {/* End Google Tag Manager (noscript) */}
         
+        {/* Suppress development warnings */}
+        <Script id="suppress-warnings" strategy="beforeInteractive">
+          {`
+            if (typeof window !== 'undefined') {
+              const originalWarn = console.warn;
+              const originalError = console.error;
+              const originalLog = console.log;
+              
+              console.warn = function(...args) {
+                const message = args.join(' ');
+                // Suppress specific warnings
+                if (
+                  message.includes('has either width or height modified') ||
+                  message.includes('Expected length') ||
+                  message.includes('scroll-behavior: smooth') ||
+                  message.includes('preloaded using link preload but not used') ||
+                  message.includes('Download the React DevTools') ||
+                  message.includes('Server ') ||
+                  message.includes('ContentGrid:') ||
+                  message.includes('ImageBetween:') ||
+                  message.includes('Failed to load module script') ||
+                  message.includes('MIME type') ||
+                  message.includes('The resource') && message.includes('was preloaded')
+                ) {
+                  return;
+                }
+                originalWarn.apply(console, args);
+              };
+
+              console.error = function(...args) {
+                const message = args.join(' ');
+                // Suppress specific errors
+                if (
+                  message.includes('Failed to load module script') ||
+                  message.includes('Expected a JavaScript-or-Wasm module script') ||
+                  message.includes('MIME type') ||
+                  message.includes('components_Header_Header.js') ||
+                  message.includes('Strict MIME type checking is enforced')
+                ) {
+                  return;
+                }
+                originalError.apply(console, args);
+              };
+
+              console.log = function(...args) {
+                const message = args.join(' ');
+                // Suppress server-side debug logs
+                if (
+                  message.includes('Server ') ||
+                  message.includes('ContentGrid:') ||
+                  message.includes('ImageBetween:') ||
+                  message.includes('Enriching') ||
+                  message.includes('enriched successfully')
+                ) {
+                  return;
+                }
+                originalLog.apply(console, args);
+              };
+            }
+          `}
+        </Script>
+        
         <Providers>
           {children}
           <Toaster />

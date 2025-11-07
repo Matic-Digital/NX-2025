@@ -12,12 +12,11 @@ export function RegionsMapImageInteractive({ hoveredRegion, onRegionHover }: Reg
     <div className="relative">
       <svg
         width="100%"
-        height="auto"
         viewBox="0 0 1252 626"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
-        className="regions-map max-h-80 md:max-h-none"
+        className="regions-map max-h-80 md:max-h-none h-auto"
       >
         <mask id="mask0_1310_9223" maskUnits="userSpaceOnUse" x="0" y="0" width="1252" height="626">
           <rect width="1252" height="626" fill="url(#pattern0_1310_9223)" />

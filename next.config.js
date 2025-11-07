@@ -35,6 +35,11 @@ const nextConfig = {
 
   // Performance optimizations for faster server response
   poweredByHeader: false, // Remove X-Powered-By header
+  logging: {
+    fetches: {
+      fullUrl: false
+    }
+  },
   generateEtags: true, // Enable ETags for better caching
   
   // Optimize page generation
@@ -311,25 +316,10 @@ const nextConfig = {
         });
       }
 
-      // Additional minification for development mode
+      // Keep development simple - no minification to preserve debugging
       if (dev) {
-        config.optimization.minimize = true;
-        config.optimization.minimizer = [
-          ...config.optimization.minimizer || [],
-          new (require('terser-webpack-plugin'))({
-            terserOptions: {
-              compress: {
-                drop_console: false, // Keep console in dev
-                drop_debugger: false,
-                passes: 1 // Faster compilation in dev
-              },
-              mangle: false, // Don't mangle in dev for debugging
-              format: {
-                comments: false
-              }
-            }
-          })
-        ];
+        // Disable minification in development to keep console logs and debugging intact
+        config.optimization.minimize = false;
       }
 
       // CSS optimization is handled by PostCSS plugins and Next.js built-in optimization
