@@ -213,18 +213,7 @@ const SliderCard = ({
                           mobileOrigin={videoAsset?.posterImage?.mobileOrigin}
                           className="absolute h-full w-full"
                         />
-                        {/* Video Play Button Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                            <svg
-                              className="ml-1 h-6 w-6 text-gray-800"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </div>
-                        </div>
+                        {/* Removed play button overlay for timeline slider */}
                       </div>
                     );
                   })()
@@ -241,7 +230,7 @@ const SliderCard = ({
                           link={imageAsset?.link ?? ''}
                           altText={imageAsset?.altText ?? ''}
                           mobileOrigin={imageAsset?.mobileOrigin}
-                          className="h-full w-full"
+                          className="absolute h-full w-full object-cover"
                         />
                       );
                     })()
