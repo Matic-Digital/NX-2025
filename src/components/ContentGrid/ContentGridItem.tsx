@@ -69,7 +69,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
         const contentResponse = await fetch(`/api/components/ContentGrid/${sys.id}`);
         if (contentResponse.ok) {
           const responseData = await contentResponse.json();
-          console.warn('ContentGridItem client-side fetch (fallback):', responseData.contentGridItem);
+          console.warn(
+            'ContentGridItem client-side fetch (fallback):',
+            responseData.contentGridItem
+          );
           setFullContentData(responseData.contentGridItem);
         }
       } catch (error) {
@@ -148,7 +151,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
         <Box
           direction="col"
           gap={6}
-          className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:h-full md:p-8 lg:p-10"
+          className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
         >
           <div className="flex h-full flex-col">
             <div>
@@ -209,17 +212,16 @@ export function ContentGridItem(props: ContentGridItemProps) {
 
   const BackgroundImageCompactItem = () => {
     // Handle nested Content structure - check if this is a Content item with nested data
-    const actualContentData = contentData.__typename === 'Content' && (contentData as any).item 
-      ? (contentData as any).item 
-      : contentData;
-    
+    const actualContentData =
+      contentData.__typename === 'Content' && (contentData as any).item
+        ? (contentData as any).item
+        : contentData;
+
     // Use the actual content data for CTA and other fields
     const actualCtaCollection = actualContentData.ctaCollection || contentData.ctaCollection;
     const actualHeading = actualContentData.heading || contentData.heading;
     const actualDescription = actualContentData.description || contentData.description;
     const actualImage = actualContentData.image || contentData.image;
-
-
 
     return (
       <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[23.25rem]">
@@ -261,12 +263,16 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 </Box>
               </div>
 
-              {(actualCtaCollection?.items?.[0]?.text || fullContentData?.ctaCollection?.items?.[0]?.text) && (
+              {(actualCtaCollection?.items?.[0]?.text ||
+                fullContentData?.ctaCollection?.items?.[0]?.text) && (
                 <div className="mt-auto">
-                  <Link 
+                  <Link
                     href={(() => {
                       // For ContentGridItems, use the enriched CTA data
-                      if (contentData.__typename === 'ContentGridItem' && actualCtaCollection?.items?.[0]) {
+                      if (
+                        contentData.__typename === 'ContentGridItem' &&
+                        actualCtaCollection?.items?.[0]
+                      ) {
                         const cta = actualCtaCollection.items[0];
                         if (cta.internalLink?.slug) {
                           const slug = cta.internalLink.slug;
@@ -276,41 +282,47 @@ export function ContentGridItem(props: ContentGridItemProps) {
                           return cta.externalLink;
                         }
                       }
-                      
+
                       // For Content items, get the CTA's internal link (which should be a PageList)
                       if (contentData.__typename === 'Content') {
                         const cta = actualCtaCollection?.items?.[0];
                         if (cta?.internalLink) {
                           const internalLink = cta.internalLink;
-                          
+
                           // Check if it's a PageList with a slug
                           if (internalLink.__typename === 'PageList' && internalLink.slug) {
-                            return internalLink.slug.startsWith('/') ? internalLink.slug : `/${internalLink.slug}`;
+                            return internalLink.slug.startsWith('/')
+                              ? internalLink.slug
+                              : `/${internalLink.slug}`;
                           }
-                          
+
                           // For other internal link types, use the slug directly
                           if (internalLink.slug) {
-                            return internalLink.slug.startsWith('/') ? internalLink.slug : `/${internalLink.slug}`;
+                            return internalLink.slug.startsWith('/')
+                              ? internalLink.slug
+                              : `/${internalLink.slug}`;
                           }
                         }
-                        
+
                         // Fallback to external link if no internal link
                         if (cta?.externalLink) {
                           return cta.externalLink;
                         }
                       }
-                      
+
                       // Fallback to getHref() or a default
                       const href = getHref();
                       return href !== '#' ? href : '/';
-                    })()} 
+                    })()}
                     className="inline-block w-full md:w-auto"
                   >
                     <Button
                       variant="outlineTrasparentWhite"
                       className="hover:bg-background hover:text-foreground w-full transition-colors"
                     >
-                      {actualCtaCollection?.items?.[0]?.text || fullContentData?.ctaCollection?.items?.[0]?.text || 'Learn More'}
+                      {actualCtaCollection?.items?.[0]?.text ||
+                        fullContentData?.ctaCollection?.items?.[0]?.text ||
+                        'Learn More'}
                     </Button>
                   </Link>
                 </div>
@@ -351,19 +363,21 @@ export function ContentGridItem(props: ContentGridItemProps) {
             </Box>
 
             {ctaCollection?.items?.[0]?.text && (
-              <Link href={(() => {
-                const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
-                // If it already starts with /, it's a full path
-                if (slug.startsWith('/')) {
-                  return slug;
-                }
-                // If it contains a slash, it's likely a full relative path
-                if (slug.includes('/')) {
+              <Link
+                href={(() => {
+                  const slug = ctaCollection?.items?.[0]?.internalLink?.slug ?? '';
+                  // If it already starts with /, it's a full path
+                  if (slug.startsWith('/')) {
+                    return slug;
+                  }
+                  // If it contains a slash, it's likely a full relative path
+                  if (slug.includes('/')) {
+                    return `/${slug}`;
+                  }
+                  // Otherwise, it's just a simple slug that needs a leading slash
                   return `/${slug}`;
-                }
-                // Otherwise, it's just a simple slug that needs a leading slash
-                return `/${slug}`;
-              })()}>
+                })()}
+              >
                 <Button
                   variant="whiteOutline"
                   className="group-hover:bg-background group-hover:text-foreground mt-auto transition-colors group-hover:border-transparent"
@@ -474,10 +488,18 @@ export function ContentGridItem(props: ContentGridItemProps) {
   const PrimaryHoverSlideUp = () => {
     // Get the button's internal link slug if available
     const buttonSlug = contentData.ctaCollection?.items?.[0]?.internalLink?.slug;
-    const cardButtonLink = buttonSlug ? (buttonSlug.startsWith('/') ? buttonSlug : `/${buttonSlug}`) : undefined;
+    const cardButtonLink = buttonSlug
+      ? buttonSlug.startsWith('/')
+        ? buttonSlug
+        : `/${buttonSlug}`
+      : undefined;
 
     // Map ContentGridItem props to Service props
-    const serviceProps: Partial<Service> & { cardId?: string; isFirst?: boolean; cardButtonLink?: string } = {
+    const serviceProps: Partial<Service> & {
+      cardId?: string;
+      isFirst?: boolean;
+      cardButtonLink?: string;
+    } = {
       sys: contentData.sys,
       cardTitle: contentData.heading,
       cardTags: contentData.tags,
@@ -514,10 +536,10 @@ export function ContentGridItem(props: ContentGridItemProps) {
             />
           </div>
         )}
-        <div className="relative z-10 h-full">
+        <div className="relative z-10 min-h-[300px] xl:h-full">
           <Box direction="col" gap={12} className="h-full">
-            {/* Top content - appears on hover */}
-            <div className="transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+            {/* Top content - always visible on mobile */}
+            <div className="opacity-100 transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
                 <h2
                   className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"
@@ -528,26 +550,25 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 <p className="text-body-lg leading-snug text-white">{description}</p>
               </Box>
             </div>
-
-            {/* Bottom content - always anchored at bottom */}
-            <div className="mt-auto">
-              <Box direction="col" gap={{ base: 2, xl: 6 }}>
-                <Box direction="col" gap={1}>
-                  <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <h3
-                    className="text-body-md xl:text-headline-xs leading-tight group-hover:text-white dark:text-white"
-                    {...inspectorProps({ fieldId: 'heading' })}
-                  >
-                    {title}
-                  </h3>
-                </Box>
-                <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
-                  {subheading}
-                </p>
-              </Box>
-            </div>
+          </Box>
+        </div>
+        {/* Bottom content - fixed at bottom */}
+        <div className="absolute bottom-6 left-6 right-6 xl:bottom-8 xl:left-8 xl:right-8 z-10">
+          <Box direction="col" gap={{ base: 2, xl: 6 }}>
+            <Box direction="col" gap={1}>
+              <span className="text-body-md xl:text-headline-xs group-hover:text-white dark:text-white">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3
+                className="text-body-md xl:text-headline-xs leading-tight group-hover:text-white dark:text-white"
+                {...inspectorProps({ fieldId: 'heading' })}
+              >
+                {title}
+              </h3>
+            </Box>
+            <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
+              {subheading}
+            </p>
           </Box>
         </div>
       </div>
@@ -598,18 +619,18 @@ export function ContentGridItem(props: ContentGridItemProps) {
           return cta.externalLink;
         }
       }
-      
+
       // Second priority: direct link field (reference object with slug)
       if (link && typeof link === 'object' && 'slug' in link && link.slug) {
         const slug = link.slug;
         return slug.startsWith('/') ? slug : `/${slug}`;
       }
-      
+
       // Third priority: direct link field as string (legacy support)
       if (link && typeof link === 'string') {
         return link.startsWith('/') ? link : `/${link}`;
       }
-      
+
       // Fallback
       return '#';
     };
