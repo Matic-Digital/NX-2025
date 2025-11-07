@@ -987,18 +987,44 @@ export async function POST(
     }
 
     // Mock successful form submission (text-only)
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: 'Form submitted successfully',
       formId
     });
+    
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return response;
 
   } catch (error) {
     // Log error for debugging but don't expose internal details
     console.error('Form submission error:', error);
-    return NextResponse.json(
+    const errorResponse = NextResponse.json(
       { error: 'Form submission failed' },
       { status: 500 }
     );
+    
+    // Add CORS headers to error responses too
+    errorResponse.headers.set('Access-Control-Allow-Origin', '*');
+    errorResponse.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    errorResponse.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return errorResponse;
   }
+}
+
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }

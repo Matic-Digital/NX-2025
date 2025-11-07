@@ -85,8 +85,16 @@ export async function POST(
   try {
     const { formId } = await params;
     
+    // Debug logging
+    console.warn('Form submission to /submit endpoint:', {
+      formId,
+      contentType: request.headers.get('content-type'),
+      method: request.method
+    });
+    
     // Enhanced input validation for formId
     if (!formId) {
+      console.warn('Form ID validation failed: missing formId');
       return NextResponse.json(
         { error: 'Form ID is required' },
         { status: 400 }
@@ -96,6 +104,7 @@ export async function POST(
     // Validate formId format
     const formIdValidation = validateInput(formId, 100);
     if (!formIdValidation.isValid) {
+      console.warn('Form ID validation failed:', formIdValidation.errors);
       return NextResponse.json(
         { error: 'Invalid form ID format', issues: formIdValidation.errors },
         { status: 400 }
@@ -114,8 +123,10 @@ export async function POST(
     let formData: Record<string, unknown>;
     try {
       formData = await request.json() as Record<string, unknown>;
-    } catch {
+      console.warn('Form data parsed successfully:', Object.keys(formData));
+    } catch (error) {
       // Handle malformed JSON
+      console.warn('JSON parsing failed:', error);
       return NextResponse.json(
         { error: 'Malformed JSON in request body', success: false },
         { status: 400 }
@@ -132,6 +143,7 @@ export async function POST(
     // Comprehensive payload validation
     const payloadValidation = validateJSONPayload(formData, 1024 * 1024);
     if (!payloadValidation.isValid) {
+      console.warn('Payload validation failed:', payloadValidation.errors);
       return NextResponse.json(
         { error: 'Invalid form data detected', issues: payloadValidation.errors },
         { status: 400 }
@@ -151,6 +163,7 @@ export async function POST(
     }
 
     // First, get the form structure to understand field types and object IDs
+    console.warn('Fetching form structure from:', `${request.nextUrl.origin}/api/hubspot/form/${formId}`);
     const formStructureResponse = await fetch(`${request.nextUrl.origin}/api/hubspot/form/${formId}`, {
       headers: {
         'Authorization': request.headers.get('Authorization') ?? '',
@@ -158,6 +171,7 @@ export async function POST(
     });
 
     if (!formStructureResponse.ok) {
+      console.warn('Form structure fetch failed:', formStructureResponse.status, formStructureResponse.statusText);
       // Return 400 for invalid form ID instead of 500
       return NextResponse.json(
         { error: 'Invalid form ID or form not found', success: false },
@@ -243,16 +257,35 @@ export async function POST(
     };
 
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       submissionId: result.inlineMessage ?? result.redirectUri ?? 'submitted',
       message: 'Form submitted successfully',
       redirectUri: result.redirectUri ?? null, // Extract redirect URL if available
       hubspotResponse: result as unknown,
     });
+    
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return response;
 
   } catch (error) {
     // Use secure error response to prevent information disclosure
     return createSecureErrorResponse(error, 'Form submission failed');
   }
+}
+
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }
