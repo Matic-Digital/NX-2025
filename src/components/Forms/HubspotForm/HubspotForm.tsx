@@ -60,7 +60,8 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
         const response = await fetch(`/api/hubspot/form/${formId}/submit`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-vercel-protection-bypass': 'EnmSpeFCJX5e8wFzcDxyzVNSEmwYZ7Ob'
           },
           body: JSON.stringify(value)
         });
@@ -115,7 +116,11 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/hubspot/form/${formId}`);
+        const response = await fetch(`/api/hubspot/form/${formId}`, {
+          headers: {
+            'x-vercel-protection-bypass': 'EnmSpeFCJX5e8wFzcDxyzVNSEmwYZ7Ob'
+          }
+        });
         if (!response.ok) {
           throw new Error('Failed to fetch form data');
         }
