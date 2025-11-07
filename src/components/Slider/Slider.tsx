@@ -230,7 +230,7 @@ const SliderCard = ({
                           link={imageAsset?.link ?? ''}
                           altText={imageAsset?.altText ?? ''}
                           mobileOrigin={imageAsset?.mobileOrigin}
-                          className="h-full w-full"
+                          className="absolute h-full w-full object-cover"
                         />
                       );
                     })()
