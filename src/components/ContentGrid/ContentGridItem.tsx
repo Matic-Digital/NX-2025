@@ -542,12 +542,12 @@ export function ContentGridItem(props: ContentGridItemProps) {
             <div className="opacity-100 transition-opacity duration-300 xl:opacity-0 xl:group-hover:opacity-100">
               <Box direction="col" gap={{ base: 0, xl: 6 }}>
                 <h2
-                  className="text-title-lg xl:text-headline-md leading-10 font-medium text-white xl:leading-11"
+                  className="text-title-lg leading-10 font-medium text-white xl:leading-11"
                   {...inspectorProps({ fieldId: 'heading' })}
                 >
                   {heading}
                 </h2>
-                <p className="text-body-lg leading-snug text-white">{description}</p>
+                <p className="text-body-sm leading-snug text-white">{description}</p>
               </Box>
             </div>
           </Box>
@@ -566,7 +566,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
                 {title}
               </h3>
             </Box>
-            <p className="text-body-xs xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
+            <p className="text-body-sm xl:text-body-xxs letter-spacing-[0.12em] leading-relaxed group-hover:text-white dark:text-white">
               {subheading}
             </p>
           </Box>
