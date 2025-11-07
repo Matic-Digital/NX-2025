@@ -184,15 +184,6 @@ const SliderCard = ({
 
   if (updatedItem.__typename === 'TimelineSliderItem') {
     const timelineItem = updatedItem as TimelineSliderItem;
-    
-    // Debug log to see timeline item data
-    console.log('Timeline item data:', {
-      id: timelineItem.sys.id,
-      year: timelineItem.year,
-      assetType: timelineItem.asset?.__typename,
-      imageLink: timelineItem.asset?.__typename === 'Image' ? (timelineItem.asset as any).link : 'N/A',
-      videoLink: timelineItem.asset?.__typename === 'Video' ? (timelineItem.asset as any).posterImage?.link : 'N/A'
-    });
 
     return (
       <div className="relative h-[669px] bg-white pb-32 lg:pb-16">
@@ -230,17 +221,41 @@ const SliderCard = ({
                   ? (() => {
                       const imageAsset = timelineItem.asset as {
                         __typename: 'Image';
+                        sys?: { id: string };
                         link?: string;
                         altText?: string;
                         mobileOrigin?: z.infer<typeof MobileOriginSchema>;
                       };
+                      
+                      // If no link but has sys.id, let AirImage fetch it
+                      if (!imageAsset?.link && imageAsset?.sys?.id) {
+                        return (
+                          <AirImage
+                            sys={{ id: imageAsset.sys.id }}
+                            altText={imageAsset?.altText ?? ''}
+                            mobileOrigin={imageAsset?.mobileOrigin}
+                            className="absolute h-full w-full object-cover"
+                          />
+                        );
+                      }
+                      
+                      // If has link, use it directly
+                      if (imageAsset?.link) {
+                        return (
+                          <AirImage
+                            link={imageAsset.link}
+                            altText={imageAsset?.altText ?? ''}
+                            mobileOrigin={imageAsset?.mobileOrigin}
+                            className="absolute h-full w-full object-cover"
+                          />
+                        );
+                      }
+                      
+                      // Fallback: show placeholder
                       return (
-                        <AirImage
-                          link={imageAsset?.link ?? ''}
-                          altText={imageAsset?.altText ?? ''}
-                          mobileOrigin={imageAsset?.mobileOrigin}
-                          className="absolute h-full w-full object-cover"
-                        />
+                        <div className="absolute h-full w-full bg-gray-200 flex items-center justify-center">
+                          <p className="text-gray-500">Image not available</p>
+                        </div>
                       );
                     })()
                   : null}

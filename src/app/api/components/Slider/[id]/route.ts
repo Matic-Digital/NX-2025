@@ -24,10 +24,6 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const preview = searchParams.get('preview') === 'true';
 
-    // Log bypass header for debugging
-    const bypassHeader = request.headers.get('x-vercel-protection-bypass');
-    console.log('Slider API - Bypass header:', bypassHeader ? 'Present' : 'Missing');
-
     // Get cache configuration for this content type and ID
     const cacheConfig = getCacheConfig('Slider', { id });
 
