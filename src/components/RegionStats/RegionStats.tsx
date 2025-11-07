@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 
 import { Box, Container } from '@/components/global/matic-ds';
@@ -26,6 +28,8 @@ export function RegionStats(props: RegionStats) {
 
   const { title, image, itemsCollection, cta } = regionStats;
 
+  const hasCta = cta?.internalLink?.slug ?? cta?.externalLink ?? '';
+
   return (
     <Container className="md:p-16">
       <Box direction={{ base: 'col', lg: 'row' }} gap={12}>
@@ -45,9 +49,13 @@ export function RegionStats(props: RegionStats) {
               <RegionStatItem key={item.sys.id} {...item} />
             ))}
           </Box>
-          <Button variant="outline" className="w-fit">
-            {cta?.text}
-          </Button>
+          {hasCta && (
+            <Link href={hasCta} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-fit">
+                {cta?.text}
+              </Button>
+            </Link>
+          )}
         </Box>
       </Box>
     </Container>
