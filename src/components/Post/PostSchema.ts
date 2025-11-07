@@ -15,7 +15,7 @@ const PostTemplateSchema = z.enum(['Default', 'Gated Content']);
 const PostCategorySchema = z.enum([
   'Blog',
   'Case Study',
-  'Data Sheet',
+  'Datasheet',
   'Featured',
   'In The News',
   'Press Release',

@@ -6,7 +6,7 @@ export const categoryColorMap = (category: string) => {
       return 'text-[#BBDEFB]';
     case 'Case Study':
       return 'text-[#C8E6C9]';
-    case 'Data Sheet':
+    case 'Datasheet':
       return 'text-[#D1C4E9]';
     case 'Featured':
       return 'text-[#FFF9C4]';

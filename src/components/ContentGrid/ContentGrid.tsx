@@ -177,7 +177,7 @@ export function ContentGrid(props: ContentGridProps) {
             >
               {/* section heading and items for HoverCardCustom */}
               {gridVariant === 'HoverCardCustom' ? (
-                <div className="flex flex-col md:flex-row w-full justify-between gap-8">
+                <div className="flex flex-col xl:flex-row w-full justify-between gap-8">
                   {/* section heading */}
                   {contentGrid.heading && (
                     <div>

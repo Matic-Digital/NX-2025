@@ -1,4 +1,3 @@
- 
 import { z } from 'zod';
 
 import { AgendaItemSchema } from '@/components/AgendaItem/AgendaItemSchema';
@@ -20,7 +19,7 @@ const EventTemplateSchema = z.enum(['Landing 1', 'Landing 2', 'Landing 3', 'Agen
 const EventPostCategorySchema = z.enum([
   'Blogs',
   'Case Studies',
-  'Data Sheets',
+  'Datasheets',
   'Featured',
   'In The News',
   'Press Releases',
