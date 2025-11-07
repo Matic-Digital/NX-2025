@@ -410,13 +410,14 @@ export function ContentGridItem(props: ContentGridItemProps) {
         {/* Icon */}
         {icon?.url && (
           <div className="w-fit">
-            <div className="group-hover:bg-background bg-foreground p-2 transition-colors">
-              <SvgIcon
+            <div className="group-hover:bg-background bg-foreground transition-colors">
+              <Image
                 src={icon.url}
-                alt={heading}
-                width={40}
-                height={40}
-                className="group-hover:[&_path]:stroke-foreground transition-colors group-hover:text-transparent"
+                alt={icon.title ?? ''}
+                width={60}
+                height={60}
+                priority={false}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
           </div>
