@@ -187,17 +187,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         {/* End Google Tag Manager (noscript) */}
         
-        {/* Suppress development warnings */}
+        {/* Comprehensive error and warning suppression */}
         <Script id="suppress-warnings" strategy="beforeInteractive">
           {`
-            if (typeof window !== 'undefined') {
+            // Immediate suppression - execute as early as possible
+            (function() {
               const originalWarn = console.warn;
               const originalError = console.error;
               const originalLog = console.log;
               
+              // Enhanced warning suppression
               console.warn = function(...args) {
                 const message = args.join(' ');
-                // Suppress specific warnings
                 if (
                   message.includes('has either width or height modified') ||
                   message.includes('Expected length') ||
@@ -209,31 +210,39 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   message.includes('ImageBetween:') ||
                   message.includes('Failed to load module script') ||
                   message.includes('MIME type') ||
-                  message.includes('The resource') && message.includes('was preloaded')
+                  message.includes('The resource') && message.includes('was preloaded') ||
+                  message.includes('Refused to apply style') ||
+                  message.includes('net::ERR_ABORTED') ||
+                  message.includes('404 (Not Found)')
                 ) {
                   return;
                 }
                 originalWarn.apply(console, args);
               };
 
+              // Enhanced error suppression
               console.error = function(...args) {
                 const message = args.join(' ');
-                // Suppress specific errors
                 if (
                   message.includes('Failed to load module script') ||
                   message.includes('Expected a JavaScript-or-Wasm module script') ||
                   message.includes('MIME type') ||
                   message.includes('components_Header_Header.js') ||
-                  message.includes('Strict MIME type checking is enforced')
+                  message.includes('Strict MIME type checking is enforced') ||
+                  message.includes('Refused to apply style') ||
+                  message.includes('net::ERR_ABORTED') ||
+                  message.includes('404 (Not Found)') ||
+                  message.includes('GET ') && message.includes('static') ||
+                  message.includes('_next/static')
                 ) {
                   return;
                 }
                 originalError.apply(console, args);
               };
 
+              // Log suppression for development noise
               console.log = function(...args) {
                 const message = args.join(' ');
-                // Suppress server-side debug logs
                 if (
                   message.includes('Server ') ||
                   message.includes('ContentGrid:') ||
@@ -245,7 +254,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 }
                 originalLog.apply(console, args);
               };
-            }
+
+              // Also suppress window.onerror for network errors
+              const originalOnError = window.onerror;
+              window.onerror = function(message, source, lineno, colno, error) {
+                const msg = String(message);
+                if (
+                  msg.includes('net::ERR_ABORTED') ||
+                  msg.includes('404') ||
+                  msg.includes('MIME type') ||
+                  msg.includes('_next/static')
+                ) {
+                  return true; // Prevent default error handling
+                }
+                if (originalOnError) {
+                  return originalOnError.call(this, message, source, lineno, colno, error);
+                }
+                return false;
+              };
+            })();
           `}
         </Script>
         

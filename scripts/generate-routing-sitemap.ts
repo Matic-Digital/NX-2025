@@ -696,8 +696,6 @@ function generateXmlSitemap(routingCache: RoutingCache): string {
       let entry = `  <url>\n    <loc>${fullUrl}</loc>`;
 
       entry += `\n    <lastmod>${routingCache.generatedAt.split('T')[0]}</lastmod>`;
-      entry += `\n    <changefreq>${route.changefreq}</changefreq>`;
-      entry += `\n    <priority>${route.priority.toFixed(1)}</priority>`;
 
       entry += '\n  </url>';
       return entry;

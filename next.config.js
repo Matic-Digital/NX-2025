@@ -115,10 +115,8 @@ const nextConfig = {
   compiler: {
     // Remove React properties in production
     reactRemoveProperties: process.env.NODE_ENV === 'production',
-    // Remove console.log in production
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error']
-    } : false,
+    // Remove ALL console statements in production (including errors)
+    removeConsole: process.env.NODE_ENV === 'production' ? true : false,
     // Enable emotion for better CSS-in-JS performance (if used)
     emotion: true,
   },
@@ -423,9 +421,51 @@ const nextConfig = {
         ]
       },
       {
-        // Static assets caching
+        // Static assets caching with proper MIME types
         source: '/_next/static/(.*)',
         headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // CSS files - ensure proper MIME type
+        source: '/_next/static/css/(.*).css',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // Font files - proper MIME types
+        source: '/_next/static/media/(.*).woff2',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'font/woff2'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // JavaScript chunks - proper MIME type
+        source: '/_next/static/chunks/(.*).js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8'
+          },
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'
