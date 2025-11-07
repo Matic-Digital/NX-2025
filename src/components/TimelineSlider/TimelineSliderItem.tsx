@@ -6,11 +6,9 @@ import {
 } from '@contentful/live-preview/react';
 
 import { AirImage } from '@/components/Image/AirImage';
-import { MuxVideoPlayer } from '@/components/Video/MuxVideo';
 
 import type { Image as ImageType } from '@/components/Image/ImageSchema';
 import type { TimelineSliderItem as TimelineSliderItemType } from '@/components/TimelineSlider/TimelineSliderItemSchema';
-import type { Video as VideoType } from '@/components/Video/VideoSchema';
 
 export function TimelineSliderItem(props: TimelineSliderItemType) {
   const updatedItem = useContentfulLiveUpdates(props);
@@ -19,6 +17,7 @@ export function TimelineSliderItem(props: TimelineSliderItemType) {
   });
 
   if (!updatedItem.asset) {
+    console.warn('TimelineSliderItem: No asset available for item:', updatedItem.sys.id);
     return (
       <div className="flex h-[669px] items-center justify-center bg-gray-100">
         <p className="text-gray-500">No asset available</p>
@@ -26,24 +25,23 @@ export function TimelineSliderItem(props: TimelineSliderItemType) {
     );
   }
 
-  const isImage = updatedItem.asset.__typename === 'Image';
-  const isVideo = updatedItem.asset.__typename === 'Video';
+  // Debug logging
+  console.warn('TimelineSliderItem asset:', {
+    id: updatedItem.sys.id,
+    assetType: updatedItem.asset.__typename,
+    hasLink: !!(updatedItem.asset as ImageType).link,
+    asset: updatedItem.asset
+  });
 
+  // Force all assets to be treated as images for timeline slider
   return (
     <div {...inspectorProps} className="relative h-[669px] bg-white pb-32 lg:pb-16">
       <div className="absolute inset-0 z-0">
-        {isImage && (
-          <AirImage
-            {...(updatedItem.asset as ImageType)}
-            className="h-full w-full object-cover"
-            priority
-          />
-        )}
-        {isVideo && (
-          <div className="h-full w-full">
-            <MuxVideoPlayer {...(updatedItem.asset as VideoType)} />
-          </div>
-        )}
+        <AirImage
+          {...(updatedItem.asset as ImageType)}
+          className="h-full w-full object-cover"
+          priority
+        />
       </div>
 
       {/* Gradient overlay */}
