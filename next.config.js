@@ -115,8 +115,8 @@ const nextConfig = {
   compiler: {
     // Remove React properties in production
     reactRemoveProperties: process.env.NODE_ENV === 'production',
-    // Remove ALL console statements in production (including errors)
-    removeConsole: process.env.NODE_ENV === 'production' ? true : false,
+    // Keep console statements for debugging (temporarily disabled)
+    removeConsole: false,
     // Enable emotion for better CSS-in-JS performance (if used)
     emotion: true,
   },
@@ -279,10 +279,10 @@ const nextConfig = {
               ...minimizer.options.terserOptions,
               compress: {
                 ...minimizer.options.terserOptions?.compress,
-                // Basic optimizations
-                drop_console: true,
-                drop_debugger: true,
-                pure_funcs: ['console.log', 'console.info', 'console.debug'],
+                // Basic optimizations (console removal temporarily disabled for debugging)
+                drop_console: false,
+                drop_debugger: false,
+                // pure_funcs: ['console.log', 'console.info', 'console.debug'],
                 // Advanced compression
                 dead_code: true,
                 drop_unreachable: true,
@@ -339,31 +339,31 @@ const nextConfig = {
             value: process.env.NODE_ENV === 'development' ? [
               // Development CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https://*.salesforce-sites.com https://*.salesforce.com https://*.force.com https://*.secure.force.com https://snap.licdn.com https://js.hsadspixel.net https://js.hs-banner.com https://js.hs-analytics.net https://js.hubspot.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.googleadservices.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
               "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net https://snap.licdn.com http://js.hs-scripts.com https://js.hs-scripts.com https://js.hsadspixel.net https://js.hs-banner.com https://js.hs-analytics.net https://js.hubspot.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.googleadservices.com",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net https://*.salesforce-sites.com https://www.googletagmanager.com",
               "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
-              "form-action 'self' https://*.hubspot.com https://*.hsforms.net"
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net https://*.salesforce-sites.com https://*.salesforce.com https://*.force.com https://*.secure.force.com"
             ].join('; ') : [
               // Production CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https://*.salesforce-sites.com https://*.salesforce.com https://*.force.com https://*.secure.force.com https://snap.licdn.com https://js.hsadspixel.net https://js.hs-banner.com https://js.hs-analytics.net https://js.hubspot.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.googleadservices.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
               "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net https://snap.licdn.com http://js.hs-scripts.com https://js.hs-scripts.com https://js.hsadspixel.net https://js.hs-banner.com https://js.hs-analytics.net https://js.hubspot.com https://googleads.g.doubleclick.net https://*.doubleclick.net https://www.googleadservices.com",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net https://*.salesforce-sites.com https://www.googletagmanager.com",
               "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self' https://*.hubspot.com https://*.hsforms.net",
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net https://*.salesforce-sites.com https://*.salesforce.com https://*.force.com https://*.secure.force.com",
               "upgrade-insecure-requests",
               "report-uri /api/csp-report"
             ].join('; ')
@@ -473,12 +473,30 @@ const nextConfig = {
         ]
       },
       {
-        // API routes caching
-        source: '/api/(.*)',
+        // HubSpot API routes - no caching to prevent stale form data
+        source: '/api/hubspot/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=300, s-maxage=600'
+            value: 'no-cache, no-store, must-revalidate'
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache'
+          },
+          {
+            key: 'Expires',
+            value: '0'
+          }
+        ]
+      },
+      {
+        // Other API routes - short caching
+        source: '/api/((?!hubspot).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=60, s-maxage=120'
           }
         ]
       }

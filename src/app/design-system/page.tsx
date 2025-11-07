@@ -18,7 +18,7 @@ const Section = ({
 );
 
 const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={cn('bg-card text-card-foreground rounded-lg border p-6 shadow-sm', className)}>
+  <div className={cn('bg-card text-card-foreground rounded-lg p-6', className)}>
     {children}
   </div>
 );

@@ -24,6 +24,11 @@ export interface HubSpotFormField {
     name?: string;
     message?: string;
     data?: string;
+    // Additional HubSpot error messages
+    errorMessage?: string;
+    invalidMessage?: string;
+    requiredErrorMessage?: string;
+    formatErrorMessage?: string;
   };
   placeholder?: string;
   defaultValue?: string;
@@ -31,17 +36,33 @@ export interface HubSpotFormField {
 
 export interface FieldRendererProps {
   field: HubSpotFormField;
-  value: string | number | boolean | null | undefined;
-  onChange: (value: string | number | boolean | null | undefined) => void;
+  value: string | number | boolean | string[] | null | undefined;
+  onChange: (value: string | number | boolean | string[] | null | undefined) => void;
   error?: string | string[];
   theme?: 'light' | 'dark';
+}
+
+export interface FieldGroup {
+  fields: HubSpotFormField[];
+  groupType?: 'default' | 'multiselect' | 'radio_group';
+  label?: string;
+  description?: string;
+  required?: boolean;
+}
+
+export interface FormContent {
+  type: 'text' | 'header' | 'divider' | 'image';
+  content?: string;
+  level?: number; // for headers (h1, h2, etc.)
+  richText?: string;
 }
 
 export interface FormStep {
   stepNumber: number;
   stepName?: string;
   fields: HubSpotFormField[];
-  fieldGroups: unknown[];
+  fieldGroups: FieldGroup[];
+  content?: FormContent[];
   isPageBreak: boolean;
   hasConditionalLogic: boolean;
 }

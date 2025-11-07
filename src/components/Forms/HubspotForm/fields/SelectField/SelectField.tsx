@@ -12,7 +12,8 @@ export const SelectField: React.FC<FieldRendererProps> = ({
   theme = 'dark'
 }) => {
   const getCleanLabel = (label: string) => {
-    return label.replace(/\s*-\s*\d+$/, '').trim();
+    // Strip HTML tags and trailing numbers
+    return label.replace(/<[^>]*>/g, '').replace(/\s*-\s*\d+$/, '').trim();
   };
 
   const labelClass = theme === 'light' ? 'text-gray-900' : 'text-white';
@@ -43,7 +44,7 @@ export const SelectField: React.FC<FieldRendererProps> = ({
         </option>
         {field.options?.map((option) => (
           <option key={option.value} value={option.value} className="bg-white text-black">
-            {option.label}
+            {getCleanLabel(option.label)}
           </option>
         ))}
       </select>

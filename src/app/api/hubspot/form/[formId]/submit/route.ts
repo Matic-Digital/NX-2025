@@ -86,16 +86,8 @@ export async function POST(
   try {
     const { formId } = await params;
     
-    // Debug logging
-    console.warn('Form submission to /submit endpoint:', {
-      formId,
-      contentType: request.headers.get('content-type'),
-      method: request.method
-    });
-    
     // Enhanced input validation for formId
     if (!formId) {
-      console.warn('Form ID validation failed: missing formId');
       return NextResponse.json(
         { error: 'Form ID is required' },
         { status: 400 }
@@ -104,7 +96,6 @@ export async function POST(
 
     // Simple formId format validation (bypass strict security)
     if (!/^[a-zA-Z0-9-_]+$/.test(formId) || formId.length > 100) {
-      console.warn('Form ID validation failed: invalid format or too long');
       return NextResponse.json(
         { error: 'Invalid form ID format' },
         { status: 400 }
@@ -123,10 +114,8 @@ export async function POST(
     let formData: Record<string, unknown>;
     try {
       formData = await request.json() as Record<string, unknown>;
-      console.warn('Form data parsed successfully:', Object.keys(formData));
-    } catch (error) {
+    } catch {
       // Handle malformed JSON
-      console.warn('JSON parsing failed:', error);
       return NextResponse.json(
         { error: 'Malformed JSON in request body', success: false },
         { status: 400 }
@@ -143,7 +132,6 @@ export async function POST(
     // Basic payload validation (bypass strict security)
     const formString = JSON.stringify(formData);
     if (formString.length > 1024 * 1024) {
-      console.warn('Payload validation failed: too large');
       return NextResponse.json(
         { error: 'Form data too large' },
         { status: 400 }
@@ -163,7 +151,6 @@ export async function POST(
     }
 
     // First, get the form structure to understand field types and object IDs
-    console.warn('Fetching form structure from:', `${request.nextUrl.origin}/api/hubspot/form/${formId}`);
     const formStructureResponse = await fetch(`${request.nextUrl.origin}/api/hubspot/form/${formId}`, {
       headers: {
         'Authorization': request.headers.get('Authorization') ?? '',
@@ -173,7 +160,6 @@ export async function POST(
     });
 
     if (!formStructureResponse.ok) {
-      console.warn('Form structure fetch failed:', formStructureResponse.status, formStructureResponse.statusText);
       // Return 400 for invalid form ID instead of 500
       return NextResponse.json(
         { error: 'Invalid form ID or form not found', success: false },
@@ -205,7 +191,15 @@ export async function POST(
     // Transform form data to HubSpot format
     const hubspotFields: Array<{ objectTypeId: string; name: string; value: string }> = [];
     
+    // Handle page metadata
+    const pageUri = (sanitizedFormData.pageUri as string) || request.headers.get('referer') || undefined;
+    
     Object.entries(sanitizedFormData).forEach(([fieldName, value]) => {
+      // Skip legal consent fields and page metadata - handle them separately
+      if (fieldName.startsWith('legal_consent_') || fieldName === 'pageUri' || fieldName === 'pageName') {
+        return; // Skip adding these to regular fields for now
+      }
+      
       const fieldInfo = fieldMap.get(fieldName);
       
       if (fieldInfo && value !== undefined && value !== null && value !== '') {
@@ -214,24 +208,60 @@ export async function POST(
         
         switch (fieldInfo.fieldType) {
           case 'number':
-            stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+            stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : '';
             break;
           case 'checkbox':
             stringValue = value ? 'true' : 'false';
             break;
           case 'select':
           case 'radio':
-            stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+            stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : '';
+            break;
+          case 'multi_checkbox':
+          case 'checkboxes':
+            // Handle array values for multi-select checkboxes
+            if (Array.isArray(value)) {
+              // Send each selected value as a separate field submission
+              value.forEach((selectedValue) => {
+                if (selectedValue && typeof selectedValue === 'string') {
+                  hubspotFields.push({
+                    objectTypeId: fieldInfo.objectTypeId,
+                    name: fieldName,
+                    value: selectedValue,
+                  });
+                }
+              });
+              return; // Skip the main field addition below
+            } else {
+              stringValue = typeof value === 'string' ? value : '';
+            }
             break;
           default:
-            stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : JSON.stringify(value);
+            if (Array.isArray(value)) {
+              // For any other array fields, send each value separately
+              value.forEach((selectedValue) => {
+                if (selectedValue && typeof selectedValue === 'string') {
+                  hubspotFields.push({
+                    objectTypeId: fieldInfo.objectTypeId,
+                    name: fieldName,
+                    value: selectedValue,
+                  });
+                }
+              });
+              return; // Skip the main field addition below
+            } else {
+              stringValue = typeof value === 'string' || typeof value === 'number' ? String(value) : '';
+            }
         }
 
-        hubspotFields.push({
-          objectTypeId: fieldInfo.objectTypeId,
-          name: fieldName,
-          value: stringValue,
-        });
+        // Only add the field if stringValue is defined (not handled as array above)
+        if (stringValue !== undefined) {
+          hubspotFields.push({
+            objectTypeId: fieldInfo.objectTypeId,
+            name: fieldName,
+            value: stringValue,
+          });
+        }
       }
     });
 
@@ -246,10 +276,12 @@ export async function POST(
     const submissionData: HubSpotSubmissionData = {
       fields: hubspotFields,
       context: {
-        pageUri: request.headers.get('referer') ?? undefined,
-        pageName: 'Dynamic Form Submission',
+        pageUri: pageUri,
+        pageName: (sanitizedFormData.pageName as string) || 'Dynamic Form Submission',
       },
     };
+
+    // Legal consent handling temporarily disabled for testing
 
 
     // Submit to HubSpot (using the portal ID from the embed code)

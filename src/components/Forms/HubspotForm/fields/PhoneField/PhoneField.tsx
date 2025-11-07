@@ -13,7 +13,8 @@ export const PhoneField: React.FC<FieldRendererProps> = ({
   theme = 'dark'
 }) => {
   const getCleanLabel = (label: string) => {
-    return label.replace(/\s*-\s*\d+$/, '').trim();
+    // Strip HTML tags and trailing numbers
+    return label.replace(/<[^>]*>/g, '').replace(/\s*-\s*\d+$/, '').trim();
   };
 
   const labelClass = theme === 'light' ? 'text-gray-900' : 'text-white';

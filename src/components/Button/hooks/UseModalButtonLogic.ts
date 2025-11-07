@@ -9,7 +9,7 @@ export type ModalType = 'quote' | 'support';
  */
 export const useModalButtonLogic = (cta: ButtonType, modalType: ModalType = 'quote') => {
   // Determine if this should be a modal button
-  const isModalButton = Boolean(cta.modal);
+  const isModalButton = Boolean(cta.modal) || modalType === 'support';
 
   // Generate link attributes
   const getLinkProps = () => {
@@ -35,6 +35,13 @@ export const useModalButtonLogic = (cta: ButtonType, modalType: ModalType = 'quo
   const handleModalClick = (onModalOpen: (modal: Modal, modalType: ModalType) => void) => {
     if (cta.modal) {
       onModalOpen(cta.modal, modalType);
+    } else if (modalType === 'support') {
+      // For support modals, create a default modal object even if none is configured
+      const defaultSupportModal: Modal = {
+        title: 'Request Support',
+        description: 'Please fill out the form below and we will get back to you shortly.'
+      };
+      onModalOpen(defaultSupportModal, modalType);
     }
   };
 

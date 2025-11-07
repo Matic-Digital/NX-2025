@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckboxField } from './CheckboxField/CheckboxField';
 import { EmailField } from './EmailField/EmailField';
+import { MultiSelectCheckboxField } from './MultiSelectCheckboxField/MultiSelectCheckboxField';
 import { NumberField } from './NumberField/NumberField';
 import { PhoneField } from './PhoneField/PhoneField';
 import { RichTextField } from './RichTextField/RichTextField';
@@ -17,8 +18,30 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
   error,
   theme = 'dark'
 }) => {
-  // If a field has options, it should be treated as a select field regardless of fieldType
+  // First check for explicit multiselect checkbox field types
+  if (field.fieldType === 'checkbox' || 
+      field.fieldType === 'checkboxes' || 
+      field.fieldType === 'multi_checkbox' ||
+      field.fieldType === 'multiselect_checkbox' ||
+      field.fieldType === 'multiple_checkboxes' ||
+      field.fieldType === 'multi_select_checkbox' ||
+      field.fieldType === 'checkbox_group') {
+    return (
+      <MultiSelectCheckboxField field={field} value={value} onChange={onChange} error={error} theme={theme} />
+    );
+  }
+
+  // Handle fields with options (could be select or multiselect)
   if (field.options && field.options.length > 0) {
+    // Check for additional multiselect indicators
+    if (field.fieldType.toLowerCase().includes('checkbox') || 
+        field.fieldType.toLowerCase().includes('multi') ||
+        field.fieldType.toLowerCase().includes('multiple')) {
+      return (
+        <MultiSelectCheckboxField field={field} value={value} onChange={onChange} error={error} theme={theme} />
+      );
+    }
+    // Otherwise treat as select field
     return (
       <SelectField field={field} value={value} onChange={onChange} error={error} theme={theme} />
     );
@@ -69,11 +92,25 @@ export const FieldRenderer: React.FC<FieldRendererProps> = ({
       );
 
     case 'single_checkbox':
-    case 'checkbox':
     case 'booleancheckbox':
     case 'boolean':
       return (
         <CheckboxField
+          field={field}
+          value={value}
+          onChange={onChange}
+          error={error}
+          theme={theme}
+        />
+      );
+
+    case 'checkbox':
+    case 'checkboxes':
+    case 'multi_checkbox':
+    case 'multiselect_checkbox':
+    case 'multiple_checkboxes':
+      return (
+        <MultiSelectCheckboxField
           field={field}
           value={value}
           onChange={onChange}

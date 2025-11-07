@@ -12,7 +12,8 @@ export const TextAreaField: React.FC<FieldRendererProps> = ({
   theme = 'dark'
 }) => {
   const getCleanLabel = (label: string) => {
-    return label.replace(/\s*-\s*\d+$/, '').trim();
+    // Strip HTML tags and trailing numbers
+    return label.replace(/<[^>]*>/g, '').replace(/\s*-\s*\d+$/, '').trim();
   };
 
   const textClass = theme === 'light' ? 'text-black' : 'text-text-on-invert';

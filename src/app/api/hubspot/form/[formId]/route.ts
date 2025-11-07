@@ -735,17 +735,6 @@ export async function GET(
   try {
     const { formId } = await params;
     
-    // Debug environment variables - this should show up in Vercel logs
-    console.warn('=== VERCEL DEBUG START ===');
-    console.warn('FormId received:', formId);
-    console.warn('NODE_ENV:', process.env.NODE_ENV);
-    console.warn('VERCEL_ENV:', process.env.VERCEL_ENV);
-    console.warn('HUBSPOT_API_KEY exists:', !!process.env.HUBSPOT_API_KEY);
-    console.warn('HUBSPOT_API_KEY length:', process.env.HUBSPOT_API_KEY?.length || 0);
-    console.warn('All HUBSPOT env keys:', Object.keys(process.env).filter(key => key.includes('HUBSPOT')));
-    console.warn('=== VERCEL DEBUG END ===');
-    
-    // Debug info logged above - continuing with normal flow
     
     // Enhanced input validation
     if (!formId) {
@@ -771,11 +760,11 @@ export async function GET(
       );
     }
 
-    // Use the formId directly since we're now passing form IDs, not links
-    let formData;
-    let steps;
-    
+    let formData: HubSpotV3FormData;
+    let steps: FormStep[];
+
     try {
+      // Use the formId directly since we're now passing form IDs, not links
       formData = await getHubSpotV3FormData(formId);
       steps = analyzeFormSteps(formData);
     } catch (error) {
@@ -790,32 +779,33 @@ export async function GET(
         );
       }
       
-      // Return mock form data when HubSpot API is not available
+      // For other errors, return mock data for development
       const mockFormData: HubSpotV3FormData = {
         id: formId,
-        name: `Mock Form ${formId}`,
+        name: 'Mock Form',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         archived: false,
         fieldGroups: [{
           groupType: 'default_group',
+          richTextType: 'text',
           fields: [
             {
-              fieldType: 'single_line_text',
               objectTypeId: '0-1',
               name: 'email',
               label: 'Email',
               required: true,
               hidden: false,
+              fieldType: 'email',
               displayOrder: 1
             },
             {
-              fieldType: 'single_line_text',
               objectTypeId: '0-1',
               name: 'firstname',
               label: 'First Name',
               required: false,
               hidden: false,
+              fieldType: 'single_line_text',
               displayOrder: 2
             }
           ]
@@ -830,8 +820,8 @@ export async function GET(
       steps = analyzeFormSteps(formData);
     }
     
-    // Return comprehensive form metadata
-    return NextResponse.json({
+    // Return comprehensive form metadata with cache control headers
+    const response = NextResponse.json({
       formData,
       steps,
       metadata: {
@@ -846,9 +836,12 @@ export async function GET(
         isMultiStep: steps.length > 1,
         languages: formData.configuration.language ? [formData.configuration.language] : [],
         theme: formData.displayOptions.theme ?? 'default',
-        fieldTypes: [...new Set(formData.fieldGroups.flatMap(group => 
-          group.fields.map(field => field.fieldType)
-        ))],
+        fieldTypes: (() => {
+          const fieldTypes = [...new Set(formData.fieldGroups.flatMap(group => 
+            group.fields.map(field => field.fieldType)
+          ))];
+          return fieldTypes;
+        })(),
         requiredFields: formData.fieldGroups.flatMap(group => 
           group.fields.filter(field => field.required).map(field => field.name)
         ),
@@ -857,6 +850,14 @@ export async function GET(
         )
       }
     });
+    
+    // Add cache control headers to prevent stale data
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+    response.headers.set('ETag', `"${Date.now()}-${formId}"`);
+    
+    return response;
   } catch (error) {
     // Enhanced error handling that doesn't leak sensitive information
      

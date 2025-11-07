@@ -8,7 +8,12 @@ export const validateField = (field: HubSpotFormField) => {
 
     // Required field validation (HubSpot style)
     if (field.required && (!value || (typeof value === 'string' && value.trim() === ''))) {
-      errors.push(`Please complete this required field.`);
+      // Use HubSpot's error message if available, otherwise use default
+      const requiredMessage = field.validation?.requiredErrorMessage || 
+                             field.validation?.message || 
+                             field.validation?.errorMessage || 
+                             `Please complete this required field.`;
+      errors.push(requiredMessage);
     }
 
     // Only validate content if there's a value
@@ -20,7 +25,12 @@ export const validateField = (field: HubSpotFormField) => {
         // HubSpot's email regex is more permissive
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(trimmedValue)) {
-          errors.push('Email must be formatted correctly.');
+          const emailMessage = field.validation?.formatErrorMessage || 
+                               field.validation?.invalidMessage || 
+                               field.validation?.message || 
+                               field.validation?.errorMessage || 
+                               'Email must be formatted correctly.';
+          errors.push(emailMessage);
         }
 
         // Check blocked domains if specified
@@ -36,7 +46,8 @@ export const validateField = (field: HubSpotFormField) => {
                 domain === blocked.toLowerCase() || domain.endsWith('.' + blocked.toLowerCase())
             )
           ) {
-            errors.push('Please enter a business email address.');
+            const blockedDomainMessage = field.validation?.message || 'Please enter a business email address.';
+            errors.push(blockedDomainMessage);
           }
         }
       }
@@ -50,23 +61,24 @@ export const validateField = (field: HubSpotFormField) => {
           field.validation?.minAllowedDigits &&
           digitsOnly.length < field.validation.minAllowedDigits
         ) {
-          errors.push(
-            `Phone number must contain at least ${field.validation.minAllowedDigits} digits.`
-          );
+          const minDigitsMessage = field.validation?.message || 
+            `Phone number must contain at least ${field.validation.minAllowedDigits} digits.`;
+          errors.push(minDigitsMessage);
         }
 
         if (
           field.validation?.maxAllowedDigits &&
           digitsOnly.length > field.validation.maxAllowedDigits
         ) {
-          errors.push(
-            `Phone number must contain no more than ${field.validation.maxAllowedDigits} digits.`
-          );
+          const maxDigitsMessage = field.validation?.message || 
+            `Phone number must contain no more than ${field.validation.maxAllowedDigits} digits.`;
+          errors.push(maxDigitsMessage);
         }
 
         // Basic phone format validation
         if (digitsOnly.length > 0 && digitsOnly.length < 7) {
-          errors.push('Please enter a valid phone number.');
+          const phoneFormatMessage = field.validation?.message || 'Please enter a valid phone number.';
+          errors.push(phoneFormatMessage);
         }
       }
 
@@ -112,9 +124,9 @@ export const validateField = (field: HubSpotFormField) => {
                   if (!regex.test(trimmedValue)) {
                     errors.push(field.validation.message ?? 'Please enter a valid value.');
                   }
-                } catch (error) {
-        console.warn('Error in catch block:', error);
-      }
+                } catch {
+                  // Invalid regex pattern - skip validation
+                }
               }
               break;
           }
@@ -126,7 +138,8 @@ export const validateField = (field: HubSpotFormField) => {
         try {
           new URL(trimmedValue);
         } catch {
-          errors.push('Please enter a valid URL.');
+          const urlMessage = field.validation?.message || 'Please enter a valid URL.';
+          errors.push(urlMessage);
         }
       }
 
@@ -134,7 +147,8 @@ export const validateField = (field: HubSpotFormField) => {
       if (field.fieldType === 'number') {
         const numValue = parseFloat(trimmedValue);
         if (isNaN(numValue)) {
-          errors.push('Please enter a valid number.');
+          const numberMessage = field.validation?.message || 'Please enter a valid number.';
+          errors.push(numberMessage);
         }
       }
     }

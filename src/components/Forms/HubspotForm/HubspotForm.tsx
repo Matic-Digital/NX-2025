@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { FieldRenderer, validateField } from './fields';
+import { FieldGroupRenderer } from './fields/FieldGroup/FieldGroupRenderer';
+import { FormContentRenderer } from './fields/FormContent/FormContent';
+import { groupFields, extractFormContent as _extractFormContent } from './utils/fieldGrouping';
 import { useForm } from '@tanstack/react-form';
 
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
@@ -56,6 +59,13 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     onSubmit: async ({ value }) => {
       setSubmitting(true);
       try {
+        // Add page context to form data
+        const submissionData = {
+          ...value,
+          pageUri: window.location.href,
+          pageName: document.title || window.location.pathname,
+        };
+
         // Submit to HubSpot
         const response = await fetch(`/api/hubspot/form/${formId}/submit`, {
           method: 'POST',
@@ -63,7 +73,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
             'Content-Type': 'application/json',
             'x-vercel-protection-bypass': 'EnmSpeFCJX5e8wFzcDxyzVNSEmwYZ7Ob'
           },
-          body: JSON.stringify(value)
+          body: JSON.stringify(submissionData)
         });
 
         if (!response.ok) {
@@ -117,57 +127,19 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
       try {
         setLoading(true);
-        const response = await fetch(`/api/hubspot/form/${formId}`, {
+        const response = await fetch(`/api/hubspot/form/${formId}?t=${Date.now()}`, {
           headers: {
-            'x-vercel-protection-bypass': 'EnmSpeFCJX5e8wFzcDxyzVNSEmwYZ7Ob'
+            'x-vercel-protection-bypass': 'EnmSpeFCJX5e8wFzcDxyzVNSEmwYZ7Ob',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
           }
         });
         if (!response.ok) {
           throw new Error('Failed to fetch form data');
         }
         const data = (await response.json()) as HubSpotFormData;
-        console.warn('HubSpot Form Data for ID:', formId, data);
-        console.warn('Is Multi-Step:', data.metadata.isMultiStep);
-        console.warn('Total Steps:', data.metadata.totalSteps);
-        console.warn('Steps:', data.steps);
         
-        // Check for redirect/thank you page configuration
-        const formDataObj = data.formData as Record<string, unknown>;
-        console.warn('Form Redirect Info:', {
-          redirectUrl: formDataObj.redirectUrl,
-          thankYouMessage: formDataObj.thankYouMessage,
-          followUpId: formDataObj.followUpId,
-          submitText: formDataObj.submitText,
-          inlineMessage: formDataObj.inlineMessage,
-          allFormDataKeys: Object.keys(formDataObj)
-        });
         
-        // Log the full form data structure to find where redirect is stored
-        console.warn('Full Form Data Structure:', formDataObj);
-        
-        // Check common redirect field locations
-        console.warn('Redirect Field Variations:', {
-          redirectUrl: formDataObj.redirectUrl,
-          redirectUri: formDataObj.redirectUri,
-          thankYouPageUrl: formDataObj.thankYouPageUrl,
-          thankYouPageUri: formDataObj.thankYouPageUri,
-          followUpUrl: formDataObj.followUpUrl,
-          displayOptions: formDataObj.displayOptions,
-          configuration: formDataObj.configuration,
-          settings: formDataObj.settings
-        });
-        
-        // Check postSubmitAction specifically
-        const configuration = formDataObj.configuration as Record<string, unknown>;
-        const postSubmitAction = configuration?.postSubmitAction as Record<string, unknown>;
-        console.warn('PostSubmitAction Configuration:', postSubmitAction);
-        
-        // Check if there's a redirect URL in the value field when type is 'redirect'
-        if (postSubmitAction?.type === 'redirect') {
-          console.warn('Found redirect type with URL:', postSubmitAction.value);
-        } else if (postSubmitAction?.type === 'thank_you') {
-          console.warn('Form is configured for thank you message, not redirect. Change in HubSpot to redirect type.');
-        }
         
         setFormData(data);
       } catch (_err) {
@@ -180,10 +152,11 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     void fetchFormData();
   }, [formId]);
 
+
   // Early return after all hooks are called
   if (!formId) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-none`}>
         <CardContent className="p-8">
           <div className="text-center text-red-600">
             <p>Error: No form ID provided</p>
@@ -195,7 +168,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
   if (loading) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-none`}>
         <CardContent className="flex items-center justify-center p-8">
           <Loader2 className="h-8 w-8 animate-spin" />
           <span className="ml-2">Loading form...</span>
@@ -206,7 +179,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
 
   if (error || !formData) {
     return (
-      <Card className={className}>
+      <Card className={`${className} shadow-none`}>
         <CardContent className="p-8">
           <div className="text-center text-red-600">
             <p>Error: {error ?? 'Failed to load form'}</p>
@@ -255,7 +228,7 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
     const cardThemeClass = 'bg-white text-black';
     
     return (
-      <Card className={`${className} ${cardThemeClass}`}>
+      <Card className={`${className} ${cardThemeClass} shadow-none`}>
         <CardHeader>
           <CardTitle className={`${multiStepTextClass} text-headline-md`}>{formTitle}</CardTitle>
           {formData.metadata.isMultiStep && (
@@ -286,32 +259,91 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 <h3 className={`text-lg font-semibold ${multiStepTextClass}`}>{stepFields.stepName}</h3>
               )}
 
-              {stepFields?.fields
-                .filter((field: HubSpotFormField) => !field.hidden)
-                .sort(
-                  (a: HubSpotFormField, b: HubSpotFormField) =>
-                    (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
-                )
-                .map((field: HubSpotFormField) => (
-                  <form.Field
-                    key={field.name}
-                    name={field.name}
-                    validators={{
-                      onChange: validateField(field),
-                      onBlur: validateField(field)
-                    }}
-                  >
-                    {(fieldApi) => (
-                      <FieldRenderer
-                        field={field}
-                        value={fieldApi.state.value as string | number | boolean | null | undefined}
-                        onChange={fieldApi.handleChange}
-                        error={fieldApi.state.meta.errors?.[0]}
-                        theme={multiStepTheme}
-                      />
-                    )}
-                  </form.Field>
-                ))}
+              {(() => {
+                // Filter out hidden fields and content-only fields (they're rendered as content above)
+                const isContentOnlyField = (field: HubSpotFormField) => 
+                  field.fieldType === 'rich_text' || 
+                  field.fieldType === 'html' || 
+                  field.fieldType === 'content' ||
+                  field.fieldType === 'text_block' ||
+                  field.fieldType === 'richtext' ||
+                  field.fieldType === 'heading' ||
+                  field.fieldType === 'label' ||
+                  (!field.name && (field.label || field.description));
+                
+                const visibleFields = stepFields?.fields.filter((field: HubSpotFormField) => 
+                  !field.hidden && !isContentOnlyField(field)
+                ) || [];
+                
+                // Use existing fieldGroups if available, otherwise auto-group fields
+                const fieldGroups = stepFields?.fieldGroups?.length 
+                  ? stepFields.fieldGroups 
+                  : groupFields(visibleFields);
+
+                // TEMPORARY: Force any field with options to be multiselect for debugging
+                const debugFieldGroups = fieldGroups.map(group => {
+                  if (group.fields.length === 1 && group.fields[0]?.options?.length && group.fields[0].options.length > 1) {
+                    return {
+                      ...group,
+                      groupType: 'multiselect' as const
+                    };
+                  }
+                  return group;
+                });
+
+                return debugFieldGroups.map((group, groupIndex) => {
+                  // For groups with multiple fields, use FieldGroupRenderer
+                  if (group.fields.length > 1 || group.groupType === 'multiselect') {
+                    return (
+                      <form.Subscribe
+                        key={`group-${groupIndex}`}
+                        selector={(state) => ({
+                          values: state.values as Record<string, unknown>,
+                          errors: (state.errors as unknown || {}) as Record<string, string | string[]>
+                        })}
+                      >
+                        {({ values, errors }) => (
+                          <FieldGroupRenderer
+                            group={group}
+                            values={values}
+                            onChange={(fieldName, value) => {
+                              form.setFieldValue(fieldName, value);
+                            }}
+                            errors={errors}
+                            theme={multiStepTheme}
+                          />
+                        )}
+                      </form.Subscribe>
+                    );
+                  }
+
+                  // For single fields, use individual field rendering
+                  const field = group.fields[0];
+                  if (!field) return null;
+
+                  return (
+                    <form.Field
+                      key={field.name}
+                      name={field.name}
+                      validators={{
+                        onChange: validateField(field),
+                        onBlur: validateField(field),
+                        onMount: validateField(field)
+                      }}
+                    >
+                      {(fieldApi) => (
+                        <FieldRenderer
+                          field={field}
+                          value={fieldApi.state.value as string | number | boolean | null | undefined}
+                          onChange={fieldApi.handleChange}
+                          error={fieldApi.state.meta.errors?.[0]}
+                          theme={multiStepTheme}
+                        />
+                      )}
+                    </form.Field>
+                  );
+                });
+              })()}
             </div>
 
             {/* Navigation Buttons */}
@@ -342,7 +374,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                     const allRequiredFieldsFilled = requiredFields.every(
                       (field: HubSpotFormField) => {
                         const value = (state.values as Record<string, unknown>)[field.name];
-                        return value && (typeof value === 'string' ? value.trim() !== '' : true);
+                        if (!value) return false;
+                        if (typeof value === 'string') return value.trim() !== '';
+                        if (Array.isArray(value)) return value.length > 0;
+                        return true;
                       }
                     );
 
@@ -389,7 +424,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                     const allRequiredFieldsFilled = requiredFields.every(
                       (field: HubSpotFormField) => {
                         const value = (state.values as Record<string, unknown>)[field.name];
-                        return value && (typeof value === 'string' ? value.trim() !== '' : true);
+                        if (!value) return false;
+                        if (typeof value === 'string') return value.trim() !== '';
+                        if (Array.isArray(value)) return value.length > 0;
+                        return true;
                       }
                     );
 
@@ -465,12 +503,15 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           {formTitle}
         </h2>
       )}
-      <p
-        className={`${textClass} text-sm font-normal leading-[160%] tracking-[0.00875rem] md:text-body-xs text-center md:text-left`}
-      >
-        {formDescription}
-      </p>
-      <CardContent className={`${textClass} p-0 mt-[2.5rem] md:mt-0`}>
+      {!hideHeader && (
+        <p
+          className={`${textClass} text-sm font-normal leading-[160%] tracking-[0.00875rem] md:text-body-xs text-center md:text-left`}
+        >
+          {formDescription}
+        </p>
+      )}
+      <Card className={`${textClass} mt-[2.5rem] md:mt-0 shadow-none`}>
+        <CardContent className="p-0">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -480,21 +521,50 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
           className="space-y-6"
         >
           <div className="space-y-6">
-            {/* Form Fields */}
-            <div className="space-y-4">
-              {stepFields?.fields
-                .filter((field: HubSpotFormField) => !field.hidden)
-                .sort(
-                  (a: HubSpotFormField, b: HubSpotFormField) =>
-                    (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
-                )
-                .map((field: HubSpotFormField) => (
+            {/* Render fields and content in their original HubSpot order */}
+            {(() => {
+              const allFields = stepFields?.fields || [];
+              
+              return allFields.map((field: HubSpotFormField, index: number) => {
+                // Skip hidden fields
+                if (field.hidden) return null;
+                
+                // Check if this is a content-only field (rich text, etc.)
+                const isContentOnlyField = 
+                  field.fieldType === 'rich_text' || 
+                  field.fieldType === 'html' || 
+                  field.fieldType === 'content' ||
+                  field.fieldType === 'text_block' ||
+                  field.fieldType === 'richtext' ||
+                  field.fieldType === 'heading' ||
+                  field.fieldType === 'label' ||
+                  (!field.name && (field.label || field.description));
+                
+                if (isContentOnlyField) {
+                  // Render as content
+                  return (
+                    <FormContentRenderer
+                      key={`content-field-${index}`}
+                      content={{
+                        type: field.fieldType === 'heading' ? 'header' : 'text',
+                        content: field.label || '',
+                        richText: field.description || field.label || '',
+                        level: field.fieldType === 'heading' ? 3 : undefined
+                      }}
+                      theme={theme}
+                    />
+                  );
+                }
+                
+                // Regular field - render normally
+                return (
                   <form.Field
-                    key={field.name}
+                    key={`field-${field.name || index}`}
                     name={field.name}
                     validators={{
                       onChange: validateField(field),
-                      onBlur: validateField(field)
+                      onBlur: validateField(field),
+                      onMount: validateField(field)
                     }}
                   >
                     {(fieldApi) => (
@@ -502,15 +572,100 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                         field={field}
                         value={fieldApi.state.value as string | number | boolean | null | undefined}
                         onChange={fieldApi.handleChange}
-                        error={fieldApi.state.meta.errors?.[0]}
+                        error={fieldApi.state.meta.errors?.[0] as string | undefined}
                         theme={theme}
                       />
                     )}
                   </form.Field>
-                ))}
-            </div>
+                );
+              }).filter(Boolean); // Remove null entries
+            })()}
 
-            {/* Submit Button */}
+          </div>
+
+          {/* Legacy field grouping - only used if no individual fields are available */}
+          {(!stepFields?.fields || stepFields.fields.length === 0) && (
+            <div className="space-y-6">
+              {(() => {
+                const visibleFields = stepFields?.fields?.filter((field: HubSpotFormField) => 
+                  !field.hidden
+                ) || [];
+                
+                // Use existing fieldGroups if available, otherwise auto-group fields
+                const fieldGroups = stepFields?.fieldGroups?.length 
+                  ? stepFields.fieldGroups 
+                  : groupFields(visibleFields);
+
+                // TEMPORARY: Force any field with options to be multiselect for debugging
+                const debugFieldGroups = fieldGroups.map(group => {
+                  if (group.fields.length === 1 && group.fields[0]?.options?.length && group.fields[0].options.length > 1) {
+                    return {
+                      ...group,
+                      groupType: 'multiselect' as const
+                    };
+                  }
+                  return group;
+                });
+
+
+                return debugFieldGroups.map((group, groupIndex) => {
+                  // For groups with multiple fields, use FieldGroupRenderer
+                  if (group.fields.length > 1 || group.groupType === 'multiselect') {
+                    return (
+                      <form.Subscribe
+                        key={`group-${groupIndex}`}
+                        selector={(state) => ({
+                          values: state.values as Record<string, unknown>,
+                          errors: (state.errors as unknown || {}) as Record<string, string | string[]>
+                        })}
+                      >
+                        {({ values, errors }) => (
+                          <FieldGroupRenderer
+                            group={group}
+                            values={values}
+                            onChange={(fieldName, value) => {
+                              // Use form.setFieldValue instead of getFieldInfo
+                              form.setFieldValue(fieldName, value);
+                            }}
+                            errors={errors}
+                            theme={theme}
+                          />
+                        )}
+                      </form.Subscribe>
+                    );
+                  }
+
+                  // For single fields, use individual field rendering
+                  const field = group.fields[0];
+                  if (!field) return null;
+
+                  return (
+                    <form.Field
+                      key={field.name}
+                      name={field.name}
+                      validators={{
+                        onChange: validateField(field),
+                        onBlur: validateField(field),
+                        onMount: validateField(field)
+                      }}
+                    >
+                      {(fieldApi) => (
+                        <FieldRenderer
+                          field={field}
+                          value={fieldApi.state.value as string | number | boolean | null | undefined}
+                          onChange={fieldApi.handleChange}
+                          error={fieldApi.state.meta.errors?.[0]}
+                          theme={theme}
+                        />
+                      )}
+                    </form.Field>
+                  );
+                });
+              })()}
+            </div>
+          )}
+
+          {/* Submit Button */}
             <form.Subscribe
               selector={(state) => {
                 // Check if all required fields are filled and valid
@@ -520,7 +675,10 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                   ) ?? [];
                 const allRequiredFieldsFilled = requiredFields.every((field: HubSpotFormField) => {
                   const value = (state.values as Record<string, unknown>)[field.name];
-                  return value && (typeof value === 'string' ? value.trim() !== '' : true);
+                  if (!value) return false;
+                  if (typeof value === 'string') return value.trim() !== '';
+                  if (Array.isArray(value)) return value.length > 0;
+                  return true;
                 });
 
                 return {
@@ -551,15 +709,15 @@ export const HubspotForm: React.FC<HubspotFormProps> = ({
                 </Button>
               )}
             </form.Subscribe>
-          </div>
-        </form>
+          </form>
 
-        {error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
-        )}
-      </CardContent>
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </Box>
   );
 };
