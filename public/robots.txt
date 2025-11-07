@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /internal/
+Disallow: /private/
+Disallow: /thank-you
+Disallow: /search
+Allow: /
+
+# Allow indexing of all marketing, blog, and press content
+# Blog and press content lives under /post/
+Allow: /post/
+
+# Sitemap location
+Sitemap: https://nextpower.com/sitemap.xml

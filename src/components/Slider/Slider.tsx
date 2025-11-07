@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, memo } from 'react';
+import { useEffect, useState, useCallback, memo, useRef } from 'react';
 import {
   useContentfulInspectorMode,
   useContentfulLiveUpdates
@@ -213,18 +213,7 @@ const SliderCard = ({
                           mobileOrigin={videoAsset?.posterImage?.mobileOrigin}
                           className="absolute h-full w-full"
                         />
-                        {/* Video Play Button Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                            <svg
-                              className="ml-1 h-6 w-6 text-gray-800"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          </div>
-                        </div>
+                        {/* Removed play button overlay for timeline slider */}
                       </div>
                     );
                   })()
@@ -232,17 +221,41 @@ const SliderCard = ({
                   ? (() => {
                       const imageAsset = timelineItem.asset as {
                         __typename: 'Image';
+                        sys?: { id: string };
                         link?: string;
                         altText?: string;
                         mobileOrigin?: z.infer<typeof MobileOriginSchema>;
                       };
+                      
+                      // If no link but has sys.id, let AirImage fetch it
+                      if (!imageAsset?.link && imageAsset?.sys?.id) {
+                        return (
+                          <AirImage
+                            sys={{ id: imageAsset.sys.id }}
+                            altText={imageAsset?.altText ?? ''}
+                            mobileOrigin={imageAsset?.mobileOrigin}
+                            className="absolute h-full w-full object-cover"
+                          />
+                        );
+                      }
+                      
+                      // If has link, use it directly
+                      if (imageAsset?.link) {
+                        return (
+                          <AirImage
+                            link={imageAsset.link}
+                            altText={imageAsset?.altText ?? ''}
+                            mobileOrigin={imageAsset?.mobileOrigin}
+                            className="absolute h-full w-full object-cover"
+                          />
+                        );
+                      }
+                      
+                      // Fallback: show placeholder
                       return (
-                        <AirImage
-                          link={imageAsset?.link ?? ''}
-                          altText={imageAsset?.altText ?? ''}
-                          mobileOrigin={imageAsset?.mobileOrigin}
-                          className="h-full w-full"
-                        />
+                        <div className="absolute h-full w-full bg-gray-200 flex items-center justify-center">
+                          <p className="text-gray-500">Image not available</p>
+                        </div>
                       );
                     })()
                   : null}
@@ -898,7 +911,7 @@ function SliderComponent(props: SliderSys | Slider) {
   const [solutionUrls, setSolutionUrls] = useState<Record<string, string>>({});
   const [selectedTeamMember, setSelectedTeamMember] = useState<TeamMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [autoplayTimer, setAutoplayTimer] = useState<NodeJS.Timeout | null>(null);
+  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [sliderRef, entry] = useIntersectionObserver({
     threshold: 0.3,
@@ -937,8 +950,8 @@ function SliderComponent(props: SliderSys | Slider) {
     if (!hasMultipleSlides) return;
 
     // Clear existing timer
-    if (autoplayTimer) {
-      clearTimeout(autoplayTimer);
+    if (autoplayTimerRef.current) {
+      clearTimeout(autoplayTimerRef.current);
     }
 
     // Use delay from schema, default to 5000ms if not specified
@@ -969,16 +982,16 @@ function SliderComponent(props: SliderSys | Slider) {
       }
     }, delay);
 
-    setAutoplayTimer(timer);
-  }, [api, slider, isInView, autoplayTimer, isClient]);
+    autoplayTimerRef.current = timer;
+  }, [api, slider, isInView, isClient]);
 
   // Function to stop autoplay timer
   const stopAutoplayTimer = useCallback(() => {
-    if (autoplayTimer) {
-      clearTimeout(autoplayTimer);
-      setAutoplayTimer(null);
+    if (autoplayTimerRef.current) {
+      clearTimeout(autoplayTimerRef.current);
+      autoplayTimerRef.current = null;
     }
-  }, [autoplayTimer]);
+  }, []);
 
   // Function to reset autoplay timer (for user interactions)
   const resetAutoplayTimer = useCallback(() => {
@@ -1039,7 +1052,10 @@ function SliderComponent(props: SliderSys | Slider) {
 
     // Cleanup on unmount
     return () => {
-      stopAutoplayTimer();
+      if (autoplayTimerRef.current) {
+        clearTimeout(autoplayTimerRef.current);
+        autoplayTimerRef.current = null;
+      }
     };
   }, [isInView, startAutoplayTimer, stopAutoplayTimer]);
 
@@ -1139,7 +1155,6 @@ function SliderComponent(props: SliderSys | Slider) {
         showAltIndicators={
           !hasOnlyOneItem &&
           (isSliderItemSlider ||
-            isTimelineSliderItemSlider ||
             isTeamMemberSlider ||
             isSolutionSlider ||
             isPostSlider ||

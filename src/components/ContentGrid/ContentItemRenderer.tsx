@@ -30,6 +30,10 @@ const contentTypeRegistry = [
     renderer: contentRenderers.renderContactCard
   },
   {
+    detector: contentTypeDetectors.isContent,
+    renderer: contentRenderers.renderContent
+  },
+  {
     detector: contentTypeDetectors.isContentGridItem,
     renderer: contentRenderers.renderContentGridItem
   },

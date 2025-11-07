@@ -35,6 +35,11 @@ const nextConfig = {
 
   // Performance optimizations for faster server response
   poweredByHeader: false, // Remove X-Powered-By header
+  logging: {
+    fetches: {
+      fullUrl: false
+    }
+  },
   generateEtags: true, // Enable ETags for better caching
   
   // Optimize page generation
@@ -110,10 +115,8 @@ const nextConfig = {
   compiler: {
     // Remove React properties in production
     reactRemoveProperties: process.env.NODE_ENV === 'production',
-    // Remove console.log in production
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error']
-    } : false,
+    // Remove ALL console statements in production (including errors)
+    removeConsole: process.env.NODE_ENV === 'production' ? true : false,
     // Enable emotion for better CSS-in-JS performance (if used)
     emotion: true,
   },
@@ -311,25 +314,10 @@ const nextConfig = {
         });
       }
 
-      // Additional minification for development mode
+      // Keep development simple - no minification to preserve debugging
       if (dev) {
-        config.optimization.minimize = true;
-        config.optimization.minimizer = [
-          ...config.optimization.minimizer || [],
-          new (require('terser-webpack-plugin'))({
-            terserOptions: {
-              compress: {
-                drop_console: false, // Keep console in dev
-                drop_debugger: false,
-                passes: 1 // Faster compilation in dev
-              },
-              mangle: false, // Don't mangle in dev for debugging
-              format: {
-                comments: false
-              }
-            }
-          })
-        ];
+        // Disable minification in development to keep console logs and debugging intact
+        config.optimization.minimize = false;
       }
 
       // CSS optimization is handled by PostCSS plugins and Next.js built-in optimization
@@ -349,32 +337,33 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: process.env.NODE_ENV === 'development' ? [
-              // Development CSP - Mux optimized + required domains
+              // Development CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
-              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
+              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
-              "frame-ancestors 'self' https://app.contentful.com https://vercel.live"
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
+              "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net"
             ].join('; ') : [
-              // Production CSP - Mux optimized + required domains
+              // Production CSP - Mux optimized + required domains + HubSpot
               "default-src 'self'",
-              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https: wss:",
+              "connect-src 'self' https://*.mux.com https://*.litix.io https://storage.googleapis.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://*.hubspot.com https://*.hubspotusercontent-na1.net https://*.hs-scripts.com https://*.hsforms.net https://api.hubapi.com https: wss:",
               "media-src 'self' blob: https://*.mux.com",
-              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com",
+              "img-src 'self' data: blob: https: https://image.mux.com https://*.litix.io https://images.ctfassets.net https://downloads.ctfassets.net https://air-prod.imgix.net https://*.hubspotusercontent-na1.net",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://src.litix.io https://vercel.live https://app.contentful.com https://www.googletagmanager.com https://www.google-analytics.com https://googletagmanager.com https://ssl.google-analytics.com https://tagmanager.google.com https://*.hs-scripts.com https://*.hsforms.net",
               "worker-src 'self' blob:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live",
+              "frame-src 'self' https://*.mux.com https://app.contentful.com https://vercel.live https://*.hsforms.net",
               "frame-ancestors 'self' https://app.contentful.com https://vercel.live",
               "object-src 'none'",
               "base-uri 'self'",
-              "form-action 'self'",
+              "form-action 'self' https://*.hubspot.com https://*.hsforms.net",
               "upgrade-insecure-requests",
               "report-uri /api/csp-report"
             ].join('; ')
@@ -432,9 +421,51 @@ const nextConfig = {
         ]
       },
       {
-        // Static assets caching
+        // Static assets caching with proper MIME types
         source: '/_next/static/(.*)',
         headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // CSS files - ensure proper MIME type
+        source: '/_next/static/css/(.*).css',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // Font files - proper MIME types
+        source: '/_next/static/media/(.*).woff2',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'font/woff2'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        // JavaScript chunks - proper MIME type
+        source: '/_next/static/chunks/(.*).js',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8'
+          },
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable'

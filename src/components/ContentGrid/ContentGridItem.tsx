@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 import { ArrowUpRight } from 'lucide-react';
 
-import { staticRoutingService } from '@/lib/static-routing';
+// import { staticRoutingService } from '@/lib/static-routing'; // Unused import
 import { cn } from '@/lib/utils';
 
 import { Button } from '@/components/ui/button';
@@ -34,7 +34,7 @@ interface ContentGridItemProps extends ContentGridItemType {
 
 export function ContentGridItem(props: ContentGridItemProps) {
   const inspectorProps = useContentfulInspectorMode({ entryId: props.sys?.id });
-  const [linkHref, setLinkHref] = useState<string>('#');
+  const [linkHref, _setLinkHref] = useState<string>('#');
   const [fullContentData, setFullContentData] = useState<ContentGridItemType | null>(null);
 
   // Use full content data if available, otherwise fall back to props
@@ -52,60 +52,33 @@ export function ContentGridItem(props: ContentGridItemProps) {
     link
   } = contentData;
 
-  // Fetch full content data and link details on component mount
+  // Only fetch link data if not already available in props (server-side enrichment should handle this)
   useEffect(() => {
+    // If we already have full data from server-side enrichment, don't fetch on client
+    if (contentData.heading && contentData.ctaCollection) {
+      return;
+    }
+
     const fetchContentData = async () => {
       if (!sys?.id) {
         return;
       }
 
       try {
-        // Fetch full content data using internal API route
+        // Only fetch if we don't have the full data from server-side enrichment
         const contentResponse = await fetch(`/api/components/ContentGrid/${sys.id}`);
         if (contentResponse.ok) {
-          const contentData = await contentResponse.json();
-          setFullContentData(contentData.contentGridItem);
+          const responseData = await contentResponse.json();
+          console.warn('ContentGridItem client-side fetch (fallback):', responseData.contentGridItem);
+          setFullContentData(responseData.contentGridItem);
         }
-
-        // Fetch link details for ContentGridItem using internal API route
-        const linkResponse = await fetch(`/api/components/ContentGrid/${sys.id}/link`);
-        if (linkResponse.ok) {
-          const linkResponseData = await linkResponse.json();
-          const linkData = linkResponseData.linkData;
-
-          if (linkData?.link?.slug) {
-            // Default to flat URL structure
-            let href = `/${linkData.link.slug}`;
-
-            // PageList Nesting Integration: Check if the linked PageList has a parent
-            // This ensures URLs like /products/trackers instead of just /trackers
-            if (linkData.link.__typename === 'PageList') {
-              // Use static routing service to get route metadata (replaces API call)
-              const routeMetadata = staticRoutingService.getRoute(`/${linkData.link.slug}`);
-
-              if (
-                routeMetadata &&
-                routeMetadata.isNested &&
-                routeMetadata.parentPageLists.length > 0
-              ) {
-                // Use the full nested path from routing metadata
-                href = routeMetadata.path;
-              }
-            } else if (props.parentPageListSlug) {
-              // For content items (Pages, Products, etc.) with known parent context
-              // Use the parent PageList slug to construct nested URLs
-              href = `/${props.parentPageListSlug}/${linkData.link.slug}`;
-            }
-            setLinkHref(href);
-          }
-        }
-      } catch {
-        // Error fetching content data
+      } catch (error) {
+        console.warn('Failed to fetch ContentGridItem data on client:', error);
       }
     };
 
     void fetchContentData();
-  }, [sys?.id, props.parentPageListSlug, props.__typename]);
+  }, [sys?.id, contentData.heading, contentData.ctaCollection]);
 
   // Render the appropriate icon based on the icon name
   const renderIcon = (isBackgroundImage = false) => {
@@ -234,63 +207,120 @@ export function ContentGridItem(props: ContentGridItemProps) {
     </div>
   );
 
-  const BackgroundImageCompactItem = () => (
-    <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[23.25rem]">
-      {/* Background image */}
-      <AirImage
-        link={image?.link ?? ''}
-        altText={image?.altText ?? ''}
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+  const BackgroundImageCompactItem = () => {
+    // Handle nested Content structure - check if this is a Content item with nested data
+    const actualContentData = contentData.__typename === 'Content' && (contentData as any).item 
+      ? (contentData as any).item 
+      : contentData;
+    
+    // Use the actual content data for CTA and other fields
+    const actualCtaCollection = actualContentData.ctaCollection || contentData.ctaCollection;
+    const actualHeading = actualContentData.heading || contentData.heading;
+    const actualDescription = actualContentData.description || contentData.description;
+    const actualImage = actualContentData.image || contentData.image;
 
-      {/* Overlay card */}
-      <div className="absolute inset-0 flex items-end lg:items-center justify-end p-4 md:p-6 lg:p-8">
-        <Box
-          direction="col"
-          gap={6}
-          className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
-        >
-          <div className="flex h-full flex-col">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-row gap-[0.75rem] items-center">
-                <div>{renderIcon(true)}</div>
-                <h3
-                  className="text-headline-sm line-clamp-2"
-                  {...inspectorProps({ fieldId: 'heading' })}
-                >
-                  {heading}
-                </h3>
+
+
+    return (
+      <div className="group relative min-h-[37.5rem] w-full overflow-hidden md:min-h-[23.25rem]">
+        {/* Background image */}
+        <AirImage
+          link={actualImage?.link ?? ''}
+          altText={actualImage?.altText ?? ''}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+
+        {/* Overlay card */}
+        <div className="absolute inset-0 flex items-end lg:items-center justify-end p-4 md:p-6 lg:p-8">
+          <Box
+            direction="col"
+            gap={6}
+            className="text-background flex h-fit w-full max-w-[531px] flex-col bg-black/30 p-6 shadow-xl backdrop-blur-lg md:p-8 lg:p-10"
+          >
+            <div className="flex h-full flex-col">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-row gap-[0.75rem] items-center">
+                  <div>{renderIcon(true)}</div>
+                  <h3
+                    className="text-headline-sm line-clamp-2"
+                    {...inspectorProps({ fieldId: 'heading' })}
+                  >
+                    {actualHeading}
+                  </h3>
+                </div>
+
+                <Box direction="col" gap={4} className="mb-8">
+                  {actualDescription && (
+                    <p
+                      className="text-background/90 line-clamp-3"
+                      {...inspectorProps({ fieldId: 'description' })}
+                    >
+                      {actualDescription}
+                    </p>
+                  )}
+                </Box>
               </div>
 
-              <Box direction="col" gap={4} className="mb-8">
-                {description && (
-                  <p
-                    className="text-background/90 line-clamp-3"
-                    {...inspectorProps({ fieldId: 'description' })}
+              {(actualCtaCollection?.items?.[0]?.text || fullContentData?.ctaCollection?.items?.[0]?.text) && (
+                <div className="mt-auto">
+                  <Link 
+                    href={(() => {
+                      // For ContentGridItems, use the enriched CTA data
+                      if (contentData.__typename === 'ContentGridItem' && actualCtaCollection?.items?.[0]) {
+                        const cta = actualCtaCollection.items[0];
+                        if (cta.internalLink?.slug) {
+                          const slug = cta.internalLink.slug;
+                          return slug.startsWith('/') ? slug : `/${slug}`;
+                        }
+                        if (cta.externalLink) {
+                          return cta.externalLink;
+                        }
+                      }
+                      
+                      // For Content items, get the CTA's internal link (which should be a PageList)
+                      if (contentData.__typename === 'Content') {
+                        const cta = actualCtaCollection?.items?.[0];
+                        if (cta?.internalLink) {
+                          const internalLink = cta.internalLink;
+                          
+                          // Check if it's a PageList with a slug
+                          if (internalLink.__typename === 'PageList' && internalLink.slug) {
+                            return internalLink.slug.startsWith('/') ? internalLink.slug : `/${internalLink.slug}`;
+                          }
+                          
+                          // For other internal link types, use the slug directly
+                          if (internalLink.slug) {
+                            return internalLink.slug.startsWith('/') ? internalLink.slug : `/${internalLink.slug}`;
+                          }
+                        }
+                        
+                        // Fallback to external link if no internal link
+                        if (cta?.externalLink) {
+                          return cta.externalLink;
+                        }
+                      }
+                      
+                      // Fallback to getHref() or a default
+                      const href = getHref();
+                      return href !== '#' ? href : '/';
+                    })()} 
+                    className="inline-block w-full md:w-auto"
                   >
-                    {description}
-                  </p>
-                )}
-              </Box>
+                    <Button
+                      variant="outlineTrasparentWhite"
+                      className="hover:bg-background hover:text-foreground w-full transition-colors"
+                    >
+                      {actualCtaCollection?.items?.[0]?.text || fullContentData?.ctaCollection?.items?.[0]?.text || 'Learn More'}
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
-
-            {ctaCollection?.items?.[0]?.text && (
-              <div className="mt-auto">
-                <Link href={getHref()} className="inline-block w-full md:w-auto">
-                  <Button
-                    variant="outlineTrasparentWhite"
-                    className="hover:bg-background hover:text-foreground w-full transition-colors"
-                  >
-                    {ctaCollection?.items?.[0]?.text}
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
-        </Box>
+          </Box>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const BackgroundPrimaryHoverItem = () => {
     return (
@@ -480,6 +510,7 @@ export function ContentGridItem(props: ContentGridItemProps) {
               fill
               className="object-cover"
               priority={false}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
@@ -554,8 +585,37 @@ export function ContentGridItem(props: ContentGridItemProps) {
   };
 
   const LinkItem = () => {
+    // Use the same routing logic as other variants
+    const getItemHref = () => {
+      // First priority: ctaCollection with internal/external links
+      if (ctaCollection?.items?.[0]) {
+        const cta = ctaCollection.items[0];
+        if (cta.internalLink?.slug) {
+          const slug = cta.internalLink.slug;
+          return slug.startsWith('/') ? slug : `/${slug}`;
+        }
+        if (cta.externalLink) {
+          return cta.externalLink;
+        }
+      }
+      
+      // Second priority: direct link field (reference object with slug)
+      if (link && typeof link === 'object' && 'slug' in link && link.slug) {
+        const slug = link.slug;
+        return slug.startsWith('/') ? slug : `/${slug}`;
+      }
+      
+      // Third priority: direct link field as string (legacy support)
+      if (link && typeof link === 'string') {
+        return link.startsWith('/') ? link : `/${link}`;
+      }
+      
+      // Fallback
+      return '#';
+    };
+
     return (
-      <Link href={link ?? ''} className="group flex flex-col">
+      <Link href={getItemHref()} className="group flex flex-col">
         <Box className="flex-row gap-[1.75rem] md:flex-col md:gap-4">
           <Box className="group-hover:bg-primary h-fit min-h-[3.5rem] w-fit min-w-[3.5rem] bg-black p-[0.38rem] transition-colors">
             {icon?.url && (
