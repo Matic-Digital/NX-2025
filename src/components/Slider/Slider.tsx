@@ -184,6 +184,15 @@ const SliderCard = ({
 
   if (updatedItem.__typename === 'TimelineSliderItem') {
     const timelineItem = updatedItem as TimelineSliderItem;
+    
+    // Debug log to see timeline item data
+    console.log('Timeline item data:', {
+      id: timelineItem.sys.id,
+      year: timelineItem.year,
+      assetType: timelineItem.asset?.__typename,
+      imageLink: timelineItem.asset?.__typename === 'Image' ? (timelineItem.asset as any).link : 'N/A',
+      videoLink: timelineItem.asset?.__typename === 'Video' ? (timelineItem.asset as any).posterImage?.link : 'N/A'
+    });
 
     return (
       <div className="relative h-[669px] bg-white pb-32 lg:pb-16">
